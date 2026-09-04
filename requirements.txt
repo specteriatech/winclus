@@ -1,0 +1,11 @@
+# Dependencias de Puntero Libre (Python 3.9, Windows)
+# mediapipe 0.9.3.0 (la versión original de Gameface) ya no está en PyPI; se usa la última 0.10.x compatible.
+mediapipe>=0.10.9,<0.11
+opencv-contrib-python>=4.7
+numpy<2
+matplotlib
+psutil
+pyautogui
+customtkinter==5.2.2
+PyDirectInput==1.0.4
+pywin32
