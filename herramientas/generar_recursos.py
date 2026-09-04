@@ -2,7 +2,7 @@
 
 Crea el icono neutro, los avisos que se dibujan sobre la imagen de la cámara,
 los iconos del menú (versión clara y oscura), el globo de ayuda, el botón de
-perfil, la ilustración de inicio en la paleta propia y el tema de customtkinter
+perfil y el tema de customtkinter
 (assets/themes/tema.json) a partir de los colores de src/estilo.py.
 
 Se ejecuta una vez y el resultado se guarda en el repositorio:
@@ -176,37 +176,8 @@ def boton_perfil() -> None:
         im.save(IMAGENES / f"perfil_fondo_{sufijo}.png")
 
 
-# --------------------------------------------------- Ilustración inicio --
-def ilustracion_inicio() -> None:
-    """Pasa la ilustración heredada (azul) a la paleta verde propia, moviendo el tono."""
-    origen = IMAGENES / "home_im.png"
-    if not origen.exists():
-        return
-    im = Image.open(origen).convert("RGBA")
-    a = im.split()[3]
-    hsv = im.convert("RGB").convert("HSV")
-    h, s, v = hsv.split()
-    h_dat, s_dat = h.load(), s.load()
-    w, hh = hsv.size
-    v_dat = v.load()
-    for y in range(hh):
-        for x in range(w):
-            if s_dat[x, y] > 25 and 125 <= h_dat[x, y] <= 180:   # tonos azules
-                h_dat[x, y] = 118                                 # verde profundo
-                s_dat[x, y] = int(s_dat[x, y] * 0.9)
-                v_dat[x, y] = int(v_dat[x, y] * 0.62)             # más oscuro
-    nuevo = Image.merge("HSV", (h, s, v)).convert("RGBA")
-    # El fondo blanco de la imagen original se vuelve transparente para que
-    # funcione sobre cualquier color (modo claro u oscuro).
-    a_dat = a.load()
-    rgb_dat = nuevo.load()
-    for y in range(hh):
-        for x in range(w):
-            r, g, b, _ = rgb_dat[x, y]
-            if r > 245 and g > 245 and b > 245:
-                a_dat[x, y] = 0
-    nuevo.putalpha(a)
-    nuevo.save(IMAGENES / "inicio_ilustracion.png")
+# La ilustración de inicio (assets/images/inicio_ilustracion.png) es una imagen
+# aportada por el proyecto, con el fondo ya transparente; no se genera aquí.
 
 
 # -------------------------------------------------------------------- Tema --
@@ -285,6 +256,5 @@ if __name__ == "__main__":
     iconos_menu()
     globo()
     boton_perfil()
-    ilustracion_inicio()
     tema()
     print("Recursos generados en", IMAGENES, "y", TEMA)

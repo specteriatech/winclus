@@ -1,4 +1,4 @@
-# Copyright 2023 Google LLC
+﻿# Copyright 2023 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ from PIL import Image
 from src import estilo
 from src.gui.frames.safe_disposable_frame import SafeDisposableFrame
 
-ILUSTRACION_SIZE = (330, 161)
+ILUSTRACION_SIZE = (380, 196)
 ICONO_SIZE = (36, 36)
 
 # Tarjetas de acceso: icono, título, explicación corta y página de destino.
@@ -64,12 +64,12 @@ class PageHome(SafeDisposableFrame):
                                            font=estilo.fuente("cuerpo"))
         des_label.grid(row=1, column=0, padx=(28, 10), pady=(4, 6), sticky="nw")
 
-        # Ilustración (sin texto ni marcas), a la derecha del título
+        # Ilustración propia (persona, portátil y cámara), a la derecha del título
         ilus = customtkinter.CTkImage(
             Image.open("assets/images/inicio_ilustracion.png"),
             size=ILUSTRACION_SIZE)
         ilus_label = customtkinter.CTkLabel(self, image=ilus, text="")
-        ilus_label.grid(row=0, column=1, rowspan=2, padx=20, pady=(20, 6),
+        ilus_label.grid(row=0, column=1, rowspan=2, padx=(10, 28), pady=(16, 0),
                         sticky="e")
 
         # Tarjetas grandes, 2 por fila
