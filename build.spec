@@ -39,7 +39,7 @@ exe_app = EXE(
     app.scripts,
     [],
     exclude_binaries=True,
-    name='PunteroLibre',
+    name='Gestik',
     icon='assets/images/icono.ico',
     debug=False,
     bootloader_ignore_signals=False,
@@ -62,5 +62,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='PunteroLibre',
+    name='Gestik',
 )

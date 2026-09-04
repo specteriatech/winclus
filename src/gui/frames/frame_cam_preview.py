@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Adaptado para Puntero Libre: miniatura de la cámara en una tarjeta con un
+# Adaptado para Gestik: miniatura de la cámara en una tarjeta con un
 # botón grande «Activar / Pausar» en vez del interruptor pequeño original.
 
 import tkinter

@@ -1,4 +1,4 @@
-"""Estilo visual de Puntero Libre: colores, tipografías y modo claro u oscuro.
+"""Estilo visual de Gestik: colores, tipografías y modo claro u oscuro.
 
 Todos los colores son pares (claro, oscuro): customtkinter elige el que toca
 según el modo. Las demás partes del programa deben tomar de aquí sus colores y

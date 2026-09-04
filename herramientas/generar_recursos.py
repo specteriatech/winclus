@@ -1,6 +1,6 @@
-"""Genera los recursos gráficos propios de Puntero Libre.
+"""Genera los recursos gráficos propios de Gestik.
 
-Crea el icono neutro, los avisos que se dibujan sobre la imagen de la cámara,
+Crea el logo e icono (a partir de assets/images/logo_fuente), los avisos que se dibujan sobre la imagen de la cámara,
 los iconos del menú (versión clara y oscura), el globo de ayuda, el botón de
 perfil y el tema de customtkinter
 (assets/themes/tema.json) a partir de los colores de src/estilo.py.
@@ -70,26 +70,39 @@ def aviso(nombre: str, texto: str, color, simbolo: str) -> None:
     im.save(AVISOS / nombre)
 
 
-# ------------------------------------------------------------------- Icono --
-def icono() -> None:
-    """Icono propio: cara sonriente estilizada con un puntero encima."""
-    n = 512
-    fondo = rgb(estilo.PRIMARIO[0]) + (255,)
-    ambar = rgb(estilo.AMBAR[0]) + (255,)
-    im = Image.new("RGBA", (n, n), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
-    d.rounded_rectangle([16, 16, n - 16, n - 16], radius=110, fill=fondo)
-    d.ellipse([96, 120, 416, 460], fill=BLANCO + (255,))
-    d.ellipse([170, 230, 214, 274], fill=fondo)
-    d.ellipse([298, 230, 342, 274], fill=fondo)
-    d.arc([176, 250, 336, 400], start=20, end=160, fill=fondo, width=22)
-    px, py = 330, 40
-    flecha = [(px, py), (px, py + 150), (px + 40, py + 112), (px + 66, py + 168),
-              (px + 96, py + 154), (px + 70, py + 100), (px + 122, py + 96)]
-    d.polygon(flecha, fill=ambar, outline=fondo, width=10)
-    im.save(IMAGENES / "icono.png")
-    im.save(IMAGENES / "icono.ico",
-            sizes=[(256, 256), (128, 128), (64, 64), (48, 48), (32, 32), (16, 16)])
+# ------------------------------------------------------------------- Logo --
+LOGO_FUENTE = IMAGENES / "logo_fuente"
+# Geometría del emblema (círculo con la cara y el puntero) dentro de las
+# imágenes originales de 1536x1024: centro y radio del anillo.
+EMBLEMA_CENTRO = (770, 378)
+EMBLEMA_RADIO = 398
+
+
+def emblema(nombre_origen: str) -> Image.Image:
+    """Recorta el emblema del logo original como un disco con borde suave."""
+    from PIL import ImageFilter
+    im = Image.open(LOGO_FUENTE / nombre_origen).convert("RGBA")
+    cx, cy = EMBLEMA_CENTRO
+    R = int(EMBLEMA_RADIO * 1.03)
+    lienzo = Image.new("RGBA", (2 * R, 2 * R), (0, 0, 0, 0))
+    lienzo.paste(im.crop((cx - R, cy - R, cx + R, cy + R)), (0, 0))
+    mascara = Image.new("L", (2 * R, 2 * R), 0)
+    ImageDraw.Draw(mascara).ellipse([4, 4, 2 * R - 4, 2 * R - 4], fill=255)
+    mascara = mascara.filter(ImageFilter.GaussianBlur(3))
+    lienzo.putalpha(mascara)
+    return lienzo
+
+
+def logo() -> None:
+    """Logo de Gestik: un disco por modo (claro y oscuro), el icono .ico y un PNG."""
+    oscuro = emblema("gestik_oscuro_original.png")
+    claro = emblema("gestik_claro_original.png")
+    oscuro.resize((256, 256), Image.LANCZOS).save(IMAGENES / "logo_gestik_oscuro.png")
+    claro.resize((256, 256), Image.LANCZOS).save(IMAGENES / "logo_gestik_claro.png")
+    ico = oscuro.resize((256, 256), Image.LANCZOS)
+    ico.save(IMAGENES / "icono.png")
+    ico.save(IMAGENES / "icono.ico",
+             sizes=[(256, 256), (128, 128), (64, 64), (48, 48), (32, 32), (16, 16)])
 
 
 # ---------------------------------------------------------- Iconos del menú --
@@ -249,10 +262,10 @@ def tema() -> None:
 
 
 if __name__ == "__main__":
-    aviso("activo.png", "Puntero Libre está activo", rgb(estilo.OK[0]), "check")
+    aviso("activo.png", "Gestik está activo", rgb(estilo.OK[0]), "check")
     aviso("en_pausa.png", "En pausa", rgb(estilo.TEXTO_SUAVE[0]), "pausa")
     aviso("sin_cara.png", "No veo tu cara", rgb(estilo.ALERTA[0]), "alerta")
-    icono()
+    logo()
     iconos_menu()
     globo()
     boton_perfil()

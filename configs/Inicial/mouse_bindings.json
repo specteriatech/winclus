@@ -1,1 +1,20 @@
-{}
+{
+    "Boca hacia la derecha": [
+        "mouse", 
+        "right", 
+        0.505, 
+        "single"
+    ], 
+    "Boca hacia la izquierda": [
+        "mouse", 
+        "left", 
+        0.505, 
+        "single"
+    ], 
+    "Meter el labio de abajo": [
+        "mouse", 
+        "middle", 
+        0.505, 
+        "single"
+    ]
+}

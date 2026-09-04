@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Adaptado para Puntero Libre: nombres de gestos y acciones en español.
+# Adaptado para Gestik: nombres de gestos y acciones en español.
 
 # Nombre que se muestra cuando una acción no tiene gesto asignado.
 SIN_GESTO = "Ninguno"

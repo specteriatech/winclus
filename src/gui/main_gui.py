@@ -39,7 +39,7 @@ class MainGui():
         self.tk_root = tk_root
 
         self.tk_root.geometry("1120x760")
-        self.tk_root.title(f"Puntero Libre {ConfigManager().version}")
+        self.tk_root.title(f"Gestik {ConfigManager().version}")
         self.tk_root.iconbitmap("assets/images/icono.ico")
         self.tk_root.resizable(width=False, height=False)
 

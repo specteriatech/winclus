@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Adaptado para Puntero Libre: barra lateral propia con nombre del programa,
+# Adaptado para Gestik: barra lateral propia con nombre del programa,
 # selector de perfil, pestañas con icono y texto, y cambio de modo claro/oscuro.
 
 from functools import partial
@@ -26,7 +26,7 @@ from src.gui.frames.safe_disposable_frame import SafeDisposableFrame
 
 PERFIL_SIZE = 232, 42
 ICONO_SIZE = 26, 26
-MARCA_SIZE = 34, 34
+MARCA_SIZE = 44, 44
 
 # Pestañas: clave interna -> (texto, icono)
 PESTANAS = {
@@ -50,16 +50,15 @@ class FrameMenu(SafeDisposableFrame):
         self.master_callback = master_callback
 
         # Nombre del programa con su icono
-        marca_im = customtkinter.CTkImage(Image.open("assets/images/icono.png"),
-                                          size=MARCA_SIZE)
+        marca_im = estilo.imagen_doble("logo_gestik", MARCA_SIZE)
         marca = customtkinter.CTkLabel(master=self,
-                                       text="  Puntero Libre",
+                                       text="  Gestik",
                                        image=marca_im,
                                        compound="left",
                                        anchor="w",
                                        text_color=estilo.PRIMARIO,
                                        font=estilo.fuente("marca"))
-        marca.grid(row=0, column=0, padx=24, pady=(14, 4), sticky="w")
+        marca.grid(row=0, column=0, padx=24, pady=(12, 4), sticky="w")
 
         # Selector de perfil
         perfil_im = estilo.imagen_doble("perfil_fondo", PERFIL_SIZE)

@@ -5,3 +5,4 @@ build/
 dist/
 log.txt
 *.spec.bak
+configs/ajustes.json

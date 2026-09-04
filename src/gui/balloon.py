@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Adaptado para Puntero Libre: globo de ayuda con los colores del estilo propio.
+# Adaptado para Gestik: globo de ayuda con los colores del estilo propio.
 
 from functools import partial
 

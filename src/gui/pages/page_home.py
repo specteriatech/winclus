@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Adaptado para Puntero Libre: página de inicio propia, con tarjetas grandes.
+# Adaptado para Gestik: página de inicio propia, con tarjetas grandes.
 
 import logging
 import tkinter
@@ -48,7 +48,7 @@ class PageHome(SafeDisposableFrame):
 
         # Título y explicación
         titulo = customtkinter.CTkLabel(master=self,
-                                        text="Puntero Libre",
+                                        text="Gestik",
                                         anchor="w",
                                         text_color=estilo.PRIMARIO,
                                         font=estilo.fuente("titulo"))
@@ -100,7 +100,7 @@ class PageHome(SafeDisposableFrame):
         # Aviso
         aviso = customtkinter.CTkLabel(
             master=self,
-            text=("Puntero Libre es gratuito y de código abierto. "
+            text=("Gestik es gratuito y de código abierto. "
                   "No es un dispositivo médico."),
             anchor="w",
             text_color=estilo.TEXTO_SUAVE,
