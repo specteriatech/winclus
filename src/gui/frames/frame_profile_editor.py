@@ -38,7 +38,7 @@ LIGHT_GREEN = "#a6eacf"
 LIGHT_BLUE = "#e8f0fe"
 MEDIUM_BLUE = "#D0E1F9"
 DARK_BLUE = "#1A73E8"
-BACKUP_PROFILE_NAME = "default"
+BACKUP_PROFILE_NAME = "Inicial"
 
 DIV_COLORS = {"default": "white"}
 
@@ -361,7 +361,7 @@ class FrameProfileEditor():
 
         # Label
         top_label = customtkinter.CTkLabel(master=self.float_window,
-                                           text="User profiles")
+                                           text="Tus perfiles")
         top_label.cget("font").configure(size=24)
         top_label.grid(row=0,
                        column=0,
@@ -374,7 +374,7 @@ class FrameProfileEditor():
         des_label = customtkinter.CTkLabel(
             master=self.float_window,
             text=
-            "With profile manager you can create and manage multiple profiles for each usage, so that you can easily switch between them.",
+            "Puedes guardar varios perfiles con ajustes distintos (por ejemplo, uno para cada persona) y cambiar entre ellos fácilmente.",
             wraplength=300,
             justify=tk.LEFT)
         des_label.cget("font").configure(size=14)
@@ -406,7 +406,7 @@ class FrameProfileEditor():
         add_prof_image = customtkinter.CTkImage(
             Image.open("assets/images/add_prof.png"), size=(16, 12))
         add_button = customtkinter.CTkButton(master=self.float_window,
-                                             text="Add profile",
+                                             text="Agregar perfil",
                                              image=add_prof_image,
                                              fg_color="white",
                                              width=100,

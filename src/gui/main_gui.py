@@ -24,7 +24,7 @@ from src.config_manager import ConfigManager
 from src.controllers import MouseController
 
 customtkinter.set_appearance_mode("light")
-customtkinter.set_default_color_theme("assets/themes/google_theme.json")
+customtkinter.set_default_color_theme("assets/themes/tema.json")
 
 logger = logging.getLogger("MainGUi")
 
@@ -37,8 +37,8 @@ class MainGui():
         self.tk_root = tk_root
 
         self.tk_root.geometry("1024x658")
-        self.tk_root.title(f"Project Gameface {ConfigManager().version}")
-        self.tk_root.iconbitmap("assets/images/icon.ico")
+        self.tk_root.title(f"Puntero Libre {ConfigManager().version}")
+        self.tk_root.iconbitmap("assets/images/icono.ico")
         self.tk_root.resizable(width=False, height=False)
 
         self.tk_root.grid_rowconfigure(1, weight=1)

@@ -11,6 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# Adaptado para Puntero Libre: menú lateral con botones de texto en español
+# (el original usaba imágenes con el texto en inglés).
 
 from functools import partial
 
@@ -20,9 +23,19 @@ from PIL import Image
 from src.config_manager import ConfigManager
 from src.gui.frames.safe_disposable_frame import SafeDisposableFrame
 
-LIGHT_BLUE = "#F9FBFE"
-BTN_SIZE = 225, 48
+AZUL_CLARO = "#F9FBFE"
+AZUL_SELECCION = "#E3ECFA"
+TEXTO = "#202124"
 PROF_DROP_SIZE = 220, 40
+
+# Nombre de cada pestaña tal como lo ve la persona.
+PESTANAS = {
+    "page_home": "Inicio",
+    "page_camera": "Cámara",
+    "page_cursor": "Puntero",
+    "page_gestures": "Clics",
+    "page_keyboard": "Teclas",
+}
 
 
 class FrameMenu(SafeDisposableFrame):
@@ -33,54 +46,11 @@ class FrameMenu(SafeDisposableFrame):
         self.grid_rowconfigure(6, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_propagate(False)
-        self.configure(fg_color=LIGHT_BLUE)
+        self.configure(fg_color=AZUL_CLARO)
 
         self.master_callback = master_callback
 
-        self.menu_btn_images = {
-            "page_home": [
-                customtkinter.CTkImage(
-                    Image.open("assets/images/menu_btn_home.png"),
-                    size=BTN_SIZE),
-                customtkinter.CTkImage(
-                    Image.open("assets/images/menu_btn_home_selected.png"),
-                    size=BTN_SIZE)
-            ],
-            "page_camera": [
-                customtkinter.CTkImage(
-                    Image.open("assets/images/menu_btn_camera.png"),
-                    size=BTN_SIZE),
-                customtkinter.CTkImage(
-                    Image.open("assets/images/menu_btn_camera_selected.png"),
-                    size=BTN_SIZE)
-            ],
-            "page_cursor": [
-                customtkinter.CTkImage(
-                    Image.open("assets/images/menu_btn_cursor.png"),
-                    size=BTN_SIZE),
-                customtkinter.CTkImage(
-                    Image.open("assets/images/menu_btn_cursor_selected.png"),
-                    size=BTN_SIZE)
-            ],
-            "page_gestures": [
-                customtkinter.CTkImage(
-                    Image.open("assets/images/menu_btn_gestures.png"),
-                    size=BTN_SIZE),
-                customtkinter.CTkImage(
-                    Image.open("assets/images/menu_btn_gestures_selected.png"),
-                    size=BTN_SIZE)
-            ],
-            "page_keyboard": [
-                customtkinter.CTkImage(
-                    Image.open("assets/images/menu_btn_keyboard.png"),
-                    size=BTN_SIZE),
-                customtkinter.CTkImage(
-                    Image.open("assets/images/menu_btn_keyboard_selected.png"),
-                    size=BTN_SIZE)
-            ]
-        }
-
-        # Profile button
+        # Botón del perfil actual
         prof_drop = customtkinter.CTkImage(
             Image.open("assets/images/prof_drop_head.png"), size=PROF_DROP_SIZE)
         profile_btn = customtkinter.CTkLabel(
@@ -105,21 +75,27 @@ class FrameMenu(SafeDisposableFrame):
                          columnspan=1,
                          rowspan=1)
 
-        self.btns = {}
-        self.btns = self.create_tab_btn(self.menu_btn_images, offset=1)
+        self.fuente_normal = customtkinter.CTkFont(size=16)
+        self.fuente_negrita = customtkinter.CTkFont(size=16, weight="bold")
+        self.btns = self.create_tab_btn(PESTANAS, offset=1)
 
-    def create_tab_btn(self, btns: dict, offset):
+    def create_tab_btn(self, pestanas: dict, offset):
 
         out_dict = {}
-        for idx, (k, im_paths) in enumerate(btns.items()):
+        for idx, (k, nombre) in enumerate(pestanas.items()):
             btn = customtkinter.CTkButton(master=self,
-                                          image=im_paths[0],
-                                          anchor="nw",
+                                          text=nombre,
+                                          anchor="w",
+                                          width=225,
+                                          height=48,
                                           border_spacing=0,
                                           border_width=0,
-                                          hover=False,
-                                          corner_radius=0,
-                                          text="",
+                                          hover=True,
+                                          hover_color=AZUL_SELECCION,
+                                          corner_radius=8,
+                                          fg_color=AZUL_CLARO,
+                                          text_color=TEXTO,
+                                          font=self.fuente_normal,
                                           command=partial(
                                               self.master_callback,
                                               function_name="change_page",
@@ -127,20 +103,17 @@ class FrameMenu(SafeDisposableFrame):
 
             btn.grid(row=idx + offset,
                      column=0,
-                     padx=(0, 0),
-                     pady=0,
+                     padx=(18, 0),
+                     pady=2,
                      ipadx=0,
                      ipady=0,
                      sticky="nw")
-            btn.configure(fg_color=LIGHT_BLUE, hover=False)
             out_dict[k] = btn
         return out_dict
 
     def set_tab_active(self, tab_name: str):
         for k, btn in self.btns.items():
-            im_normal, im_active = self.menu_btn_images[k]
             if k == tab_name:
-                btn.configure(image=im_active)
-
+                btn.configure(fg_color=AZUL_SELECCION, font=self.fuente_negrita)
             else:
-                btn.configure(image=im_normal)
+                btn.configure(fg_color=AZUL_CLARO, font=self.fuente_normal)

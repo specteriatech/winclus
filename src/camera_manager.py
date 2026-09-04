@@ -55,13 +55,13 @@ class CameraManager(metaclass=Singleton):
 
         # Overlays
         self.overlay_active = cv2.cvtColor(
-            cv2.imread("assets/images/overlays/active.png",
+            cv2.imread("assets/images/avisos/activo.png",
                        cv2.IMREAD_UNCHANGED), cv2.COLOR_BGRA2RGB)
         self.overlay_disabled = cv2.cvtColor(
-            cv2.imread("assets/images/overlays/disabled.png",
+            cv2.imread("assets/images/avisos/en_pausa.png",
                        cv2.IMREAD_UNCHANGED), cv2.COLOR_BGRA2RGB)
         self.overlay_face_not_detected = cv2.cvtColor(
-            cv2.imread("assets/images/overlays/face_not_detected.png",
+            cv2.imread("assets/images/avisos/sin_cara.png",
                        cv2.IMREAD_UNCHANGED), cv2.COLOR_BGRA2RGB)
 
         # Use dict for pass as reference

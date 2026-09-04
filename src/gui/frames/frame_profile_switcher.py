@@ -39,7 +39,7 @@ LIGHT_GREEN = "#a6eacf"
 LIGHT_BLUE = "#e8f0fe"
 MEDIUM_BLUE = "#D0E1F9"
 DARK_BLUE = "#1A73E8"
-BACKUP_PROFILE_NAME = "default"
+BACKUP_PROFILE_NAME = "Inicial"
 
 DIV_COLORS = {
     "default": "white",
@@ -170,8 +170,8 @@ class ItemProfileSwitcher(SafeDisposableFrame):
 
         # Check if folders same as divs
         name_list = [div["profile_name"] for _, div in self.divs.items()]
-        name_list.remove("Manage Profiles")
-        name_list.remove("Add Profile")
+        name_list.remove("Administrar perfiles")
+        name_list.remove("Agregar perfil")
 
         if set(ConfigManager().list_profile()) == set(name_list):
             return
@@ -269,7 +269,7 @@ class ItemProfileSwitcher(SafeDisposableFrame):
 
         # Box
         wrap_label = customtkinter.CTkLabel(self,
-                                            text="Manage Profiles",
+                                            text="Administrar perfiles",
                                             height=40,
                                             image=prefix_icon,
                                             compound="left",
@@ -290,7 +290,7 @@ class ItemProfileSwitcher(SafeDisposableFrame):
 
         div = {
             "div_id": div_id,
-            "profile_name": "Manage Profiles",
+            "profile_name": "Administrar perfiles",
             "wrap_label": wrap_label,
             "is_hovering": False
         }
@@ -314,7 +314,7 @@ class ItemProfileSwitcher(SafeDisposableFrame):
 
         # Box
         wrap_label = customtkinter.CTkLabel(self,
-                                            text="Add Profile",
+                                            text="Agregar perfil",
                                             height=40,
                                             image=prefix_icon,
                                             compound="left",
@@ -335,7 +335,7 @@ class ItemProfileSwitcher(SafeDisposableFrame):
 
         div = {
             "div_id": div_id,
-            "profile_name": "Add Profile",
+            "profile_name": "Agregar perfil",
             "wrap_label": wrap_label,
             "is_hovering": False
         }

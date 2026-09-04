@@ -12,6 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .install_font import *
 from .list_cameras import *
 from .smoothing import *

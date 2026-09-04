@@ -34,9 +34,6 @@ class TaskKiller(metaclass=Singleton):
 
     def start(self):
         if not self.is_started:
-            logging.info("Installing google fonts.")
-            utils.install_fonts("assets/fonts")
-
             # Start singletons
             from src.config_manager import ConfigManager
             ConfigManager().start()
@@ -64,8 +61,6 @@ class TaskKiller(metaclass=Singleton):
         MouseController().destroy()
         Keybinder().destroy()
         FaceMesh().destroy()
-
-        utils.remove_fonts("assets/fonts")
 
         parent = psutil.Process(os.getpid())
         children = parent.children(recursive=True)

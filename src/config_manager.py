@@ -23,10 +23,10 @@ from pathlib import Path
 from src.singleton_meta import Singleton
 from src.task_killer import TaskKiller
 
-VERSION = "0.3.34"
+VERSION = "0.1.0"
 
 DEFAULT_JSON = Path("configs/default.json")
-BACKUP_PROFILE = Path("configs/default")
+BACKUP_PROFILE = Path("configs/Inicial")
 
 logger = logging.getLogger("ConfigManager")
 
@@ -82,7 +82,7 @@ class ConfigManager(metaclass=Singleton):
 
     def add_profile(self):
         # Random name base on local timestamp
-        new_profile_name = "profile_z" + str(hex(int(time.time() * 1000)))[2:]
+        new_profile_name = "Perfil " + str(hex(int(time.time() * 1000)))[-5:]
         logger.info(f"Add profile {new_profile_name}")
         shutil.copytree(BACKUP_PROFILE,
                         Path(DEFAULT_JSON.parent, new_profile_name))

@@ -32,7 +32,7 @@ DEFAULT_TRIGGER_TYPE = "single"
 GREEN = "#34A853"
 YELLOW = "#FABB05"
 
-BALLOON_TXT = "Set how prominent your gesture has\nto be in order to trigger the action"
+BALLOON_TXT = "Qué tan marcado debe ser el gesto\npara que haga la acción"
 
 
 class FrameSelectGesture(SafeDisposableFrame):
@@ -146,7 +146,7 @@ class FrameSelectGesture(SafeDisposableFrame):
             tips_label = customtkinter.CTkLabel(master=self,
                                                 image=self.help_icon,
                                                 compound='right',
-                                                text="Gesture size",
+                                                text="Tamaño del gesto",
                                                 text_color="#5E5E5E",
                                                 justify='left')
             tips_label.cget("font").configure(size=12)
@@ -194,7 +194,7 @@ class FrameSelectGesture(SafeDisposableFrame):
             # Subtle, Exaggerated
             subtle_label = customtkinter.CTkLabel(
                 master=self,
-                text="Subtle\t\t\t   Exaggerated",
+                text="Suave\t\t\t   Exagerado",
                 text_color="#868686",
                 justify=tk.LEFT)
             subtle_label.cget("font").configure(size=11)
@@ -252,7 +252,7 @@ class FrameSelectGesture(SafeDisposableFrame):
         target_device, target_action = shape_list.available_actions[caller_name]
 
         # get float [0,1] value
-        if target_gesture != "None":
+        if target_gesture != shape_list.SIN_GESTO:
             div["slider"].configure(state="normal")
             div["slider"].grid()
             div["volume_bar"].grid()
@@ -284,7 +284,7 @@ class FrameSelectGesture(SafeDisposableFrame):
 
         for div_name, div in self.divs.items():
 
-            if div["selected_gesture"] == "None":
+            if div["selected_gesture"] == shape_list.SIN_GESTO:
                 continue
 
             bs_idx = shape_list.blendshape_indices[div["selected_gesture"]]
@@ -333,7 +333,7 @@ class PageSelectGestures(SafeDisposableFrame):
 
         # Top label.
         self.top_label = customtkinter.CTkLabel(master=self,
-                                                text="Mouse binding")
+                                                text="Clics con la cara")
         self.top_label.cget("font").configure(size=24)
         self.top_label.grid(row=0,
                             column=0,
@@ -343,7 +343,7 @@ class PageSelectGestures(SafeDisposableFrame):
                             columnspan=1)
 
         # Description.
-        des_txt = "Select a facial gesture that you would like to bind to a specific mouse action. Sensitivity allows you to control  the extent to which you need to gesture to trigger the mouse action"
+        des_txt = "Elige qué gesto de tu cara hace cada acción del mouse. Con la barra ajustas qué tan marcado debe ser el gesto."
         des_label = customtkinter.CTkLabel(master=self,
                                            text=des_txt,
                                            wraplength=300,

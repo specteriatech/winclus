@@ -39,7 +39,8 @@ exe_app = EXE(
     app.scripts,
     [],
     exclude_binaries=True,
-    name='run_app',
+    name='PunteroLibre',
+    icon='assets/images/icono.ico',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -61,5 +62,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='project_gameface',
+    name='PunteroLibre',
 )

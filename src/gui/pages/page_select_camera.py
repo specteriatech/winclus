@@ -39,7 +39,7 @@ class PageSelectCamera(SafeDisposableFrame):
         self.grid_columnconfigure(1, weight=1)
 
         # Top text
-        top_label = customtkinter.CTkLabel(master=self, text="Camera")
+        top_label = customtkinter.CTkLabel(master=self, text="Cámara")
         top_label.cget("font").configure(size=24)
         top_label.grid(row=0,
                        column=0,
@@ -49,7 +49,7 @@ class PageSelectCamera(SafeDisposableFrame):
                        columnspan=2)
 
         # Label
-        self.label = customtkinter.CTkLabel(master=self, text="Select a Camera")
+        self.label = customtkinter.CTkLabel(master=self, text="Elige tu cámara")
         self.label.cget("font").configure(size=16, weight="bold")
         self.label.grid(row=1, column=0, padx=10, pady=(20, 10), sticky="nw")
 
@@ -94,7 +94,7 @@ class PageSelectCamera(SafeDisposableFrame):
         for row_i, cam_id in enumerate(new_camera_list):
 
             radio = customtkinter.CTkRadioButton(master=self,
-                                                 text=f"Camera {cam_id}",
+                                                 text=f"Cámara {cam_id}",
                                                  command=self.radiobutton_event,
                                                  variable=self.radio_var,
                                                  value=cam_id)
@@ -106,7 +106,7 @@ class PageSelectCamera(SafeDisposableFrame):
         target_id = ConfigManager().config["camera_id"]
         self.radios = radios
         for radio in self.radios:
-            if f"Camera {target_id}" == radio.cget("text"):
+            if f"Cámara {target_id}" == radio.cget("text"):
                 radio.select()
                 self.prev_radio_value = self.radio_var.get()
                 logger.info(f"Set initial camera to {target_id}")

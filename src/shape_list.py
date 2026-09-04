@@ -11,15 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# Adaptado para Puntero Libre: nombres de gestos y acciones en español.
 
-# Right-Left swapped
+# Nombre que se muestra cuando una acción no tiene gesto asignado.
+SIN_GESTO = "Ninguno"
+
+# Lista de los 52 blendshapes de MediaPipe en su orden original.
+# Los que la persona puede elegir tienen nombre en español; el resto conserva
+# el nombre técnico. Derecha e izquierda están intercambiadas porque la
+# cámara se ve en espejo.
 blendshape_names = [
-    "None",
-    "Lower right eyebrow",
-    "Lower left eyebrow",
+    SIN_GESTO,
+    "Bajar la ceja derecha",
+    "Bajar la ceja izquierda",
     "browInnerUp",
-    "Raise right eyebrow",
-    "Raise left eyebrow",
+    "Subir la ceja derecha",
+    "Subir la ceja izquierda",
     "cheekPuff",
     "cheekSquintRight",
     "cheekSquintLeft",
@@ -39,7 +47,7 @@ blendshape_names = [
     "eyeWideLeft",
     "jawForward",
     "jawRight",
-    "Open mouth",
+    "Abrir la boca",
     "jawLeft",
     "mouthClose",
     "mouthDimpleRight",
@@ -47,15 +55,15 @@ blendshape_names = [
     "mouthFrownRight",
     "mouthFrownLeft",
     "mouthFunnel",
-    "Mouth right",
+    "Boca hacia la derecha",
     "mouthLowerDownRight",
     "mouthLowerDownLeft",
     "mouthPressRight",
     "mouthPressLeft",
     "mouthPucker",
-    "Mouth left",
-    "Roll lower mouth",
-    "Roll upper mouth",
+    "Boca hacia la izquierda",
+    "Meter el labio de abajo",
+    "Meter el labio de arriba",
     "mouthShrugLower",
     "mouthShrugUpper",
     "mouthSmileRight",
@@ -69,35 +77,37 @@ blendshape_names = [
 ]
 blendshape_indices = {name: i for i, name in enumerate(blendshape_names)}
 
+# Acciones del mouse que se pueden asignar a un gesto.
 available_actions = {
-    "Mouse left click": ["mouse", "left"],
-    "Mouse right click": ["mouse", "right"],
-    "Mouse middle click": ["mouse", "middle"],
-    "Mouse pause / unpause": ["mouse", "pause"],
-    "Reset cursor to center": ["mouse", "reset"],
-    "Switch focus between monitors": ["mouse", "cycle"]
+    "Clic izquierdo": ["mouse", "left"],
+    "Clic derecho": ["mouse", "right"],
+    "Clic del medio (rueda)": ["mouse", "middle"],
+    "Pausar o reanudar": ["mouse", "pause"],
+    "Llevar el puntero al centro": ["mouse", "reset"],
+    "Cambiar de pantalla": ["mouse", "cycle"]
 }
 available_actions_keys = list(available_actions.keys())
 available_actions_values = list(available_actions.values())
 
+# Gestos que la persona puede elegir, con su dibujo.
 available_gestures = {
-    "None": "assets/images/dropdowns/None.png",
-    "Open mouth": "assets/images/dropdowns/Open mouth.png",
-    "Mouth left": "assets/images/dropdowns/Mouth left.png",
-    "Mouth right": "assets/images/dropdowns/Mouth right.png",
-    "Roll lower mouth": "assets/images/dropdowns/Roll lower mouth.png",
-    "Raise left eyebrow": "assets/images/dropdowns/Raise left eyebrow.png",
-    "Lower left eyebrow": "assets/images/dropdowns/Lower left eyebrow.png",
-    "Raise right eyebrow": "assets/images/dropdowns/Raise right eyebrow.png",
-    "Lower right eyebrow": "assets/images/dropdowns/Lower right eyebrow.png",
+    SIN_GESTO: "assets/images/dropdowns/ninguno.png",
+    "Abrir la boca": "assets/images/dropdowns/abrir_boca.png",
+    "Boca hacia la izquierda": "assets/images/dropdowns/boca_izquierda.png",
+    "Boca hacia la derecha": "assets/images/dropdowns/boca_derecha.png",
+    "Meter el labio de abajo": "assets/images/dropdowns/meter_labio_abajo.png",
+    "Subir la ceja izquierda": "assets/images/dropdowns/subir_ceja_izquierda.png",
+    "Bajar la ceja izquierda": "assets/images/dropdowns/bajar_ceja_izquierda.png",
+    "Subir la ceja derecha": "assets/images/dropdowns/subir_ceja_derecha.png",
+    "Bajar la ceja derecha": "assets/images/dropdowns/bajar_ceja_derecha.png",
 }
 for k, v in available_gestures.items():
-    assert k in blendshape_names, f"{k} not in blendshape_names"
+    assert k in blendshape_names, f"{k} no está en blendshape_names"
 available_gestures_keys = list(available_gestures.keys())
 
-# Map tkinter character to valid pyautogui character
+# Nombre de tecla de tkinter -> nombre que entiende pydirectinput
 keyboard_keys = {
-    # Numbers
+    # Números
     "0": "0",
     "1": "1",
     "2": "2",
@@ -109,7 +119,7 @@ keyboard_keys = {
     "8": "8",
     "9": "9",
 
-    # Functions
+    # Teclas de función
     "f1": "f1",
     "f2": "f2",
     "f3": "f3",
@@ -135,8 +145,7 @@ keyboard_keys = {
     "f23": "f23",
     "f24": "f24",
 
-
-    # Letters
+    # Letras
     "a": "a",
     "b": "b",
     "c": "c",
@@ -164,7 +173,7 @@ keyboard_keys = {
     "y": "y",
     "z": "z",
 
-    # Special characters
+    # Signos
     "exclam": "!",
     "at": "@",
     "numbersign": "#",
@@ -198,7 +207,7 @@ keyboard_keys = {
     "bar": "|",
     "period": ".",
 
-    # Miscellaneous
+    # Otras
     "return": "enter",
     "backspace": "backspace",
     "tab": "tab",
@@ -218,7 +227,7 @@ keyboard_keys = {
     "alt_r": "altright",
     "num_lock": "numlock",
 
-    # Directions
+    # Flechas
     "up": "up",
     "down": "down",
     "left": "left",

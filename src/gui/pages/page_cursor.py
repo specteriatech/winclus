@@ -52,22 +52,22 @@ class FrameSelectGesture(SafeDisposableFrame):
 
         # Slider divs
         self.divs = self.create_divs({
-            "Move up": ["spd_up", "", 0, 100],
-            "Move down": ["spd_down", "", 0, 100],
-            "Move right": ["spd_right", "", 0, 100],
-            "Move left": ["spd_left", "", 0, 100],
-            "(Advanced) Smooth pointer": [
+            "Hacia arriba": ["spd_up", "", 0, 100],
+            "Hacia abajo": ["spd_down", "", 0, 100],
+            "Hacia la derecha": ["spd_right", "", 0, 100],
+            "Hacia la izquierda": ["spd_left", "", 0, 100],
+            "(Avanzado) Suavizar el puntero": [
                 "pointer_smooth",
-                "Controls the smoothness of the\nmouse cursor. Enables the user\nto reduce jitteriness",
+                "Qué tan suave se mueve el puntero.\nSubirlo quita el temblor, pero\nresponde un poco más lento.",
                 1, 100
             ],
-            "(Advanced) Smooth blendshapes": [
-                "shape_smooth", "Reduces the flickering of the action\ntrigger",
+            "(Avanzado) Suavizar los gestos": [
+                "shape_smooth", "Evita que un gesto se dispare\nvarias veces por un parpadeo\nde la detección.",
                 1, 100
             ],
-            "(Advanced) Hold trigger delay(ms)": [
+            "(Avanzado) Tiempo para mantener (ms)": [
                 "hold_trigger_ms",
-                "Controls how long the user should\nhold a gesture in milliseconds\nfor an action to trigger",
+                "Cuánto tiempo (en milisegundos)\nhay que sostener el gesto para\nque el clic se quede presionado.",
                 1, MAX_HOLD_TRIG
             ]
         })
@@ -231,7 +231,7 @@ class PageCursor(SafeDisposableFrame):
 
         # Top label.
         self.top_label = customtkinter.CTkLabel(master=self,
-                                                text="Cursor speed")
+                                                text="Velocidad del puntero")
         self.top_label.cget("font").configure(size=24)
         self.top_label.grid(row=0,
                             column=0,
@@ -241,7 +241,7 @@ class PageCursor(SafeDisposableFrame):
                             columnspan=1)
 
         # Description.
-        des_txt = "Mouse cursor moves with your head movement. Use this settings to adjust how fast your mouse moves in each direction."
+        des_txt = "El puntero se mueve con tu cabeza. Aquí ajustas qué tan rápido va en cada dirección."
         des_label = customtkinter.CTkLabel(master=self,
                                            text=des_txt,
                                            wraplength=300,

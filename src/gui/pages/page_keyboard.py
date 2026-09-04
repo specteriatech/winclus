@@ -42,7 +42,7 @@ HELP_ICON_SIZE = (18, 18)
 A_BUTTON_SIZE = (96, 48)
 BIN_ICON_SIZE = (24, 24)
 
-BALLOON_TXT = "Set how prominent your gesture has\nto be in order to trigger the action"
+BALLOON_TXT = "Qué tan marcado debe ser el gesto\npara que pulse la tecla"
 
 
 class FrameSelectKeyboard(SafeDisposableScrollableFrame):
@@ -130,7 +130,7 @@ class FrameSelectKeyboard(SafeDisposableScrollableFrame):
         logger.info(f"Add {div_name}")
         div = self.create_div(row=self.next_empty_row,
                               div_name=div_name,
-                              gesture_name="None",
+                              gesture_name=shape_list.SIN_GESTO,
                               bind_info=["keyboard", "None", 0.5, "hold"])
 
         self.divs[div_name] = div
@@ -223,7 +223,7 @@ class FrameSelectKeyboard(SafeDisposableScrollableFrame):
         tips_label = customtkinter.CTkLabel(master=self,
                                             image=self.help_icon,
                                             compound='right',
-                                            text="Gesture size",
+                                            text="Tamaño del gesto",
                                             text_color="#5E5E5E",
                                             justify='left')
         tips_label.cget("font").configure(size=12)
@@ -269,7 +269,7 @@ class FrameSelectKeyboard(SafeDisposableScrollableFrame):
 
         # Subtle, Exaggerated
         subtle_label = customtkinter.CTkLabel(master=self,
-                                              text="Subtle\t\t\t   Exaggerated",
+                                              text="Suave\t\t\t   Exagerado",
                                               text_color="#868686",
                                               justify=tk.LEFT)
         subtle_label.cget("font").configure(size=11)
@@ -301,7 +301,7 @@ class FrameSelectKeyboard(SafeDisposableScrollableFrame):
     def set_new_keyboard_binding(self, div):
 
         # Remove keybind if set to invalid key
-        if (div["selected_gesture"] == "None") or (div["selected_key_action"]
+        if (div["selected_gesture"] == shape_list.SIN_GESTO) or (div["selected_key_action"]
                                                    == "None"):
             logger.info(f"Remove keyboard binding {div['selected_key_action']}")
             ConfigManager().remove_temp_keyboard_binding(
@@ -364,7 +364,7 @@ class FrameSelectKeyboard(SafeDisposableScrollableFrame):
             div["combobox"].grid()
             div["selected_key_action"] = pydirectinput_key
             self.set_new_keyboard_binding(div)
-            if div["selected_gesture"] != "None":
+            if div["selected_gesture"] != shape_list.SIN_GESTO:
                 div["slider"].grid()
                 div["combobox"].grid()
                 div["volume_bar"].grid()
@@ -404,7 +404,7 @@ class FrameSelectKeyboard(SafeDisposableScrollableFrame):
         div["selected_gesture"] = target_gesture
         div["combobox"].set(target_gesture)
 
-        if target_gesture != "None":
+        if target_gesture != shape_list.SIN_GESTO:
             div["slider"].grid()
             div["volume_bar"].grid()
             div["tips_label"].grid()
@@ -443,7 +443,7 @@ class FrameSelectKeyboard(SafeDisposableScrollableFrame):
 
         for div in self.divs.values():
 
-            if div["selected_gesture"] == "None":
+            if div["selected_gesture"] == shape_list.SIN_GESTO:
                 continue
 
             bs_idx = shape_list.blendshape_indices[div["selected_gesture"]]
@@ -500,7 +500,7 @@ class PageKeyboard(SafeDisposableFrame):
 
         # Top label.
         self.top_label = customtkinter.CTkLabel(master=self,
-                                                text="Keyboard binding")
+                                                text="Teclas con la cara")
         self.top_label.cget("font").configure(size=24)
         self.top_label.grid(row=0,
                             column=0,
@@ -510,7 +510,7 @@ class PageKeyboard(SafeDisposableFrame):
                             columnspan=1)
 
         # Description.
-        des_txt = "Select a facial gesture that you would like to bind to a specific keyboard key. Sensitivity allows you to control the extent to which you need to gesture to trigger the keyboard key press"
+        des_txt = "Elige un gesto de tu cara para pulsar una tecla. Con la barra ajustas qué tan marcado debe ser el gesto."
         des_label = customtkinter.CTkLabel(master=self,
                                            text=des_txt,
                                            wraplength=300,
@@ -526,7 +526,7 @@ class PageKeyboard(SafeDisposableFrame):
         # Add binding butotn
         self.add_binding_button = customtkinter.CTkButton(
             master=self,
-            text="+ Add binding",
+            text="+ Agregar tecla",
             fg_color="white",
             text_color=BLUE,
             command=self.inner_frame.add_blank_div)

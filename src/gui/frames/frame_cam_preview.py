@@ -54,7 +54,7 @@ class FrameCamPreview(SafeDisposableFrame):
         # Toggle label
         self.toggle_label = customtkinter.CTkLabel(master=self,
                                                    compound='right',
-                                                   text="Face control",
+                                                   text="Control con la cara",
                                                    text_color="black",
                                                    justify=tkinter.LEFT)
         self.toggle_label.cget("font").configure(size=14)
@@ -83,7 +83,7 @@ class FrameCamPreview(SafeDisposableFrame):
 
         self.toggle_switch.grid(row=1,
                                 column=0,
-                                padx=(100, 0),
+                                padx=(150, 0),
                                 pady=5,
                                 sticky="nw")
 
@@ -91,7 +91,7 @@ class FrameCamPreview(SafeDisposableFrame):
         self.toggle_label = customtkinter.CTkLabel(
             master=self,
             compound='right',
-            text="Allow facial gestures to control\nyour actions. ",
+            text="Enciende para mover el puntero\ncon tu cabeza.",
             text_color="#444746",
             justify=tkinter.LEFT)
         self.toggle_label.cget("font").configure(size=12)
