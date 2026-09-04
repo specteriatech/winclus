@@ -15,6 +15,8 @@
 from functools import partial
 
 import customtkinter
+
+from src import estilo
 from PIL import Image
 
 from src.config_manager import ConfigManager
@@ -24,7 +26,7 @@ ICON_SIZE = (68, 48)
 MAX_ROWS = 10
 Y_OFFSET = 30
 
-LIGHT_BLUE = "#FBFBFF"
+LIGHT_BLUE = estilo.TARJETA
 
 
 def mouse_in_widget(mouse_x, mouse_y, widget, expand_x=(0, 0), expand_y=(0, 0)):
@@ -87,7 +89,7 @@ class Dropdown():
                                               image=image,
                                               hover=True,
                                               fg_color=LIGHT_BLUE,
-                                              hover_color="gray90",
+                                              hover_color=estilo.PRIMARIO_SUAVE,
                                               text_color_disabled="gray80",
                                               compound="left",
                                               anchor="nw")
@@ -133,7 +135,7 @@ class Dropdown():
                 continue
 
             if mouse_in_widget(event.x_root, event.y_root, button):
-                button.configure(fg_color="gray90")
+                button.configure(fg_color=estilo.PRIMARIO_SUAVE)
             else:
                 button.configure(fg_color=LIGHT_BLUE)
 

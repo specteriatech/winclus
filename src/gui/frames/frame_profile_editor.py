@@ -19,6 +19,8 @@ import tkinter as tk
 from functools import partial
 
 import customtkinter
+
+from src import estilo
 from PIL import Image
 
 from src.config_manager import ConfigManager
@@ -34,13 +36,13 @@ MAX_PROF_ROWS = 11
 EDIT_ICON_SIZE = (24, 24)
 BIN_ICON_SIZE = (24, 24)
 
-LIGHT_GREEN = "#a6eacf"
-LIGHT_BLUE = "#e8f0fe"
-MEDIUM_BLUE = "#D0E1F9"
-DARK_BLUE = "#1A73E8"
+LIGHT_GREEN = estilo.OK
+LIGHT_BLUE = estilo.PRIMARIO_SUAVE
+MEDIUM_BLUE = estilo.BORDE
+DARK_BLUE = estilo.PRIMARIO
 BACKUP_PROFILE_NAME = "Inicial"
 
-DIV_COLORS = {"default": "white"}
+DIV_COLORS = {"default": estilo.TARJETA}
 
 
 def random_name(row):
@@ -160,7 +162,7 @@ class ItemProfileEditor(SafeDisposableScrollableFrame):
         div["entry"].configure(state="normal",
                                border_width=2,
                                border_color=LIGHT_GREEN,
-                               fg_color="white")
+                               fg_color=estilo.TARJETA)
         div["entry"].focus_set()
         div["entry"].icursor("end")
 
@@ -173,7 +175,7 @@ class ItemProfileEditor(SafeDisposableScrollableFrame):
         if is_valid_input:
             div["entry"].configure(border_width=2, border_color=LIGHT_GREEN)
         else:
-            div["entry"].configure(border_width=2, border_color="#ee9e9d")
+            div["entry"].configure(border_width=2, border_color=estilo.ENTRADA_ERROR)
 
         return is_valid_input
 
@@ -216,7 +218,7 @@ class ItemProfileEditor(SafeDisposableScrollableFrame):
         wrap_label = customtkinter.CTkLabel(self,
                                             text="",
                                             height=54,
-                                            fg_color="white",
+                                            fg_color=estilo.TARJETA,
                                             corner_radius=10)
         wrap_label.grid(row=row, column=0, padx=10, pady=4, sticky="new")
 
@@ -280,8 +282,8 @@ class ItemProfileEditor(SafeDisposableScrollableFrame):
                                        state="disabled",
                                        border_width=0,
                                        insertborderwidth=0,
-                                       fg_color="white")
-        entry.cget("font").configure(size=16)
+                                       fg_color=estilo.TARJETA)
+        entry.configure(font=estilo.fuente("cuerpo"))
         entry.grid(row=row,
                    column=0,
                    padx=20,
@@ -341,7 +343,7 @@ class FrameProfileEditor():
         self.float_window.wm_attributes('-toolwindow', 'True')
         self.float_window.grid_rowconfigure(3, weight=1)
         self.float_window.grid_columnconfigure(0, weight=1)
-        self.float_window.configure(fg_color="white")
+        self.float_window.configure(fg_color=estilo.TARJETA)
         #self.float_window.attributes('-topmost', True)
         self.float_window.geometry(
             f"{POPUP_SIZE[0]}x{POPUP_SIZE[1]}+{POPUP_OFFSET[0]}+{POPUP_OFFSET[1]}"
@@ -362,7 +364,7 @@ class FrameProfileEditor():
         # Label
         top_label = customtkinter.CTkLabel(master=self.float_window,
                                            text="Tus perfiles")
-        top_label.cget("font").configure(size=24)
+        top_label.configure(font=estilo.fuente("titulo"))
         top_label.grid(row=0,
                        column=0,
                        padx=20,
@@ -377,7 +379,7 @@ class FrameProfileEditor():
             "Puedes guardar varios perfiles con ajustes distintos (por ejemplo, uno para cada persona) y cambiar entre ellos fácilmente.",
             wraplength=300,
             justify=tk.LEFT)
-        des_label.cget("font").configure(size=14)
+        des_label.configure(font=estilo.fuente("cuerpo"))
         des_label.grid(row=1, column=0, padx=20, pady=10, sticky="nw")
 
         # Close button
@@ -388,8 +390,8 @@ class FrameProfileEditor():
         close_btn = customtkinter.CTkButton(master=self.float_window,
                                             text="",
                                             image=self.close_icon,
-                                            fg_color="white",
-                                            hover_color="white",
+                                            fg_color=estilo.TARJETA,
+                                            hover_color=estilo.TARJETA,
                                             border_width=0,
                                             corner_radius=4,
                                             width=24,
@@ -408,7 +410,7 @@ class FrameProfileEditor():
         add_button = customtkinter.CTkButton(master=self.float_window,
                                              text="Agregar perfil",
                                              image=add_prof_image,
-                                             fg_color="white",
+                                             fg_color=estilo.TARJETA,
                                              width=100,
                                              text_color=DARK_BLUE,
                                              command=self.add_button_callback)

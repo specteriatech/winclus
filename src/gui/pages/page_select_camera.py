@@ -16,6 +16,8 @@ import logging
 import tkinter
 
 import customtkinter
+
+from src import estilo
 from PIL import Image, ImageTk
 
 from src.camera_manager import CameraManager
@@ -40,7 +42,7 @@ class PageSelectCamera(SafeDisposableFrame):
 
         # Top text
         top_label = customtkinter.CTkLabel(master=self, text="Cámara")
-        top_label.cget("font").configure(size=24)
+        top_label.configure(font=estilo.fuente("titulo"))
         top_label.grid(row=0,
                        column=0,
                        padx=20,
@@ -50,7 +52,7 @@ class PageSelectCamera(SafeDisposableFrame):
 
         # Label
         self.label = customtkinter.CTkLabel(master=self, text="Elige tu cámara")
-        self.label.cget("font").configure(size=16, weight="bold")
+        self.label.configure(font=estilo.fuente("etiqueta"))
         self.label.grid(row=1, column=0, padx=10, pady=(20, 10), sticky="nw")
 
         # Empty radio buttons
@@ -65,7 +67,9 @@ class PageSelectCamera(SafeDisposableFrame):
         self.placeholder_im = ImageTk.PhotoImage(self.placeholder_im)
         self.canvas = tkinter.Canvas(master=self,
                                      width=CANVAS_WIDTH,
-                                     height=CANVAS_HEIGHT)
+                                     height=CANVAS_HEIGHT,
+                                     highlightthickness=0)
+        estilo.registrar_lienzo(self.canvas, estilo.TARJETA)
         self.canvas.grid(row=1,
                          column=1,
                          padx=(10, 50),

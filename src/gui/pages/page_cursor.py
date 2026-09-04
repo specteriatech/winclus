@@ -17,6 +17,8 @@ import tkinter
 from functools import partial
 
 import customtkinter
+
+from src import estilo
 import numpy as np
 from PIL import Image
 
@@ -104,7 +106,7 @@ class FrameSelectGesture(SafeDisposableFrame):
                                            compound='right',
                                            text=show_name,
                                            justify=tkinter.LEFT)
-            label.cget("font").configure(weight='bold')
+            label.configure(font=estilo.fuente("etiqueta"))
             label.grid(row=idx, column=0, padx=20, pady=(10, 10), sticky="nw")
             self.shared_info_balloon.register_widget(label, balloon_text)
 
@@ -185,7 +187,7 @@ class FrameSelectGesture(SafeDisposableFrame):
 
         # Update slider and config
         if is_valid_input:
-            div["entry"].configure(fg_color="white")
+            div["entry"].configure(fg_color=estilo.TARJETA)
             div["slider"].set(new_value)
 
             # Don't update config when dragging
@@ -194,7 +196,7 @@ class FrameSelectGesture(SafeDisposableFrame):
                 ConfigManager().apply_config()
                 MouseController().calc_smooth_kernel()
         else:
-            div["entry"].configure(fg_color="#ee9e9d")
+            div["entry"].configure(fg_color=estilo.ENTRADA_ERROR)
 
     def slider_drag_callback(self, div_name: str, new_value: str):
         """Update value when slider being drag
@@ -232,7 +234,7 @@ class PageCursor(SafeDisposableFrame):
         # Top label.
         self.top_label = customtkinter.CTkLabel(master=self,
                                                 text="Velocidad del puntero")
-        self.top_label.cget("font").configure(size=24)
+        self.top_label.configure(font=estilo.fuente("titulo"))
         self.top_label.grid(row=0,
                             column=0,
                             padx=20,
@@ -246,7 +248,7 @@ class PageCursor(SafeDisposableFrame):
                                            text=des_txt,
                                            wraplength=300,
                                            justify=tkinter.LEFT)
-        des_label.cget("font").configure(size=14)
+        des_label.configure(font=estilo.fuente("cuerpo"))
         des_label.grid(row=1, column=0, padx=20, pady=5, sticky="nw")
 
         # Inner frame

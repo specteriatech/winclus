@@ -16,6 +16,8 @@ import logging
 import tkinter as tk
 
 import customtkinter
+
+from src import estilo
 from PIL import Image
 
 import src.gui.frames as frames
@@ -23,8 +25,8 @@ import src.gui.pages as pages
 from src.config_manager import ConfigManager
 from src.controllers import MouseController
 
-customtkinter.set_appearance_mode("light")
 customtkinter.set_default_color_theme("assets/themes/tema.json")
+estilo.aplicar_modo(estilo.modo_guardado(), guardar=False)
 
 logger = logging.getLogger("MainGUi")
 
@@ -36,7 +38,7 @@ class MainGui():
         super().__init__()
         self.tk_root = tk_root
 
-        self.tk_root.geometry("1024x658")
+        self.tk_root.geometry("1120x760")
         self.tk_root.title(f"Puntero Libre {ConfigManager().version}")
         self.tk_root.iconbitmap("assets/images/icono.ico")
         self.tk_root.resizable(width=False, height=False)
@@ -44,30 +46,26 @@ class MainGui():
         self.tk_root.grid_rowconfigure(1, weight=1)
         self.tk_root.grid_columnconfigure(1, weight=1)
 
-        # Create menu frame and assign callbacks
-        self.frame_menu = frames.FrameMenu(self.tk_root,
-                                           self.root_function_callback,
-                                           height=360,
-                                           width=260,
-                                           logger_name="frame_menu")
-        self.frame_menu.grid(row=0,
-                             column=0,
-                             padx=0,
-                             pady=0,
-                             sticky="nsew",
-                             columnspan=1,
-                             rowspan=3)
+        # Columna lateral: menú arriba (crece) y cámara con botón Activar abajo
+        self.lateral = customtkinter.CTkFrame(self.tk_root,
+                                              width=280,
+                                              corner_radius=0,
+                                              fg_color=estilo.PANEL)
+        self.lateral.grid(row=0, column=0, sticky="nsw", rowspan=3)
+        self.lateral.grid_propagate(False)
+        self.lateral.grid_rowconfigure(0, weight=1)
+        self.lateral.grid_columnconfigure(0, weight=1)
 
-        # Create Preview frame
-        self.frame_preview = frames.FrameCamPreview(self.tk_root,
+        self.frame_menu = frames.FrameMenu(self.lateral,
+                                           self.root_function_callback,
+                                           width=280,
+                                           logger_name="frame_menu")
+        self.frame_menu.grid(row=0, column=0, sticky="nsew")
+
+        self.frame_preview = frames.FrameCamPreview(self.lateral,
                                                     self.cam_preview_callback,
                                                     logger_name="frame_preview")
-        self.frame_preview.grid(row=1,
-                                column=0,
-                                padx=0,
-                                pady=0,
-                                sticky="sew",
-                                columnspan=1)
+        self.frame_preview.grid(row=1, column=0, sticky="sew")
         self.frame_preview.enter()
 
         # Create all wizard pages and grid them.
@@ -102,22 +100,13 @@ class MainGui():
         self.curr_page_name = None
         for name, page in self.pages.items():
             # Page home extended full window
-            if name == "page_home":
-                page.grid(row=0,
-                          column=0,
-                          padx=5,
-                          pady=5,
-                          sticky="nsew",
-                          rowspan=2,
-                          columnspan=2)
-            else:
-                page.grid(row=0,
-                          column=1,
-                          padx=5,
-                          pady=5,
-                          sticky="nsew",
-                          rowspan=2,
-                          columnspan=1)
+            page.grid(row=0,
+                      column=1,
+                      padx=(10, 18),
+                      pady=14,
+                      sticky="nsew",
+                      rowspan=2,
+                      columnspan=1)
 
         self.change_page("page_home")
 

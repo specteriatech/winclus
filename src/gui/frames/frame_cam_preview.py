@@ -11,12 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# Adaptado para Puntero Libre: miniatura de la cámara en una tarjeta con un
+# botón grande «Activar / Pausar» en vez del interruptor pequeño original.
 
 import tkinter
 
 import customtkinter
 from PIL import Image, ImageTk
 
+from src import estilo
 from src.camera_manager import CameraManager
 from src.config_manager import ConfigManager
 from src.controllers import MouseController
@@ -24,90 +28,94 @@ from src.gui.frames.safe_disposable_frame import SafeDisposableFrame
 
 CANVAS_WIDTH = 216
 CANVAS_HEIGHT = 162
-LIGHT_BLUE = "#F9FBFE"
-TOGGLE_ICON_SIZE = (32, 20)
 
 
 class FrameCamPreview(SafeDisposableFrame):
 
     def __init__(self, master, master_callback: callable, **kwargs):
         super().__init__(master, **kwargs)
+        self.master_callback = master_callback
 
-        self.grid_rowconfigure(2, weight=1)
         self.grid_columnconfigure(0, weight=1)
-        self.configure(fg_color=LIGHT_BLUE)
+        self.configure(fg_color=estilo.PANEL, corner_radius=0)
 
-        # Canvas.
+        # Tarjeta que agrupa miniatura, botón y estado
+        self.tarjeta = customtkinter.CTkFrame(master=self,
+                                              fg_color=estilo.TARJETA,
+                                              corner_radius=16)
+        self.tarjeta.grid(row=0, column=0, padx=16, pady=(6, 16), sticky="ew")
+        self.tarjeta.grid_columnconfigure(0, weight=1)
+
+        # Miniatura de la cámara
         self.placeholder_im = Image.open("assets/images/placeholder.png")
         self.placeholder_im = ImageTk.PhotoImage(
             image=self.placeholder_im.resize((CANVAS_WIDTH, CANVAS_HEIGHT)))
 
-        self.canvas = tkinter.Canvas(master=self,
+        self.canvas = tkinter.Canvas(master=self.tarjeta,
                                      width=CANVAS_WIDTH,
                                      height=CANVAS_HEIGHT,
-                                     bg=LIGHT_BLUE,
                                      bd=0,
-                                     relief='ridge',
                                      highlightthickness=0)
-        self.canvas.grid(row=0, column=0, padx=10, pady=10, sticky="sw")
+        estilo.registrar_lienzo(self.canvas, estilo.TARJETA)
+        self.canvas.grid(row=0, column=0, padx=8, pady=(8, 6))
 
-        # Toggle label
-        self.toggle_label = customtkinter.CTkLabel(master=self,
-                                                   compound='right',
-                                                   text="Control con la cara",
-                                                   text_color="black",
-                                                   justify=tkinter.LEFT)
-        self.toggle_label.cget("font").configure(size=14)
-        self.toggle_label.grid(row=1,
-                               column=0,
-                               padx=(10, 0),
-                               pady=5,
-                               sticky="nw")
+        # Botón principal: Activar / Pausar
+        self.boton = customtkinter.CTkButton(master=self.tarjeta,
+                                             text="Activar",
+                                             width=CANVAS_WIDTH,
+                                             height=54,
+                                             corner_radius=14,
+                                             font=estilo.fuente("boton_grande"),
+                                             command=self.alternar)
+        self.boton.grid(row=1, column=0, padx=8, pady=(2, 4))
 
-        # Toggle switch
-        self.toggle_switch = customtkinter.CTkSwitch(
-            master=self,
-            text="",
-            width=200,
-            border_color="transparent",
-            switch_height=18,
-            switch_width=32,
-            variable=MouseController().is_active,
-            command=lambda: master_callback(
-                "toggle_switch", {"switch_status": self.toggle_switch.get()}),
-            onvalue=1,
-            offvalue=0,
-        )
+        # Estado en una línea
+        self.estado = customtkinter.CTkLabel(master=self.tarjeta,
+                                             text="",
+                                             wraplength=CANVAS_WIDTH,
+                                             justify=tkinter.LEFT,
+                                             anchor="w",
+                                             text_color=estilo.TEXTO_SUAVE,
+                                             font=estilo.fuente("pequena"))
+        self.estado.grid(row=2, column=0, padx=10, pady=(0, 8), sticky="w")
+
+        # El estado real vive en MouseController (también lo cambian los gestos
+        # de pausa); el botón solo lo refleja.
+        self.activo_var = MouseController().is_active
+        self.activo_var.trace_add("write", lambda *_: self.refrescar())
         if ConfigManager().config["auto_play"]:
-            self.toggle_switch.select()
+            self.activo_var.set(True)
+        self.refrescar()
 
-        self.toggle_switch.grid(row=1,
-                                column=0,
-                                padx=(150, 0),
-                                pady=5,
-                                sticky="nw")
-
-        # Toggle label
-        self.toggle_label = customtkinter.CTkLabel(
-            master=self,
-            compound='right',
-            text="Enciende para mover el puntero\ncon tu cabeza.",
-            text_color="#444746",
-            justify=tkinter.LEFT)
-        self.toggle_label.cget("font").configure(size=12)
-        self.toggle_label.grid(row=2,
-                               column=0,
-                               padx=(10, 0),
-                               pady=5,
-                               sticky="nw")
-
-        # Set first image.
+        # Primera imagen
         self.canvas_image = self.canvas.create_image(0,
                                                      0,
                                                      image=self.placeholder_im,
                                                      anchor=tkinter.NW)
         self.new_photo = None
         self.after(1, self.camera_loop)
+
+    def alternar(self):
+        nuevo = not self.activo_var.get()
+        self.master_callback("toggle_switch", {"switch_status": nuevo})
+
+    def refrescar(self):
+        if self.is_destroyed:
+            return
+        if self.activo_var.get():
+            self.boton.configure(text="Pausar",
+                                 fg_color=estilo.PRIMARIO,
+                                 hover_color=estilo.PRIMARIO_HOVER,
+                                 text_color=estilo.TEXTO_SOBRE_PRIMARIO)
+            self.estado.configure(
+                text="Activo: mueve la cabeza para mover el puntero.")
+        else:
+            self.boton.configure(text="Activar",
+                                 fg_color=estilo.AMBAR,
+                                 hover_color=estilo.AMBAR_HOVER,
+                                 text_color=estilo.TEXTO_SOBRE_AMBAR)
+            self.estado.configure(
+                text="En pausa: pulsa Activar para empezar.")
 
     def camera_loop(self):
         if self.is_destroyed:
@@ -116,7 +124,7 @@ class FrameCamPreview(SafeDisposableFrame):
             if CameraManager().is_destroyed:
                 return
             frame_rgb = CameraManager().get_debug_frame()
-            # Assign ref to avoid garbage collected
+            # Se guarda la referencia para que no la borre el recolector
             self.new_photo = ImageTk.PhotoImage(
                 image=Image.fromarray(frame_rgb).resize((CANVAS_WIDTH,
                                                          CANVAS_HEIGHT)))

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Adaptado para Puntero Libre: página de inicio en español con botones de texto.
+# Adaptado para Puntero Libre: página de inicio propia, con tarjetas grandes.
 
 import logging
 import tkinter
@@ -21,20 +21,18 @@ from functools import partial
 import customtkinter
 from PIL import Image
 
+from src import estilo
 from src.gui.frames.safe_disposable_frame import SafeDisposableFrame
 
-HOME_IM_SIZE = (441, 215)
-AZUL_CLARO = "#F1F5FB"
-AZUL_SELECCION = "#E3ECFA"
-TEXTO = "#202124"
-TEXTO_SUAVE = "#5F6368"
+ILUSTRACION_SIZE = (330, 161)
+ICONO_SIZE = (36, 36)
 
-# Botones grandes de la página de inicio: título, explicación corta y página.
+# Tarjetas de acceso: icono, título, explicación corta y página de destino.
 ACCESOS = [
-    ("Cámara", "Elige la cámara que te va a ver", "page_camera"),
-    ("Puntero", "Ajusta qué tan rápido se mueve", "page_cursor"),
-    ("Clics", "Elige cómo hacer clic con tu cara", "page_gestures"),
-    ("Teclas", "Gestos que pulsan una tecla", "page_keyboard"),
+    ("camara", "Cámara", "Elige la cámara que te va a ver", "page_camera"),
+    ("puntero", "Puntero", "Ajusta qué tan rápido se mueve", "page_cursor"),
+    ("clic", "Clics", "Elige cómo hacer clic con tu cara", "page_gestures"),
+    ("teclado", "Teclas", "Gestos que pulsan una tecla", "page_keyboard"),
 ]
 
 
@@ -43,76 +41,69 @@ class PageHome(SafeDisposableFrame):
     def __init__(self, master, root_callback: callable, **kwargs):
         super().__init__(master, **kwargs)
         logging.info("Create PageHome")
+        self.configure(fg_color="transparent")
 
-        self.grid_rowconfigure(6, weight=1)
-        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure((0, 1), weight=1, uniform="col")
+        self.grid_rowconfigure(4, weight=1)
 
-        # Título
-        top_label = customtkinter.CTkLabel(master=self, text="Puntero Libre")
-        top_label.cget("font").configure(size=26, weight="bold")
-        top_label.grid(row=0,
-                       column=0,
-                       padx=20,
-                       pady=(20, 5),
-                       sticky="new",
-                       columnspan=2)
+        # Título y explicación
+        titulo = customtkinter.CTkLabel(master=self,
+                                        text="Puntero Libre",
+                                        anchor="w",
+                                        text_color=estilo.PRIMARIO,
+                                        font=estilo.fuente("titulo"))
+        titulo.grid(row=0, column=0, padx=(28, 10), pady=(28, 2), sticky="sw")
 
-        # Explicación
-        des_txt = ("Mueve el puntero con tu cabeza y haz clic con gestos de tu cara. "
-                   "Solo necesitas una cámara web.")
+        des_txt = ("Mueve el puntero con tu cabeza y haz clic con gestos de "
+                   "tu cara. Solo necesitas una cámara web.")
         des_label = customtkinter.CTkLabel(master=self,
                                            text=des_txt,
-                                           wraplength=520,
-                                           justify=tkinter.CENTER)
-        des_label.cget("font").configure(size=15)
-        des_label.grid(row=1,
-                       column=0,
-                       padx=20,
-                       pady=(5, 5),
-                       sticky="new",
-                       columnspan=2)
+                                           wraplength=340,
+                                           anchor="w",
+                                           justify=tkinter.LEFT,
+                                           font=estilo.fuente("cuerpo"))
+        des_label.grid(row=1, column=0, padx=(28, 10), pady=(4, 6), sticky="nw")
 
-        # Aviso
-        disc_txt = ("Puntero Libre es gratuito y de código abierto. "
-                    "No es un dispositivo médico.")
-        disc_label = customtkinter.CTkLabel(master=self,
-                                            text=disc_txt,
-                                            wraplength=700,
-                                            text_color=TEXTO_SUAVE,
-                                            justify=tkinter.CENTER)
-        disc_label.cget("font").configure(size=13)
-        disc_label.grid(row=2,
-                        column=0,
-                        padx=20,
-                        pady=(5, 10),
-                        sticky="new",
-                        columnspan=2)
+        # Ilustración (sin texto ni marcas), a la derecha del título
+        ilus = customtkinter.CTkImage(
+            Image.open("assets/images/inicio_ilustracion.png"),
+            size=ILUSTRACION_SIZE)
+        ilus_label = customtkinter.CTkLabel(self, image=ilus, text="")
+        ilus_label.grid(row=0, column=1, rowspan=2, padx=20, pady=(20, 6),
+                        sticky="e")
 
-        # Botones de acceso a cada página
-        fuente_btn = customtkinter.CTkFont(size=15)
-        for fila, (titulo, detalle, pagina) in enumerate(ACCESOS, start=3):
+        # Tarjetas grandes, 2 por fila
+        for i, (icono, nombre, detalle, pagina) in enumerate(ACCESOS):
+            fila, col = 2 + i // 2, i % 2
+            im = estilo.imagen_doble(f"iconos/{icono}", ICONO_SIZE)
             btn = customtkinter.CTkButton(
                 master=self,
-                text=f"{titulo}\n{detalle}",
+                text=f"  {nombre}\n  {detalle}",
+                image=im,
+                compound="left",
                 anchor="w",
-                width=260,
-                height=70,
-                corner_radius=12,
-                fg_color=AZUL_CLARO,
-                hover_color=AZUL_SELECCION,
-                text_color=TEXTO,
-                font=fuente_btn,
+                height=96,
+                corner_radius=18,
+                border_width=2,
+                border_color=estilo.BORDE,
+                fg_color=estilo.TARJETA,
+                hover_color=estilo.PRIMARIO_SUAVE,
+                text_color=estilo.TEXTO,
+                font=estilo.fuente("boton_normal"),
                 command=partial(root_callback,
                                 function_name="change_page",
                                 args={"target": pagina}))
-            btn.grid(row=fila, column=0, padx=60, pady=8, sticky="nw")
+            btn.grid(row=fila, column=col,
+                     padx=(28 if col == 0 else 10, 28 if col == 1 else 10),
+                     pady=10, sticky="ew")
 
-        # Dibujo de la cara y la pantalla (sin texto ni marcas)
-        home_im = customtkinter.CTkImage(
-            Image.open("assets/images/home_im.png"), size=HOME_IM_SIZE)
-        label = customtkinter.CTkLabel(self,
-                                       image=home_im,
-                                       width=HOME_IM_SIZE[0],
-                                       height=HOME_IM_SIZE[1],
-                                       text="")
-        label.grid(row=3, column=1, padx=20, pady=20, rowspan=3, sticky="we")
+        # Aviso
+        aviso = customtkinter.CTkLabel(
+            master=self,
+            text=("Puntero Libre es gratuito y de código abierto. "
+                  "No es un dispositivo médico."),
+            anchor="w",
+            text_color=estilo.TEXTO_SUAVE,
+            font=estilo.fuente("pequena"))
+        aviso.grid(row=5, column=0, columnspan=2, padx=28, pady=(6, 18),
+                   sticky="sw")

@@ -19,6 +19,8 @@ import tkinter as tk
 from functools import partial
 
 import customtkinter
+
+from src import estilo
 from PIL import Image
 
 from src.config_manager import ConfigManager
@@ -28,21 +30,21 @@ from src.task_killer import TaskKiller
 logger = logging.getLogger("FrameProfileSwitcher")
 
 PROFILE_ITEM_SIZE = 231, 43
-POPUP_OFFSET = 30, 5
+POPUP_OFFSET = 24, 92   # justo debajo del selector de perfil
 MAX_PROF_ROWS = 11
 PREFIX_ICON_SIZE = 36, 24
 TOP_PAD = 6
 
 EXTEND_PAD = 10
 
-LIGHT_GREEN = "#a6eacf"
-LIGHT_BLUE = "#e8f0fe"
-MEDIUM_BLUE = "#D0E1F9"
-DARK_BLUE = "#1A73E8"
+LIGHT_GREEN = estilo.OK
+LIGHT_BLUE = estilo.PRIMARIO_SUAVE
+MEDIUM_BLUE = estilo.BORDE
+DARK_BLUE = estilo.PRIMARIO
 BACKUP_PROFILE_NAME = "Inicial"
 
 DIV_COLORS = {
-    "default": "white",
+    "default": estilo.TARJETA,
     "hovering": LIGHT_BLUE,
     "selected": MEDIUM_BLUE
 }
@@ -76,7 +78,7 @@ class ItemProfileSwitcher(SafeDisposableFrame):
         # self.set_div_selected(self.divs[div_id])
 
         # Custom border
-        self.configure(border_color="gray60")
+        self.configure(border_color=estilo.BORDE)
         self.configure(fg_color="transparent")
         self.configure(bg_color="transparent")
         self.configure(background_corner_colors=[
@@ -143,7 +145,7 @@ class ItemProfileSwitcher(SafeDisposableFrame):
             if widget is None:
                 continue
             if widget_name in target_widgets:
-                widget.configure(fg_color="white")
+                widget.configure(fg_color=estilo.TARJETA)
                 # widget.configure(image=div["item_bg"])
 
         div["is_hovering"] = False
@@ -221,7 +223,7 @@ class ItemProfileSwitcher(SafeDisposableFrame):
                                             compound="left",
                                             anchor="w",
                                             cursor="hand2",
-                                            fg_color="white",
+                                            fg_color=estilo.TARJETA,
                                             corner_radius=0)
 
         top_pad = TOP_PAD if row == 0 else 0
@@ -276,7 +278,7 @@ class ItemProfileSwitcher(SafeDisposableFrame):
                                             justify="left",
                                             anchor="w",
                                             cursor="hand2",
-                                            fg_color="white",
+                                            fg_color=estilo.TARJETA,
                                             corner_radius=0)
 
         top_pad = TOP_PAD if row == 0 else 0
@@ -321,7 +323,7 @@ class ItemProfileSwitcher(SafeDisposableFrame):
                                             justify="left",
                                             anchor="w",
                                             cursor="hand2",
-                                            fg_color="white",
+                                            fg_color=estilo.TARJETA,
                                             corner_radius=0)
 
         top_pad = TOP_PAD if row == 0 else 0
@@ -376,7 +378,7 @@ class FrameProfileSwitcher():
         self.float_window.wm_attributes('-toolwindow', 'True')
         self.float_window.grid_rowconfigure(3, weight=1)
         self.float_window.grid_columnconfigure(0, weight=1)
-        self.float_window.configure(fg_color="white")
+        self.float_window.configure(fg_color=estilo.TARJETA)
         self._displayed = True
         # Rounded corder
         self.float_window.config(background='#000000')

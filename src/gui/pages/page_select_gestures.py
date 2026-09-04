@@ -16,6 +16,8 @@ import tkinter as tk
 from functools import partial
 
 import customtkinter
+
+from src import estilo
 from PIL import Image
 
 import src.shape_list as shape_list
@@ -29,8 +31,8 @@ MAX_ROWS = 2
 HELP_ICON_SIZE = (18, 18)
 DIV_WIDTH = 240
 DEFAULT_TRIGGER_TYPE = "single"
-GREEN = "#34A853"
-YELLOW = "#FABB05"
+GREEN = estilo.OK
+YELLOW = estilo.ALERTA
 
 BALLOON_TXT = "Qué tan marcado debe ser el gesto\npara que haga la acción"
 
@@ -122,7 +124,7 @@ class FrameSelectGesture(SafeDisposableFrame):
                                            width=300,
                                            anchor='nw',
                                            justify=tk.LEFT)
-            label.cget("font").configure(weight='bold')
+            label.configure(font=estilo.fuente("etiqueta"))
             label.grid(row=row,
                        column=column,
                        padx=(20, 20),
@@ -147,9 +149,9 @@ class FrameSelectGesture(SafeDisposableFrame):
                                                 image=self.help_icon,
                                                 compound='right',
                                                 text="Tamaño del gesto",
-                                                text_color="#5E5E5E",
+                                                text_color=estilo.TEXTO_SUAVE,
                                                 justify='left')
-            tips_label.cget("font").configure(size=12)
+            tips_label.configure(font=estilo.fuente("pequena"))
             tips_label.grid(row=row,
                             column=column,
                             padx=(20, 20),
@@ -195,9 +197,9 @@ class FrameSelectGesture(SafeDisposableFrame):
             subtle_label = customtkinter.CTkLabel(
                 master=self,
                 text="Suave\t\t\t   Exagerado",
-                text_color="#868686",
+                text_color=estilo.TEXTO_SUAVE,
                 justify=tk.LEFT)
-            subtle_label.cget("font").configure(size=11)
+            subtle_label.configure(font=estilo.fuente("pequena"))
             subtle_label.grid(row=row,
                               column=column,
                               padx=(20, 20),
@@ -334,7 +336,7 @@ class PageSelectGestures(SafeDisposableFrame):
         # Top label.
         self.top_label = customtkinter.CTkLabel(master=self,
                                                 text="Clics con la cara")
-        self.top_label.cget("font").configure(size=24)
+        self.top_label.configure(font=estilo.fuente("titulo"))
         self.top_label.grid(row=0,
                             column=0,
                             padx=20,
@@ -348,7 +350,7 @@ class PageSelectGestures(SafeDisposableFrame):
                                            text=des_txt,
                                            wraplength=300,
                                            justify=tk.LEFT)  #
-        des_label.cget("font").configure(size=14)
+        des_label.configure(font=estilo.fuente("cuerpo"))
         des_label.grid(row=1, column=0, padx=20, pady=10, sticky="nw")
 
         # Inner frame

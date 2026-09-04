@@ -18,6 +18,8 @@ import uuid
 from functools import partial
 
 import customtkinter
+
+from src import estilo
 from PIL import Image
 
 import src.shape_list as shape_list
@@ -30,12 +32,12 @@ from src.gui.frames.safe_disposable_frame import SafeDisposableFrame, SafeDispos
 logger = logging.getLogger("PageKeyboard")
 
 DEFAULT_TRIGGER_TYPE = "hold"
-LIGHT_RED = "#F95245"
-RED = "#E94235"
-GREEN = "#34A853"
-YELLOW = "#FABB05"
-LIGHT_BLUE = "#FBFBFF"
-BLUE = "#1A73E8"
+LIGHT_RED = estilo.ERROR
+RED = estilo.ERROR
+GREEN = estilo.OK
+YELLOW = estilo.ALERTA
+LIGHT_BLUE = estilo.TARJETA
+BLUE = estilo.PRIMARIO
 PAD_X = 40
 DIV_WIDTH = 240
 HELP_ICON_SIZE = (18, 18)
@@ -175,12 +177,12 @@ class FrameSelectKeyboard(SafeDisposableScrollableFrame):
                                                 text="",
                                                 hover=False,
                                                 image=self.bin_image,
-                                                fg_color="white",
+                                                fg_color=estilo.TARJETA,
                                                 anchor="e",
                                                 cursor="hand2",
                                                 width=25)
 
-        remove_button.cget("font").configure(size=18)
+        remove_button.configure(font=estilo.fuente("boton"))
         remove_button.bind("<ButtonRelease-1>",
                            partial(self.bin_button_callback, div_name))
 
@@ -198,7 +200,7 @@ class FrameSelectKeyboard(SafeDisposableScrollableFrame):
                                              width=A_BUTTON_SIZE[0],
                                              height=A_BUTTON_SIZE[1],
                                              cursor="hand2")
-        entry_field.cget("font").configure(size=17)
+        entry_field.configure(font=estilo.fuente("boton"))
 
         entry_field.bind(
             "<ButtonRelease-1>",
@@ -224,9 +226,9 @@ class FrameSelectKeyboard(SafeDisposableScrollableFrame):
                                             image=self.help_icon,
                                             compound='right',
                                             text="Tamaño del gesto",
-                                            text_color="#5E5E5E",
+                                            text_color=estilo.TEXTO_SUAVE,
                                             justify='left')
-        tips_label.cget("font").configure(size=12)
+        tips_label.configure(font=estilo.fuente("pequena"))
         tips_label.grid(row=row,
                         column=0,
                         padx=PAD_X,
@@ -270,9 +272,9 @@ class FrameSelectKeyboard(SafeDisposableScrollableFrame):
         # Subtle, Exaggerated
         subtle_label = customtkinter.CTkLabel(master=self,
                                               text="Suave\t\t\t   Exagerado",
-                                              text_color="#868686",
+                                              text_color=estilo.TEXTO_SUAVE,
                                               justify=tk.LEFT)
-        subtle_label.cget("font").configure(size=11)
+        subtle_label.configure(font=estilo.fuente("pequena"))
         subtle_label.grid(row=row,
                           column=0,
                           padx=PAD_X,
@@ -501,7 +503,7 @@ class PageKeyboard(SafeDisposableFrame):
         # Top label.
         self.top_label = customtkinter.CTkLabel(master=self,
                                                 text="Teclas con la cara")
-        self.top_label.cget("font").configure(size=24)
+        self.top_label.configure(font=estilo.fuente("titulo"))
         self.top_label.grid(row=0,
                             column=0,
                             padx=20,
@@ -515,7 +517,7 @@ class PageKeyboard(SafeDisposableFrame):
                                            text=des_txt,
                                            wraplength=300,
                                            justify=tk.LEFT)  #
-        des_label.cget("font").configure(size=14)
+        des_label.configure(font=estilo.fuente("cuerpo"))
         des_label.grid(row=1, column=0, padx=20, pady=(10, 40), sticky="nw")
 
         # Inner frame
@@ -527,7 +529,7 @@ class PageKeyboard(SafeDisposableFrame):
         self.add_binding_button = customtkinter.CTkButton(
             master=self,
             text="+ Agregar tecla",
-            fg_color="white",
+            fg_color=estilo.TARJETA,
             text_color=BLUE,
             command=self.inner_frame.add_blank_div)
         self.add_binding_button.grid(row=2,
