@@ -24,6 +24,8 @@ y el punto de la pantalla no es lineal en los extremos.
 import logging
 import math
 
+from src.detectors.iris_fino import afinar_iris
+
 logger = logging.getLogger("Mirada")
 
 IRIS_DER = (468, 469, 470, 471, 472)
@@ -32,6 +34,11 @@ ESQUINAS_DER = (33, 133)
 ESQUINAS_IZQ = (362, 263)
 PARPADOS_DER = (159, 145)
 PARPADOS_IZQ = (386, 374)
+# Contorno completo del ojo (16 puntos). Su media es una referencia más
+# estable que las dos esquinas: medido el 5-sep-2026 mirando un punto fijo,
+# el temblor vertical bajó a la mitad y la deriva un tercio.
+CONTORNO_DER = (33, 7, 163, 144, 145, 153, 154, 155, 133, 173, 157, 158, 159, 160, 161, 246)
+CONTORNO_IZQ = (362, 382, 381, 380, 374, 373, 390, 249, 263, 466, 388, 387, 386, 385, 384, 398)
 N_PUNTOS_NECESARIOS = 478
 
 # Índices de las blendshapes de mirada en el orden original de MediaPipe
@@ -46,27 +53,57 @@ NOMBRES_RASGOS = ("gx_der", "gy_der", "gyp_der", "gx_izq", "gy_izq", "gyp_izq",
 
 class DetectorMirada:
 
-    def __init__(self):
+    def __init__(self, afinar: bool = True):
         self.disponible = False
         self.mirada = None      # (gx, gy) promedio de los dos ojos
         self.rasgos = None      # tupla con NOMBRES_RASGOS
         self.puntos = {}        # píxeles para dibujar sobre la cámara
+        self.afinar = afinar    # buscar el borde del iris en la imagen grande
+        # Diagnóstico del afinado: por ojo, centro de MediaPipe y afinado en
+        # píxeles de la imagen grande, y si se aceptó
+        self.fino = {}
 
-    def procesar(self, landmarks, ancho: int, alto: int, blendshapes=None) -> None:
+    def _centro_iris(self, landmarks, iris, imagen):
+        """Centro del iris en coordenadas normalizadas (0..1). Con imagen se
+        afina sobre ella; si no, se usa la media de los puntos de MediaPipe."""
+        nx = sum(landmarks[i].x for i in iris) / len(iris)
+        ny = sum(landmarks[i].y for i in iris) / len(iris)
+        if imagen is None or not self.afinar:
+            return nx, ny, None
+        alto_im, ancho_im = imagen.shape[:2]
+        cx, cy = nx * ancho_im, ny * alto_im
+        # radio inicial: media de las distancias del centro a los 4 puntos del borde
+        r0 = sum(math.hypot(landmarks[i].x * ancho_im - cx, landmarks[i].y * alto_im - cy)
+                 for i in iris[1:]) / 4
+        fino = afinar_iris(imagen, cx, cy, r0)
+        fino["mp"] = (cx, cy)
+        if fino["ok"]:
+            return fino["x"] / ancho_im, fino["y"] / alto_im, fino
+        return nx, ny, fino
+
+    def procesar(self, landmarks, ancho: int, alto: int, blendshapes=None,
+                 imagen=None) -> None:
+        """imagen: fotograma RGB a resolución completa (opcional) para afinar
+        el centro del iris sobre él."""
         if len(landmarks) < N_PUNTOS_NECESARIOS:
             self._sin_datos()
             return
 
         medidas = {}
         puntos = {}
-        for nombre, iris, esquinas, parpados in (
-                ("der", IRIS_DER, ESQUINAS_DER, PARPADOS_DER),
-                ("izq", IRIS_IZQ, ESQUINAS_IZQ, PARPADOS_IZQ)):
-            ix = sum(landmarks[i].x for i in iris) / len(iris) * ancho
-            iy = sum(landmarks[i].y for i in iris) / len(iris) * alto
+        fino = {}
+        for nombre, iris, esquinas, parpados, contorno in (
+                ("der", IRIS_DER, ESQUINAS_DER, PARPADOS_DER, CONTORNO_DER),
+                ("izq", IRIS_IZQ, ESQUINAS_IZQ, PARPADOS_IZQ, CONTORNO_IZQ)):
+            nx, ny, diag = self._centro_iris(landmarks, iris, imagen)
+            if diag is not None:
+                fino[nombre] = diag
+            ix = nx * ancho
+            iy = ny * alto
             e1, e2 = landmarks[esquinas[0]], landmarks[esquinas[1]]
-            cx = (e1.x + e2.x) / 2 * ancho
-            cy = (e1.y + e2.y) / 2 * alto
+            # Referencia: media del contorno; escala: distancia entre esquinas
+            cx = sum(landmarks[i].x for i in contorno) / len(contorno) * ancho
+            cy = sum(landmarks[i].y for i in contorno) / len(contorno) * alto
             ancho_ojo = math.hypot((e1.x - e2.x) * ancho, (e1.y - e2.y) * alto)
             if ancho_ojo < 1e-6:
                 continue
@@ -98,6 +135,7 @@ class DetectorMirada:
         self.rasgos = (der[0], der[1], der[2], izq[0], izq[1], izq[2],
                        float(bx), float(by), gx * gx, gy * gy, gx * gy)
         self.puntos = puntos
+        self.fino = fino
         self.disponible = True
 
     def _sin_datos(self):

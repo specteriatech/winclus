@@ -426,7 +426,8 @@ class FrameOjos(customtkinter.CTkFrame):
                 text="La calibración es de una versión anterior. Calibra otra vez.",
                 text_color=estilo.ALERTA)
         elif isinstance(modelo, dict) and "error_px" in modelo:
-            err = modelo["error_px"]
+            # El error real (puntos de comprobación) manda sobre el estimado
+            err = modelo.get("error_real_px", modelo["error_px"])
             if err <= 80:
                 calidad, color = "buena", estilo.OK
             elif err <= 160:

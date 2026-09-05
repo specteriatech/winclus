@@ -131,8 +131,14 @@ class FaceMesh(metaclass=Singleton):
             self.parpadeo.procesar(self.mp_landmarks, ancho, alto,
                                    cfg.get("parpadeo_umbral", 0.55),
                                    cfg.get("parpadeo_ms", 200))
+            imagen = None
+            if cfg.get("iris_afinado", False):
+                try:
+                    imagen = output_image.numpy_view()
+                except Exception:
+                    imagen = None
             self.mirada.procesar(self.mp_landmarks, ancho, alto,
-                                 self.blendshapes_buffer[-1])
+                                 self.blendshapes_buffer[-1], imagen)
             if not self.n_puntos_avisado:
                 self.n_puntos_avisado = True
                 logger.info(f"Puntos por cara: {len(self.mp_landmarks)} "

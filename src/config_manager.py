@@ -37,6 +37,10 @@ VALORES_POR_DEFECTO = {
     # a fix_width x fix_height). Más resolución = iris más preciso.
     "captura_ancho": 1920,
     "captura_alto": 1080,
+    # Buscar el borde del iris en la imagen grande (detectors/iris_fino.py).
+    # Con poca luz tiembla más que MediaPipe; solo conviene con buena luz y
+    # la cámara cerca (ojo de más de 120 px de ancho).
+    "iris_afinado": False,
     # Cómo hago clic: "parpadeo", "boca", "cejas" o "quieto"
     "modo_clic": "parpadeo",
     "parpadeo_ms": 200,          # ojos cerrados al menos este tiempo = clic

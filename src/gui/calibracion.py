@@ -204,18 +204,73 @@ class VentanaCalibracion:
                     break
 
         if s >= SEGUIMIENTO_S:
-            self._terminar()
+            self._ajustar_y_comprobar()
             return
         self.ventana.after(TICK_MS, self._animar_seguimiento)
 
-    # ------------------------------------------------------------ final --
-    def _terminar(self):
+    # ----------------------------------------------------- comprobación --
+    def _ajustar_y_comprobar(self):
+        """Ajusta el modelo y pasa a la comprobación: cuatro puntos que no se
+        usaron en el ajuste, para medir el error real."""
         try:
-            modelo = ajustar(self.objetivos, self.rasgos_por_punto, self.monitor,
-                             self.seg_puntos, self.seg_rasgos)
+            self.modelo = ajustar(self.objetivos, self.rasgos_por_punto, self.monitor,
+                                  self.seg_puntos, self.seg_rasgos)
         except Exception as e:
             logger.error(f"No se pudo calibrar: {e}")
-            modelo = None
+            self.modelo = None
+            self._terminar()
+            return
+        x1, y1, x2, y2 = self.monitor
+        self.comprobacion = [(x1 + self.w * f, y1 + self.h * g)
+                             for f, g in ((0.28, 0.3), (0.72, 0.3), (0.28, 0.7), (0.72, 0.7))]
+        self.errores = []
+        self.indice_comp = -1
+        self._mostrar_texto("Ya casi. Ahora se comprueba la precisión:\nmira otra vez cada punto.")
+        self.lienzo.itemconfigure(self.contador, text="comprobación")
+        self.ventana.after(2200, self._siguiente_comprobacion)
+
+    def _siguiente_comprobacion(self):
+        if self.cancelada:
+            return
+        self.lienzo.itemconfigure(self.texto, state="hidden")
+        self.indice_comp += 1
+        if self.indice_comp >= len(self.comprobacion):
+            self._terminar()
+            return
+        self.t0 = 0
+        self.muestras = []
+        self._animar_comprobacion()
+
+    def _animar_comprobacion(self):
+        if self.cancelada:
+            return
+        from src.detectors.calibracion import predecir
+        self.t0 += TICK_MS
+        x, y = self.comprobacion[self.indice_comp]
+        if self.t0 <= ESPERA_MS:
+            f = self.t0 / ESPERA_MS
+            self._dibujar_punto(x, y, int(RADIO_GRANDE - (RADIO_GRANDE - RADIO_PEQUENO) * f))
+        elif self.t0 <= ESPERA_MS + MEDIDA_MS:
+            self._dibujar_punto(x, y, RADIO_PEQUENO)
+            r = FaceMesh().get_rasgos()
+            if r is not None:
+                self.muestras.append(r)
+        else:
+            if len(self.muestras) >= 6:
+                px, py = predecir(self.modelo, np.median(np.asarray(self.muestras), axis=0))
+                self.errores.append(math.hypot(px - x, py - y))
+            self._siguiente_comprobacion()
+            return
+        self.ventana.after(TICK_MS, self._animar_comprobacion)
+
+    # ------------------------------------------------------------ final --
+    def _terminar(self):
+        modelo = getattr(self, "modelo", None)
+        if modelo is not None and getattr(self, "errores", None):
+            modelo["error_real_px"] = round(float(np.median(self.errores)))
+            modelo["errores_comprobacion"] = [round(e) for e in self.errores]
+            logger.info(f"Comprobación: errores {modelo['errores_comprobacion']} px, "
+                        f"mediana {modelo['error_real_px']} px")
         self._cerrar()
         if modelo is not None:
             ConfigManager().set_temp_config("ojos_calibracion", modelo)
