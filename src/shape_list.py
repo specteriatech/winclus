@@ -25,7 +25,7 @@ blendshape_names = [
     SIN_GESTO,
     "Bajar la ceja derecha",
     "Bajar la ceja izquierda",
-    "browInnerUp",
+    "Subir las cejas",
     "Subir la ceja derecha",
     "Subir la ceja izquierda",
     "cheekPuff",
@@ -87,6 +87,9 @@ available_actions = {
     "Cambiar de pantalla": ["mouse", "cycle"]
 }
 available_actions_keys = list(available_actions.keys())
+# Acciones que se asignan en la lista «Otras acciones» (el clic izquierdo se
+# elige en «Cómo hago clic»).
+acciones_secundarias = [k for k in available_actions if k != "Clic izquierdo"]
 available_actions_values = list(available_actions.values())
 
 # Gestos que la persona puede elegir, con su dibujo.
@@ -100,6 +103,7 @@ available_gestures = {
     "Bajar la ceja izquierda": "assets/images/dropdowns/bajar_ceja_izquierda.png",
     "Subir la ceja derecha": "assets/images/dropdowns/subir_ceja_derecha.png",
     "Bajar la ceja derecha": "assets/images/dropdowns/bajar_ceja_derecha.png",
+    "Subir las cejas": "assets/images/dropdowns/subir_cejas.png",
 }
 for k, v in available_gestures.items():
     assert k in blendshape_names, f"{k} no está en blendshape_names"

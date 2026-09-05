@@ -23,7 +23,8 @@ from PIL import Image
 import src.gui.frames as frames
 import src.gui.pages as pages
 from src.config_manager import ConfigManager
-from src.controllers import MouseController
+from src.controllers import ControladorClic, MouseController
+from src.gui.anillo import Anillo
 
 customtkinter.set_default_color_theme("assets/themes/tema.json")
 estilo.aplicar_modo(estilo.modo_guardado(), guardar=False)
@@ -116,6 +117,19 @@ class MainGui():
         self.frame_profile_editor = frames.FrameProfileEditor(
             self.tk_root, main_gui_callback=self.root_function_callback)
 
+        # Anillo del clic por permanencia (sigue al puntero por toda la pantalla)
+        self.anillo = Anillo(self.tk_root)
+        self.tk_root.after(33, self.anillo_loop)
+
+    def anillo_loop(self):
+        if self.anillo is None:
+            return
+        try:
+            self.anillo.actualizar(ControladorClic().estado_anillo())
+        except Exception as e:
+            logger.warning(f"Anillo: {e}")
+        self.tk_root.after(33, self.anillo_loop)
+
     def root_function_callback(self, function_name, args: dict = {}, **kwargs):
         logger.info(f"root_function_callback {function_name} with {args}")
 
@@ -166,7 +180,9 @@ class MainGui():
 
     def del_main_gui(self):
         logger.info("Deleting MainGui instance")
-        # try:
+        if self.anillo is not None:
+            self.anillo.destruir()
+            self.anillo = None
         self.frame_preview.leave()
         self.frame_preview.destroy()
         self.frame_menu.leave()

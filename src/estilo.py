@@ -50,6 +50,7 @@ _DEF_FUENTES = {
     "cuerpo": (FAMILIA_TEXTO, 15, "normal"),
     "pequena": (FAMILIA_TEXTO, 13, "normal"),
     "etiqueta": (FAMILIA_TEXTO, 15, "bold"),
+    "etiqueta_pequena": (FAMILIA_TEXTO, 13, "bold"),
     "boton": (FAMILIA_TEXTO, 16, "bold"),
     "boton_normal": (FAMILIA_TEXTO, 16, "normal"),
     "boton_grande": (FAMILIA_TEXTO, 20, "bold"),

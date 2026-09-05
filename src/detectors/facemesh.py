@@ -23,6 +23,8 @@ from mediapipe.tasks.python import vision
 
 import src.utils as utils
 from src.config_manager import ConfigManager
+from src.detectors.mirada import DetectorMirada
+from src.detectors.parpadeo import DetectorParpadeo
 from src.singleton_meta import Singleton
 
 logger = logging.getLogger("FaceMesh")
@@ -45,6 +47,10 @@ class FaceMesh(metaclass=Singleton):
         self.model = None
         self.latest_time_ms = 0
         self.is_started = False
+        self.n_frames = 0
+        self.parpadeo = DetectorParpadeo()
+        self.mirada = DetectorMirada()
+        self.n_puntos_avisado = False
 
     def start(self):
         if not self.is_started:
@@ -119,9 +125,24 @@ class FaceMesh(metaclass=Singleton):
             self.smooth_blendshapes = utils.apply_smoothing(
                 self.blendshapes_buffer, self.smooth_kernel)
 
+            # Parpadeo (clic) y mirada (puntero con los ojos)
+            cfg = ConfigManager().config
+            ancho, alto = cfg["fix_width"], cfg["fix_height"]
+            self.parpadeo.procesar(self.mp_landmarks, ancho, alto,
+                                   cfg.get("parpadeo_umbral", 0.55),
+                                   cfg.get("parpadeo_ms", 200))
+            self.mirada.procesar(self.mp_landmarks, ancho, alto)
+            if not self.n_puntos_avisado:
+                self.n_puntos_avisado = True
+                logger.info(f"Puntos por cara: {len(self.mp_landmarks)} "
+                            f"(iris disponible: {self.mirada.disponible})")
+            self.n_frames += 1
+
         else:
             self.mp_landmarks = None
             self.track_loc = None
+            self.mirada.disponible = False
+            self.mirada.mirada = None
 
     def detect_frame(self, frame_np: npt.ArrayLike):
 
@@ -141,6 +162,12 @@ class FaceMesh(metaclass=Singleton):
 
     def get_blendshapes(self):
         return self.smooth_blendshapes
+
+    def get_mirada(self):
+        """(gx, gy) o None si no hay cara, no hay iris o los ojos están cerrados."""
+        if not self.mirada.disponible or not self.parpadeo.ojos_abiertos():
+            return None
+        return self.mirada.mirada
 
     def destroy(self):
         if self.model is not None:

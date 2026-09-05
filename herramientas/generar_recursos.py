@@ -150,15 +150,70 @@ def dibujar_icono(nombre: str, color) -> Image.Image:
         d.arc([14, 44, 82, 112], start=180, end=360, fill=c, width=g)
     elif nombre == "flecha_abajo":
         d.line([(26, 38), (48, 60), (70, 38)], fill=c, width=g, joint="curve")
+    elif nombre == "ojo":
+        # Ojo abierto con iris: forma de almendra
+        d.line([(6, 48), (30, 22), (66, 22), (90, 48)], fill=c, width=g, joint="curve")
+        d.line([(6, 48), (30, 74), (66, 74), (90, 48)], fill=c, width=g, joint="curve")
+        d.ellipse([34, 34, 62, 62], outline=c, width=g)
+        d.ellipse([43, 43, 53, 53], fill=c)
+    elif nombre == "boca":
+        # Boca abierta: labio superior e inferior separados
+        d.arc([10, 18, 86, 62], start=200, end=340, fill=c, width=g)
+        d.arc([10, 34, 86, 90], start=20, end=160, fill=c, width=g)
+        d.line([(14, 44), (14, 58)], fill=c, width=g)
+        d.line([(82, 44), (82, 58)], fill=c, width=g)
+    elif nombre == "cejas":
+        # Dos cejas arqueadas sobre dos ojos
+        d.arc([6, 14, 44, 44], start=200, end=340, fill=c, width=g)
+        d.arc([52, 14, 90, 44], start=200, end=340, fill=c, width=g)
+        d.ellipse([14, 54, 36, 76], outline=c, width=g)
+        d.ellipse([60, 54, 82, 76], outline=c, width=g)
+    elif nombre == "reloj":
+        d.ellipse([10, 10, 86, 86], outline=c, width=g)
+        d.line([(48, 26), (48, 50), (64, 60)], fill=c, width=g, joint="curve")
+    elif nombre == "cabeza":
+        # Cabeza de perfil con flechas de movimiento a los lados
+        d.ellipse([28, 10, 68, 50], outline=c, width=g)
+        d.arc([16, 44, 80, 108], start=180, end=360, fill=c, width=g)
+        d.line([(6, 30), (16, 30)], fill=c, width=g)
+        d.line([(80, 30), (90, 30)], fill=c, width=g)
+        d.polygon([(2, 30), (12, 22), (12, 38)], fill=c)
+        d.polygon([(94, 30), (84, 22), (84, 38)], fill=c)
     return im.resize((48, 48), Image.LANCZOS)
 
 
 def iconos_menu() -> None:
     ICONOS.mkdir(parents=True, exist_ok=True)
     for nombre in ["casa", "camara", "puntero", "clic", "teclado", "sol", "luna",
-                   "perfil", "flecha_abajo"]:
+                   "perfil", "flecha_abajo", "ojo", "boca", "cejas", "reloj", "cabeza"]:
         dibujar_icono(nombre, rgb(estilo.TEXTO[0])).save(ICONOS / f"{nombre}_claro.png")
         dibujar_icono(nombre, rgb(estilo.TEXTO[1])).save(ICONOS / f"{nombre}_oscuro.png")
+
+
+def dibujo_subir_cejas() -> None:
+    """Dibujo «Subir las cejas» para el desplegable de gestos: mitad izquierda
+    del dibujo de la ceja izquierda y mitad derecha del de la ceja derecha,
+    con lo que las dos cejas quedan levantadas."""
+    carpeta = IMAGENES / "dropdowns"
+    izq = Image.open(carpeta / "subir_ceja_izquierda.png").convert("RGBA")
+    der = Image.open(carpeta / "subir_ceja_derecha.png").convert("RGBA")
+    ancho, alto = izq.size
+    # Se elige de cada dibujo la mitad donde la ceja está levantada
+    def mitad_levantada(im):
+        px = im.load()
+        # la ceja levantada deja más píxeles oscuros en la franja alta de su mitad
+        cuenta = [0, 0]
+        for x in range(ancho):
+            for y in range(alto // 3):
+                r, g, b, a = px[x, y]
+                if a > 100 and (r + g + b) < 400:
+                    cuenta[0 if x < ancho // 2 else 1] += 1
+        return 0 if cuenta[0] >= cuenta[1] else 1
+    fuente_izq = izq if mitad_levantada(izq) == 0 else der
+    fuente_der = der if mitad_levantada(der) == 1 else izq
+    im = fuente_izq.copy()
+    im.paste(fuente_der.crop((ancho // 2, 0, ancho, alto)), (ancho // 2, 0))
+    im.save(carpeta / "subir_cejas.png")
 
 
 # ------------------------------------------------------- Globo de ayuda --
@@ -267,6 +322,7 @@ if __name__ == "__main__":
     aviso("sin_cara.png", "No veo tu cara", rgb(estilo.ALERTA[0]), "alerta")
     logo()
     iconos_menu()
+    dibujo_subir_cejas()
     globo()
     boton_perfil()
     tema()

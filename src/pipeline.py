@@ -14,7 +14,7 @@
 import logging
 
 from src.camera_manager import CameraManager
-from src.controllers import Keybinder, MouseController
+from src.controllers import ControladorClic, Keybinder, MouseController
 from src.detectors import FaceMesh
 
 
@@ -33,16 +33,22 @@ class Pipeline:
         # Get facial landmarks
         landmarks = FaceMesh().get_landmarks()
         if (landmarks is None):
+            MouseController().act_mirada(None)
+            ControladorClic().tick()
             CameraManager().draw_overlay(track_loc=None)
             return
 
-        # Control mouse position
+        # Control mouse position (head or eyes)
         track_loc = FaceMesh().get_track_loc()
         MouseController().act(track_loc)
+        MouseController().act_mirada(FaceMesh().get_mirada())
 
         # Control keyboard
         blendshape_values = FaceMesh().get_blendshapes()
         Keybinder().act(blendshape_values)
 
+        # Clic por parpadeo o por permanencia
+        ControladorClic().tick()
+
         # Draw frame overlay
-        CameraManager().draw_overlay(track_loc)
+        CameraManager().draw_overlay(track_loc, FaceMesh().mirada.puntos)

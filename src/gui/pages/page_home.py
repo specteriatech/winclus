@@ -30,8 +30,8 @@ ICONO_SIZE = (36, 36)
 # Tarjetas de acceso: icono, título, explicación corta y página de destino.
 ACCESOS = [
     ("camara", "Cámara", "Elige la cámara que te va a ver", "page_camera"),
-    ("puntero", "Puntero", "Ajusta qué tan rápido se mueve", "page_cursor"),
-    ("clic", "Clics", "Elige cómo hacer clic con tu cara", "page_gestures"),
+    ("puntero", "Puntero", "Con la cabeza o con los ojos", "page_cursor"),
+    ("clic", "Clics", "Parpadeo, boca, cejas o quedarte quieto", "page_gestures"),
     ("teclado", "Teclas", "Gestos que pulsan una tecla", "page_keyboard"),
 ]
 
@@ -54,8 +54,8 @@ class PageHome(SafeDisposableFrame):
                                         font=estilo.fuente("titulo"))
         titulo.grid(row=0, column=0, padx=(28, 10), pady=(28, 2), sticky="sw")
 
-        des_txt = ("Mueve el puntero con tu cabeza y haz clic con gestos de "
-                   "tu cara. Solo necesitas una cámara web.")
+        des_txt = ("Mueve el puntero con tu cabeza o con tus ojos y haz clic "
+                   "con un parpadeo o un gesto. Solo necesitas una cámara web.")
         des_label = customtkinter.CTkLabel(master=self,
                                            text=des_txt,
                                            wraplength=340,

@@ -30,6 +30,25 @@ BACKUP_PROFILE = Path("configs/Inicial")
 
 logger = logging.getLogger("ConfigManager")
 
+# Claves añadidas por Gestik a cursor.json. Si un perfil viejo no las tiene,
+# se rellenan con estos valores al cargarlo.
+VALORES_POR_DEFECTO = {
+    # Cómo hago clic: "parpadeo", "boca", "cejas" o "quieto"
+    "modo_clic": "parpadeo",
+    "parpadeo_ms": 200,          # ojos cerrados al menos este tiempo = clic
+    "parpadeo_umbral": 0.55,     # fracción de la apertura normal del ojo
+    "quieto_ms": 1100,           # puntero quieto este tiempo = clic
+    "quieto_radio_px": 40,       # moverse menos que esto sigue siendo «quieto»
+    "quieto_anillo": True,       # dibujar el anillo que se llena junto al puntero
+    # Cómo muevo el puntero: "cabeza" u "ojos"
+    "modo_puntero": "cabeza",
+    "ojos_centro": [0.0, 0.0],   # mirada en reposo (se fija con «Fijar el centro»)
+    "ojos_velocidad": 50,        # 1..100
+    "ojos_zona_muerta": 4,       # 1..15, en centésimas del ancho del ojo
+    "ojos_vertical": 150,        # % de velocidad extra en vertical
+    "ojos_suavizado": 6,         # 1..30 muestras
+}
+
 
 class ConfigManager(metaclass=Singleton):
 
@@ -120,6 +139,8 @@ class ConfigManager(metaclass=Singleton):
         # Load cursor config
         with open(cursor_config_file) as f:
             self.config = json.load(f)
+        for clave, valor in VALORES_POR_DEFECTO.items():
+            self.config.setdefault(clave, copy.deepcopy(valor))
 
         # Load mouse bindings
         with open(mouse_bindings_file) as f:
