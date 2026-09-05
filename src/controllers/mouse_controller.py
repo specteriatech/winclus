@@ -49,6 +49,10 @@ class MouseController(metaclass=Singleton):
         self.is_destroyed = False
         self.stop_flag = None
         self.is_active = None
+        # Modo «ojos»: última mirada (gx, gy) y su versión suavizada
+        self.curr_mirada = None
+        self.mirada_suave = None
+        self.mirada_muestras = []
 
     def start(self):
         if not self.is_started:
@@ -94,8 +98,48 @@ class MouseController(metaclass=Singleton):
     def act(self, track_loc: npt.ArrayLike):
         self.curr_track_loc = track_loc
 
+    def act_mirada(self, mirada):
+        """Mirada (gx, gy) del detector de iris, o None si no es fiable."""
+        self.curr_mirada = mirada
+
+    def reiniciar_mirada(self):
+        self.mirada_muestras = []
+        self.mirada_suave = None
+
+    def velocidad_por_mirada(self):
+        """Modo «ojos»: el puntero se mueve como con una palanca. Mirar a un
+        lado lo empuja hacia ese lado; volver al centro lo detiene."""
+        cfg = ConfigManager().config
+        if self.curr_mirada is None:
+            self.mirada_muestras = []
+            return 0.0, 0.0
+
+        # Suavizado por media móvil de las últimas N miradas
+        n = max(1, int(cfg.get("ojos_suavizado", 6)))
+        self.mirada_muestras.append(self.curr_mirada)
+        self.mirada_muestras = self.mirada_muestras[-n:]
+        gx = sum(m[0] for m in self.mirada_muestras) / len(self.mirada_muestras)
+        gy = sum(m[1] for m in self.mirada_muestras) / len(self.mirada_muestras)
+        self.mirada_suave = (gx, gy)
+
+        cx, cy = cfg.get("ojos_centro", [0.0, 0.0])
+        zona = cfg.get("ojos_zona_muerta", 4) / 100
+        ganancia = cfg.get("ojos_velocidad", 50) * 2.0   # px por tick por unidad
+        vertical = cfg.get("ojos_vertical", 150) / 100
+
+        def palanca(d):
+            m = abs(d) - zona
+            if m <= 0:
+                return 0.0
+            return np.sign(d) * m * ganancia
+
+        vel_x = palanca(gx - cx)
+        vel_y = palanca(gy - cy) * vertical
+        tope = 30.0
+        return float(np.clip(vel_x, -tope, tope)), float(np.clip(vel_y, -tope, tope))
+
     def main_loop(self) -> None:
-        """ Separate thread for mouse controller          
+        """ Separate thread for mouse controller
         """
 
         if self.is_destroyed:
@@ -103,6 +147,23 @@ class MouseController(metaclass=Singleton):
 
         while not self.stop_flag.is_set():
             if not self.is_active.get():
+                time.sleep(0.001)
+                continue
+
+            if ConfigManager().config.get("modo_puntero") == "ojos":
+                vel_x, vel_y = self.velocidad_por_mirada()
+                if vel_x != 0.0 or vel_y != 0.0:
+                    pyautogui.move(xOffset=vel_x, yOffset=vel_y)
+                # Mantener el búfer de cabeza al día para cambiar de modo sin salto
+                if self.curr_track_loc is not None:
+                    self.buffer = np.roll(self.buffer, shift=-1, axis=0)
+                    self.buffer[-1] = self.curr_track_loc
+                    self.prev_x, self.prev_y = utils.apply_smoothing(
+                        self.buffer, self.smooth_kernel)
+                time.sleep(ConfigManager().config["tick_interval_ms"] / 1000)
+                continue
+
+            if self.curr_track_loc is None:
                 time.sleep(0.001)
                 continue
 

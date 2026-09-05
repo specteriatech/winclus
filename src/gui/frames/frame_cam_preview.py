@@ -107,8 +107,12 @@ class FrameCamPreview(SafeDisposableFrame):
                                  fg_color=estilo.PRIMARIO,
                                  hover_color=estilo.PRIMARIO_HOVER,
                                  text_color=estilo.TEXTO_SOBRE_PRIMARIO)
-            self.estado.configure(
-                text="Activo: mueve la cabeza para mover el puntero.")
+            if ConfigManager().config.get("modo_puntero") == "ojos":
+                self.estado.configure(
+                    text="Activo: mueve los ojos para mover el puntero.")
+            else:
+                self.estado.configure(
+                    text="Activo: mueve la cabeza para mover el puntero.")
         else:
             self.boton.configure(text="Activar",
                                  fg_color=estilo.AMBAR,
@@ -123,6 +127,10 @@ class FrameCamPreview(SafeDisposableFrame):
         if self.is_active:
             if CameraManager().is_destroyed:
                 return
+            modo = ConfigManager().config.get("modo_puntero")
+            if modo != getattr(self, "modo_mostrado", None):
+                self.modo_mostrado = modo
+                self.refrescar()
             frame_rgb = CameraManager().get_debug_frame()
             # Se guarda la referencia para que no la borre el recolector
             self.new_photo = ImageTk.PhotoImage(

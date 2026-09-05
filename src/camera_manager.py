@@ -116,7 +116,7 @@ class CameraManager(metaclass=Singleton):
         if self.thread_cameras is not None:
             self.thread_cameras.destroy()
 
-    def draw_overlay(self, track_loc):
+    def draw_overlay(self, track_loc, puntos_ojos: dict = None):
         if not self.is_active:
             return
 
@@ -138,6 +138,16 @@ class CameraManager(metaclass=Singleton):
             return
 
         # Active
+
+        if ConfigManager().config.get("modo_puntero") == "ojos":
+            # Iris de cada ojo y hacia dónde mira respecto al centro del ojo
+            for ojo in (puntos_ojos or {}).values():
+                ix, iy = ojo["iris"]
+                cx, cy = ojo["centro"]
+                cv2.line(self.frame_buffers["debug"], (cx, cy),
+                         (cx + (ix - cx) * 4, cy + (iy - cy) * 4), (233, 162, 59), 2)
+                cv2.circle(self.frame_buffers["debug"], (ix, iy), 4, (88, 182, 154), -1)
+            return
 
         if ConfigManager().config["use_transformation_matrix"]:
             cx = ConfigManager().config["fix_width"] // 2
