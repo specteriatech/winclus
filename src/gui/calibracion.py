@@ -25,7 +25,7 @@ from src import estilo
 from src.config_manager import ConfigManager
 from src.controllers import MouseController
 from src.detectors import FaceMesh
-from src.detectors.calibracion import ajustar
+from src.detectors.calibracion import ajustar, corregir_centro, es_valido
 
 logger = logging.getLogger("VentanaCalibracion")
 
@@ -228,6 +228,94 @@ class VentanaCalibracion:
             return
         self._cerrar()
         self.al_terminar(None)
+
+    def _cerrar(self):
+        self.cancelada = True
+        MouseController().calibrando = False
+        try:
+            self.ventana.destroy()
+        except Exception:
+            pass
+
+
+class VentanaRecentrado:
+    """Corrección rápida del centro: un solo punto en el centro de la pantalla
+    calibrada. La diferencia entre lo previsto y el centro se guarda como
+    desplazamiento fijo. Se abre con los ojos cerrados 1,2 s (o desde la
+    página Puntero) y dura unos 2 segundos."""
+
+    ESPERA_MS = 900
+    MEDIDA_MS = 1000
+
+    def __init__(self, tk_root, al_terminar):
+        self.al_terminar = al_terminar
+        self.cancelada = False
+        modelo = ConfigManager().config.get("ojos_calibracion")
+        if not es_valido(modelo):
+            self.cancelada = True
+            al_terminar(False)
+            return
+        self.modelo = modelo
+        x1, y1, x2, y2 = modelo["monitor"]
+        w, h = x2 - x1, y2 - y1
+        self.centro = (x1 + w / 2, y1 + h / 2)
+
+        self.ventana = tkinter.Toplevel(tk_root)
+        self.ventana.title("Gestik centro")
+        self.ventana.overrideredirect(True)
+        self.ventana.attributes("-topmost", True)
+        self.ventana.geometry(f"{w}x{h}+{x1}+{y1}")
+        self.ventana.configure(bg=FONDO)
+        self.lienzo = tkinter.Canvas(self.ventana, width=w, height=h, bg=FONDO,
+                                     bd=0, highlightthickness=0)
+        self.lienzo.pack()
+        self.ventana.bind("<Escape>", lambda e: self.cancelar())
+        self.ventana.focus_force()
+        self.lienzo.create_text(w // 2, int(h * 0.36), text="Mira el punto del centro",
+                                fill=TEXTO, font=(estilo.FAMILIA_TEXTO, 26))
+        r = RADIO_GRANDE
+        self.punto = self.lienzo.create_oval(w / 2 - r, h / 2 - r, w / 2 + r, h / 2 + r,
+                                             fill=PUNTO, outline="")
+        rc = RADIO_PEQUENO // 2
+        self.lienzo.create_oval(w / 2 - rc, h / 2 - rc, w / 2 + rc, h / 2 + rc,
+                                fill=FONDO, outline="")
+        self.muestras = []
+        self.t0 = 0
+        MouseController().calibrando = True
+        self.ventana.after(TICK_MS, self._animar)
+
+    def _animar(self):
+        if self.cancelada:
+            return
+        self.t0 += TICK_MS
+        if self.t0 > self.ESPERA_MS:
+            r = FaceMesh().get_rasgos()
+            if r is not None:
+                self.muestras.append(r)
+        if self.t0 > self.ESPERA_MS + self.MEDIDA_MS:
+            self._terminar()
+            return
+        self.ventana.after(TICK_MS, self._animar)
+
+    def _terminar(self):
+        ok = False
+        if len(self.muestras) >= 6:
+            nuevo = corregir_centro(self.modelo, np.median(np.asarray(self.muestras), axis=0),
+                                    self.centro)
+            ConfigManager().set_temp_config("ojos_calibracion", nuevo)
+            ConfigManager().apply_config()
+            MouseController().reiniciar_mirada()
+            ok = True
+        else:
+            logger.warning("Recentrado: no se vieron los ojos")
+        self._cerrar()
+        self.al_terminar(ok)
+
+    def cancelar(self):
+        if self.cancelada:
+            return
+        self._cerrar()
+        self.al_terminar(False)
 
     def _cerrar(self):
         self.cancelada = True

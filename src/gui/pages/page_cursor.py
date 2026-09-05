@@ -361,12 +361,52 @@ class FrameOjos(customtkinter.CTkFrame):
                                                  text="", fill=estilo.TEXTO_SUAVE[0],
                                                  font=(estilo.FAMILIA_TEXTO, 10))
 
-        self.deslizadores_directo = FrameSelectGesture(panel,
+        der = customtkinter.CTkFrame(panel, fg_color="transparent")
+        der.grid(row=0, column=1, padx=(0, 8), pady=4, sticky="nw")
+        self.deslizadores_directo = FrameSelectGesture(der,
                                                        ajustes=AJUSTES_DIRECTO,
                                                        fg_color="transparent",
                                                        logger_name="directo_sliders")
-        self.deslizadores_directo.grid(row=0, column=1, padx=(0, 8), pady=4, sticky="nw")
+        self.deslizadores_directo.grid(row=0, column=0, sticky="nw")
+
+        # Opciones de precisión, debajo de los deslizadores
+        opciones = customtkinter.CTkFrame(der, fg_color="transparent")
+        opciones.grid(row=1, column=0, padx=(20, 0), pady=(0, 10), sticky="nw")
+        self.lupa_var = tkinter.BooleanVar(value=True)
+        customtkinter.CTkCheckBox(
+            opciones,
+            text="Lupa para afinar el clic",
+            variable=self.lupa_var,
+            font=estilo.fuente("cuerpo"),
+            command=lambda: self._guardar("lupa_activa", bool(self.lupa_var.get()))).grid(
+                row=0, column=0, pady=(2, 0), sticky="w")
+        customtkinter.CTkLabel(
+            opciones,
+            text=("El primer gesto de clic agranda la zona que miras; dentro,\n"
+                  "mira el sitio exacto y repite el gesto. Se cierra sola si apartas la vista."),
+            text_color=estilo.TEXTO_SUAVE,
+            justify=tkinter.LEFT,
+            font=estilo.fuente("pequena")).grid(row=1, column=0, padx=(28, 0), pady=(0, 8), sticky="w")
+        self.recentrar_var = tkinter.BooleanVar(value=True)
+        customtkinter.CTkCheckBox(
+            opciones,
+            text="Ojos cerrados 1,2 s: corregir el centro",
+            variable=self.recentrar_var,
+            font=estilo.fuente("cuerpo"),
+            command=lambda: self._guardar("ojos_recentrar_largo", bool(self.recentrar_var.get()))).grid(
+                row=2, column=0, pady=(2, 0), sticky="w")
+        customtkinter.CTkLabel(
+            opciones,
+            text=("Si el puntero se desvía porque moviste un poco la cabeza, cierra los\n"
+                  "ojos 1,2 s, mira el punto del centro y queda corregido en 2 segundos."),
+            text_color=estilo.TEXTO_SUAVE,
+            justify=tkinter.LEFT,
+            font=estilo.fuente("pequena")).grid(row=3, column=0, padx=(28, 0), pady=(0, 4), sticky="w")
         return panel
+
+    def _guardar(self, clave, valor):
+        ConfigManager().set_temp_config(clave, valor)
+        ConfigManager().apply_config()
 
     def calibrar(self):
         if self.al_calibrar is not None:
@@ -393,11 +433,15 @@ class FrameOjos(customtkinter.CTkFrame):
                 calidad, color = "aceptable", estilo.ALERTA
             else:
                 calidad, color = "floja: repite con más luz", estilo.ERROR
+            sesgo = modelo.get("sesgo")
+            extra = ""
+            if sesgo and (abs(sesgo[0]) > 1 or abs(sesgo[1]) > 1):
+                extra = f" Centro corregido ({sesgo[0]:+.0f}, {sesgo[1]:+.0f})."
             self.estado_calibracion.configure(
-                text=f"Calibrado. Precisión {calidad} (±{err} px).", text_color=color)
+                text=f"Calibrado. Precisión {calidad} (±{err} px).{extra}", text_color=color)
             if err > 160:
                 self.estado_calibracion.configure(
-                    text=f"Calibrado, pero la precisión es {calidad} (±{err} px).")
+                    text=f"Calibrado, pero la precisión es {calidad} (±{err} px).{extra}")
         else:
             self.estado_calibracion.configure(text="Sin calibrar todavía.",
                                               text_color=estilo.ALERTA)
@@ -581,6 +625,8 @@ class FrameOjos(customtkinter.CTkFrame):
         self._mostrar_submodo(submodo)
         self.deslizadores.inner_refresh_profile()
         self.deslizadores_directo.inner_refresh_profile()
+        self.lupa_var.set(bool(ConfigManager().config.get("lupa_activa", True)))
+        self.recentrar_var.set(bool(ConfigManager().config.get("ojos_recentrar_largo", True)))
         self.aviso.configure(text="")
         self._texto_calibracion()
 

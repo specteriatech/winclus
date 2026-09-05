@@ -80,6 +80,8 @@ class Anillo:
             self.ventana.attributes("-topmost", True)
             self._hacer_transparente_al_raton()
             self.visible = True
+        # Por encima de la lupa, que también está «siempre encima»
+        self.ventana.lift()
 
     def destruir(self):
         try:

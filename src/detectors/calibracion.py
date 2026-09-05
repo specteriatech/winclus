@@ -106,14 +106,35 @@ def ajustar(puntos_pantalla, rasgos, monitor, puntos_seguimiento=None,
     return modelo
 
 
-def predecir(modelo: dict, rasgos):
-    """Punto de pantalla (x, y) para un vector de rasgos, recortado al monitor."""
+def predecir(modelo: dict, rasgos, con_sesgo: bool = True):
+    """Punto de pantalla (x, y) para un vector de rasgos, recortado al monitor.
+    `sesgo` es la corrección rápida del centro (ver gui/calibracion.py)."""
     r = (np.asarray(rasgos, dtype=np.float64) - modelo["media"]) / modelo["desv"]
     x_ = np.concatenate([[1.0], r])
     x = float(x_ @ modelo["coef_x"])
     y = float(x_ @ modelo["coef_y"])
+    if con_sesgo:
+        sx, sy = modelo.get("sesgo", (0.0, 0.0))
+        x += sx
+        y += sy
     x1, y1, x2, y2 = modelo["monitor"]
     return min(max(x, x1), x2 - 1), min(max(y, y1), y2 - 1)
+
+
+SESGO_MAX_PX = 350
+
+
+def corregir_centro(modelo: dict, rasgos_centro, centro) -> dict:
+    """Corrección de un punto: la persona mira el centro; la diferencia entre
+    el punto previsto y el centro real se guarda como sesgo (desplazamiento
+    fijo). Sirve para cuando la cabeza se movió un poco tras calibrar."""
+    px, py = predecir(modelo, rasgos_centro, con_sesgo=False)
+    sx = float(np.clip(centro[0] - px, -SESGO_MAX_PX, SESGO_MAX_PX))
+    sy = float(np.clip(centro[1] - py, -SESGO_MAX_PX, SESGO_MAX_PX))
+    nuevo = dict(modelo)
+    nuevo["sesgo"] = [sx, sy]
+    logger.info(f"Centro corregido: sesgo ({sx:.0f}, {sy:.0f}) px")
+    return nuevo
 
 
 def es_valido(modelo, n_rasgos=None) -> bool:

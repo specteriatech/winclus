@@ -51,6 +51,11 @@ VALORES_POR_DEFECTO = {
     "ojos_modo": "directo",
     "ojos_calibracion": None,    # modelo de detectors/calibracion.py
     "ojos_fijacion_px": 60,      # el puntero no se mueve si la mirada cambia menos
+    "lupa_activa": True,         # clic en dos pasos con la zona agrandada
+    "lupa_zoom": 3,              # aumento de la lupa
+    "lupa_region_px": 220,       # lado de la zona real que se agranda
+    "lupa_tiempo_max_s": 8,      # se cierra sola si no se hace clic
+    "ojos_recentrar_largo": True,   # ojos cerrados 1,2 s = corregir el centro
     "ojos_centro": [0.0, 0.0],   # palanca: mirada en reposo («Fijar el centro»)
     "ojos_velocidad": 50,        # 1..100
     "ojos_zona_muerta": 4,       # 1..15, en centésimas del ancho del ojo

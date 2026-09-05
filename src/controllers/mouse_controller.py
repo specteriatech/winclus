@@ -61,6 +61,17 @@ class MouseController(metaclass=Singleton):
         self.punto_directo = None     # (x, y) suavizado, para la interfaz
         self.fijacion = None          # (x, y) donde está quieto el puntero
         self.calibrando = False       # la ventana de calibración manda
+        self.lupa = None              # geometría de la lupa mientras está abierta
+        self.lupa_fuera_desde = None  # desde cuándo la mirada está fuera de la lupa
+        self.congelado_hasta = 0.0    # no mover el puntero hasta este instante
+        self.ultimo_destino = None    # último punto al que se llevó el puntero
+
+    def congelar(self, segundos: float) -> None:
+        """Deja quieto el puntero un momento (p. ej. mientras se hace un clic
+        en un punto concreto desde otro hilo)."""
+        self.congelado_hasta = time.time() + segundos
+        self.fijacion = None
+        self.ultimo_destino = None
 
     def start(self):
         if not self.is_started:
@@ -159,6 +170,19 @@ class MouseController(metaclass=Singleton):
         px, py = self.filtro_directo(px, py)
         self.punto_directo = (px, py)
 
+        # Con la lupa abierta el puntero solo se mueve dentro de ella
+        if self.lupa is not None:
+            wx1, wy1, wx2, wy2 = self.lupa["rect"]
+            margen = 30
+            if wx1 - margen <= px <= wx2 + margen and wy1 - margen <= py <= wy2 + margen:
+                self.lupa_fuera_desde = None
+                px = min(max(px, wx1), wx2 - 1)
+                py = min(max(py, wy1), wy2 - 1)
+            else:
+                if self.lupa_fuera_desde is None:
+                    self.lupa_fuera_desde = time.time()
+                return
+
         radio = float(cfg.get("ojos_fijacion_px", 60))
         if self.fijacion is None:
             self.fijacion = (px, py)
@@ -167,7 +191,10 @@ class MouseController(metaclass=Singleton):
             if np.hypot(px - fx, py - fy) > radio:
                 # Se desliza hacia el nuevo punto en pocos ticks
                 self.fijacion = (fx + 0.35 * (px - fx), fy + 0.35 * (py - fy))
-        pyautogui.moveTo(int(self.fijacion[0]), int(self.fijacion[1]))
+        destino = (int(self.fijacion[0]), int(self.fijacion[1]))
+        if destino != self.ultimo_destino:
+            self.ultimo_destino = destino
+            pyautogui.moveTo(*destino)
 
     def velocidad_por_mirada(self):
         """Modo «ojos»: el puntero se mueve como con una palanca. Mirar a un
@@ -213,7 +240,7 @@ class MouseController(metaclass=Singleton):
                 time.sleep(0.001)
                 continue
 
-            if self.calibrando:
+            if self.calibrando or time.time() < self.congelado_hasta:
                 time.sleep(0.01)
                 continue
 

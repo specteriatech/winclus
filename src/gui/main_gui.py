@@ -25,6 +25,8 @@ import src.gui.pages as pages
 from src.config_manager import ConfigManager
 from src.controllers import ControladorClic, MouseController
 from src.gui.anillo import Anillo
+from src.gui.calibracion import VentanaRecentrado
+from src.gui.lupa import Lupa
 
 customtkinter.set_default_color_theme("assets/themes/tema.json")
 estilo.aplicar_modo(estilo.modo_guardado(), guardar=False)
@@ -121,6 +123,23 @@ class MainGui():
         self.anillo = Anillo(self.tk_root)
         self.tk_root.after(33, self.anillo_loop)
 
+        # Lupa de dos pasos y corrección rápida del centro (modo ojos)
+        self.lupa = Lupa(self.tk_root)
+        self.recentrado = None
+        ControladorClic().lupa_gui = self.lupa
+        ControladorClic().abrir_recentrado = self.abrir_recentrado
+
+    def abrir_recentrado(self):
+        if self.recentrado is not None:
+            return
+        self.recentrado = VentanaRecentrado(self.tk_root, self._recentrado_terminado)
+
+    def _recentrado_terminado(self, ok):
+        self.recentrado = None
+        logger.info(f"Recentrado {'hecho' if ok else 'cancelado'}")
+        if "page_cursor" in self.pages:
+            self.pages["page_cursor"].refresh_profile()
+
     def anillo_loop(self):
         if self.anillo is None:
             return
@@ -183,6 +202,9 @@ class MainGui():
         if self.anillo is not None:
             self.anillo.destruir()
             self.anillo = None
+        if self.lupa is not None:
+            self.lupa.destruir()
+            self.lupa = None
         self.frame_preview.leave()
         self.frame_preview.destroy()
         self.frame_menu.leave()
