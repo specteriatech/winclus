@@ -379,7 +379,7 @@ class AjustesParpadeo(customtkinter.CTkFrame):
                                font=estilo.fuente("etiqueta")).grid(
                                    row=3, column=0, padx=16, pady=(6, 2), sticky="w")
         self.barra = customtkinter.CTkProgressBar(self, width=300, height=14)
-        self.barra.set(1.0)
+        self.barra.set(0.0)
         self.barra.grid(row=4, column=0, padx=16, pady=2, sticky="w")
         self.estado = customtkinter.CTkLabel(self,
                                              text="",
@@ -414,22 +414,23 @@ class AjustesParpadeo(customtkinter.CTkFrame):
 
     def refrescar(self):
         e = FaceMesh().parpadeo.estado
-        rel = max(0.0, min(1.0, e["relacion"]))
-        self.barra.set(rel)
+        # La barra mide cuánto están cerrados los ojos: vacía abiertos, llena cerrados
+        cierre = 1.0 - max(0.0, min(1.0, e["relacion"]))
+        self.barra.set(cierre)
         if ControladorClic().hubo_clic_reciente():
             self.estado.configure(text="¡Clic!", text_color=estilo.PRIMARIO)
             self.barra.configure(progress_color=estilo.PRIMARIO)
         elif e["cerrados"]:
             self.estado.configure(text=f"Ojos cerrados: {e['cerrados_ms']} ms",
-                                  text_color=estilo.TEXTO)
-            self.barra.configure(progress_color=estilo.ALERTA)
+                                  text_color=estilo.OK)
+            self.barra.configure(progress_color=estilo.OK)
         elif not e["listo"]:
             self.estado.configure(text="Aprendiendo cómo son tus ojos…",
                                   text_color=estilo.TEXTO_SUAVE)
             self.barra.configure(progress_color=estilo.TEXTO_SUAVE)
         else:
             self.estado.configure(text="Ojos abiertos", text_color=estilo.TEXTO)
-            self.barra.configure(progress_color=estilo.OK)
+            self.barra.configure(progress_color=estilo.ALERTA)
         a_der, a_izq = e["apertura"]
         b_der, b_izq = e["base"]
         self.medidas.configure(
