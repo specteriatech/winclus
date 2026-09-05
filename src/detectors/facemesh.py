@@ -131,7 +131,8 @@ class FaceMesh(metaclass=Singleton):
             self.parpadeo.procesar(self.mp_landmarks, ancho, alto,
                                    cfg.get("parpadeo_umbral", 0.55),
                                    cfg.get("parpadeo_ms", 200))
-            self.mirada.procesar(self.mp_landmarks, ancho, alto)
+            self.mirada.procesar(self.mp_landmarks, ancho, alto,
+                                 self.blendshapes_buffer[-1])
             if not self.n_puntos_avisado:
                 self.n_puntos_avisado = True
                 logger.info(f"Puntos por cara: {len(self.mp_landmarks)} "
@@ -141,8 +142,7 @@ class FaceMesh(metaclass=Singleton):
         else:
             self.mp_landmarks = None
             self.track_loc = None
-            self.mirada.disponible = False
-            self.mirada.mirada = None
+            self.mirada._sin_datos()
 
     def detect_frame(self, frame_np: npt.ArrayLike):
 
@@ -168,6 +168,12 @@ class FaceMesh(metaclass=Singleton):
         if not self.mirada.disponible or not self.parpadeo.ojos_abiertos():
             return None
         return self.mirada.mirada
+
+    def get_rasgos(self):
+        """Vector de rasgos de la mirada para el modo directo, o None."""
+        if not self.mirada.disponible or not self.parpadeo.ojos_abiertos():
+            return None
+        return self.mirada.rasgos
 
     def destroy(self):
         if self.model is not None:

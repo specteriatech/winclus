@@ -34,6 +34,7 @@ class Pipeline:
         landmarks = FaceMesh().get_landmarks()
         if (landmarks is None):
             MouseController().act_mirada(None)
+            MouseController().act_rasgos(None)
             ControladorClic().tick()
             CameraManager().draw_overlay(track_loc=None)
             return
@@ -42,6 +43,7 @@ class Pipeline:
         track_loc = FaceMesh().get_track_loc()
         MouseController().act(track_loc)
         MouseController().act_mirada(FaceMesh().get_mirada())
+        MouseController().act_rasgos(FaceMesh().get_rasgos())
 
         # Control keyboard
         blendshape_values = FaceMesh().get_blendshapes()

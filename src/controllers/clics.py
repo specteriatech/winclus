@@ -53,7 +53,7 @@ class ControladorClic(metaclass=Singleton):
 
         activo = MouseController().is_active is not None and MouseController(
         ).is_active.get()
-        if not activo:
+        if not activo or MouseController().calibrando:
             self.reiniciar_quieto()
             # Vaciar eventos para que no se disparen al reanudar.
             FaceMesh().parpadeo.tomar_evento()

@@ -53,6 +53,12 @@ class MouseController(metaclass=Singleton):
         self.curr_mirada = None
         self.mirada_suave = None
         self.mirada_muestras = []
+        # Modo directo: rasgos de la mirada, punto previsto y punto de fijación
+        self.curr_rasgos = None
+        self.rasgos_muestras = []
+        self.punto_directo = None     # (x, y) suavizado, para la interfaz
+        self.fijacion = None          # (x, y) donde está quieto el puntero
+        self.calibrando = False       # la ventana de calibración manda
 
     def start(self):
         if not self.is_started:
@@ -102,9 +108,50 @@ class MouseController(metaclass=Singleton):
         """Mirada (gx, gy) del detector de iris, o None si no es fiable."""
         self.curr_mirada = mirada
 
+    def act_rasgos(self, rasgos):
+        """Rasgos de la mirada para el modo directo, o None si no son fiables."""
+        self.curr_rasgos = rasgos
+
     def reiniciar_mirada(self):
         self.mirada_muestras = []
         self.mirada_suave = None
+        self.rasgos_muestras = []
+        self.punto_directo = None
+        self.fijacion = None
+
+    def mover_por_mirada_directa(self) -> None:
+        """Modo directo: el puntero va al punto de la pantalla que se mira.
+
+        Se suaviza con la media de las últimas N muestras y, además, el
+        puntero solo se mueve cuando la mirada se aleja más de
+        «ojos_fijacion_px» del sitio donde está: así, mientras se fija la
+        vista en algo, el puntero se queda quieto (y el clic por permanencia
+        puede actuar) en vez de temblar."""
+        from src.detectors.calibracion import es_valido, predecir
+
+        cfg = ConfigManager().config
+        modelo = cfg.get("ojos_calibracion")
+        if not es_valido(modelo):
+            return
+        if self.curr_rasgos is None:
+            return   # parpadeo o sin cara: el puntero se queda donde está
+
+        n = max(1, int(cfg.get("ojos_suavizado", 6)))
+        self.rasgos_muestras.append(self.curr_rasgos)
+        self.rasgos_muestras = self.rasgos_muestras[-n:]
+        rasgos = np.mean(np.asarray(self.rasgos_muestras), axis=0)
+        px, py = predecir(modelo, rasgos)
+        self.punto_directo = (px, py)
+
+        radio = float(cfg.get("ojos_fijacion_px", 60))
+        if self.fijacion is None:
+            self.fijacion = (px, py)
+        else:
+            fx, fy = self.fijacion
+            if np.hypot(px - fx, py - fy) > radio:
+                # Se desliza hacia el nuevo punto en pocos ticks
+                self.fijacion = (fx + 0.35 * (px - fx), fy + 0.35 * (py - fy))
+        pyautogui.moveTo(int(self.fijacion[0]), int(self.fijacion[1]))
 
     def velocidad_por_mirada(self):
         """Modo «ojos»: el puntero se mueve como con una palanca. Mirar a un
@@ -150,10 +197,20 @@ class MouseController(metaclass=Singleton):
                 time.sleep(0.001)
                 continue
 
+            if self.calibrando:
+                time.sleep(0.01)
+                continue
+
             if ConfigManager().config.get("modo_puntero") == "ojos":
-                vel_x, vel_y = self.velocidad_por_mirada()
-                if vel_x != 0.0 or vel_y != 0.0:
-                    pyautogui.move(xOffset=vel_x, yOffset=vel_y)
+                if ConfigManager().config.get("ojos_modo", "directo") == "directo":
+                    try:
+                        self.mover_por_mirada_directa()
+                    except Exception as e:
+                        logger.warning(f"Mirada directa: {e}")
+                else:
+                    vel_x, vel_y = self.velocidad_por_mirada()
+                    if vel_x != 0.0 or vel_y != 0.0:
+                        pyautogui.move(xOffset=vel_x, yOffset=vel_y)
                 # Mantener el búfer de cabeza al día para cambiar de modo sin salto
                 if self.curr_track_loc is not None:
                     self.buffer = np.roll(self.buffer, shift=-1, axis=0)

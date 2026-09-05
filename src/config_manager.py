@@ -42,7 +42,12 @@ VALORES_POR_DEFECTO = {
     "quieto_anillo": True,       # dibujar el anillo que se llena junto al puntero
     # Cómo muevo el puntero: "cabeza" u "ojos"
     "modo_puntero": "cabeza",
-    "ojos_centro": [0.0, 0.0],   # mirada en reposo (se fija con «Fijar el centro»)
+    # Con los ojos: "directo" (el puntero va a donde miras, tras calibrar)
+    # o "palanca" (mirar a un lado empuja el puntero hacia ese lado)
+    "ojos_modo": "directo",
+    "ojos_calibracion": None,    # modelo de detectors/calibracion.py
+    "ojos_fijacion_px": 60,      # el puntero no se mueve si la mirada cambia menos
+    "ojos_centro": [0.0, 0.0],   # palanca: mirada en reposo («Fijar el centro»)
     "ojos_velocidad": 50,        # 1..100
     "ojos_zona_muerta": 4,       # 1..15, en centésimas del ancho del ojo
     "ojos_vertical": 150,        # % de velocidad extra en vertical

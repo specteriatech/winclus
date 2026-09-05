@@ -28,7 +28,9 @@ from PIL import Image
 from src.config_manager import ConfigManager
 from src.controllers import MouseController
 from src.detectors import FaceMesh
+from src.detectors import calibracion
 from src.gui.balloon import Balloon
+from src.gui.calibracion import VentanaCalibracion
 from src.gui.frames.safe_disposable_frame import SafeDisposableFrame, SafeDisposableScrollableFrame
 from src.gui.tarjetas import SelectorTarjetas
 
@@ -39,7 +41,7 @@ MAX_HOLD_TRIG = 5000
 
 OPCIONES_PUNTERO = [
     ("cabeza", "cabeza", "Con la cabeza", "Muevo la cabeza y el puntero la sigue"),
-    ("ojos", "ojo", "Con los ojos", "Miro hacia un lado y el puntero va hacia allá"),
+    ("ojos", "ojo", "Con los ojos", "El puntero va a donde miro"),
 ]
 
 AJUSTES_CABEZA = {
@@ -83,7 +85,20 @@ AJUSTES_OJOS = {
 }
 
 # Cuadro donde se ve la mirada en vivo
+AJUSTES_DIRECTO = {
+    "Quieto hasta que la mirada cambie (px)": [
+        "ojos_fijacion_px",
+        "El puntero no se mueve mientras tu\nmirada se queda cerca de donde está.\nSúbelo si el puntero tiembla;\nbájalo si no llega a cosas pequeñas.",
+        20, 200
+    ],
+    "(Avanzado) Suavizar la mirada": [
+        "ojos_suavizado", "Más suave = menos temblor,\npero responde más lento.", 1, 30
+    ],
+}
+
+# Cuadro donde se ve la mirada en vivo
 CUADRO = (220, 160)
+PANTALLA_ALTO = 124   # mini pantalla 16:9 del modo directo
 ESCALA_MIRADA = 500   # píxeles del cuadro por unidad de mirada
 
 
@@ -259,18 +274,176 @@ class FrameSelectGesture(SafeDisposableFrame):
 
 
 class FrameOjos(customtkinter.CTkFrame):
-    """Ajustes del modo «con los ojos»: fijar el centro, ver la mirada en vivo
-    y los deslizadores de velocidad."""
+    """Ajustes del modo «con los ojos»: sub-modo directo (calibrar y mirar) o
+    palanca (fijar el centro y empujar)."""
 
     def __init__(self, master, **kwargs):
         super().__init__(master, fg_color="transparent", **kwargs)
-        self.grid_columnconfigure(1, weight=1)
-        self.muestras = None       # se llena mientras se fija el centro
+        self.grid_columnconfigure(0, weight=1)
+        self.muestras = None       # se llena mientras se fija el centro (palanca)
         self.cuenta = 0
+        self.ventana_calibracion = None
+        self.al_calibrar = None    # callback para abrir la ventana (lo pone la página)
 
-        # Columna izquierda: fijar centro + cuadro de la mirada
-        izq = customtkinter.CTkFrame(self, fg_color="transparent")
-        izq.grid(row=0, column=0, padx=(16, 8), pady=12, sticky="nw")
+        # Sub-modo
+        fila = customtkinter.CTkFrame(self, fg_color="transparent")
+        fila.grid(row=0, column=0, padx=16, pady=(10, 4), sticky="w")
+        self.selector_modo = customtkinter.CTkSegmentedButton(
+            fila,
+            values=["Directo", "Palanca"],
+            width=260,
+            height=38,
+            font=estilo.fuente("boton_normal"),
+            command=self.cambiar_submodo)
+        self.selector_modo.grid(row=0, column=0, sticky="w")
+        self.explicacion = customtkinter.CTkLabel(fila,
+                                                  text="",
+                                                  text_color=estilo.TEXTO_SUAVE,
+                                                  justify=tkinter.LEFT,
+                                                  font=estilo.fuente("pequena"))
+        self.explicacion.grid(row=0, column=1, padx=(14, 0), sticky="w")
+
+        self.panel_directo = self._crear_panel_directo()
+        self.panel_palanca = self._crear_panel_palanca()
+        self.panel_directo.grid(row=1, column=0, sticky="ew")
+        self.panel_palanca.grid(row=1, column=0, sticky="ew")
+        self.submodo = None
+
+    # ------------------------------------------------------------ directo --
+    def _crear_panel_directo(self):
+        panel = customtkinter.CTkFrame(self, fg_color="transparent")
+        panel.grid_columnconfigure(1, weight=1)
+
+        izq = customtkinter.CTkFrame(panel, fg_color="transparent")
+        izq.grid(row=0, column=0, padx=(16, 8), pady=8, sticky="nw")
+        customtkinter.CTkLabel(izq,
+                               text="Primero, calibra",
+                               font=estilo.fuente("etiqueta")).grid(
+                                   row=0, column=0, sticky="w")
+        customtkinter.CTkLabel(
+            izq,
+            text=("Aparecen nueve puntos por la pantalla.\n"
+                  "Mira cada uno hasta que desaparezca.\n"
+                  "Tarda unos 25 segundos. Con Escape se cancela."),
+            text_color=estilo.TEXTO_SUAVE,
+            justify=tkinter.LEFT,
+            font=estilo.fuente("pequena")).grid(row=1, column=0, pady=(0, 6), sticky="w")
+        self.boton_calibrar = customtkinter.CTkButton(izq,
+                                                      text="Calibrar",
+                                                      width=CUADRO[0],
+                                                      height=44,
+                                                      font=estilo.fuente("boton"),
+                                                      command=self.calibrar)
+        self.boton_calibrar.grid(row=2, column=0, pady=(0, 4), sticky="w")
+        self.estado_calibracion = customtkinter.CTkLabel(izq,
+                                                         text="",
+                                                         wraplength=CUADRO[0] + 40,
+                                                         justify=tkinter.LEFT,
+                                                         font=estilo.fuente("cuerpo"))
+        self.estado_calibracion.grid(row=3, column=0, pady=(0, 6), sticky="w")
+
+        customtkinter.CTkLabel(izq,
+                               text="Dónde cae tu mirada",
+                               font=estilo.fuente("etiqueta")).grid(
+                                   row=4, column=0, pady=(6, 2), sticky="w")
+        self.pantalla = tkinter.Canvas(izq,
+                                       width=CUADRO[0],
+                                       height=PANTALLA_ALTO,
+                                       bd=0,
+                                       highlightthickness=0)
+        estilo.registrar_lienzo(self.pantalla, estilo.PANEL)
+        self.pantalla.grid(row=5, column=0, sticky="w")
+        self.p_borde = self.pantalla.create_rectangle(1, 1, CUADRO[0] - 2, PANTALLA_ALTO - 2,
+                                                      outline=estilo.BORDE[0], width=2)
+        self.p_mirada = self.pantalla.create_oval(0, 0, 0, 0, fill=estilo.AMBAR[0], outline="")
+        self.p_puntero = self.pantalla.create_oval(0, 0, 0, 0, outline=estilo.PRIMARIO[0], width=2)
+        self.p_texto = self.pantalla.create_text(CUADRO[0] // 2, PANTALLA_ALTO // 2,
+                                                 text="", fill=estilo.TEXTO_SUAVE[0],
+                                                 font=(estilo.FAMILIA_TEXTO, 10))
+
+        self.deslizadores_directo = FrameSelectGesture(panel,
+                                                       ajustes=AJUSTES_DIRECTO,
+                                                       fg_color="transparent",
+                                                       logger_name="directo_sliders")
+        self.deslizadores_directo.grid(row=0, column=1, padx=(0, 8), pady=4, sticky="nw")
+        return panel
+
+    def calibrar(self):
+        if self.al_calibrar is not None:
+            self.al_calibrar()
+
+    def calibracion_terminada(self, modelo):
+        self._texto_calibracion()
+        if modelo is None:
+            self.estado_calibracion.configure(text="Calibración cancelada.",
+                                              text_color=estilo.TEXTO_SUAVE)
+
+    def _texto_calibracion(self):
+        modelo = ConfigManager().config.get("ojos_calibracion")
+        if isinstance(modelo, dict) and "error_px" in modelo:
+            err = modelo["error_px"]
+            if err <= 80:
+                calidad, color = "buena", estilo.OK
+            elif err <= 160:
+                calidad, color = "aceptable", estilo.ALERTA
+            else:
+                calidad, color = "floja: repite con más luz", estilo.ERROR
+            self.estado_calibracion.configure(
+                text=f"Calibrado. Precisión {calidad} (±{err} px).", text_color=color)
+            if err > 160:
+                self.estado_calibracion.configure(
+                    text=f"Calibrado, pero la precisión es {calidad} (±{err} px).")
+        else:
+            self.estado_calibracion.configure(text="Sin calibrar todavía.",
+                                              text_color=estilo.ALERTA)
+
+    def _refrescar_directo(self):
+        cfg = ConfigManager().config
+        modelo = cfg.get("ojos_calibracion")
+        self.pantalla.itemconfigure(self.p_borde, outline=estilo.color_actual(estilo.BORDE))
+        self.pantalla.itemconfigure(self.p_texto, fill=estilo.color_actual(estilo.TEXTO_SUAVE))
+        if not isinstance(modelo, dict) or "monitor" not in modelo:
+            self.pantalla.itemconfigure(self.p_texto, text="Calibra para ver tu mirada")
+            self.pantalla.itemconfigure(self.p_mirada, state="hidden")
+            self.pantalla.itemconfigure(self.p_puntero, state="hidden")
+            return
+        x1, y1, x2, y2 = modelo["monitor"]
+        ex = (CUADRO[0] - 4) / max(1, x2 - x1)
+        ey = (PANTALLA_ALTO - 4) / max(1, y2 - y1)
+
+        punto = MouseController().punto_directo
+        if punto is None and MouseController().is_active is not None and not MouseController(
+        ).is_active.get():
+            # En pausa el controlador no calcula: se estima aquí para la vista
+            r = FaceMesh().get_rasgos()
+            if r is not None:
+                punto = calibracion.predecir(modelo, r)
+        if punto is None:
+            self.pantalla.itemconfigure(self.p_texto, text="No veo tus ojos")
+            self.pantalla.itemconfigure(self.p_mirada, state="hidden")
+        else:
+            px = 2 + (punto[0] - x1) * ex
+            py = 2 + (punto[1] - y1) * ey
+            self.pantalla.coords(self.p_mirada, px - 5, py - 5, px + 5, py + 5)
+            self.pantalla.itemconfigure(self.p_mirada, state="normal")
+            self.pantalla.itemconfigure(self.p_texto, text="")
+        fij = MouseController().fijacion
+        if fij is None:
+            self.pantalla.itemconfigure(self.p_puntero, state="hidden")
+        else:
+            fx = 2 + (fij[0] - x1) * ex
+            fy = 2 + (fij[1] - y1) * ey
+            self.pantalla.coords(self.p_puntero, fx - 8, fy - 8, fx + 8, fy + 8)
+            self.pantalla.itemconfigure(self.p_puntero, state="normal",
+                                        outline=estilo.color_actual(estilo.PRIMARIO))
+
+    # ------------------------------------------------------------ palanca --
+    def _crear_panel_palanca(self):
+        panel = customtkinter.CTkFrame(self, fg_color="transparent")
+        panel.grid_columnconfigure(1, weight=1)
+
+        izq = customtkinter.CTkFrame(panel, fg_color="transparent")
+        izq.grid(row=0, column=0, padx=(16, 8), pady=8, sticky="nw")
 
         customtkinter.CTkLabel(izq,
                                text="Primero, fija el centro",
@@ -320,18 +493,13 @@ class FrameOjos(customtkinter.CTkFrame):
                                                     fill=estilo.TEXTO_SUAVE[0],
                                                     font=(estilo.FAMILIA_TEXTO, 10))
 
-        # Columna derecha: deslizadores
-        self.deslizadores = FrameSelectGesture(self,
+        self.deslizadores = FrameSelectGesture(panel,
                                                ajustes=AJUSTES_OJOS,
                                                fg_color="transparent",
                                                logger_name="ojos_sliders")
         self.deslizadores.grid(row=0, column=1, padx=(0, 8), pady=4, sticky="nw")
+        return panel
 
-    def cargar(self):
-        self.deslizadores.inner_refresh_profile()
-        self.aviso.configure(text="")
-
-    # ------------------------------------------------------- fijar centro --
     def fijar_centro(self):
         if self.muestras is not None:
             return
@@ -373,8 +541,7 @@ class FrameOjos(customtkinter.CTkFrame):
         self.muestras = None
         self.boton.configure(state="normal")
 
-    # -------------------------------------------------------------- vivo --
-    def refrescar(self):
+    def _refrescar_palanca(self):
         cfg = ConfigManager().config
         cx, cy = CUADRO[0] // 2, CUADRO[1] // 2
         r = cfg.get("ojos_zona_muerta", 4) / 100 * ESCALA_MIRADA
@@ -402,6 +569,42 @@ class FrameOjos(customtkinter.CTkFrame):
             self.texto_cuadro,
             text=f"x {m[0] - c0[0]:+.3f}   y {m[1] - c0[1]:+.3f}")
 
+    # ------------------------------------------------------------- común --
+    def cargar(self):
+        submodo = ConfigManager().config.get("ojos_modo", "directo")
+        self.selector_modo.set("Palanca" if submodo == "palanca" else "Directo")
+        self._mostrar_submodo(submodo)
+        self.deslizadores.inner_refresh_profile()
+        self.deslizadores_directo.inner_refresh_profile()
+        self.aviso.configure(text="")
+        self._texto_calibracion()
+
+    def _mostrar_submodo(self, submodo):
+        self.submodo = submodo
+        if submodo == "palanca":
+            self.panel_directo.grid_remove()
+            self.panel_palanca.grid()
+            self.explicacion.configure(
+                text="Palanca: mirar hacia un lado empuja el puntero hacia ese lado.")
+        else:
+            self.panel_palanca.grid_remove()
+            self.panel_directo.grid()
+            self.explicacion.configure(
+                text="Directo: el puntero va al punto de la pantalla que miras.")
+
+    def cambiar_submodo(self, nombre):
+        submodo = "palanca" if nombre == "Palanca" else "directo"
+        ConfigManager().set_temp_config("ojos_modo", submodo)
+        ConfigManager().apply_config()
+        MouseController().reiniciar_mirada()
+        self._mostrar_submodo(submodo)
+
+    def refrescar(self):
+        if self.submodo == "palanca":
+            self._refrescar_palanca()
+        else:
+            self._refrescar_directo()
+
 
 class PageCursor(SafeDisposableFrame):
 
@@ -427,7 +630,8 @@ class PageCursor(SafeDisposableFrame):
         self.top_label.grid(row=0, column=0, padx=20, pady=(5, 0), sticky="nw")
 
         des_txt = ("Con la cabeza es lo más preciso. Con los ojos sirve si no puedes "
-                   "mover la cabeza: el puntero va hacia donde miras, como una palanca.")
+                   "mover la cabeza: tras una calibración corta, el puntero va al "
+                   "punto que miras.")
         des_label = customtkinter.CTkLabel(master=c,
                                            text=des_txt,
                                            wraplength=700,
@@ -452,8 +656,20 @@ class PageCursor(SafeDisposableFrame):
         self.frame_cabeza.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
         self.frame_ojos = FrameOjos(self.tarjeta)
         self.frame_ojos.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
+        self.frame_ojos.al_calibrar = self.abrir_calibracion
+        self.ventana_calibracion = None
         self.modo = None
         self.cargar_modo()
+
+    def abrir_calibracion(self):
+        if self.ventana_calibracion is not None:
+            return
+        self.ventana_calibracion = VentanaCalibracion(self.winfo_toplevel(),
+                                                      self.calibracion_terminada)
+
+    def calibracion_terminada(self, modelo):
+        self.ventana_calibracion = None
+        self.frame_ojos.calibracion_terminada(modelo)
 
     def cargar_modo(self):
         modo = ConfigManager().config.get("modo_puntero", "cabeza")
