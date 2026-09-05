@@ -342,6 +342,25 @@ class FrameOjos(customtkinter.CTkFrame):
                                                          justify=tkinter.LEFT,
                                                          font=estilo.fuente("cuerpo"))
         self.estado_calibracion.grid(row=3, column=0, pady=(0, 6), sticky="w")
+        fila_btn = customtkinter.CTkFrame(izq, fg_color="transparent")
+        fila_btn.grid(row=6, column=0, pady=(8, 0), sticky="w")
+        self.boton_comprobar = customtkinter.CTkButton(
+            fila_btn, text="Comprobar precisión", width=CUADRO[0], height=36,
+            fg_color=estilo.TARJETA, border_width=2, border_color=estilo.PRIMARIO,
+            text_color=estilo.PRIMARIO, hover_color=estilo.PRIMARIO_SUAVE,
+            font=estilo.fuente("boton_normal"), command=self.comprobar)
+        self.boton_comprobar.grid(row=0, column=0, pady=(0, 6), sticky="w")
+        self.boton_mejorar = customtkinter.CTkButton(
+            fila_btn, text="Mejorar con los datos guardados", width=CUADRO[0], height=36,
+            fg_color=estilo.TARJETA, border_width=2, border_color=estilo.PRIMARIO,
+            text_color=estilo.PRIMARIO, hover_color=estilo.PRIMARIO_SUAVE,
+            font=estilo.fuente("boton_normal"), command=self.mejorar)
+        self.boton_mejorar.grid(row=1, column=0, sticky="w")
+        self.aviso_mejora = customtkinter.CTkLabel(fila_btn, text="", wraplength=CUADRO[0] + 40,
+                                                   justify=tkinter.LEFT,
+                                                   text_color=estilo.TEXTO_SUAVE,
+                                                   font=estilo.fuente("pequena"))
+        self.aviso_mejora.grid(row=2, column=0, pady=(2, 0), sticky="w")
 
         customtkinter.CTkLabel(izq,
                                text="Dónde cae tu mirada",
@@ -403,7 +422,50 @@ class FrameOjos(customtkinter.CTkFrame):
             text_color=estilo.TEXTO_SUAVE,
             justify=tkinter.LEFT,
             font=estilo.fuente("pequena")).grid(row=3, column=0, padx=(28, 0), pady=(0, 4), sticky="w")
+
+        # Opciones de la calibración
+        customtkinter.CTkLabel(opciones, text="Opciones de la calibración",
+                               font=estilo.fuente("etiqueta")).grid(row=4, column=0, pady=(12, 2), sticky="w")
+        self.opc = {}
+        fila = 5
+        for clave, titulo, valores, ayuda in (
+                ("calib_modo", "Duración", [("rapida", "Rápida"), ("normal", "Normal"), ("completa", "Completa")],
+                 "Rápida: 9 puntos, 30 s. Normal: 13 puntos y punto móvil, 1 min. Completa: 25 puntos y punto móvil largo, 2 min."),
+                ("ojos_usar", "Ojos", [("ambos", "Los dos"), ("derecho", "Solo derecho"), ("izquierdo", "Solo izquierdo")],
+                 "Si un ojo se ve peor o desvía (estrabismo), calibra solo con el otro.")):
+            customtkinter.CTkLabel(opciones, text=titulo, font=estilo.fuente("cuerpo")).grid(
+                row=fila, column=0, pady=(4, 0), sticky="w")
+            seg = customtkinter.CTkSegmentedButton(
+                opciones, values=[v[1] for v in valores], height=32,
+                font=estilo.fuente("pequena"),
+                command=lambda nombre, c=clave, vs=valores: self._guardar(
+                    c, next(k for k, n in vs if n == nombre)))
+            seg.grid(row=fila + 1, column=0, sticky="w")
+            customtkinter.CTkLabel(opciones, text=ayuda, wraplength=430, justify=tkinter.LEFT,
+                                   text_color=estilo.TEXTO_SUAVE,
+                                   font=estilo.fuente("pequena")).grid(row=fila + 2, column=0, pady=(0, 4), sticky="w")
+            self.opc[clave] = (seg, valores)
+            fila += 3
+        self.opc_vars = {}
+        for clave, texto in (("calib_lento", "Más tiempo en cada punto"),
+                             ("calib_punto_grande", "Punto más grande"),
+                             ("calib_cabeza", "Paso final de compensación de cabeza")):
+            var = tkinter.BooleanVar(value=False)
+            customtkinter.CTkCheckBox(opciones, text=texto, variable=var, font=estilo.fuente("cuerpo"),
+                                      command=lambda c=clave, v=var: self._guardar(c, bool(v.get()))).grid(
+                                          row=fila, column=0, pady=(2, 0), sticky="w")
+            self.opc_vars[clave] = var
+            fila += 1
         return panel
+
+    def _cargar_opciones(self):
+        cfg = ConfigManager().config
+        for clave, (seg, valores) in self.opc.items():
+            actual = cfg.get(clave)
+            nombre = next((n for k, n in valores if k == actual), valores[0][1])
+            seg.set(nombre)
+        for clave, var in self.opc_vars.items():
+            var.set(bool(cfg.get(clave, False)))
 
     def _guardar(self, clave, valor):
         ConfigManager().set_temp_config(clave, valor)
@@ -411,7 +473,58 @@ class FrameOjos(customtkinter.CTkFrame):
 
     def calibrar(self):
         if self.al_calibrar is not None:
-            self.al_calibrar()
+            self.al_calibrar(False)
+
+    def comprobar(self):
+        modelo = ConfigManager().config.get("ojos_calibracion")
+        if not calibracion.es_valido(modelo):
+            self.aviso_mejora.configure(text="Primero hay que calibrar.")
+            return
+        if self.al_calibrar is not None:
+            self.al_calibrar(True)
+
+    def mejorar(self):
+        """Prueba variantes del modelo sobre los datos crudos de la última
+        calibración y se queda con la de menor error en la comprobación."""
+        import json
+        from pathlib import Path
+        from src.detectors.mirada import NOMBRES_RASGOS
+        ruta = Path(ConfigManager().curr_profile_path, "calibracion_datos.json")
+        if not ruta.is_file():
+            self.aviso_mejora.configure(text="No hay datos guardados: calibra primero.")
+            return
+        try:
+            with open(ruta, encoding="utf-8") as f:
+                datos = json.load(f)
+        except Exception as e:
+            self.aviso_mejora.configure(text=f"No se pudieron leer los datos: {e}")
+            return
+        if datos.get("rasgos_fijos") and len(datos["rasgos_fijos"][0]) != len(NOMBRES_RASGOS):
+            self.aviso_mejora.configure(text="Los datos son de una versión anterior: calibra otra vez.")
+            return
+        actual = ConfigManager().config.get("ojos_calibracion") or {}
+        base = calibracion.inactivos_por_ojos(NOMBRES_RASGOS, ConfigManager().config.get("ojos_usar", "ambos"))
+        self.aviso_mejora.configure(text="Probando variantes…")
+        self.update_idletasks()
+        modelo, nombre, err, tabla = calibracion.mejorar_con_datos(datos, NOMBRES_RASGOS, base)
+        if modelo is None:
+            self.aviso_mejora.configure(text=f"No se pudo mejorar: {nombre}.")
+            return
+        for k in ("sesgo", "cabeza_ref", "cabeza_coef", "retraso_ms", "cabeza_mejora_px"):
+            if k in actual:
+                modelo[k] = actual[k]
+        actual_err = actual.get("error_real_px", actual.get("error_px", 9999))
+        logger.info("Variantes: " + "; ".join(f"{n}: {e:.0f}/{l}" for n, e, l in tabla[:8]))
+        if err + 2 < actual_err:
+            ConfigManager().set_temp_config("ojos_calibracion", modelo)
+            ConfigManager().apply_config()
+            MouseController().reiniciar_mirada()
+            self.aviso_mejora.configure(
+                text=f"Mejor: «{nombre}», error {err:.0f} px (antes {actual_err}). Aplicado.")
+        else:
+            self.aviso_mejora.configure(
+                text=f"El modelo actual ya es el mejor ({actual_err} px; la mejor variante da {err:.0f}).")
+        self._texto_calibracion()
 
     def calibracion_terminada(self, modelo):
         self._texto_calibracion()
@@ -448,6 +561,31 @@ class FrameOjos(customtkinter.CTkFrame):
             self.estado_calibracion.configure(text="Sin calibrar todavía.",
                                               text_color=estilo.ALERTA)
 
+    def _dibujar_mapa_errores(self, modelo, x1, y1, ex, ey):
+        """Puntos de la calibración con una línea hacia donde cayó la
+        previsión (gris: puntos fijos; ámbar: comprobación). Se redibuja solo
+        cuando cambia el modelo."""
+        clave = (id(modelo), len(modelo.get("residuos_comprobacion", [])))
+        if getattr(self, "_mapa_clave", None) == clave:
+            return
+        self._mapa_clave = clave
+        for item in getattr(self, "_mapa_items", []):
+            self.pantalla.delete(item)
+        items = []
+        gris = estilo.color_actual(estilo.TEXTO_SUAVE)
+        ambar = estilo.color_actual(estilo.AMBAR)
+        for (px, py), (dx, dy) in zip(modelo.get("puntos", []), modelo.get("residuos_fijos", [])):
+            cx, cy = 2 + (px - x1) * ex, 2 + (py - y1) * ey
+            items.append(self.pantalla.create_oval(cx - 2, cy - 2, cx + 2, cy + 2, fill=gris, outline=""))
+            items.append(self.pantalla.create_line(cx, cy, cx + dx * ex, cy + dy * ey, fill=gris))
+        for px, py, dx, dy in modelo.get("residuos_comprobacion", []):
+            cx, cy = 2 + (px - x1) * ex, 2 + (py - y1) * ey
+            items.append(self.pantalla.create_oval(cx - 2, cy - 2, cx + 2, cy + 2, fill=ambar, outline=""))
+            items.append(self.pantalla.create_line(cx, cy, cx + dx * ex, cy + dy * ey, fill=ambar, width=2))
+        for item in items:
+            self.pantalla.tag_lower(item, self.p_mirada)
+        self._mapa_items = items
+
     def _refrescar_directo(self):
         cfg = ConfigManager().config
         modelo = cfg.get("ojos_calibracion")
@@ -461,6 +599,7 @@ class FrameOjos(customtkinter.CTkFrame):
         x1, y1, x2, y2 = modelo["monitor"]
         ex = (CUADRO[0] - 4) / max(1, x2 - x1)
         ey = (PANTALLA_ALTO - 4) / max(1, y2 - y1)
+        self._dibujar_mapa_errores(modelo, x1, y1, ex, ey)
 
         punto = MouseController().punto_directo
         if punto is None and MouseController().is_active is not None and not MouseController(
@@ -629,7 +768,9 @@ class FrameOjos(customtkinter.CTkFrame):
         self.deslizadores_directo.inner_refresh_profile()
         self.lupa_var.set(bool(ConfigManager().config.get("lupa_activa", True)))
         self.recentrar_var.set(bool(ConfigManager().config.get("ojos_recentrar_largo", True)))
+        self._cargar_opciones()
         self.aviso.configure(text="")
+        self.aviso_mejora.configure(text="")
         self._texto_calibracion()
 
     def _mostrar_submodo(self, submodo):
@@ -714,11 +855,12 @@ class PageCursor(SafeDisposableFrame):
         self.modo = None
         self.cargar_modo()
 
-    def abrir_calibracion(self):
+    def abrir_calibracion(self, solo_comprobar=False):
         if self.ventana_calibracion is not None:
             return
         self.ventana_calibracion = VentanaCalibracion(self.winfo_toplevel(),
-                                                      self.calibracion_terminada)
+                                                      self.calibracion_terminada,
+                                                      solo_comprobar=solo_comprobar)
 
     def calibracion_terminada(self, modelo):
         self.ventana_calibracion = None

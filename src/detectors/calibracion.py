@@ -62,10 +62,12 @@ def _error_loo(X, P, pesos, n_fijos, lam):
 
 
 def ajustar(puntos_pantalla, rasgos, monitor, puntos_seguimiento=None,
-            rasgos_seguimiento=None) -> dict:
+            rasgos_seguimiento=None, inactivos=None, lambdas=None) -> dict:
     """puntos_pantalla: lista de (x, y) en píxeles de los puntos fijos;
     rasgos: un vector por punto (mediana de sus muestras). Opcionalmente las
-    muestras del seguimiento suave. monitor: (x1, y1, x2, y2)."""
+    muestras del seguimiento suave. monitor: (x1, y1, x2, y2).
+    inactivos: índices de rasgos que no se usan (se ponen a cero, y el modelo
+    lo recuerda para hacer lo mismo al predecir)."""
     P = np.asarray(puntos_pantalla, dtype=np.float64)
     R = np.asarray(rasgos, dtype=np.float64)
     if puntos_seguimiento is not None and len(puntos_seguimiento) > 0:
@@ -74,6 +76,13 @@ def ajustar(puntos_pantalla, rasgos, monitor, puntos_seguimiento=None,
     else:
         Ps = np.zeros((0, 2))
         Rs = np.zeros((0, R.shape[1]))
+    inactivos = sorted(set(int(i) for i in (inactivos or []) if 0 <= int(i) < R.shape[1]))
+    if inactivos:
+        R = R.copy()
+        Rs = Rs.copy()
+        R[:, inactivos] = 0.0
+        Rs[:, inactivos] = 0.0
+    candidatos = tuple(lambdas) if lambdas else LAMBDAS
 
     descartados = []
     for _ in range(MAX_DESCARTES_FIJOS + 1):
@@ -88,7 +97,7 @@ def ajustar(puntos_pantalla, rasgos, monitor, puntos_seguimiento=None,
 
         # Elegir la regularización por validación cruzada
         mejor = None
-        for lam in LAMBDAS:
+        for lam in candidatos:
             e = _error_loo(X, P_todo, pesos, n_fijos, lam) if n_fijos >= 4 else np.array([0.0])
             med = float(np.median(e))
             if mejor is None or med < mejor[0]:
@@ -129,6 +138,10 @@ def ajustar(puntos_pantalla, rasgos, monitor, puntos_seguimiento=None,
             Ps_k = Ps
         error_seg = float(np.median(np.hypot(Xs @ coef_x - Ps_k[:, 0], Xs @ coef_y - Ps_k[:, 1])))
 
+    # Residuo (vector) de cada punto fijo con el modelo final, para el mapa
+    X_fijos = X[:n_fijos]
+    residuos = np.column_stack([X_fijos @ coef_x - P[:, 0], X_fijos @ coef_y - P[:, 1]])
+
     modelo = {
         "media": media.tolist(),
         "desv": desv.tolist(),
@@ -136,6 +149,8 @@ def ajustar(puntos_pantalla, rasgos, monitor, puntos_seguimiento=None,
         "coef_y": coef_y.tolist(),
         "monitor": list(monitor),
         "puntos": P.tolist(),
+        "residuos_fijos": residuos.round(1).tolist(),
+        "inactivos": inactivos,
         "lambda": lam,
         "n_muestras": int(len(P) + len(Ps) - n_seg_descartadas),
         "descartados": descartados,
@@ -187,7 +202,11 @@ def predecir(modelo: dict, rasgos, con_sesgo: bool = True, cabeza=None):
     `sesgo` es la corrección rápida del centro (ver gui/calibracion.py).
     `cabeza` es la postura actual (ver FaceMesh.calc_cabeza); si el modelo
     tiene compensación de cabeza, se aplica."""
-    r = (np.asarray(rasgos, dtype=np.float64) - modelo["media"]) / modelo["desv"]
+    rasgos = np.asarray(rasgos, dtype=np.float64)
+    if modelo.get("inactivos"):
+        rasgos = rasgos.copy()
+        rasgos[modelo["inactivos"]] = 0.0
+    r = (rasgos - modelo["media"]) / modelo["desv"]
     x_ = np.concatenate([[1.0], r])
     x = float(x_ @ modelo["coef_x"])
     y = float(x_ @ modelo["coef_y"])
@@ -282,6 +301,70 @@ def corregir_centro(modelo: dict, rasgos_centro, centro) -> dict:
     nuevo["sesgo"] = [sx, sy]
     logger.info(f"Centro corregido: sesgo ({sx:.0f}, {sy:.0f}) px")
     return nuevo
+
+
+# --------------------------------------------- mejorar con datos guardados --
+def inactivos_por_ojos(nombres, ojos: str):
+    """Índices de rasgos a anular según «ojos_usar»: ambos, derecho o izquierdo."""
+    if ojos == "derecho":
+        return [i for i, n in enumerate(nombres) if n.endswith("_izq")]
+    if ojos == "izquierdo":
+        return [i for i, n in enumerate(nombres) if n.endswith("_der")]
+    return []
+
+
+VARIANTES = {
+    "modelo completo": (),
+    "sin blendshapes": ("bx", "by"),
+    "sin cuadráticos": ("gx2", "gy2", "gxgy"),
+    "sin cúbicos": ("gx3", "gy3"),
+    "sin cúbicos ni cuadráticos": ("gx2", "gy2", "gxgy", "gx3", "gy3"),
+    "sin apertura": ("ap_der", "ap_izq"),
+    "sin párpados": ("gyp_der", "gyp_izq"),
+    "sin blendshapes ni apertura": ("bx", "by", "ap_der", "ap_izq"),
+    "solo ojo derecho": ("gx_izq", "gy_izq", "gyp_izq", "ap_izq"),
+    "solo ojo izquierdo": ("gx_der", "gy_der", "gyp_der", "ap_der"),
+    "solo iris": ("bx", "by", "ap_der", "ap_izq", "gx2", "gy2", "gxgy", "gx3", "gy3"),
+}
+
+
+def mejorar_con_datos(datos: dict, nombres, base_inactivos=None):
+    """Prueba variantes del modelo (grupos de rasgos y regularizaciones) sobre
+    los datos crudos de una calibración y devuelve la que menos error da en
+    los puntos de comprobación: (modelo, nombre_variante, error, tabla)."""
+    comp = datos.get("comprobacion") or []
+    if len(comp) < 3:
+        return None, "sin puntos de comprobación", None, []
+    base_inactivos = set(base_inactivos or [])
+    tabla = []
+    mejor = None
+    for nombre, quitar in VARIANTES.items():
+        inact = sorted(base_inactivos | {i for i, n in enumerate(nombres) if n in quitar})
+        if len(inact) >= len(nombres) - 1:
+            continue
+        for lambdas in (None, (0.02,), (0.15,), (2.0,), (8.0,), (30.0,)):
+            try:
+                m = ajustar(datos["puntos_fijos"], datos["rasgos_fijos"], datos["monitor"],
+                            datos.get("seguimiento_puntos"), datos.get("seguimiento_rasgos"),
+                            inactivos=inact, lambdas=lambdas)
+            except Exception as e:
+                logger.warning(f"Variante {nombre} falló: {e}")
+                continue
+            errores = [float(np.hypot(*(np.subtract(predecir(m, c["rasgos"], con_sesgo=False),
+                                                    (c["x"], c["y"])))))
+                       for c in comp]
+            err = float(np.median(errores))
+            etiqueta = f"{nombre} (lambda {m['lambda']})"
+            tabla.append((etiqueta, err, m["error_px"]))
+            if mejor is None or err < mejor[2]:
+                m["error_real_px"] = round(err)
+                m["errores_comprobacion"] = [round(e) for e in errores]
+                m["variante"] = etiqueta
+                mejor = (m, etiqueta, err)
+    tabla.sort(key=lambda t: t[1])
+    if mejor is None:
+        return None, "no se pudo ajustar", None, tabla
+    return mejor[0], mejor[1], mejor[2], tabla
 
 
 def es_valido(modelo, n_rasgos=None) -> bool:

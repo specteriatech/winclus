@@ -60,6 +60,12 @@ VALORES_POR_DEFECTO = {
     "lupa_region_px": 220,       # lado de la zona real que se agranda
     "lupa_tiempo_max_s": 8,      # se cierra sola si no se hace clic
     "ojos_recentrar_largo": True,   # ojos cerrados 1,2 s = corregir el centro
+    # Opciones de la calibración
+    "calib_modo": "normal",      # "rapida" (9 puntos), "normal" (13 + seguimiento), "completa" (25 + largo)
+    "calib_lento": False,        # más tiempo por punto
+    "calib_punto_grande": False, # punto más grande, para quien ve peor
+    "calib_cabeza": True,        # paso opcional de compensación de cabeza
+    "ojos_usar": "ambos",        # "ambos", "derecho" o "izquierdo"
     "ojos_centro": [0.0, 0.0],   # palanca: mirada en reposo («Fijar el centro»)
     "ojos_velocidad": 50,        # 1..100
     "ojos_zona_muerta": 4,       # 1..15, en centésimas del ancho del ojo

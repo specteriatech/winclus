@@ -1,16 +1,23 @@
 """Ventana de calibración del modo directo.
 
-Ocupa toda la pantalla donde está el puntero. Tiene dos fases:
+Ocupa toda la pantalla donde está el puntero. Fases:
 
-1. Nueve puntos fijos, uno a uno: hay un momento para llegar con la vista (el
-   punto se encoge) y luego se miden los rasgos de la mirada.
-2. Seguimiento suave: un punto recorre la pantalla despacio en zigzag y la
-   persona lo sigue con la vista. Cada fotograma da una muestra; la mirada va
-   unos 100 ms por detrás del punto, y eso se compensa.
+0. Comprobación previa: los ojos agrandados, con aviso de luz y distancia.
+1. Puntos fijos, uno a uno (9, 13 o 25 según «calib_modo»): hay un momento
+   para llegar con la vista (el punto se encoge) y luego se miden los rasgos.
+2. Seguimiento suave (no en el modo rápido): un punto recorre la pantalla en
+   zigzag; el retraso de la mirada se estima de los propios datos.
+3. Comprobación: cuatro puntos que no entran en el ajuste dan el error real.
+4. Cabeza (opcional, «calib_cabeza»): mirar el centro moviendo un poco la
+   cabeza para aprender a compensar sus giros.
+
+Con «solo_comprobar» solo se hace la fase 3 sobre el modelo ya guardado.
+Otras opciones: «calib_lento» (más tiempo por punto), «calib_punto_grande»
+y «ojos_usar» (los dos ojos, solo el derecho o solo el izquierdo).
 
 No hace falta pulsar nada; con Escape se cancela. Al terminar se ajusta el
-modelo (detectors/calibracion.py), se guarda en el perfil y se avisa a quien
-la abrió con el resultado.
+modelo (detectors/calibracion.py), se guarda en el perfil junto con las
+muestras crudas (calibracion_datos.json) y se avisa a quien la abrió.
 """
 
 import logging
@@ -54,10 +61,28 @@ def monitor_del_puntero():
 
 class VentanaCalibracion:
 
-    def __init__(self, tk_root, al_terminar, con_seguimiento=True):
+    def __init__(self, tk_root, al_terminar, con_seguimiento=True, solo_comprobar=False):
         self.al_terminar = al_terminar
-        self.con_seguimiento = con_seguimiento
         self.cancelada = False
+        self.solo_comprobar = solo_comprobar
+        cfg = ConfigManager().config
+        modo = cfg.get("calib_modo", "normal")
+        if modo not in ("rapida", "normal", "completa"):
+            modo = "normal"
+        self.modo = modo
+        factor = 1.6 if cfg.get("calib_lento", False) else 1.0
+        self.espera = int(ESPERA_MS * factor)
+        self.medida = int(MEDIDA_MS * factor)
+        grande = 1.6 if cfg.get("calib_punto_grande", False) else 1.0
+        self.r_grande = int(RADIO_GRANDE * grande)
+        self.r_pequeno = int(RADIO_PEQUENO * grande)
+        self.seguimiento_s = {"rapida": 0.0, "normal": SEGUIMIENTO_S, "completa": SEGUIMIENTO_S * 1.8}[modo]
+        self.con_seguimiento = con_seguimiento and self.seguimiento_s > 0
+        self.con_cabeza = bool(cfg.get("calib_cabeza", True))
+        from src.detectors.mirada import NOMBRES_RASGOS
+        from src.detectors.calibracion import inactivos_por_ojos
+        self.inactivos = inactivos_por_ojos(NOMBRES_RASGOS, cfg.get("ojos_usar", "ambos"))
+        self.modelo = None
         self.monitor = monitor_del_puntero()
         x1, y1, x2, y2 = self.monitor
         self.w, self.h = x2 - x1, y2 - y1
@@ -84,13 +109,20 @@ class VentanaCalibracion:
             w - 40, h - 30, text="", fill=TEXTO, anchor="e",
             font=(estilo.FAMILIA_TEXTO, 14))
 
-        # Trece puntos: el centro primero y luego una rejilla de 4 x 3
-        xs = [x1 + w * MARGEN, x1 + w * 0.36, x1 + w * 0.64, x2 - w * MARGEN]
-        ys = [y1 + h * MARGEN, y1 + h / 2, y2 - h * MARGEN]
-        self.objetivos = [(x1 + w / 2, y1 + h / 2)]
-        for yy in ys:
-            for xx in xs:
-                self.objetivos.append((xx, yy))
+        # Rejilla de puntos fijos según el modo, con el centro primero
+        if modo == "rapida":
+            fx, fy = (MARGEN, 0.5, 1 - MARGEN), (MARGEN, 0.5, 1 - MARGEN)
+        elif modo == "completa":
+            fx = fy = (MARGEN, 0.29, 0.5, 0.71, 1 - MARGEN)
+        else:
+            fx, fy = (MARGEN, 0.36, 0.64, 1 - MARGEN), (MARGEN, 0.5, 1 - MARGEN)
+        centro = (x1 + w / 2, y1 + h / 2)
+        self.objetivos = [centro]
+        for g in fy:
+            for f in fx:
+                pt = (x1 + w * f, y1 + h * g)
+                if abs(pt[0] - centro[0]) > 1 or abs(pt[1] - centro[1]) > 1:
+                    self.objetivos.append(pt)
         self.indice = -1
         self.muestras = []
         self.rasgos_por_punto = []
@@ -112,6 +144,15 @@ class VentanaCalibracion:
         self.previa_ok_desde = None
 
         MouseController().calibrando = True
+        if self.solo_comprobar:
+            self.modelo = dict(cfg.get("ojos_calibracion") or {})
+            if not es_valido(self.modelo):
+                self.ventana.after(50, self.cancelar)
+                return
+            self.retraso_estimado = self.modelo.get("retraso_ms", 100) / 1000
+            self._mostrar_texto("Comprobación de la precisión:\nmira cada punto hasta que desaparezca.")
+            self.ventana.after(2200, self._empezar_comprobacion)
+            return
         self._mostrar_texto("Primero, comprobemos cómo se ven tus ojos.")
         self.ventana.after(300, self._previa)
 
@@ -189,7 +230,8 @@ class VentanaCalibracion:
             if self.con_seguimiento:
                 self._empezar_seguimiento()
             else:
-                self._terminar()
+                self.retraso_estimado = 0.0
+                self._ajustar_y_comprobar()
             return
         self.lienzo.itemconfigure(self.contador,
                                   text=f"{self.indice + 1} de {len(self.objetivos)}")
@@ -209,11 +251,11 @@ class VentanaCalibracion:
             return
         self.t0 += TICK_MS
         x, y = self.objetivos[self.indice]
-        if self.t0 <= ESPERA_MS:
-            f = self.t0 / ESPERA_MS
-            self._dibujar_punto(x, y, int(RADIO_GRANDE - (RADIO_GRANDE - RADIO_PEQUENO) * f))
-        elif self.t0 <= ESPERA_MS + MEDIDA_MS:
-            self._dibujar_punto(x, y, RADIO_PEQUENO)
+        if self.t0 <= self.espera:
+            f = self.t0 / self.espera
+            self._dibujar_punto(x, y, int(self.r_grande - (self.r_grande - self.r_pequeno) * f))
+        elif self.t0 <= self.espera + self.medida:
+            self._dibujar_punto(x, y, self.r_pequeno)
             r = FaceMesh().get_rasgos()
             if r is not None:
                 self.muestras.append(r)
@@ -245,7 +287,7 @@ class VentanaCalibracion:
     def _posicion_seguimiento(self, s):
         """Zigzag suave: baja despacio mientras va y viene de lado a lado."""
         x1, y1, x2, y2 = self.monitor
-        f = min(1.0, max(0.0, s / SEGUIMIENTO_S))
+        f = min(1.0, max(0.0, s / self.seguimiento_s))
         # x: seno con 3 vueltas completas (la vuelta es suave, sin picos)
         x = x1 + self.w / 2 + (self.w / 2 - self.w * MARGEN) * math.sin(2 * math.pi * 3 * f)
         # y: de arriba abajo con arranque y frenada suaves
@@ -272,7 +314,7 @@ class VentanaCalibracion:
         ahora = time.time()
         s = ahora - self.t_seg
         x, y = self._posicion_seguimiento(s)
-        self._dibujar_punto(x, y, RADIO_PEQUENO + 4)
+        self._dibujar_punto(x, y, self.r_pequeno + 4)
         self.seg_historial.append((ahora, x, y))
 
         # Se guarda la mirada con su instante; el retraso respecto al punto
@@ -282,7 +324,7 @@ class VentanaCalibracion:
         if r is not None and s > 1.0 and (not self.seg_muestras or self.seg_muestras[-1][1] is not r):
             self.seg_muestras.append((ahora, r))
 
-        if s >= SEGUIMIENTO_S:
+        if s >= self.seguimiento_s:
             retraso, self.seg_puntos, self.seg_rasgos = estimar_retraso(
                 self.seg_historial, self.seg_muestras)
             self.retraso_estimado = retraso
@@ -298,18 +340,22 @@ class VentanaCalibracion:
             perdidos = set(getattr(self, "objetivos_perdidos", []))
             objetivos = [o for i, o in enumerate(self.objetivos) if i not in perdidos]
             self.modelo = ajustar(objetivos, self.rasgos_por_punto, self.monitor,
-                                  self.seg_puntos, self.seg_rasgos)
+                                  self.seg_puntos, self.seg_rasgos, inactivos=self.inactivos)
         except Exception as e:
             logger.error(f"No se pudo calibrar: {e}")
             self.modelo = None
             self._terminar()
             return
+        self._empezar_comprobacion()
+
+    def _empezar_comprobacion(self):
         x1, y1, x2, y2 = self.monitor
         self.comprobacion = [(x1 + self.w * f, y1 + self.h * g)
                              for f, g in ((0.28, 0.3), (0.72, 0.3), (0.28, 0.7), (0.72, 0.7))]
         self.errores = []
         self.indice_comp = -1
-        self._mostrar_texto("Ya casi. Ahora se comprueba la precisión:\nmira otra vez cada punto.")
+        if not self.solo_comprobar:
+            self._mostrar_texto("Ya casi. Ahora se comprueba la precisión:\nmira otra vez cada punto.")
         self.lienzo.itemconfigure(self.contador, text="comprobación")
         self.ventana.after(2200, self._siguiente_comprobacion)
 
@@ -331,7 +377,7 @@ class VentanaCalibracion:
     def _empezar_cabeza(self):
         """Fase opcional: mirar el centro moviendo un poco la cabeza. Quien no
         pueda moverla solo espera; entonces no se aprende nada."""
-        if self.modelo is None:
+        if self.modelo is None or self.solo_comprobar or not self.con_cabeza:
             self._terminar()
             return
         self._mostrar_texto("Último paso, opcional. Mira el punto del centro y, si puedes,\n"
@@ -354,7 +400,7 @@ class VentanaCalibracion:
             return
         from src.detectors.calibracion import ajustar_cabeza
         s = time.time() - self.t_cabeza
-        self._dibujar_punto(self.objetivo_cabeza[0], self.objetivo_cabeza[1], RADIO_PEQUENO + 2)
+        self._dibujar_punto(self.objetivo_cabeza[0], self.objetivo_cabeza[1], self.r_pequeno + 2)
         r = FaceMesh().get_rasgos()
         c = FaceMesh().get_cabeza()
         if r is not None and c is not None and s > 0.5:
@@ -381,11 +427,11 @@ class VentanaCalibracion:
         from src.detectors.calibracion import predecir
         self.t0 += TICK_MS
         x, y = self.comprobacion[self.indice_comp]
-        if self.t0 <= ESPERA_MS:
-            f = self.t0 / ESPERA_MS
-            self._dibujar_punto(x, y, int(RADIO_GRANDE - (RADIO_GRANDE - RADIO_PEQUENO) * f))
-        elif self.t0 <= ESPERA_MS + MEDIDA_MS:
-            self._dibujar_punto(x, y, RADIO_PEQUENO)
+        if self.t0 <= self.espera:
+            f = self.t0 / self.espera
+            self._dibujar_punto(x, y, int(self.r_grande - (self.r_grande - self.r_pequeno) * f))
+        elif self.t0 <= self.espera + self.medida:
+            self._dibujar_punto(x, y, self.r_pequeno)
             r = FaceMesh().get_rasgos()
             if r is not None:
                 self.muestras.append(r)
@@ -395,6 +441,7 @@ class VentanaCalibracion:
                 self.comp_rasgos.append((x, y, mediana.tolist()))
                 px, py = predecir(self.modelo, mediana)
                 self.errores.append(math.hypot(px - x, py - y))
+                self.residuos_comp = getattr(self, "residuos_comp", []) + [[x, y, round(px - x, 1), round(py - y, 1)]]
             self._siguiente_comprobacion()
             return
         self.ventana.after(TICK_MS, self._animar_comprobacion)
@@ -407,6 +454,7 @@ class VentanaCalibracion:
         if modelo is not None and getattr(self, "errores", None):
             modelo["error_real_px"] = round(float(np.median(self.errores)))
             modelo["errores_comprobacion"] = [round(e) for e in self.errores]
+            modelo["residuos_comprobacion"] = getattr(self, "residuos_comp", [])
             logger.info(f"Comprobación: errores {modelo['errores_comprobacion']} px, "
                         f"mediana {modelo['error_real_px']} px")
         self._cerrar()
@@ -414,7 +462,8 @@ class VentanaCalibracion:
             ConfigManager().set_temp_config("ojos_calibracion", modelo)
             ConfigManager().apply_config()
             MouseController().reiniciar_mirada()
-            self._guardar_datos(modelo)
+            if not self.solo_comprobar:
+                self._guardar_datos(modelo)
         self.al_terminar(modelo)
 
     def _guardar_datos(self, modelo):
