@@ -53,6 +53,63 @@ class FiltroOneEuro:
         return x_hat
 
 
+class Fijacion:
+    """Mantiene el puntero quieto mientras la mirada se queda cerca, y lo
+    desliza suavemente cuando se va de verdad.
+
+    - Dentro de `radio` px del punto de fijación: no se mueve (el temblor y
+      las microsacadas no llegan al puntero).
+    - Fuera del radio pero cerca: solo empieza a moverse si la mirada lleva
+      `persistencia_s` fuera (un fotograma suelto no lo mueve); entonces se
+      desliza una fracción `paso` por tick hasta alcanzarla.
+    - Muy lejos (`radio_salto`): salta al instante, para que un cambio de
+      objetivo claro no se note lento.
+    """
+
+    LLEGADA_PX = 6   # una vez en marcha, se desliza hasta quedar así de cerca
+
+    def __init__(self):
+        self.punto = None
+        self.fuera_desde = None
+        self.moviendo = False
+
+    def reiniciar(self):
+        self.punto = None
+        self.fuera_desde = None
+        self.moviendo = False
+
+    def actualizar(self, x, y, radio, persistencia_s, radio_salto, paso=0.25, t=None):
+        if t is None:
+            t = time.time()
+        if self.punto is None:
+            self.punto = (x, y)
+            return self.punto
+        fx, fy = self.punto
+        d = math.hypot(x - fx, y - fy)
+        if d >= radio_salto:
+            self.punto = (x, y)
+            self.fuera_desde = None
+            self.moviendo = False
+        elif self.moviendo:
+            # En marcha: se desliza hasta llegar de verdad al punto mirado,
+            # y ahí vuelve a quedarse quieto
+            if d <= self.LLEGADA_PX:
+                self.punto = (x, y)
+                self.moviendo = False
+            else:
+                self.punto = (fx + paso * (x - fx), fy + paso * (y - fy))
+        elif d > radio:
+            if self.fuera_desde is None:
+                self.fuera_desde = t
+            elif t - self.fuera_desde >= persistencia_s:
+                self.moviendo = True
+                self.fuera_desde = None
+                self.punto = (fx + paso * (x - fx), fy + paso * (y - fy))
+        else:
+            self.fuera_desde = None
+        return self.punto
+
+
 class FiltroOneEuro2D:
     """Dos filtros, uno por eje, con los mismos parámetros."""
 

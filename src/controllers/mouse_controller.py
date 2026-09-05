@@ -58,6 +58,8 @@ class MouseController(metaclass=Singleton):
         self.rasgos_ultimo = None
         self.rasgos_muestras = []
         self.filtro_directo = utils.FiltroOneEuro2D(min_cutoff=1.0, beta=0.004)
+        self.filtros_cabeza = [utils.FiltroOneEuro(min_cutoff=0.6, beta=0.01) for _ in range(4)]
+        self.fijador = utils.Fijacion()
         self.punto_directo = None     # (x, y) suavizado, para la interfaz
         self.fijacion = None          # (x, y) donde está quieto el puntero
         self.calibrando = False       # la ventana de calibración manda
@@ -71,6 +73,7 @@ class MouseController(metaclass=Singleton):
         en un punto concreto desde otro hilo)."""
         self.congelado_hasta = time.time() + segundos
         self.fijacion = None
+        self.fijador.reiniciar()
         self.ultimo_destino = None
 
     def start(self):
@@ -133,6 +136,9 @@ class MouseController(metaclass=Singleton):
         self.rasgos_muestras = []
         self.rasgos_ultimo = None
         self.filtro_directo.reiniciar()
+        for f in self.filtros_cabeza:
+            f.reiniciar()
+        self.fijador.reiniciar()
         self.punto_directo = None
         self.fijacion = None
 
@@ -159,16 +165,25 @@ class MouseController(metaclass=Singleton):
             return
         self.rasgos_ultimo = self.curr_rasgos
 
-        # Mediana corta contra saltos sueltos del iris, y One Euro después:
-        # muy suave en reposo, rápido al mover la vista.
+        # Mediana de 5 fotogramas contra saltos sueltos del iris, y One Euro
+        # después: muy suave en reposo, rápido al mover la vista.
         self.rasgos_muestras.append(self.curr_rasgos)
-        self.rasgos_muestras = self.rasgos_muestras[-3:]
+        self.rasgos_muestras = self.rasgos_muestras[-5:]
         rasgos = np.median(np.asarray(self.rasgos_muestras), axis=0)
-        px, py = predecir(modelo, rasgos, cabeza=getattr(self, "curr_cabeza", None))
+
+        # La postura de la cabeza también se suaviza: la matriz de MediaPipe
+        # tiembla unas décimas de grado y eso serían varios píxeles.
+        cabeza = getattr(self, "curr_cabeza", None)
+        if cabeza is not None:
+            c = list(cabeza)
+            for i, f in zip((0, 1, 3, 4), self.filtros_cabeza):
+                c[i] = f(c[i])
+            cabeza = tuple(c)
+
+        px, py = predecir(modelo, rasgos, cabeza=cabeza)
         suavizado = max(1, int(cfg.get("ojos_suavizado", 6)))
-        # 1 → corte 4 Hz (casi sin suavizar); 30 → 0,25 Hz (muy suave)
-        self.filtro_directo.configurar(min_cutoff=4.0 / (1 + (suavizado - 1) * 0.5),
-                                       beta=0.004)
+        # 1 → corte 3 Hz (casi sin suavizar); 6 → 0,7 Hz; 30 → 0,2 Hz
+        self.filtro_directo.configurar(min_cutoff=3.0 / suavizado ** 0.8, beta=0.003)
         px, py = self.filtro_directo(px, py)
         self.punto_directo = (px, py)
 
@@ -186,13 +201,9 @@ class MouseController(metaclass=Singleton):
                 return
 
         radio = float(cfg.get("ojos_fijacion_px", 60))
-        if self.fijacion is None:
-            self.fijacion = (px, py)
-        else:
-            fx, fy = self.fijacion
-            if np.hypot(px - fx, py - fy) > radio:
-                # Se desliza hacia el nuevo punto en pocos ticks
-                self.fijacion = (fx + 0.35 * (px - fx), fy + 0.35 * (py - fy))
+        persistencia = float(cfg.get("ojos_persistencia_ms", 150)) / 1000
+        self.fijacion = self.fijador.actualizar(px, py, radio, persistencia,
+                                                radio_salto=max(3 * radio, 250.0))
         destino = (int(self.fijacion[0]), int(self.fijacion[1]))
         if destino != self.ultimo_destino:
             self.ultimo_destino = destino

@@ -91,6 +91,11 @@ AJUSTES_DIRECTO = {
         "El puntero no se mueve mientras tu\nmirada se queda cerca de donde está.\nSúbelo si el puntero tiembla;\nbájalo si no llega a cosas pequeñas.",
         20, 200
     ],
+    "Espera antes de mover (ms)": [
+        "ojos_persistencia_ms",
+        "La mirada debe llevar este tiempo\nfuera de la zona quieta para que el\npuntero se mueva. Un vistazo\nsuelto no lo mueve.",
+        0, 600
+    ],
     "(Avanzado) Suavizar la mirada": [
         "ojos_suavizado", "Más suave = menos temblor,\npero responde más lento.", 1, 30
     ],
