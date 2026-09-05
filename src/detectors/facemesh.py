@@ -48,6 +48,7 @@ class FaceMesh(metaclass=Singleton):
         self.latest_time_ms = 0
         self.is_started = False
         self.n_frames = 0
+        self.cabeza = None
         self.parpadeo = DetectorParpadeo()
         self.mirada = DetectorMirada()
         self.n_puntos_avisado = False
@@ -145,10 +146,34 @@ class FaceMesh(metaclass=Singleton):
                             f"(iris disponible: {self.mirada.disponible})")
             self.n_frames += 1
 
+            # Postura de la cabeza (giro y posición) desde la matriz de MediaPipe
+            self.cabeza = self.calc_cabeza(mp_result)
+
         else:
             self.mp_landmarks = None
             self.track_loc = None
+            self.cabeza = None
             self.mirada._sin_datos()
+
+    @staticmethod
+    def calc_cabeza(mp_result):
+        """(guiñada, cabeceo, balanceo en grados, x, y, z en cm) de la cabeza
+        respecto a la cámara, o None. Sirve para compensar en el modo directo
+        los pequeños movimientos de cabeza tras calibrar."""
+        try:
+            M = np.asarray(mp_result.facial_transformation_matrixes[0], dtype=np.float64)
+        except Exception:
+            return None
+        if M.shape != (4, 4):
+            return None
+        R = M[:3, :3]
+        adelante = R @ np.array([0.0, 0.0, 1.0])
+        derecha = R @ np.array([1.0, 0.0, 0.0])
+        yaw = np.degrees(np.arctan2(adelante[0], adelante[2]))
+        pitch = np.degrees(np.arctan2(adelante[1], adelante[2]))
+        roll = np.degrees(np.arctan2(derecha[1], derecha[0]))
+        tx, ty, tz = M[:3, 3]
+        return (float(yaw), float(pitch), float(roll), float(tx), float(ty), float(tz))
 
     def detect_frame(self, frame_np: npt.ArrayLike):
 
@@ -180,6 +205,10 @@ class FaceMesh(metaclass=Singleton):
         if not self.mirada.disponible or not self.parpadeo.ojos_abiertos():
             return None
         return self.mirada.rasgos
+
+    def get_cabeza(self):
+        """Postura de la cabeza (ver calc_cabeza) o None."""
+        return self.cabeza
 
     def destroy(self):
         if self.model is not None:

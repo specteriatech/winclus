@@ -6,3 +6,6 @@ dist/
 log.txt
 *.spec.bak
 configs/ajustes.json
+
+# Muestras crudas de cada calibración de ojos (datos personales, por perfil)
+configs/*/calibracion_datos.json

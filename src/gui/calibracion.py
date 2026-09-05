@@ -98,6 +98,9 @@ class VentanaCalibracion:
         self.seg_rasgos = []
         self.seg_historial = []   # (t, x, y) del punto móvil
         self.seg_muestras = []    # (t, rasgos) de la mirada durante el seguimiento
+        self.cabezas_fijos = []   # postura de la cabeza durante los puntos fijos
+        self.cabeza_muestras = [] # (postura, rasgos) en la fase de cabeza
+        self.comp_rasgos = []     # rasgos medianos de cada punto de comprobación
 
         # Comprobación previa: cómo se ven los ojos (tamaño y luz)
         self.foto = None
@@ -214,6 +217,9 @@ class VentanaCalibracion:
             r = FaceMesh().get_rasgos()
             if r is not None:
                 self.muestras.append(r)
+                c = FaceMesh().get_cabeza()
+                if c is not None:
+                    self.cabezas_fijos.append(c)
         else:
             if len(self.muestras) < 6:
                 # No se vieron los ojos: se repite este punto (hasta 3 veces;
@@ -313,11 +319,61 @@ class VentanaCalibracion:
         self.lienzo.itemconfigure(self.texto, state="hidden")
         self.indice_comp += 1
         if self.indice_comp >= len(self.comprobacion):
-            self._terminar()
+            self._empezar_cabeza()
             return
         self.t0 = 0
         self.muestras = []
         self._animar_comprobacion()
+
+    # ------------------------------------------- compensación de cabeza --
+    CABEZA_S = 8.0
+
+    def _empezar_cabeza(self):
+        """Fase opcional: mirar el centro moviendo un poco la cabeza. Quien no
+        pueda moverla solo espera; entonces no se aprende nada."""
+        if self.modelo is None:
+            self._terminar()
+            return
+        self._mostrar_texto("Último paso, opcional. Mira el punto del centro y, si puedes,\n"
+                            "mueve un poco la cabeza a los lados y arriba y abajo\n"
+                            "sin dejar de mirarlo. Si no puedes moverla, solo espera.")
+        self.lienzo.itemconfigure(self.contador, text="cabeza")
+        x1, y1, x2, y2 = self.monitor
+        self.objetivo_cabeza = (x1 + self.w / 2, y1 + self.h / 2)
+        self.cabeza_muestras = []
+        self.ventana.after(2500, self._arrancar_cabeza)
+
+    def _arrancar_cabeza(self):
+        if self.cancelada:
+            return
+        self.t_cabeza = time.time()
+        self._animar_cabeza()
+
+    def _animar_cabeza(self):
+        if self.cancelada:
+            return
+        from src.detectors.calibracion import ajustar_cabeza
+        s = time.time() - self.t_cabeza
+        self._dibujar_punto(self.objetivo_cabeza[0], self.objetivo_cabeza[1], RADIO_PEQUENO + 2)
+        r = FaceMesh().get_rasgos()
+        c = FaceMesh().get_cabeza()
+        if r is not None and c is not None and s > 0.5:
+            if not self.cabeza_muestras or self.cabeza_muestras[-1][1] is not r:
+                self.cabeza_muestras.append((c, r))
+        if s >= self.CABEZA_S:
+            self.lienzo.itemconfigure(self.texto, state="hidden")
+            if self.cabezas_fijos:
+                ref = np.median(np.asarray(self.cabezas_fijos), axis=0)
+                try:
+                    self.modelo = ajustar_cabeza(self.modelo, ref,
+                                                 [m[0] for m in self.cabeza_muestras],
+                                                 [m[1] for m in self.cabeza_muestras],
+                                                 self.objetivo_cabeza)
+                except Exception as e:
+                    logger.error(f"Compensación de cabeza: {e}")
+            self._terminar()
+            return
+        self.ventana.after(TICK_MS, self._animar_cabeza)
 
     def _animar_comprobacion(self):
         if self.cancelada:
@@ -335,7 +391,9 @@ class VentanaCalibracion:
                 self.muestras.append(r)
         else:
             if len(self.muestras) >= 6:
-                px, py = predecir(self.modelo, np.median(np.asarray(self.muestras), axis=0))
+                mediana = np.median(np.asarray(self.muestras), axis=0)
+                self.comp_rasgos.append((x, y, mediana.tolist()))
+                px, py = predecir(self.modelo, mediana)
                 self.errores.append(math.hypot(px - x, py - y))
             self._siguiente_comprobacion()
             return
@@ -356,7 +414,40 @@ class VentanaCalibracion:
             ConfigManager().set_temp_config("ojos_calibracion", modelo)
             ConfigManager().apply_config()
             MouseController().reiniciar_mirada()
+            self._guardar_datos(modelo)
         self.al_terminar(modelo)
+
+    def _guardar_datos(self, modelo):
+        """Guarda las muestras crudas de la calibración en el perfil
+        (calibracion_datos.json) para poder reajustar el modelo sin repetirla
+        (herramientas/reajustar_calibracion.py)."""
+        import json
+        from pathlib import Path
+        try:
+            perdidos = set(getattr(self, "objetivos_perdidos", []))
+            datos = {
+                "fecha": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "monitor": list(self.monitor),
+                "puntos_fijos": [o for i, o in enumerate(self.objetivos) if i not in perdidos],
+                "rasgos_fijos": [list(map(float, r)) for r in self.rasgos_por_punto],
+                "seguimiento_puntos": [list(map(float, p)) for p in self.seg_puntos],
+                "seguimiento_rasgos": [list(map(float, r)) for r in self.seg_rasgos],
+                "retraso_ms": modelo.get("retraso_ms"),
+                "comprobacion": [{"x": x, "y": y, "rasgos": r} for x, y, r in self.comp_rasgos],
+                "cabezas_fijos": [list(map(float, c)) for c in self.cabezas_fijos],
+                "cabeza_muestras": [{"cabeza": list(map(float, c)), "rasgos": list(map(float, r))}
+                                    for c, r in self.cabeza_muestras],
+                "objetivo_cabeza": list(getattr(self, "objetivo_cabeza", (0, 0))),
+                "resultado": {k: modelo.get(k) for k in ("error_px", "error_real_px",
+                                                          "errores_comprobacion", "lambda",
+                                                          "cabeza_mejora_px")},
+            }
+            ruta = Path(ConfigManager().curr_profile_path, "calibracion_datos.json")
+            with open(ruta, "w", encoding="utf-8") as f:
+                json.dump(datos, f)
+            logger.info(f"Datos de calibración guardados en {ruta}")
+        except Exception as e:
+            logger.warning(f"No se pudieron guardar los datos de calibración: {e}")
 
     def cancelar(self):
         if self.cancelada:

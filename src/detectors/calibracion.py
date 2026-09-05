@@ -182,9 +182,11 @@ def estimar_retraso(historial, muestras, retrasos_s=(0.04, 0.08, 0.12, 0.16, 0.2
     return mejor[1], mejor[2], mejor[3]
 
 
-def predecir(modelo: dict, rasgos, con_sesgo: bool = True):
+def predecir(modelo: dict, rasgos, con_sesgo: bool = True, cabeza=None):
     """Punto de pantalla (x, y) para un vector de rasgos, recortado al monitor.
-    `sesgo` es la corrección rápida del centro (ver gui/calibracion.py)."""
+    `sesgo` es la corrección rápida del centro (ver gui/calibracion.py).
+    `cabeza` es la postura actual (ver FaceMesh.calc_cabeza); si el modelo
+    tiene compensación de cabeza, se aplica."""
     r = (np.asarray(rasgos, dtype=np.float64) - modelo["media"]) / modelo["desv"]
     x_ = np.concatenate([[1.0], r])
     x = float(x_ @ modelo["coef_x"])
@@ -193,8 +195,77 @@ def predecir(modelo: dict, rasgos, con_sesgo: bool = True):
         sx, sy = modelo.get("sesgo", (0.0, 0.0))
         x += sx
         y += sy
+    if cabeza is not None and modelo.get("cabeza_coef") and modelo.get("cabeza_ref"):
+        dx, dy = correccion_cabeza(modelo, cabeza)
+        x += dx
+        y += dy
     x1, y1, x2, y2 = modelo["monitor"]
     return min(max(x, x1), x2 - 1), min(max(y, y1), y2 - 1)
+
+
+# ------------------------------------------------ compensación de cabeza --
+# Se usan la guiñada y el cabeceo (grados) y la posición x, y (cm).
+CABEZA_IDX = (0, 1, 3, 4)
+CABEZA_MAX_PX = 400          # tope de la corrección por seguridad
+CABEZA_MOV_MIN = (0.8, 0.8, 0.4, 0.4)   # movimiento mínimo (desv. típica) para aprender
+
+
+def _delta_cabeza(modelo, cabeza):
+    ref = modelo["cabeza_ref"]
+    return np.array([cabeza[i] - ref[i] for i in CABEZA_IDX], dtype=np.float64)
+
+
+def correccion_cabeza(modelo, cabeza):
+    d = _delta_cabeza(modelo, cabeza)
+    C = np.asarray(modelo["cabeza_coef"], dtype=np.float64)   # 2 x 4
+    dx, dy = C @ d
+    return (float(np.clip(dx, -CABEZA_MAX_PX, CABEZA_MAX_PX)),
+            float(np.clip(dy, -CABEZA_MAX_PX, CABEZA_MAX_PX)))
+
+
+def ajustar_cabeza(modelo, cabeza_ref, muestras_cabeza, muestras_rasgos, objetivo) -> dict:
+    """Aprende cuánto se desplaza el punto previsto cuando la cabeza gira o
+    se mueve, mirando un objetivo fijo. muestras_cabeza: posturas; muestras_
+    rasgos: rasgos simultáneos; objetivo: (x, y) que se miraba. Si la cabeza
+    apenas se movió, no se aprende nada (coeficientes cero)."""
+    nuevo = dict(modelo)
+    nuevo["cabeza_ref"] = [float(v) for v in cabeza_ref]
+    nuevo["cabeza_coef"] = [[0.0] * 4, [0.0] * 4]
+    if len(muestras_cabeza) < 30:
+        return nuevo
+    D = np.asarray([[c[i] - cabeza_ref[i] for i in CABEZA_IDX] for c in muestras_cabeza],
+                   dtype=np.float64)
+    movimiento = D.std(axis=0)
+    activos = movimiento >= np.asarray(CABEZA_MOV_MIN)
+    if not activos.any():
+        logger.info("Compensación de cabeza: sin movimiento suficiente, no se aprende")
+        return nuevo
+    # Residuo del modelo de ojos mientras se miraba el objetivo
+    res = []
+    for r in muestras_rasgos:
+        px, py = predecir(modelo, r, con_sesgo=False)
+        res.append((objetivo[0] - px, objetivo[1] - py))
+    res = np.asarray(res)
+    Da = D[:, activos]
+    # ridge sin término independiente (la referencia ya está centrada)
+    lam = 0.02 * len(Da)
+    A = Da.T @ Da + lam * np.eye(Da.shape[1]) * np.mean(Da.var(axis=0))
+    cx = np.linalg.solve(A, Da.T @ res[:, 0])
+    cy = np.linalg.solve(A, Da.T @ res[:, 1])
+    coef = np.zeros((2, 4))
+    coef[0, activos] = cx
+    coef[1, activos] = cy
+    # topes plausibles: 150 px por grado, 150 px por cm
+    tope = np.array([150.0, 150.0, 150.0, 150.0])
+    coef = np.clip(coef, -tope, tope)
+    nuevo["cabeza_coef"] = coef.tolist()
+    nuevo["cabeza_movimiento"] = movimiento.round(2).tolist()
+    antes = float(np.median(np.hypot(res[:, 0], res[:, 1])))
+    despues = float(np.median(np.hypot(res[:, 0] - D @ coef[0], res[:, 1] - D @ coef[1])))
+    nuevo["cabeza_mejora_px"] = [round(antes), round(despues)]
+    logger.info(f"Compensación de cabeza: movimiento {movimiento.round(2)}, "
+                f"coef {coef.round(1).tolist()}, error con cabeza movida {antes:.0f} -> {despues:.0f} px")
+    return nuevo
 
 
 SESGO_MAX_PX = 350

@@ -51,7 +51,7 @@ class Pipeline:
         track_loc = FaceMesh().get_track_loc()
         MouseController().act(track_loc)
         MouseController().act_mirada(FaceMesh().get_mirada())
-        MouseController().act_rasgos(FaceMesh().get_rasgos())
+        MouseController().act_rasgos(FaceMesh().get_rasgos(), FaceMesh().get_cabeza())
 
         # Control keyboard
         blendshape_values = FaceMesh().get_blendshapes()

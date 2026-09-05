@@ -121,9 +121,11 @@ class MouseController(metaclass=Singleton):
         """Mirada (gx, gy) del detector de iris, o None si no es fiable."""
         self.curr_mirada = mirada
 
-    def act_rasgos(self, rasgos):
-        """Rasgos de la mirada para el modo directo, o None si no son fiables."""
+    def act_rasgos(self, rasgos, cabeza=None):
+        """Rasgos de la mirada para el modo directo (o None si no son fiables)
+        y postura de la cabeza para compensar sus movimientos."""
         self.curr_rasgos = rasgos
+        self.curr_cabeza = cabeza
 
     def reiniciar_mirada(self):
         self.mirada_muestras = []
@@ -162,7 +164,7 @@ class MouseController(metaclass=Singleton):
         self.rasgos_muestras.append(self.curr_rasgos)
         self.rasgos_muestras = self.rasgos_muestras[-3:]
         rasgos = np.median(np.asarray(self.rasgos_muestras), axis=0)
-        px, py = predecir(modelo, rasgos)
+        px, py = predecir(modelo, rasgos, cabeza=getattr(self, "curr_cabeza", None))
         suavizado = max(1, int(cfg.get("ojos_suavizado", 6)))
         # 1 → corte 4 Hz (casi sin suavizar); 30 → 0,25 Hz (muy suave)
         self.filtro_directo.configurar(min_cutoff=4.0 / (1 + (suavizado - 1) * 0.5),

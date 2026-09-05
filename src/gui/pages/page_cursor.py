@@ -468,7 +468,7 @@ class FrameOjos(customtkinter.CTkFrame):
             # En pausa el controlador no calcula: se estima aquí para la vista
             r = FaceMesh().get_rasgos()
             if r is not None and calibracion.es_valido(modelo, len(r)):
-                punto = calibracion.predecir(modelo, r)
+                punto = calibracion.predecir(modelo, r, cabeza=FaceMesh().get_cabeza())
         if punto is None:
             self.pantalla.itemconfigure(self.p_texto, text="No veo tus ojos")
             self.pantalla.itemconfigure(self.p_mirada, state="hidden")
