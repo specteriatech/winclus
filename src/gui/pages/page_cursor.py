@@ -402,8 +402,9 @@ class FrameOjos(customtkinter.CTkFrame):
                 row=0, column=0, pady=(2, 0), sticky="w")
         customtkinter.CTkLabel(
             opciones,
-            text=("El primer gesto de clic agranda la zona que miras; dentro,\n"
+            text=("El primer gesto de clic agranda la zona que miras; dentro, "
                   "mira el sitio exacto y repite el gesto. Se cierra sola si apartas la vista."),
+            wraplength=400,
             text_color=estilo.TEXTO_SUAVE,
             justify=tkinter.LEFT,
             font=estilo.fuente("pequena")).grid(row=1, column=0, padx=(28, 0), pady=(0, 8), sticky="w")
@@ -417,8 +418,9 @@ class FrameOjos(customtkinter.CTkFrame):
                 row=2, column=0, pady=(2, 0), sticky="w")
         customtkinter.CTkLabel(
             opciones,
-            text=("Si el puntero se desvía porque moviste un poco la cabeza, cierra los\n"
+            text=("Si el puntero se desvía porque moviste un poco la cabeza, cierra los "
                   "ojos 1,2 s, mira el punto del centro y queda corregido en 2 segundos."),
+            wraplength=400,
             text_color=estilo.TEXTO_SUAVE,
             justify=tkinter.LEFT,
             font=estilo.fuente("pequena")).grid(row=3, column=0, padx=(28, 0), pady=(0, 4), sticky="w")
