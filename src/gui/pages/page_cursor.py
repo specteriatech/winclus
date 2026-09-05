@@ -322,9 +322,10 @@ class FrameOjos(customtkinter.CTkFrame):
                                    row=0, column=0, sticky="w")
         customtkinter.CTkLabel(
             izq,
-            text=("Aparecen nueve puntos por la pantalla.\n"
-                  "Mira cada uno hasta que desaparezca.\n"
-                  "Tarda unos 25 segundos. Con Escape se cancela."),
+            text=("Primero verás tus ojos, para revisar luz y distancia.\n"
+                  "Luego 13 puntos fijos, un punto móvil que seguir\n"
+                  "y 4 puntos de comprobación. Tarda un minuto.\n"
+                  "Con Escape se cancela."),
             text_color=estilo.TEXTO_SUAVE,
             justify=tkinter.LEFT,
             font=estilo.fuente("pequena")).grid(row=1, column=0, pady=(0, 6), sticky="w")

@@ -48,7 +48,9 @@ BS_LOOK_OUT_L, BS_LOOK_OUT_R = 15, 16
 BS_LOOK_UP_L, BS_LOOK_UP_R = 17, 18
 
 NOMBRES_RASGOS = ("gx_der", "gy_der", "gyp_der", "gx_izq", "gy_izq", "gyp_izq",
-                  "bx", "by", "gx2", "gy2", "gxgy")
+                  "bx", "by", "gx2", "gy2", "gxgy",
+                  "ap_der", "ap_izq",   # apertura de cada ojo (alto/ancho): baja al mirar abajo
+                  "gx3", "gy3")         # términos cúbicos: la relación es tipo tangente
 
 
 class DetectorMirada:
@@ -109,8 +111,9 @@ class DetectorMirada:
                 continue
             p1, p2 = landmarks[parpados[0]], landmarks[parpados[1]]
             py = (p1.y + p2.y) / 2 * alto
+            apertura = math.hypot((p1.x - p2.x) * ancho, (p1.y - p2.y) * alto) / ancho_ojo
             medidas[nombre] = ((ix - cx) / ancho_ojo, (iy - cy) / ancho_ojo,
-                               (iy - py) / ancho_ojo)
+                               (iy - py) / ancho_ojo, apertura)
             puntos[nombre] = {"iris": (int(ix), int(iy)), "centro": (int(cx), int(cy))}
 
         if not medidas:
@@ -133,7 +136,8 @@ class DetectorMirada:
 
         self.mirada = (gx, gy)
         self.rasgos = (der[0], der[1], der[2], izq[0], izq[1], izq[2],
-                       float(bx), float(by), gx * gx, gy * gy, gx * gy)
+                       float(bx), float(by), gx * gx, gy * gy, gx * gy,
+                       der[3], izq[3], gx ** 3, gy ** 3)
         self.puntos = puntos
         self.fino = fino
         self.disponible = True
