@@ -380,7 +380,12 @@ class FrameOjos(customtkinter.CTkFrame):
 
     def _texto_calibracion(self):
         modelo = ConfigManager().config.get("ojos_calibracion")
-        if isinstance(modelo, dict) and "error_px" in modelo:
+        from src.detectors.mirada import NOMBRES_RASGOS
+        if isinstance(modelo, dict) and not calibracion.es_valido(modelo, len(NOMBRES_RASGOS)):
+            self.estado_calibracion.configure(
+                text="La calibración es de una versión anterior. Calibra otra vez.",
+                text_color=estilo.ALERTA)
+        elif isinstance(modelo, dict) and "error_px" in modelo:
             err = modelo["error_px"]
             if err <= 80:
                 calidad, color = "buena", estilo.OK
@@ -416,7 +421,7 @@ class FrameOjos(customtkinter.CTkFrame):
         ).is_active.get():
             # En pausa el controlador no calcula: se estima aquí para la vista
             r = FaceMesh().get_rasgos()
-            if r is not None:
+            if r is not None and calibracion.es_valido(modelo, len(r)):
                 punto = calibracion.predecir(modelo, r)
         if punto is None:
             self.pantalla.itemconfigure(self.p_texto, text="No veo tus ojos")

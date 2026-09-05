@@ -1,18 +1,23 @@
 """Ventana de calibración del modo directo.
 
-Ocupa toda la pantalla donde está el puntero y muestra, uno a uno, nueve
-puntos grandes. En cada uno hay un momento para llegar con la vista (el
-punto se encoge) y luego se miden los rasgos de la mirada durante un segundo.
-No hace falta pulsar nada; con Escape se cancela.
+Ocupa toda la pantalla donde está el puntero. Tiene dos fases:
 
-Al terminar se ajusta el modelo (detectors/calibracion.py), se guarda en el
-perfil y se avisa a quien la abrió con el resultado.
+1. Nueve puntos fijos, uno a uno: hay un momento para llegar con la vista (el
+   punto se encoge) y luego se miden los rasgos de la mirada.
+2. Seguimiento suave: un punto recorre la pantalla despacio en zigzag y la
+   persona lo sigue con la vista. Cada fotograma da una muestra; la mirada va
+   unos 100 ms por detrás del punto, y eso se compensa.
+
+No hace falta pulsar nada; con Escape se cancela. Al terminar se ajusta el
+modelo (detectors/calibracion.py), se guarda en el perfil y se avisa a quien
+la abrió con el resultado.
 """
 
 import logging
+import math
+import time
 import tkinter
 
-import customtkinter
 import numpy as np
 import win32api
 
@@ -25,8 +30,10 @@ from src.detectors.calibracion import ajustar
 logger = logging.getLogger("VentanaCalibracion")
 
 MARGEN = 0.08          # fracción de la pantalla que se deja libre en los bordes
-ESPERA_MS = 1400       # tiempo para llegar con la vista al punto
-MEDIDA_MS = 1000       # tiempo midiendo
+ESPERA_MS = 1200       # tiempo para llegar con la vista al punto
+MEDIDA_MS = 900        # tiempo midiendo en cada punto fijo
+SEGUIMIENTO_S = 22.0   # duración del recorrido en zigzag
+RETRASO_MIRADA_S = 0.10   # la mirada llega este tiempo después que el punto
 TICK_MS = 33
 RADIO_GRANDE = 34
 RADIO_PEQUENO = 12
@@ -46,12 +53,14 @@ def monitor_del_puntero():
 
 class VentanaCalibracion:
 
-    def __init__(self, tk_root, al_terminar):
+    def __init__(self, tk_root, al_terminar, con_seguimiento=True):
         self.al_terminar = al_terminar
+        self.con_seguimiento = con_seguimiento
         self.cancelada = False
         self.monitor = monitor_del_puntero()
         x1, y1, x2, y2 = self.monitor
-        w, h = x2 - x1, y2 - y1
+        self.w, self.h = x2 - x1, y2 - y1
+        w, h = self.w, self.h
 
         self.ventana = tkinter.Toplevel(tk_root)
         self.ventana.title("Gestik calibración")
@@ -85,13 +94,16 @@ class VentanaCalibracion:
         self.indice = -1
         self.muestras = []
         self.rasgos_por_punto = []
+        self.seg_puntos = []      # posiciones del punto móvil (con retraso)
+        self.seg_rasgos = []
+        self.seg_historial = []   # (t, x, y) del punto móvil
 
         MouseController().calibrando = True
         self._mostrar_texto("Mira cada punto amarillo hasta que desaparezca.\n"
                             "No muevas la cabeza. Con Escape se cancela.")
         self.ventana.after(2500, self._siguiente)
 
-    # ------------------------------------------------------------ pasos --
+    # ------------------------------------------------------ puntos fijos --
     def _mostrar_texto(self, texto):
         self.lienzo.itemconfigure(self.texto, text=texto, state="normal")
 
@@ -101,7 +113,10 @@ class VentanaCalibracion:
         self.lienzo.itemconfigure(self.texto, state="hidden")
         self.indice += 1
         if self.indice >= len(self.objetivos):
-            self._terminar()
+            if self.con_seguimiento:
+                self._empezar_seguimiento()
+            else:
+                self._terminar()
             return
         self.lienzo.itemconfigure(self.contador,
                                   text=f"{self.indice + 1} de {len(self.objetivos)}")
@@ -109,8 +124,7 @@ class VentanaCalibracion:
         self.muestras = []
         self._animar()
 
-    def _dibujar_punto(self, radio):
-        x, y = self.objetivos[self.indice]
+    def _dibujar_punto(self, x, y, radio):
         x -= self.monitor[0]
         y -= self.monitor[1]
         self.lienzo.coords(self.punto, x - radio, y - radio, x + radio, y + radio)
@@ -121,11 +135,12 @@ class VentanaCalibracion:
         if self.cancelada:
             return
         self.t0 += TICK_MS
+        x, y = self.objetivos[self.indice]
         if self.t0 <= ESPERA_MS:
             f = self.t0 / ESPERA_MS
-            self._dibujar_punto(int(RADIO_GRANDE - (RADIO_GRANDE - RADIO_PEQUENO) * f))
+            self._dibujar_punto(x, y, int(RADIO_GRANDE - (RADIO_GRANDE - RADIO_PEQUENO) * f))
         elif self.t0 <= ESPERA_MS + MEDIDA_MS:
-            self._dibujar_punto(RADIO_PEQUENO)
+            self._dibujar_punto(x, y, RADIO_PEQUENO)
             r = FaceMesh().get_rasgos()
             if r is not None:
                 self.muestras.append(r)
@@ -143,9 +158,61 @@ class VentanaCalibracion:
             return
         self.ventana.after(TICK_MS, self._animar)
 
+    # ------------------------------------------------- seguimiento suave --
+    def _posicion_seguimiento(self, s):
+        """Zigzag suave: baja despacio mientras va y viene de lado a lado."""
+        x1, y1, x2, y2 = self.monitor
+        f = min(1.0, max(0.0, s / SEGUIMIENTO_S))
+        # x: seno con 3 vueltas completas (la vuelta es suave, sin picos)
+        x = x1 + self.w / 2 + (self.w / 2 - self.w * MARGEN) * math.sin(2 * math.pi * 3 * f)
+        # y: de arriba abajo con arranque y frenada suaves
+        e = (1 - math.cos(math.pi * f)) / 2
+        y = y1 + self.h * MARGEN + (self.h - 2 * self.h * MARGEN) * e
+        return x, y
+
+    def _empezar_seguimiento(self):
+        self._mostrar_texto("Ahora sigue el punto con la vista\nmientras se mueve.")
+        self.lienzo.itemconfigure(self.contador, text="seguimiento")
+        self.ventana.after(2200, self._arrancar_seguimiento)
+
+    def _arrancar_seguimiento(self):
+        if self.cancelada:
+            return
+        self.lienzo.itemconfigure(self.texto, state="hidden")
+        self.t_seg = time.time()
+        self.seg_historial = []
+        self._animar_seguimiento()
+
+    def _animar_seguimiento(self):
+        if self.cancelada:
+            return
+        ahora = time.time()
+        s = ahora - self.t_seg
+        x, y = self._posicion_seguimiento(s)
+        self._dibujar_punto(x, y, RADIO_PEQUENO + 4)
+        self.seg_historial.append((ahora, x, y))
+
+        # La muestra de mirada de ahora corresponde a donde estaba el punto
+        # hace RETRASO_MIRADA_S. Se descarta el primer segundo (llegar al punto).
+        r = FaceMesh().get_rasgos()
+        if r is not None and s > 1.0:
+            objetivo = ahora - RETRASO_MIRADA_S
+            for t, px, py in reversed(self.seg_historial):
+                if t <= objetivo:
+                    self.seg_puntos.append((px, py))
+                    self.seg_rasgos.append(r)
+                    break
+
+        if s >= SEGUIMIENTO_S:
+            self._terminar()
+            return
+        self.ventana.after(TICK_MS, self._animar_seguimiento)
+
+    # ------------------------------------------------------------ final --
     def _terminar(self):
         try:
-            modelo = ajustar(self.objetivos, self.rasgos_por_punto, self.monitor)
+            modelo = ajustar(self.objetivos, self.rasgos_por_punto, self.monitor,
+                             self.seg_puntos, self.seg_rasgos)
         except Exception as e:
             logger.error(f"No se pudo calibrar: {e}")
             modelo = None

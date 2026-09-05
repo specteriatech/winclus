@@ -66,8 +66,10 @@ class CameraManager(metaclass=Singleton):
 
         # Use dict for pass as reference
         self.frame_buffers = {
-            "raw": self.placeholder_im,
-            "debug": self.placeholder_im
+            "raw": self.placeholder_im,     # para el detector (resolución completa)
+            "vista": self.placeholder_im,   # 640x480 para la miniatura
+            "debug": self.placeholder_im,   # vista con los dibujos encima
+            "n": 0,                         # cuenta de fotogramas recibidos
         }
         self.is_active = False
         self.is_destroyed = False
@@ -101,6 +103,10 @@ class CameraManager(metaclass=Singleton):
     def get_raw_frame(self):
         return self.frame_buffers["raw"].copy()
 
+    def get_frame_id(self) -> int:
+        """Número del último fotograma recibido (para no procesar dos veces)."""
+        return self.frame_buffers["n"]
+
     def get_debug_frame(self):
         return self.frame_buffers["debug"]
 
@@ -120,7 +126,7 @@ class CameraManager(metaclass=Singleton):
         if not self.is_active:
             return
 
-        self.frame_buffers["debug"] = self.frame_buffers["raw"].copy()
+        self.frame_buffers["debug"] = self.frame_buffers["vista"].copy()
 
         # Disabled
         if not MouseController().is_active.get():
@@ -228,16 +234,31 @@ class ThreadCameras():
             return
 
         for cam_id, _ in self.caps.items():
-            if cam_id == new_id:
-                if self.caps[new_id] is not None:
-                    continue
-                utils.open_camera(self.caps, cam_id)
-            else:
+            if cam_id != new_id:
                 if self.caps[cam_id] is not None:
                     self.caps[cam_id].release()
                 self.caps[cam_id] = None
 
         self.curr_id = new_id
+        # Abrir (si hace falta) y pasar a alta resolución en segundo plano:
+        # abrir con Media Foundation tarda unos segundos.
+        Thread(target=self._abrir_en_alta, args=(new_id,), daemon=True).start()
+
+    def _abrir_en_alta(self, cam_id: int) -> None:
+        if self.caps.get(cam_id) is None:
+            utils.assign_caps_unblock(self.caps, cam_id)
+        cap = self.caps.get(cam_id)
+        if cap is None:
+            return
+        ancho = ConfigManager().config.get("captura_ancho", 1920)
+        alto = ConfigManager().config.get("captura_alto", 1080)
+        try:
+            actual = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+        except Exception:
+            actual = 0
+        if actual >= ancho * 0.9 or ancho <= 640:
+            return
+        utils.reabrir_alta_resolucion(self.caps, cam_id, ancho, alto)
 
     def release_all_cameras(self):
         if self.caps is not None:
@@ -272,21 +293,27 @@ class ThreadCameras():
 
             frame.flags.writeable = False
             h, w, _ = frame.shape
+            fix_w = ConfigManager().config["fix_width"]
+            fix_h = ConfigManager().config["fix_height"]
 
-            # Trim image
-            if h != ConfigManager().config["fix_height"] or w != ConfigManager(
-            ).config["fix_width"]:
-                target_width = int(h * 4 / 3)
-                if w > target_width:
-                    trim_width = w - target_width
-                    trim_left = trim_width // 2
-                    trim_right = trim_width - trim_left
-                    frame = frame[:, trim_left:-trim_right, :]
-                frame = cv2.resize(frame,
-                                   (ConfigManager().config["fix_width"],
-                                    ConfigManager().config["fix_height"]))
+            # Recortar a 4:3 (la vista previa y las medidas son 4:3)
+            target_width = int(h * 4 / 3)
+            if w > target_width:
+                trim_width = w - target_width
+                trim_left = trim_width // 2
+                trim_right = trim_width - trim_left
+                frame = frame[:, trim_left:w - trim_right, :]
             frame = cv2.flip(frame, 1)
+
+            # «raw»: fotograma completo para el detector (más resolución =
+            # iris más preciso). «vista»: 640x480 para la miniatura.
+            if frame.shape[0] != fix_h or frame.shape[1] != fix_w:
+                vista = cv2.resize(frame, (fix_w, fix_h), interpolation=cv2.INTER_AREA)
+            else:
+                vista = frame
             self.frame_buffers["raw"] = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            self.frame_buffers["vista"] = cv2.cvtColor(vista, cv2.COLOR_BGR2RGB)
+            self.frame_buffers["n"] += 1
 
         return
 

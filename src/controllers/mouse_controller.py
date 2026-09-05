@@ -55,7 +55,9 @@ class MouseController(metaclass=Singleton):
         self.mirada_muestras = []
         # Modo directo: rasgos de la mirada, punto previsto y punto de fijación
         self.curr_rasgos = None
+        self.rasgos_ultimo = None
         self.rasgos_muestras = []
+        self.filtro_directo = utils.FiltroOneEuro2D(min_cutoff=1.0, beta=0.004)
         self.punto_directo = None     # (x, y) suavizado, para la interfaz
         self.fijacion = None          # (x, y) donde está quieto el puntero
         self.calibrando = False       # la ventana de calibración manda
@@ -116,6 +118,8 @@ class MouseController(metaclass=Singleton):
         self.mirada_muestras = []
         self.mirada_suave = None
         self.rasgos_muestras = []
+        self.rasgos_ultimo = None
+        self.filtro_directo.reiniciar()
         self.punto_directo = None
         self.fijacion = None
 
@@ -131,16 +135,28 @@ class MouseController(metaclass=Singleton):
 
         cfg = ConfigManager().config
         modelo = cfg.get("ojos_calibracion")
-        if not es_valido(modelo):
-            return
         if self.curr_rasgos is None:
             return   # parpadeo o sin cara: el puntero se queda donde está
+        if not es_valido(modelo, len(self.curr_rasgos)):
+            return
 
-        n = max(1, int(cfg.get("ojos_suavizado", 6)))
+        # Solo se procesa cada rasgo nuevo una vez (llegan a ~30 fps; este
+        # bucle va a ~60 Hz)
+        if self.curr_rasgos is self.rasgos_ultimo:
+            return
+        self.rasgos_ultimo = self.curr_rasgos
+
+        # Mediana corta contra saltos sueltos del iris, y One Euro después:
+        # muy suave en reposo, rápido al mover la vista.
         self.rasgos_muestras.append(self.curr_rasgos)
-        self.rasgos_muestras = self.rasgos_muestras[-n:]
-        rasgos = np.mean(np.asarray(self.rasgos_muestras), axis=0)
+        self.rasgos_muestras = self.rasgos_muestras[-3:]
+        rasgos = np.median(np.asarray(self.rasgos_muestras), axis=0)
         px, py = predecir(modelo, rasgos)
+        suavizado = max(1, int(cfg.get("ojos_suavizado", 6)))
+        # 1 → corte 4 Hz (casi sin suavizar); 30 → 0,25 Hz (muy suave)
+        self.filtro_directo.configurar(min_cutoff=4.0 / (1 + (suavizado - 1) * 0.5),
+                                       beta=0.004)
+        px, py = self.filtro_directo(px, py)
         self.punto_directo = (px, py)
 
         radio = float(cfg.get("ojos_fijacion_px", 60))

@@ -76,6 +76,36 @@ def assign_caps_queue(caps, done_callback: callable, max_search: int):
     done_callback()
 
 
+def reabrir_alta_resolucion(caps, i, ancho: int, alto: int) -> bool:
+    """Vuelve a abrir la cámara `i` con Media Foundation a la resolución pedida
+    (en formato comprimido MJPG). Con DirectShow la c922 se queda en YUY2 y
+    cae a 10 fps a 720p; con MSMF mantiene ~23 fps hasta 1080p. Si no se
+    consigue, se reabre como estaba."""
+    viejo = caps.get(i)
+    caps[i] = None          # el bucle de lectura espera mientras tanto
+    if viejo is not None:
+        viejo.release()
+    try:
+        cap = cv2.VideoCapture(i, cv2.CAP_MSMF)
+        cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, ancho)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, alto)
+        cap.set(cv2.CAP_PROP_FPS, 30)
+        ret, frame = cap.read()
+        if ret and frame is not None and frame.shape[1] >= ancho * 0.9:
+            logger.info(f"Camera {i}: alta resolución {frame.shape[1]}x{frame.shape[0]} (MSMF)")
+            caps[i] = cap
+            return True
+        logger.warning(f"Camera {i}: no da {ancho}x{alto} con MSMF; se vuelve a DirectShow")
+        cap.release()
+    except Exception as e:
+        logger.warning(f"Camera {i}: fallo al reabrir en alta resolución: {e}")
+    ret, _, cap = __open_camera_task(i)
+    if cap is not None:
+        caps[i] = cap
+    return False
+
+
 def open_camera(caps, i):
     """For swapping camera
     """

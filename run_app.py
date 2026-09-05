@@ -13,7 +13,13 @@
 # limitations under the License.
 
 import logging
+import os
 import sys
+
+# OpenCV con Media Foundation tarda 7 s en cada operación si usa las
+# transformaciones por hardware; sin ellas abre la cámara en menos de un
+# segundo a 1080p. Debe fijarse antes de importar cv2.
+os.environ.setdefault("OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS", "0")
 
 import customtkinter
 

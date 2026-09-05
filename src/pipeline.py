@@ -25,10 +25,18 @@ class Pipeline:
 
     def pipeline_tick(self) -> None:
 
-        frame_rgb = CameraManager().get_raw_frame()
-
-        # Detect landmarks (async) and save in it's buffer
-        FaceMesh().detect_frame(frame_rgb)
+        # Detect landmarks (async) only when a new camera frame arrived.
+        # Antes del primer fotograma la imagen es la de relleno (que tiene
+        # una cara dibujada): no se detecta nada sobre ella.
+        frame_id = CameraManager().get_frame_id()
+        if frame_id == 0:
+            MouseController().act_mirada(None)
+            MouseController().act_rasgos(None)
+            CameraManager().draw_overlay(track_loc=None)
+            return
+        if frame_id != getattr(self, "_ultimo_frame", None):
+            self._ultimo_frame = frame_id
+            FaceMesh().detect_frame(CameraManager().get_raw_frame())
 
         # Get facial landmarks
         landmarks = FaceMesh().get_landmarks()

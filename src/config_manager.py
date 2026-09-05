@@ -33,6 +33,10 @@ logger = logging.getLogger("ConfigManager")
 # Claves añadidas por Gestik a cursor.json. Si un perfil viejo no las tiene,
 # se rellenan con estos valores al cargarlo.
 VALORES_POR_DEFECTO = {
+    # Resolución a la que se captura para el detector (la vista previa sigue
+    # a fix_width x fix_height). Más resolución = iris más preciso.
+    "captura_ancho": 1920,
+    "captura_alto": 1080,
     # Cómo hago clic: "parpadeo", "boca", "cejas" o "quieto"
     "modo_clic": "parpadeo",
     "parpadeo_ms": 200,          # ojos cerrados al menos este tiempo = clic
