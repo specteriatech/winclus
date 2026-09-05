@@ -403,8 +403,8 @@ class AjustesParpadeo(customtkinter.CTkFrame):
     def _texto_ayuda(self, ms):
         segundos = f"{ms / 1000:.2f}".replace(".", ",")
         self.ayuda_duracion.configure(
-            text=f"Un parpadeo normal no cuenta. Cierra los ojos {segundos} s o más "
-            "y ábrelos: eso es un clic.")
+            text=f"Un parpadeo normal no cuenta. Cierra los ojos: a los {segundos} s "
+            "se hace el clic, sin tener que abrirlos.")
 
     def cambiar_duracion(self, nombre):
         ms = DURACIONES_PARPADEO[nombre]

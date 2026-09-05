@@ -7,10 +7,11 @@ muestras. Así funciona igual con ojos grandes o pequeños, con gafas o sin
 ellas. Con un umbral fijo nunca se detectaba bien (medido en el proyecto
 hermano: ojo cerrado ≈ 0,04–0,2, abierto ≈ 0,43).
 
-Un parpadeo cuenta como clic cuando LOS DOS ojos se cierran a la vez durante
-al menos `min_ms` (los parpadeos involuntarios duran 150–185 ms; los
-voluntarios, 200 ms o más). Un guiño no cuenta. Si los ojos siguen cerrados
-más de LARGO_MS es un gesto largo (para pausar), no un clic.
+Un parpadeo cuenta como clic cuando LOS DOS ojos llevan cerrados `min_ms`
+(los parpadeos involuntarios duran 150–185 ms; los voluntarios, 200 ms o
+más). El clic se hace en ese mismo instante, con los ojos todavía cerrados:
+no hace falta abrirlos. Un guiño no cuenta. Si los ojos siguen cerrados hasta
+LARGO_MS se emite además un gesto largo (para pausar más adelante).
 
 El detector se alimenta desde el hilo de MediaPipe (un frame cada vez) y el
 controlador de clics recoge los eventos desde el hilo principal.
@@ -59,6 +60,8 @@ class DetectorParpadeo:
         self.n = 0
         self.base = None            # apertura normal de cada ojo
         self.cerrados_desde = None  # instante en que se cerraron los dos ojos
+        self.clic_emitido = False   # ya se hizo el clic de este cierre
+        self.largo_emitido = False
         self.evento = None          # "clic" o "largo", pendiente de recoger
         self.ultimo_clic_ms = 0     # duración del último parpadeo válido
         self.candado = threading.Lock()
@@ -116,13 +119,28 @@ class DetectorParpadeo:
             if cerrados:
                 if self.cerrados_desde is None:
                     self.cerrados_desde = ahora
-                cerrados_ms = int((ahora - self.cerrados_desde) * 1000)
+                    self.clic_emitido = False
+                    self.largo_emitido = False
+                cerrados_ms = int(round((ahora - self.cerrados_desde) * 1000))
+                # El clic se hace EN CUANTO se cumple el tiempo, con los ojos
+                # aún cerrados; no hace falta abrirlos.
+                if not self.clic_emitido and cerrados_ms >= min_ms:
+                    self.clic_emitido = True
+                    self.ultimo_clic_ms = cerrados_ms
+                    self.evento = "clic"
+                    logger.info(f"Ojos cerrados {cerrados_ms} ms "
+                                f"(rel {r_der:.2f}/{r_izq:.2f}): clic")
+                if not self.largo_emitido and cerrados_ms >= LARGO_MS:
+                    self.largo_emitido = True
+                    self.evento = "largo"
+                    logger.info(f"Ojos cerrados {cerrados_ms} ms: gesto largo")
             else:
                 cerrados_ms = 0
                 if self.cerrados_desde is not None:
                     duracion = int((ahora - self.cerrados_desde) * 1000)
                     self.cerrados_desde = None
-                    self._clasificar(duracion, min_ms, r_der, r_izq)
+                    if duracion < min_ms:
+                        logger.debug(f"Parpadeo {duracion} ms: involuntario, se ignora")
 
             self.estado = {
                 "apertura": (a_der, a_izq),
@@ -132,19 +150,6 @@ class DetectorParpadeo:
                 "cerrados_ms": cerrados_ms,
                 "listo": listo,
             }
-
-    def _clasificar(self, duracion_ms: int, min_ms: int, r_der, r_izq):
-        if duracion_ms >= MAX_MS:
-            logger.info(f"Ojos cerrados {duracion_ms} ms: se ignora")
-        elif duracion_ms >= LARGO_MS:
-            logger.info(f"Ojos cerrados {duracion_ms} ms: gesto largo")
-            self.evento = "largo"
-        elif duracion_ms >= min_ms:
-            logger.info(f"Parpadeo {duracion_ms} ms (rel {r_der:.2f}/{r_izq:.2f}): clic")
-            self.ultimo_clic_ms = duracion_ms
-            self.evento = "clic"
-        else:
-            logger.debug(f"Parpadeo {duracion_ms} ms: involuntario, se ignora")
 
     def tomar_evento(self):
         """Devuelve y borra el evento pendiente ("clic", "largo" o None)."""
