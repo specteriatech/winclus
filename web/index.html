@@ -61,7 +61,7 @@
   .marca img{width:40px;height:40px}
   .marca span{color:var(--teal);font-weight:600}
   nav ul{display:flex;gap:6px;list-style:none;margin:0;padding:0}
-  nav a{display:inline-block;padding:10px 14px;border-radius:8px;text-decoration:none;color:var(--texto2);font-weight:500}
+  nav a{display:inline-block;padding:10px 10px;border-radius:8px;text-decoration:none;color:var(--texto2);font-weight:500;font-size:.95rem;white-space:nowrap}
   nav a:hover{background:var(--fondo2);color:var(--navy)}
   .menu-btn{display:none;background:none;border:2px solid var(--linea);border-radius:10px;width:46px;height:46px;cursor:pointer;color:var(--navy)}
   @media (max-width:820px){
@@ -135,6 +135,21 @@
   .paso:nth-child(2) .num{background:var(--teal)} .paso:nth-child(3) .num{background:var(--morado)}
   .paso p{color:var(--texto2);margin:0}
 
+  /* ---------- widget para webs ---------- */
+  .web{background:var(--fondo2)}
+  .web .contenedor{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+  @media (max-width:900px){.web .contenedor{grid-template-columns:1fr}}
+  .codigo-claro{display:flex;align-items:center;gap:10px;background:var(--navy);color:#e8fff3;border-radius:12px;padding:14px 12px 14px 16px;margin:14px 0;font-family:Consolas,"Cascadia Mono",monospace;font-size:.95rem;overflow-x:auto}
+  .codigo-claro code{flex:1;white-space:nowrap}
+  .codigo-claro button{background:var(--verde);color:var(--navy);border:0;border-radius:8px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer;min-height:40px;flex:none}
+  .lista-web{margin:0 0 18px;padding-left:22px;color:var(--texto2)}
+  .lista-web li{margin-bottom:6px}
+  .lista-web b{color:var(--navy);font-weight:600}
+  .demo-marco{background:#fff;border:1px solid var(--linea);border-radius:18px;box-shadow:0 20px 60px rgba(16,31,61,.12);overflow:hidden}
+  .demo-marco .barra-demo{display:flex;gap:6px;padding:10px 14px;background:var(--fondo2);border-bottom:1px solid var(--linea)}
+  .demo-marco .barra-demo span{width:10px;height:10px;border-radius:50%;background:#DCE3EC}
+  .demo-marco iframe{width:100%;height:440px;border:0;display:block}
+
   /* ---------- descarga ---------- */
   .descarga{position:relative;overflow:hidden;background:var(--navy) url(img/fondo_descarga.jpg) center/cover no-repeat;color:#fff}
   .descarga .contenedor{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
@@ -198,11 +213,12 @@
         <li><a href="#que-hace">Qué hace</a></li>
         <li><a href="#como-funciona">Cómo funciona</a></li>
         <li><a href="#para-quien">Para quién</a></li>
+        <li><a href="#para-tu-web">Para tu web</a></li>
         <li><a href="#preguntas">Preguntas</a></li>
         <li><a href="#descargar">Descargar</a></li>
       </ul>
     </nav>
-    <a class="btn btn-verde" href="#descargar">Descargar el widget</a>
+    <a class="btn btn-verde" href="#descargar" style="white-space:nowrap">Descargar</a>
   </div>
 </header>
 
@@ -346,6 +362,28 @@
   </div>
 </section>
 
+<!-- ================= PARA TU WEB ================= -->
+<section id="para-tu-web" class="web" aria-labelledby="t-web">
+  <div class="contenedor">
+    <div>
+      <h2 id="t-web">Añade Winclus <span class="verde">a tu página web.</span></h2>
+      <p style="color:var(--texto2)">Un widget de accesibilidad que se instala con una sola línea, como los de chat. Aparece un botón flotante y quien visita tu web puede leerla mejor, escucharla y hasta manejarla con la cara, sin instalar nada.</p>
+      <div class="codigo-claro"><code id="cmdWidget">&lt;script src="https://winclus.com/widget.js" async&gt;&lt;/script&gt;</code><button type="button" id="btnCopiarWidget" aria-label="Copiar el código del widget">Copiar</button></div>
+      <ul class="lista-web">
+        <li><b>Ver mejor:</b> tamaño del texto, alto contraste, modo oscuro, resaltar enlaces, guía de lectura y pausar animaciones.</li>
+        <li><b>Escuchar:</b> lee en voz alta cualquier párrafo o la página entera.</li>
+        <li><b>Usar con la cara:</b> puntero con la cabeza, clic con un parpadeo, bajar y subir con la boca y las cejas. La cámara se procesa en el navegador y no sale del equipo.</li>
+        <li><b>Sin cuenta ni claves.</b> Gratis, código abierto, un solo archivo. Opciones: <code>data-posicion="izquierda"</code>, <code>data-color="#101F3D"</code>, <code>data-camara="no"</code>.</li>
+      </ul>
+      <a class="btn btn-verde" href="widget-demo.html" target="_blank" rel="noopener">Ver la demostración</a>
+    </div>
+    <div class="demo-marco" aria-label="Demostración del widget en una página de ejemplo">
+      <div class="barra-demo"><span></span><span></span><span></span></div>
+      <iframe src="widget-demo.html" title="Página de ejemplo con el widget Winclus" loading="lazy" allow="camera"></iframe>
+    </div>
+  </div>
+</section>
+
 <!-- ================= DESCARGA ================= -->
 <section id="descargar" class="descarga" aria-labelledby="t-desc">
   <div class="contenedor">
@@ -449,6 +487,12 @@
         document.getElementById(o.getAttribute("aria-controls")).hidden = (o !== t);
       });
     });
+  });
+  var btnCopiarWidget = document.getElementById("btnCopiarWidget");
+  btnCopiarWidget.addEventListener("click", function () {
+    var t = '<script src="https://winclus.com/widget.js" async></' + 'script>';
+    function ok() { btnCopiarWidget.textContent = "Copiado"; setTimeout(function () { btnCopiarWidget.textContent = "Copiar"; }, 1800); }
+    if (navigator.clipboard) { navigator.clipboard.writeText(t).then(ok); } else { ok(); }
   });
   var btnCopiar = document.getElementById("btnCopiar");
   btnCopiar.addEventListener("click", function () {

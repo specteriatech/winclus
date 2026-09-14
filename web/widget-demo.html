@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demostración del widget Winclus</title>
+<link rel="icon" href="img/icono.png">
+<style>
+  body{margin:0;font-family:Georgia,"Times New Roman",serif;color:#222;background:#fbfaf7;line-height:1.7}
+  header{background:#efe9dc;padding:18px 0;border-bottom:1px solid #ddd}
+  .c{width:min(760px,100% - 40px);margin-inline:auto}
+  nav a{margin-right:18px;color:#333}
+  h1{font-size:2.2rem;line-height:1.2}
+  .aviso{background:#fff7d6;border:1px solid #f0d97a;border-radius:10px;padding:14px 18px;font-family:"Segoe UI",system-ui,sans-serif;font-size:.95rem}
+  .aviso code{background:#fff;padding:2px 6px;border-radius:6px}
+  button.demo{font:inherit;padding:10px 18px;border-radius:8px;border:1px solid #888;background:#fff;cursor:pointer}
+  footer{padding:40px 0;color:#666;font-size:.9rem}
+</style>
+</head>
+<body>
+<header><div class="c"><nav><a href="#">Inicio</a><a href="#noticias">Noticias</a><a href="#contacto">Contacto</a></nav></div></header>
+<main class="c">
+  <p class="aviso">Esta es una página cualquiera, con su propio diseño, a la que se le ha añadido Winclus con una sola línea:
+  <code>&lt;script src="https://winclus.com/widget.js" async&gt;&lt;/script&gt;</code>.
+  Pulsa el botón redondo de abajo a la derecha.</p>
+
+  <h1>La biblioteca del barrio abre por las tardes</h1>
+  <p>A partir del lunes, la biblioteca municipal amplía su horario y abrirá también de cuatro a ocho de la tarde. La medida responde a las peticiones de las familias y del centro de mayores, que pedían un espacio tranquilo para leer y estudiar después de la jornada.</p>
+  <p>La sala infantil tendrá cuentacuentos los miércoles y la sala de lectura contará con dos nuevos puestos con pantalla grande y teclado adaptado. «Queremos que cualquiera pueda venir y sentirse cómodo», explica la directora.</p>
+  <h2 id="noticias">Otras noticias</h2>
+  <ul>
+    <li><a href="#">El mercado de los sábados vuelve a la plaza mayor</a></li>
+    <li><a href="#">Nuevo carril bici hasta el polideportivo</a></li>
+    <li><a href="#">Talleres gratuitos de informática para mayores</a></li>
+  </ul>
+  <h2 id="contacto">Contacto</h2>
+  <p>¿Quieres proponer una noticia? Escríbenos o pulsa el botón.</p>
+  <p><button class="demo" onclick="this.textContent='¡Gracias! Botón pulsado.'">Enviar propuesta</button></p>
+  <p>Este párrafo largo sirve para probar la lectura en voz alta y el desplazamiento con la boca y las cejas. Lorem ipsum no: mejor un texto real. El río baja crecido después de las lluvias de la semana pasada y el paseo de la ribera está cerrado por precaución hasta el viernes. Los vecinos pueden usar el camino alternativo por la calle del Olmo, que también tiene bancos y sombra. La feria de artesanía se mantiene en la fecha prevista y contará con veinte puestos, música en directo y una zona de juegos.</p>
+</main>
+<footer class="c">Página de demostración · Winclus no es un dispositivo médico</footer>
+
+<script src="widget.js" async></script>
+</body>
+</html>
