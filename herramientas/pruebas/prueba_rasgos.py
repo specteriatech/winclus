@@ -42,7 +42,7 @@ DURACION = float(sys.argv[1]) if len(sys.argv) > 1 else 6.0
 CUENTA = 6
 
 root = tkinter.Tk()
-root.title("Gestik prueba rasgos")
+root.title("Winclus prueba rasgos")
 root.overrideredirect(True)
 root.attributes("-topmost", True)
 W, H = root.winfo_screenwidth(), root.winfo_screenheight()

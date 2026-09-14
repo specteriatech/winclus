@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Adaptado para Gestik: página «Clics» con el selector «Cómo hago clic»
+# Adaptado para Winclus: página «Clics» con el selector «Cómo hago clic»
 # (parpadeo, boca, cejas o quedarse quieto) arriba y las demás acciones abajo.
 
 import tkinter as tk
@@ -28,6 +28,7 @@ from src.config_manager import ConfigManager
 from src.controllers import ControladorClic
 from src.detectors import FaceMesh
 from src.gui.balloon import Balloon
+from src.gui.controles import botones_paso
 from src.gui.dropdown import Dropdown
 from src.gui.frames.safe_disposable_frame import SafeDisposableFrame, SafeDisposableScrollableFrame
 from src.gui.tarjetas import SelectorTarjetas
@@ -374,6 +375,28 @@ class AjustesParpadeo(customtkinter.CTkFrame):
             font=estilo.fuente("pequena"))
         self.ayuda_duracion.grid(row=2, column=0, padx=16, pady=(0, 10), sticky="w")
 
+        # Cuánto hay que cerrar los ojos: el umbral es la fracción de la
+        # apertura normal; aquí se muestra como «cerrar al menos el X %»
+        customtkinter.CTkLabel(self, text="Cuánto hay que cerrar los ojos",
+                               font=estilo.fuente("etiqueta")).grid(
+                                   row=8, column=0, padx=16, pady=(6, 2), sticky="w")
+        fila_u = customtkinter.CTkFrame(self, fg_color="transparent")
+        fila_u.grid(row=9, column=0, padx=11, pady=(0, 2), sticky="w")
+        self.umbral = customtkinter.CTkSlider(fila_u, from_=25, to=65, number_of_steps=8, width=300,
+                                              command=lambda v: self.umbral_txt.configure(text=self._texto_umbral(v)))
+        self.umbral.grid(row=0, column=0)
+        self.umbral.bind("<ButtonRelease-1>", lambda e: self._guardar_umbral())
+        self.umbral_txt = customtkinter.CTkLabel(fila_u, text="", width=130, anchor="w",
+                                                 text_color=estilo.TEXTO_SUAVE, font=estilo.fuente("pequena"))
+        self.umbral_txt.grid(row=0, column=1, padx=(10, 0))
+        botones_paso(fila_u, self.umbral, lambda v: self._guardar_umbral(), paso=5).grid(row=0, column=2, padx=(6, 0))
+        customtkinter.CTkLabel(
+            self,
+            text=("Si tus clics no salen y abajo pone «no se cerraron bastante», baja este valor. "
+                  "Si salen clics sin querer, súbelo."),
+            wraplength=640, justify=tk.LEFT, text_color=estilo.TEXTO_SUAVE,
+            font=estilo.fuente("pequena")).grid(row=10, column=0, padx=16, pady=(0, 12), sticky="w")
+
         customtkinter.CTkLabel(self,
                                text="Tus ojos ahora",
                                font=estilo.fuente("etiqueta")).grid(
@@ -389,9 +412,27 @@ class AjustesParpadeo(customtkinter.CTkFrame):
                                               text="",
                                               text_color=estilo.TEXTO_SUAVE,
                                               font=estilo.fuente("pequena"))
-        self.medidas.grid(row=6, column=0, padx=16, pady=(0, 12), sticky="w")
+        self.medidas.grid(row=6, column=0, padx=16, pady=(0, 2), sticky="w")
+        self.ultimo = customtkinter.CTkLabel(self, text="", wraplength=640, justify=tk.LEFT,
+                                             text_color=estilo.TEXTO_SUAVE,
+                                             font=estilo.fuente("pequena"))
+        self.ultimo.grid(row=7, column=0, padx=16, pady=(0, 12), sticky="w")
+
+    @staticmethod
+    def _texto_umbral(v):
+        return f"cerrar al menos el {int(round(float(v)))} %"
+
+    def _guardar_umbral(self):
+        p = int(round(self.umbral.get()))
+        self.umbral_txt.configure(text=self._texto_umbral(p))
+        ConfigManager().set_temp_config("parpadeo_umbral", round(1 - p / 100, 2))
+        ConfigManager().apply_config()
 
     def cargar(self):
+        u = float(ConfigManager().config.get("parpadeo_umbral", 0.55))
+        p = int(round((1 - u) * 100))
+        self.umbral.set(p)
+        self.umbral_txt.configure(text=self._texto_umbral(p))
         ms = ConfigManager().config.get("parpadeo_ms", 200)
         nombre = "Rápido"
         for n, v in DURACIONES_PARPADEO.items():
@@ -433,9 +474,15 @@ class AjustesParpadeo(customtkinter.CTkFrame):
             self.barra.configure(progress_color=estilo.ALERTA)
         a_der, a_izq = e["apertura"]
         b_der, b_izq = e["base"]
+        bs = e.get("blink", (None, None))
+        extra = f"   ·   cierre según MediaPipe {bs[0]:.2f} / {bs[1]:.2f}" if bs[0] is not None else ""
         self.medidas.configure(
             text=f"Apertura {a_der:.2f} / {a_izq:.2f}   ·   normal {b_der:.2f} / {b_izq:.2f}"
-            f"   ·   umbral {ConfigManager().config.get('parpadeo_umbral', 0.55):.2f}")
+            f"   ·   umbral {ConfigManager().config.get('parpadeo_umbral', 0.55):.2f}{extra}")
+        ep = FaceMesh().parpadeo.ultimo_episodio
+        if ep:
+            self.ultimo.configure(text=f"Último cierre: {ep['ms']} ms, ojos al {ep['min'][0]:.2f} / "
+                                       f"{ep['min'][1]:.2f} de lo normal → {ep['resultado']}")
 
 
 class AjustesGesto(customtkinter.CTkFrame):
@@ -465,6 +512,8 @@ class AjustesGesto(customtkinter.CTkFrame):
         self.slider.bind("<Button-1>", lambda e: setattr(self, "arrastrando", True))
         self.slider.bind("<ButtonRelease-1>", self.soltar)
         self.slider.grid(row=3, column=0, padx=11, pady=(2, 0), sticky="w")
+        botones_paso(self, self.slider, lambda v: self.soltar(), paso=5).grid(
+            row=3, column=1, padx=(6, 16), pady=(2, 0), sticky="w")
         customtkinter.CTkLabel(self,
                                text="Suave\t\t\t\tExagerado",
                                text_color=estilo.TEXTO_SUAVE,
@@ -523,6 +572,8 @@ class AjustesQuieto(customtkinter.CTkFrame):
                                             text="",
                                             font=estilo.fuente("cuerpo"))
         self.valor.grid(row=1, column=1, padx=(6, 16), pady=(2, 0), sticky="w")
+        botones_paso(self, self.slider, lambda v: self.soltar(), paso=100).grid(
+            row=1, column=2, padx=(0, 16), pady=(2, 0), sticky="w")
         customtkinter.CTkLabel(self,
                                text="Más rápido\t\t\tMás tiempo",
                                text_color=estilo.TEXTO_SUAVE,
@@ -602,7 +653,9 @@ class PageSelectGestures(SafeDisposableFrame):
         self.top_label.grid(row=0, column=0, padx=20, pady=(5, 0), sticky="nw")
 
         des_txt = ("Elige cómo haces el clic izquierdo, el más usado. "
-                   "Las demás acciones se eligen más abajo.")
+                   "Con los ojos cerrados 1,2 s se abre el menú de clics alrededor del puntero: "
+                   "clic derecho, doble clic, arrastrar y soltar, rueda, teclado y pausa. "
+                   "Las demás acciones con gestos se eligen más abajo.")
         des_label = customtkinter.CTkLabel(master=c,
                                            text=des_txt,
                                            wraplength=700,
@@ -642,10 +695,44 @@ class PageSelectGestures(SafeDisposableFrame):
         self.inner_frame = FrameSelectGesture(c, logger_name="FrameSelectGesture")
         self.inner_frame.grid(row=6, column=0, padx=5, pady=5, sticky="nw")
 
+        # Avisos de cada clic (para quien no oye, o para quien no ve bien)
+        sub2 = customtkinter.CTkLabel(master=c, text="Avisos", font=estilo.fuente("subtitulo"))
+        sub2.grid(row=7, column=0, padx=20, pady=(16, 0), sticky="nw")
+        tarjeta_avisos = customtkinter.CTkFrame(c, fg_color=estilo.TARJETA, corner_radius=16)
+        tarjeta_avisos.grid(row=8, column=0, padx=20, pady=(6, 16), sticky="ew")
+        self.avisos_vars = {}
+        fila = 0
+        for clave, texto, ayuda in (
+                ("avisos_visuales", "Etiqueta junto al puntero en cada clic",
+                 "«Clic», «Clic derecho», «Arrastrando», «En pausa»… aparece un momento al lado del "
+                 "puntero. Útil si no oyes o si no estás seguro de si el gesto se registró."),
+                ("avisos_sonido", "Sonido en cada clic",
+                 "Un pitido corto cada vez que Winclus hace clic. Útil si ves poco la pantalla.")):
+            var = tk.BooleanVar(value=True)
+            customtkinter.CTkCheckBox(tarjeta_avisos, text=texto, variable=var,
+                                      font=estilo.fuente("cuerpo"),
+                                      command=partial(self._guardar_aviso, clave)).grid(
+                                          row=fila, column=0, padx=20, pady=(12 if fila == 0 else 6, 0), sticky="w")
+            customtkinter.CTkLabel(tarjeta_avisos, text=ayuda, wraplength=640, justify=tk.LEFT,
+                                   text_color=estilo.TEXTO_SUAVE, font=estilo.fuente("pequena")).grid(
+                                       row=fila + 1, column=0, padx=(52, 20), pady=(0, 6), sticky="w")
+            self.avisos_vars[clave] = var
+            fila += 2
+
         self.cargar_modo()
+
+    def _guardar_aviso(self, clave):
+        ConfigManager().set_temp_config(clave, bool(self.avisos_vars[clave].get()))
+        ConfigManager().apply_config()
+
+    def _cargar_avisos(self):
+        cfg = ConfigManager().config
+        for clave, var in self.avisos_vars.items():
+            var.set(bool(cfg.get(clave, clave == "avisos_visuales")))
 
     # ------------------------------------------------------------- modo --
     def cargar_modo(self):
+        self._cargar_avisos()
         modo = ConfigManager().config.get("modo_clic", "parpadeo")
         if modo not in GESTO_DEL_MODO and modo not in ("parpadeo", "quieto"):
             modo = "parpadeo"

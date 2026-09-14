@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Adaptado para Gestik: página de inicio propia, con tarjetas grandes.
+# Adaptado para Winclus: página de inicio propia, con tarjetas grandes.
 
 import logging
 import tkinter
@@ -33,6 +33,8 @@ ACCESOS = [
     ("puntero", "Puntero", "Con la cabeza o con los ojos", "page_cursor"),
     ("clic", "Clics", "Parpadeo, boca, cejas o quedarte quieto", "page_gestures"),
     ("teclado", "Teclas", "Gestos que pulsan una tecla", "page_keyboard"),
+    ("escribir", "Escribir", "Teclado en pantalla con sugerencias", "page_escribir"),
+    ("asistente", "Asistente", "Dile lo que quieres y Winclus lo hace", "page_asistente"),
 ]
 
 
@@ -44,11 +46,11 @@ class PageHome(SafeDisposableFrame):
         self.configure(fg_color="transparent")
 
         self.grid_columnconfigure((0, 1), weight=1, uniform="col")
-        self.grid_rowconfigure(4, weight=1)
+        self.grid_rowconfigure(5, weight=1)
 
         # Título y explicación
         titulo = customtkinter.CTkLabel(master=self,
-                                        text="Gestik",
+                                        text="Winclus",
                                         anchor="w",
                                         text_color=estilo.PRIMARIO,
                                         font=estilo.fuente("titulo"))
@@ -100,10 +102,10 @@ class PageHome(SafeDisposableFrame):
         # Aviso
         aviso = customtkinter.CTkLabel(
             master=self,
-            text=("Gestik es gratuito y de código abierto. "
+            text=("Winclus es gratuito y de código abierto. "
                   "No es un dispositivo médico."),
             anchor="w",
             text_color=estilo.TEXTO_SUAVE,
             font=estilo.fuente("pequena"))
-        aviso.grid(row=5, column=0, columnspan=2, padx=28, pady=(6, 18),
+        aviso.grid(row=6, column=0, columnspan=2, padx=28, pady=(6, 18),
                    sticky="sw")

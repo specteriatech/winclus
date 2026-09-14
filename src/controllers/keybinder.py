@@ -111,6 +111,12 @@ class Keybinder(metaclass=Singleton):
                 if not self.key_states[state_name]:
                     pydirectinput.click(button=action)
                     self.start_hold_ts = time.time()
+                    from src.controllers.clics import ControladorClic
+                    ControladorClic()._aviso({"left": "Clic", "right": "Clic derecho"}.get(action, "Clic"))
+                    if action == "left":
+                        # Calibración invisible: clic por boca o cejas (ojos abiertos)
+                        from src.detectors.aprendizaje import AprendizajeClics
+                        AprendizajeClics().anotar_clic_puntero(parpadeo=False)
 
                 self.key_states[state_name] = True
 

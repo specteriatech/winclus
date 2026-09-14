@@ -95,11 +95,11 @@ def programar(app):
     ir = lambda p: app.root_function_callback("change_page", {"target": p})
     cc = ControladorClic()
     paso(0, lambda: ir("page_cursor"))
-    paso(800, lambda: captura("Gestik 0.1.0", "puntero_directo_opciones.png"))
+    paso(800, lambda: captura("Winclus 0.1.0", "puntero_directo_opciones.png"))
     paso(200, lambda: cc.clic())                      # primer gesto: abre la lupa
     paso(600, lambda: print("lupa:", MouseController().lupa, "visible:", app.lupa.visible,
                             "foco en:", win32gui.GetWindowText(win32gui.GetForegroundWindow())))
-    paso(0, lambda: captura("Gestik lupa", "lupa.png"))
+    paso(0, lambda: captura("Winclus lupa", "lupa.png"))
     # la mirada «se mueve» dentro de la lupa: el puntero simulado va a una esquina de la lupa
     paso(100, lambda: pos.__setitem__(0, MouseController().lupa["rect"][0] + 100))
     paso(0, lambda: pos.__setitem__(1, MouseController().lupa["rect"][1] + 150))
@@ -111,10 +111,10 @@ def programar(app):
     paso(1200, lambda: print("cerrada por tiempo:", MouseController().lupa is None, app.lupa.visible))
     # recentrado con evento largo
     paso(200, lambda: setattr(__import__("src.detectors", fromlist=["FaceMesh"]).FaceMesh().parpadeo, "evento", "largo"))
-    paso(500, lambda: captura("Gestik centro", "recentrado.png"))
+    paso(500, lambda: captura("Winclus centro", "recentrado.png"))
     paso(1500, lambda: print("sesgo:", cfg.config["ojos_calibracion"].get("sesgo"),
                              "estado:", app.pages["page_cursor"].frame_ojos.estado_calibracion.cget("text")))
-    paso(200, lambda: captura("Gestik 0.1.0", "puntero_tras_recentrado.png"))
+    paso(200, lambda: captura("Winclus 0.1.0", "puntero_tras_recentrado.png"))
     paso(300, app.close_all)
 
 

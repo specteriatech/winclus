@@ -1,4 +1,4 @@
-"""Abre Gestik, recorre las páginas nuevas y guarda capturas (sin clics)."""
+"""Abre Winclus, recorre las páginas nuevas y guarda capturas (sin clics)."""
 import logging
 import os
 import sys
@@ -19,7 +19,7 @@ import win32api
 import run_app
 from src.task_killer import TaskKiller
 
-TITULO = "Gestik 0.1.0"
+TITULO = "Winclus 0.1.0"
 
 
 def traer_al_frente():

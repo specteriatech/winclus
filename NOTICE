@@ -1,5 +1,5 @@
-Gestik
-Copyright 2026 Colaboradores de Gestik
+Winclus
+Copyright 2026 Colaboradores de Winclus
 
 Este producto es una adaptación de Project Gameface
 (https://github.com/google/project-gameface)
@@ -10,6 +10,10 @@ Incluye el modelo Face Landmarker de MediaPipe
 (https://developers.google.com/mediapipe)
 Copyright Google LLC, Licencia Apache, versión 2.0.
 
+Incluye la lista de palabras frecuentes del español es_50k.txt de
+FrequencyWords (https://github.com/hermitdave/FrequencyWords), derivada de
+subtítulos de OpenSubtitles, Licencia CC BY-SA 4.0 (assets/datos).
+
 «Project Gameface» y «MediaPipe» son nombres de Google LLC y se mencionan
-únicamente para dar crédito. Gestik es un proyecto independiente,
+únicamente para dar crédito. Winclus es un proyecto independiente,
 no está afiliado a Google ni a ninguna otra empresa o plataforma.

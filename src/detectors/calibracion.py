@@ -62,12 +62,17 @@ def _error_loo(X, P, pesos, n_fijos, lam):
 
 
 def ajustar(puntos_pantalla, rasgos, monitor, puntos_seguimiento=None,
-            rasgos_seguimiento=None, inactivos=None, lambdas=None) -> dict:
+            rasgos_seguimiento=None, inactivos=None, lambdas=None,
+            puntos_extra=None, rasgos_extra=None, peso_extra=1.0) -> dict:
     """puntos_pantalla: lista de (x, y) en píxeles de los puntos fijos;
     rasgos: un vector por punto (mediana de sus muestras). Opcionalmente las
     muestras del seguimiento suave. monitor: (x1, y1, x2, y2).
     inactivos: índices de rasgos que no se usan (se ponen a cero, y el modelo
-    lo recuerda para hacer lo mismo al predecir)."""
+    lo recuerda para hacer lo mismo al predecir).
+    puntos_extra / rasgos_extra: muestras sueltas con peso propio (los clics
+    de la calibración invisible, detectors/aprendizaje.py); se tratan como
+    seguimiento, con el mismo descarte de residuos grandes. peso_extra es un
+    número o una lista con el peso de cada muestra."""
     P = np.asarray(puntos_pantalla, dtype=np.float64)
     R = np.asarray(rasgos, dtype=np.float64)
     if puntos_seguimiento is not None and len(puntos_seguimiento) > 0:
@@ -76,6 +81,14 @@ def ajustar(puntos_pantalla, rasgos, monitor, puntos_seguimiento=None,
     else:
         Ps = np.zeros((0, 2))
         Rs = np.zeros((0, R.shape[1]))
+    pesos_seg = np.ones(len(Ps))
+    if puntos_extra is not None and len(puntos_extra) > 0:
+        Ps = np.vstack([Ps, np.asarray(puntos_extra, dtype=np.float64)])
+        Rs = np.vstack([Rs, np.asarray(rasgos_extra, dtype=np.float64)])
+        pe = np.asarray(peso_extra, dtype=np.float64)
+        if pe.ndim == 0:
+            pe = np.full(len(puntos_extra), float(pe))
+        pesos_seg = np.concatenate([pesos_seg, pe])
     inactivos = sorted(set(int(i) for i in (inactivos or []) if 0 <= int(i) < R.shape[1]))
     if inactivos:
         R = R.copy()
@@ -88,7 +101,7 @@ def ajustar(puntos_pantalla, rasgos, monitor, puntos_seguimiento=None,
     for _ in range(MAX_DESCARTES_FIJOS + 1):
         P_todo = np.vstack([P, Ps])
         R_todo = np.vstack([R, Rs])
-        pesos = np.concatenate([np.full(len(P), PESO_FIJOS), np.ones(len(Ps))])
+        pesos = np.concatenate([np.full(len(P), PESO_FIJOS), pesos_seg])
         media = R_todo.mean(axis=0)
         desv = R_todo.std(axis=0)
         desv[desv < 1e-9] = 1.0
@@ -245,9 +258,13 @@ def correccion_cabeza(modelo, cabeza):
 def ajustar_cabeza(modelo, cabeza_ref, muestras_cabeza, muestras_rasgos, objetivo) -> dict:
     """Aprende cuánto se desplaza el punto previsto cuando la cabeza gira o
     se mueve, mirando un objetivo fijo. muestras_cabeza: posturas; muestras_
-    rasgos: rasgos simultáneos; objetivo: (x, y) que se miraba. Si la cabeza
-    apenas se movió, no se aprende nada (coeficientes cero)."""
+    rasgos: rasgos simultáneos; objetivo: (x, y) que se miraba, o una lista
+    con un (x, y) por muestra (clics de la calibración invisible). Si la
+    cabeza apenas se movió, no se aprende nada (coeficientes cero)."""
     nuevo = dict(modelo)
+    objetivos = np.asarray(objetivo, dtype=np.float64)
+    if objetivos.ndim == 1:
+        objetivos = np.tile(objetivos, (len(muestras_rasgos), 1))
     nuevo["cabeza_ref"] = [float(v) for v in cabeza_ref]
     nuevo["cabeza_coef"] = [[0.0] * 4, [0.0] * 4]
     if len(muestras_cabeza) < 30:
@@ -261,9 +278,9 @@ def ajustar_cabeza(modelo, cabeza_ref, muestras_cabeza, muestras_rasgos, objetiv
         return nuevo
     # Residuo del modelo de ojos mientras se miraba el objetivo
     res = []
-    for r in muestras_rasgos:
+    for r, (ox, oy) in zip(muestras_rasgos, objetivos):
         px, py = predecir(modelo, r, con_sesgo=False)
-        res.append((objetivo[0] - px, objetivo[1] - py))
+        res.append((ox - px, oy - py))
     res = np.asarray(res)
     Da = D[:, activos]
     # ridge sin término independiente (la referencia ya está centrada)

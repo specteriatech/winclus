@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Adaptado para Gestik: página «Puntero» con el selector «Cómo muevo el
+# Adaptado para Winclus: página «Puntero» con el selector «Cómo muevo el
 # puntero» (con la cabeza o con los ojos) y los ajustes de cada modo.
 
 import logging
@@ -29,8 +29,10 @@ from src.config_manager import ConfigManager
 from src.controllers import MouseController
 from src.detectors import FaceMesh
 from src.detectors import calibracion
+from src.detectors.aprendizaje import AprendizajeClics
 from src.gui.balloon import Balloon
 from src.gui.calibracion import VentanaCalibracion
+from src.gui.controles import botones_paso
 from src.gui.frames.safe_disposable_frame import SafeDisposableFrame, SafeDisposableScrollableFrame
 from src.gui.tarjetas import SelectorTarjetas
 
@@ -98,6 +100,21 @@ AJUSTES_DIRECTO = {
     ],
     "(Avanzado) Suavizar la mirada": [
         "ojos_suavizado", "Más suave = menos temblor,\npero responde más lento.", 1, 30
+    ],
+}
+
+NOMBRES_SUBMODO = {"directo": "Directo", "hibrido": "Híbrido", "palanca": "Palanca"}
+
+AJUSTES_HIBRIDO = {
+    "Cuánto mueve la cabeza (%)": [
+        "hibrido_cabeza",
+        "Velocidad de la cabeza al afinar,\nrespecto al modo «Con la cabeza».\nBaja = más fino, sube si se\nqueda corto.",
+        5, 100
+    ],
+    "Salto de la mirada (px)": [
+        "hibrido_salto_px",
+        "La mirada debe irse al menos esto\ndel último salto para volver a\nsaltar. Súbelo si el puntero salta\nsolo mientras afinas con la cabeza.",
+        60, 400
     ],
 }
 
@@ -171,7 +188,7 @@ class FrameSelectGesture(SafeDisposableFrame):
             slider = customtkinter.CTkSlider(master=self,
                                              from_=slider_min,
                                              to=slider_max,
-                                             width=250,
+                                             width=190,
                                              number_of_steps=min(99, slider_max - slider_min),
                                              command=partial(
                                                  self.slider_drag_callback,
@@ -195,9 +212,13 @@ class FrameSelectGesture(SafeDisposableFrame):
                 width=62)
             entry.grid(row=idx,
                        column=0,
-                       padx=(300, 5),
+                       padx=(240, 5),
                        pady=(34, 10),
                        sticky="nw")
+
+            # Botones − y + para ajustar sin arrastrar (la casilla aplica el valor)
+            pasos = botones_paso(self, slider, lambda v, ev=entry_var: ev.set(v))
+            pasos.grid(row=idx, column=0, padx=(312, 5), pady=(30, 10), sticky="nw")
 
             out_dict[cfg_name] = {
                 "label": label,
@@ -205,7 +226,8 @@ class FrameSelectGesture(SafeDisposableFrame):
                 "entry": entry,
                 "entry_var": entry_var,
                 "entry_trace_id": entry_var_trace_id,
-                "entry_trace_fn": entry_trace_fn
+                "entry_trace_fn": entry_trace_fn,
+                "pasos": pasos,
             }
         return out_dict
 
@@ -295,8 +317,8 @@ class FrameOjos(customtkinter.CTkFrame):
         fila.grid(row=0, column=0, padx=16, pady=(10, 4), sticky="w")
         self.selector_modo = customtkinter.CTkSegmentedButton(
             fila,
-            values=["Directo", "Palanca"],
-            width=260,
+            values=["Directo", "Híbrido", "Palanca"],
+            width=360,
             height=38,
             font=estilo.fuente("boton_normal"),
             command=self.cambiar_submodo)
@@ -310,9 +332,31 @@ class FrameOjos(customtkinter.CTkFrame):
 
         self.panel_directo = self._crear_panel_directo()
         self.panel_palanca = self._crear_panel_palanca()
+        self.panel_hibrido = self._crear_panel_hibrido()
         self.panel_directo.grid(row=1, column=0, sticky="ew")
         self.panel_palanca.grid(row=1, column=0, sticky="ew")
+        self.panel_hibrido.grid(row=2, column=0, sticky="ew")
         self.submodo = None
+
+    # ------------------------------------------------------------ híbrido --
+    def _crear_panel_hibrido(self):
+        panel = customtkinter.CTkFrame(self, fg_color="transparent")
+        customtkinter.CTkLabel(panel, text="Afinar con la cabeza",
+                               font=estilo.fuente("etiqueta")).grid(
+                                   row=0, column=0, padx=16, pady=(6, 0), sticky="w")
+        customtkinter.CTkLabel(
+            panel,
+            text=("Mira un sitio y el puntero salta allí. Después, mueve un poco la cabeza "
+                  "para dejarlo justo encima. Con esto no hace falta que la calibración "
+                  "sea exacta ni usar la lupa. Los clics afinados con la cabeza también "
+                  "enseñan a la calibración invisible."),
+            wraplength=700, justify=tkinter.LEFT, text_color=estilo.TEXTO_SUAVE,
+            font=estilo.fuente("pequena")).grid(row=1, column=0, padx=16, pady=(0, 4), sticky="w")
+        self.deslizadores_hibrido = FrameSelectGesture(panel, ajustes=AJUSTES_HIBRIDO,
+                                                       fg_color="transparent",
+                                                       logger_name="hibrido_sliders")
+        self.deslizadores_hibrido.grid(row=2, column=0, sticky="nw")
+        return panel
 
     # ------------------------------------------------------------ directo --
     def _crear_panel_directo(self):
@@ -413,18 +457,14 @@ class FrameOjos(customtkinter.CTkFrame):
             text_color=estilo.TEXTO_SUAVE,
             justify=tkinter.LEFT,
             font=estilo.fuente("pequena")).grid(row=1, column=0, padx=(28, 0), pady=(0, 8), sticky="w")
-        self.recentrar_var = tkinter.BooleanVar(value=True)
-        customtkinter.CTkCheckBox(
-            opciones,
-            text="Ojos cerrados 1,2 s: corregir el centro",
-            variable=self.recentrar_var,
-            font=estilo.fuente("cuerpo"),
-            command=lambda: self._guardar("ojos_recentrar_largo", bool(self.recentrar_var.get()))).grid(
-                row=2, column=0, pady=(2, 0), sticky="w")
         customtkinter.CTkLabel(
             opciones,
-            text=("Si el puntero se desvía porque moviste un poco la cabeza, cierra los "
-                  "ojos 1,2 s, mira el punto del centro y queda corregido en 2 segundos."),
+            text="Ojos cerrados 1,2 s: menú de clics",
+            font=estilo.fuente("cuerpo")).grid(row=2, column=0, pady=(2, 0), sticky="w")
+        customtkinter.CTkLabel(
+            opciones,
+            text=("Ahí está «Recentrar»: si el puntero se desvía porque moviste un poco la "
+                  "cabeza, elígelo, mira el punto del centro y queda corregido en 2 segundos."),
             wraplength=400,
             text_color=estilo.TEXTO_SUAVE,
             justify=tkinter.LEFT,
@@ -559,6 +599,9 @@ class FrameOjos(customtkinter.CTkFrame):
             extra = ""
             if sesgo and (abs(sesgo[0]) > 1 or abs(sesgo[1]) > 1):
                 extra = f" Centro corregido ({sesgo[0]:+.0f}, {sesgo[1]:+.0f})."
+            if modelo.get("aprendido"):
+                extra += (" Aprendida de tus clics." if modelo["aprendido"].get("origen") == "clics"
+                          else " Afinada con tus clics.")
             self.estado_calibracion.configure(
                 text=f"Calibrado. Precisión {calidad} (±{err} px).{extra}", text_color=color)
             if err > 160:
@@ -769,12 +812,12 @@ class FrameOjos(customtkinter.CTkFrame):
     # ------------------------------------------------------------- común --
     def cargar(self):
         submodo = ConfigManager().config.get("ojos_modo", "directo")
-        self.selector_modo.set("Palanca" if submodo == "palanca" else "Directo")
+        self.selector_modo.set(NOMBRES_SUBMODO.get(submodo, "Directo"))
         self._mostrar_submodo(submodo)
         self.deslizadores.inner_refresh_profile()
         self.deslizadores_directo.inner_refresh_profile()
+        self.deslizadores_hibrido.inner_refresh_profile()
         self.lupa_var.set(bool(ConfigManager().config.get("lupa_activa", True)))
-        self.recentrar_var.set(bool(ConfigManager().config.get("ojos_recentrar_largo", True)))
         self._cargar_opciones()
         self.aviso.configure(text="")
         self.aviso_mejora.configure(text="")
@@ -782,11 +825,18 @@ class FrameOjos(customtkinter.CTkFrame):
 
     def _mostrar_submodo(self, submodo):
         self.submodo = submodo
+        self.panel_hibrido.grid_remove()
         if submodo == "palanca":
             self.panel_directo.grid_remove()
             self.panel_palanca.grid()
             self.explicacion.configure(
                 text="Palanca: mirar hacia un lado empuja el puntero hacia ese lado.")
+        elif submodo == "hibrido":
+            self.panel_palanca.grid_remove()
+            self.panel_directo.grid()
+            self.panel_hibrido.grid()
+            self.explicacion.configure(
+                text="Híbrido: la mirada salta el puntero a la zona; la cabeza lo afina.")
         else:
             self.panel_palanca.grid_remove()
             self.panel_directo.grid()
@@ -794,7 +844,8 @@ class FrameOjos(customtkinter.CTkFrame):
                 text="Directo: el puntero va al punto de la pantalla que miras.")
 
     def cambiar_submodo(self, nombre):
-        submodo = "palanca" if nombre == "Palanca" else "directo"
+        submodo = next((k for k, n in NOMBRES_SUBMODO.items() if n == nombre), "directo")
+        self.selector_modo.set(NOMBRES_SUBMODO[submodo])
         ConfigManager().set_temp_config("ojos_modo", submodo)
         ConfigManager().apply_config()
         MouseController().reiniciar_mirada()
@@ -862,6 +913,122 @@ class PageCursor(SafeDisposableFrame):
         self.modo = None
         self.cargar_modo()
 
+        # Calibración invisible (vale en los dos modos: con la cabeza se aprende)
+        self.tarjeta_aprende = customtkinter.CTkFrame(c, fg_color=estilo.TARJETA, corner_radius=16)
+        self.tarjeta_aprende.grid(row=4, column=0, padx=20, pady=(0, 10), sticky="ew")
+        self.tarjeta_aprende.grid_columnconfigure(0, weight=1)
+        customtkinter.CTkLabel(self.tarjeta_aprende, text="Calibración invisible",
+                               font=estilo.fuente("subtitulo")).grid(
+                                   row=0, column=0, padx=20, pady=(12, 0), sticky="w")
+        customtkinter.CTkLabel(
+            self.tarjeta_aprende,
+            text=("Cada clic que haces enseña a Winclus dónde miras. Con el puntero por la cabeza, "
+                  "tus clics calibran los ojos solos, sin pasar por la pantalla de puntos. "
+                  "Con los ojos, cada clic hecho con la lupa afina la calibración."),
+            wraplength=700, justify=tkinter.LEFT, text_color=estilo.TEXTO_SUAVE,
+            font=estilo.fuente("pequena")).grid(row=1, column=0, padx=20, pady=(2, 6), sticky="w")
+        self.aprende_var = tkinter.BooleanVar(value=True)
+        customtkinter.CTkCheckBox(self.tarjeta_aprende, text="Aprender de cada clic",
+                                  variable=self.aprende_var, font=estilo.fuente("cuerpo"),
+                                  command=self._guardar_aprende).grid(
+                                      row=2, column=0, padx=20, pady=(0, 4), sticky="w")
+        self.estado_aprende = customtkinter.CTkLabel(self.tarjeta_aprende, text="", wraplength=700,
+                                                     justify=tkinter.LEFT,
+                                                     text_color=estilo.TEXTO_SUAVE,
+                                                     font=estilo.fuente("pequena"))
+        self.estado_aprende.grid(row=3, column=0, padx=20, pady=(0, 6), sticky="w")
+        botones = customtkinter.CTkFrame(self.tarjeta_aprende, fg_color="transparent")
+        botones.grid(row=4, column=0, padx=20, pady=(0, 12), sticky="w")
+        customtkinter.CTkButton(botones, text="Ajustar ahora", width=150, height=36,
+                                font=estilo.fuente("boton_normal"),
+                                command=self.ajustar_aprende).grid(row=0, column=0, padx=(0, 10))
+        customtkinter.CTkButton(botones, text="Olvidar clics", width=150, height=36,
+                                fg_color="transparent", border_width=1,
+                                border_color=estilo.BORDE, text_color=estilo.TEXTO,
+                                font=estilo.fuente("boton_normal"),
+                                command=self.olvidar_aprende).grid(row=0, column=1)
+        self.ciclos_aprende = 0
+        self._cargar_aprende()
+
+        # Imán a los controles
+        self.tarjeta_iman = customtkinter.CTkFrame(c, fg_color=estilo.TARJETA, corner_radius=16)
+        self.tarjeta_iman.grid(row=5, column=0, padx=20, pady=(0, 16), sticky="ew")
+        self.tarjeta_iman.grid_columnconfigure(0, weight=1)
+        customtkinter.CTkLabel(self.tarjeta_iman, text="Imán a los botones",
+                               font=estilo.fuente("subtitulo")).grid(
+                                   row=0, column=0, padx=20, pady=(12, 0), sticky="w")
+        customtkinter.CTkLabel(
+            self.tarjeta_iman,
+            text=("Con el puntero por los ojos, cuando la mirada se queda cerca de un botón, un enlace o "
+                  "una casilla, el puntero se pega a su centro y aparece su nombre. Basta con llegar "
+                  "cerca. Funciona en Windows, Chrome, Edge y la mayoría de programas."),
+            wraplength=700, justify=tkinter.LEFT, text_color=estilo.TEXTO_SUAVE,
+            font=estilo.fuente("pequena")).grid(row=1, column=0, padx=20, pady=(2, 6), sticky="w")
+        self.iman_var = tkinter.BooleanVar(value=True)
+        customtkinter.CTkCheckBox(self.tarjeta_iman, text="Pegar el puntero al botón más cercano",
+                                  variable=self.iman_var, font=estilo.fuente("cuerpo"),
+                                  command=self._guardar_iman).grid(row=2, column=0, padx=20, pady=(0, 6), sticky="w")
+        fila_i = customtkinter.CTkFrame(self.tarjeta_iman, fg_color="transparent")
+        fila_i.grid(row=3, column=0, padx=20, pady=(0, 12), sticky="w")
+        customtkinter.CTkLabel(fila_i, text="Hasta qué distancia (px)", font=estilo.fuente("etiqueta")).grid(
+            row=0, column=0, padx=(0, 12))
+        self.iman_radio = customtkinter.CTkSlider(fila_i, from_=30, to=250, number_of_steps=22, width=240,
+                                                  command=lambda v: self.iman_txt.configure(text=f"{int(v)} px"))
+        self.iman_radio.grid(row=0, column=1)
+        self.iman_radio.bind("<ButtonRelease-1>", lambda e: self._guardar_radio_iman())
+        self.iman_txt = customtkinter.CTkLabel(fila_i, text="", width=60, anchor="w",
+                                               text_color=estilo.TEXTO_SUAVE, font=estilo.fuente("pequena"))
+        self.iman_txt.grid(row=0, column=2, padx=(12, 0))
+        botones_paso(fila_i, self.iman_radio, lambda v: self._guardar_radio_iman(), paso=10).grid(
+            row=0, column=3, padx=(8, 0))
+        self._cargar_iman()
+
+    def _cargar_iman(self):
+        cfg = ConfigManager().config
+        self.iman_var.set(bool(cfg.get("iman_activo", True)))
+        r = int(cfg.get("iman_radio_px", 90))
+        self.iman_radio.set(r)
+        self.iman_txt.configure(text=f"{r} px")
+
+    def _guardar_iman(self):
+        ConfigManager().set_temp_config("iman_activo", bool(self.iman_var.get()))
+        ConfigManager().apply_config()
+
+    def _guardar_radio_iman(self):
+        r = int(round(self.iman_radio.get()))
+        self.iman_txt.configure(text=f"{r} px")
+        ConfigManager().set_temp_config("iman_radio_px", r)
+        ConfigManager().apply_config()
+
+    def _cargar_aprende(self):
+        self.aprende_var.set(bool(ConfigManager().config.get("calib_invisible", True)))
+        self._refrescar_aprende()
+
+    def _guardar_aprende(self):
+        ConfigManager().set_temp_config("calib_invisible", bool(self.aprende_var.get()))
+        ConfigManager().apply_config()
+        self._refrescar_aprende()
+
+    def _refrescar_aprende(self):
+        try:
+            self.estado_aprende.configure(text=AprendizajeClics().estado_texto())
+        except Exception as e:
+            logger.warning(f"Estado de la calibración invisible: {e}")
+
+    def ajustar_aprende(self):
+        if AprendizajeClics().ajustar_en_hilo():
+            self.estado_aprende.configure(text="Ajustando…")
+        self.after(300, self._refrescar_aprende)
+
+    def olvidar_aprende(self):
+        AprendizajeClics().olvidar()
+        self._refrescar_aprende()
+
+    def calibracion_aprendida(self, modelo):
+        """La calibración invisible acaba de aplicar un modelo nuevo."""
+        self.frame_ojos.calibracion_terminada(modelo)
+        self._refrescar_aprende()
+
     def abrir_calibracion(self, solo_comprobar=False):
         if self.ventana_calibracion is not None:
             return
@@ -905,6 +1072,9 @@ class PageCursor(SafeDisposableFrame):
         if self.is_active:
             if self.modo == "ojos":
                 self.frame_ojos.refrescar()
+            self.ciclos_aprende += 1
+            if self.ciclos_aprende % 20 == 0:   # una vez por segundo
+                self._refrescar_aprende()
             self.after(50, self.frame_loop)
 
     def enter(self):
@@ -914,3 +1084,5 @@ class PageCursor(SafeDisposableFrame):
     def refresh_profile(self):
         self.frame_cabeza.inner_refresh_profile()
         self.cargar_modo()
+        self._cargar_aprende()
+        self._cargar_iman()

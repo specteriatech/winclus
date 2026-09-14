@@ -15,7 +15,9 @@
 import copy
 import json
 import logging
+import re
 import shutil
+import zipfile
 import time
 import tkinter as tk
 from pathlib import Path
@@ -30,7 +32,7 @@ BACKUP_PROFILE = Path("configs/Inicial")
 
 logger = logging.getLogger("ConfigManager")
 
-# Claves añadidas por Gestik a cursor.json. Si un perfil viejo no las tiene,
+# Claves añadidas por Winclus a cursor.json. Si un perfil viejo no las tiene,
 # se rellenan con estos valores al cargarlo.
 VALORES_POR_DEFECTO = {
     # Resolución a la que se captura para el detector (la vista previa sigue
@@ -50,9 +52,13 @@ VALORES_POR_DEFECTO = {
     "quieto_anillo": True,       # dibujar el anillo que se llena junto al puntero
     # Cómo muevo el puntero: "cabeza" u "ojos"
     "modo_puntero": "cabeza",
-    # Con los ojos: "directo" (el puntero va a donde miras, tras calibrar)
+    # Con los ojos: "directo" (el puntero va a donde miras, tras calibrar),
+    # "hibrido" (la mirada salta el puntero a la zona y la cabeza lo afina)
     # o "palanca" (mirar a un lado empuja el puntero hacia ese lado)
     "ojos_modo": "directo",
+    "hibrido_cabeza": 40,        # % de la velocidad de cabeza para afinar
+    "hibrido_salto_px": 150,     # la mirada debe irse al menos esto para saltar
+    "hibrido_pausa_ms": 250,     # tras un salto, la cabeza no mueve durante esto
     "ojos_calibracion": None,    # modelo de detectors/calibracion.py
     "ojos_fijacion_px": 60,      # el puntero no se mueve si la mirada cambia menos
     "ojos_persistencia_ms": 150, # la mirada debe llevar este tiempo fuera para moverlo
@@ -66,12 +72,30 @@ VALORES_POR_DEFECTO = {
     "calib_lento": False,        # más tiempo por punto
     "calib_punto_grande": False, # punto más grande, para quien ve peor
     "calib_cabeza": True,        # paso opcional de compensación de cabeza
+    "calib_invisible": True,     # aprender de cada clic (detectors/aprendizaje.py)
+    "avisos_visuales": True,     # etiqueta junto al puntero en cada clic (gui/aviso.py)
+    "avisos_sonido": False,      # pitido corto en cada clic
+    # Voz (src/voz.py): tecla «Decir» y frases guardadas
+    "voz_activa": True,
+    "voz_nombre": "",            # descripción de la voz SAPI; vacío = la primera en español
+    "voz_velocidad": 0,          # -5 (lenta) .. 5 (rápida)
+    "voz_eco": False,            # leer cada palabra al terminarla
+    # Imán a los controles (src/iman.py), solo con el puntero por los ojos
+    "iman_activo": True,
+    "iman_radio_px": 90,
     "ojos_usar": "ambos",        # "ambos", "derecho" o "izquierdo"
     "ojos_centro": [0.0, 0.0],   # palanca: mirada en reposo («Fijar el centro»)
     "ojos_velocidad": 50,        # 1..100
     "ojos_zona_muerta": 4,       # 1..15, en centésimas del ancho del ojo
     "ojos_vertical": 150,        # % de velocidad extra en vertical
     "ojos_suavizado": 6,         # 1..30 muestras
+    # Teclado en pantalla (gui/teclado_pantalla.py)
+    "teclado_posicion": "abajo",       # "abajo" o "arriba"
+    "teclado_altura": 32,              # % del alto de la pantalla
+    "teclado_ancho": 100,              # % del ancho de la pantalla
+    "teclado_prediccion": True,        # fila de palabras sugeridas
+    "teclado_sonido": True,            # pitido corto al pulsar
+    "teclado_mostrar_al_activar": False,
 }
 
 
@@ -132,6 +156,41 @@ class ConfigManager(metaclass=Singleton):
                         Path(DEFAULT_JSON.parent, new_profile_name))
         self.profiles.append(new_profile_name)
         logger.info(f"Current profiles: {self.profiles}")
+
+    def export_profile(self, profile_name: str, destino) -> Path:
+        """Empaqueta los archivos del perfil (ajustes, gestos, calibración y
+        clics aprendidos) en un .winclus, que es un zip normal."""
+        origen = Path(DEFAULT_JSON.parent, profile_name)
+        destino = Path(destino)
+        with zipfile.ZipFile(destino, "w", zipfile.ZIP_DEFLATED) as z:
+            for f in sorted(origen.iterdir()):
+                if f.is_file() and f.suffix == ".json":
+                    z.write(f, f.name)
+        logger.info(f"Perfil {profile_name} exportado a {destino}")
+        return destino
+
+    def import_profile(self, origen, nombre=None) -> str:
+        """Crea un perfil nuevo a partir de un .winclus. Nunca pisa uno que
+        exista: si el nombre está ocupado, añade un número. Devuelve el
+        nombre del perfil creado."""
+        origen = Path(origen)
+        with zipfile.ZipFile(origen) as z:
+            nombres = [n for n in z.namelist() if n.endswith(".json") and "/" not in n and "\\" not in n]
+            for necesario in ("cursor.json", "mouse_bindings.json", "keyboard_bindings.json"):
+                if necesario not in nombres:
+                    raise ValueError(f"No es un perfil de Winclus: falta {necesario}")
+            base = re.sub(r'[\\/:*?"<>|]+', " ", nombre or origen.stem).strip() or "Perfil importado"
+            final, i = base, 2
+            while Path(DEFAULT_JSON.parent, final).exists():
+                final = f"{base} {i}"
+                i += 1
+            carpeta = Path(DEFAULT_JSON.parent, final)
+            carpeta.mkdir()
+            for n in nombres:
+                carpeta.joinpath(n).write_bytes(z.read(n))
+        self.profiles.append(final)
+        logger.info(f"Perfil importado de {origen} como «{final}»")
+        return final
 
     def rename_profile(self, old_profile_name, new_profile_name):
         logger.info(f"Rename profile {old_profile_name} to {new_profile_name}")

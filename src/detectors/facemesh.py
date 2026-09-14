@@ -131,7 +131,8 @@ class FaceMesh(metaclass=Singleton):
             ancho, alto = cfg["fix_width"], cfg["fix_height"]
             self.parpadeo.procesar(self.mp_landmarks, ancho, alto,
                                    cfg.get("parpadeo_umbral", 0.55),
-                                   cfg.get("parpadeo_ms", 200))
+                                   cfg.get("parpadeo_ms", 200),
+                                   blendshapes=self.blendshapes_buffer[-1])
             imagen = None
             if cfg.get("iris_afinado", False):
                 try:

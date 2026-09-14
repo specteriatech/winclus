@@ -1,4 +1,4 @@
-"""Abre Gestik, muestra la página Puntero en modo ojos (directo), lanza una
+"""Abre Winclus, muestra la página Puntero en modo ojos (directo), lanza una
 calibración acortada y guarda capturas. Al final se restaura cursor.json."""
 import ctypes
 import os
@@ -120,24 +120,24 @@ def programar(app):
     pc = lambda: app.pages["page_cursor"]
     paso(0, lambda: ir("page_cursor"))
     paso(300, lambda: pc().selector.elegir("ojos"))
-    paso(1000, lambda: captura("Gestik 0.1.0", "ojos_directo_sin_calibrar.png"))
+    paso(1000, lambda: captura("Winclus 0.1.0", "ojos_directo_sin_calibrar.png"))
     paso(200, lambda: pc().frame_ojos.calibrar())
     paso(100, lambda: VENTANA.__setitem__("v", pc().ventana_calibracion))
-    paso(2500, lambda: captura("Gestik calibración", "calibracion_previa.png"))
-    paso(8000, lambda: captura("Gestik calibración", "calibracion.png"))
-    paso(9000, lambda: captura("Gestik calibración", "calibracion_seguimiento.png"))
+    paso(2500, lambda: captura("Winclus calibración", "calibracion_previa.png"))
+    paso(8000, lambda: captura("Winclus calibración", "calibracion.png"))
+    paso(9000, lambda: captura("Winclus calibración", "calibracion_seguimiento.png"))
     paso(24000, lambda: print("modelo:", app.pages["page_cursor"].frame_ojos.estado_calibracion.cget("text")))
     paso(0, lambda: print("detalle:", {k: v for k, v in (app.pages["page_cursor"].frame_ojos and __import__("src.config_manager", fromlist=["ConfigManager"]).ConfigManager().config.get("ojos_calibracion") or {}).items() if k in ("error_px", "error_real_px", "errores_comprobacion", "lambda", "retraso_ms", "n_muestras", "descartados", "cabeza_coef", "cabeza_mejora_px", "cabeza_movimiento")}))
-    paso(200, lambda: captura("Gestik 0.1.0", "ojos_directo_calibrado.png"))
+    paso(200, lambda: captura("Winclus 0.1.0", "ojos_directo_calibrado.png"))
     # solo comprobar (4 puntos) con el modelo recién hecho
     paso(200, lambda: pc().frame_ojos.comprobar())
     paso(100, lambda: VENTANA.__setitem__("v", pc().ventana_calibracion))
-    paso(2500, lambda: captura("Gestik calibración", "solo_comprobar.png"))
+    paso(2500, lambda: captura("Winclus calibración", "solo_comprobar.png"))
     paso(5000, lambda: print("tras comprobar:", pc().frame_ojos.estado_calibracion.cget("text")))
     # mejorar con los datos guardados
     paso(300, lambda: pc().frame_ojos.mejorar())
     paso(3000, lambda: print("mejorar:", pc().frame_ojos.aviso_mejora.cget("text")))
-    paso(300, lambda: captura("Gestik 0.1.0", "ojos_opciones.png"))
+    paso(300, lambda: captura("Winclus 0.1.0", "ojos_opciones.png"))
     paso(200, lambda: pc().selector.elegir("cabeza"))
     paso(0, lambda: print("fps detector:", round(FaceMesh().n_frames / (time.time() - T0), 1), "fotogramas cámara:", CameraManager().get_frame_id(), "tamaño raw:", CameraManager().get_raw_frame().shape))
     paso(300, app.close_all)

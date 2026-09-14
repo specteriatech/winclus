@@ -1,4 +1,4 @@
-"""Genera los recursos gráficos propios de Gestik.
+"""Genera los recursos gráficos propios de Winclus.
 
 Crea el logo e icono (a partir de assets/images/logo_fuente), los avisos que se dibujan sobre la imagen de la cámara,
 los iconos del menú (versión clara y oscura), el globo de ayuda, el botón de
@@ -71,38 +71,92 @@ def aviso(nombre: str, texto: str, color, simbolo: str) -> None:
 
 
 # ------------------------------------------------------------------- Logo --
+# Marca Winclus (winclus.com): una «W» de tres cápsulas inclinadas (azul,
+# teal y verde) con un punto morado. El original del usuario está en
+# logo_fuente/winclus_logo_original.png sobre fondo negro con resplandor; de
+# ahí se midieron las formas y aquí se dibujan limpias, sin fondo.
 LOGO_FUENTE = IMAGENES / "logo_fuente"
-# Geometría del emblema (círculo con la cara y el puntero) dentro de las
-# imágenes originales de 1536x1024: centro y radio del anillo.
-EMBLEMA_CENTRO = (770, 378)
-EMBLEMA_RADIO = 398
+MARCA_NAVY = (16, 31, 61)             # fondo del icono
+# (p1, p2, radio, color en p1, color en p2), coordenadas del original 1536x1024;
+# el emblema ocupa el recorte que empieza en ORIGEN y mide 480x420.
+ORIGEN = (40, 320)
+CAPSULAS = [
+    ((465, 515), (438, 640), 42, (70, 224, 120), (120, 232, 120)),   # verde corta, detrás
+    ((114, 400), (205, 680), 68, (10, 60, 170), (26, 140, 255)),     # azul
+    ((282, 412), (378, 690), 62, (20, 200, 165), (32, 200, 105)),    # teal → verde
+]
+PUNTO = ((437, 430), 55, (110, 70, 235), (150, 120, 255))
 
 
-def emblema(nombre_origen: str) -> Image.Image:
-    """Recorta el emblema del logo original como un disco con borde suave."""
+def _capsula(n, p1, p2, r, c1, c2, k):
+    """Cápsula con degradado de c1 (en p1) a c2 (en p2), como capa RGBA."""
+    import numpy as np
     from PIL import ImageFilter
-    im = Image.open(LOGO_FUENTE / nombre_origen).convert("RGBA")
-    cx, cy = EMBLEMA_CENTRO
-    R = int(EMBLEMA_RADIO * 1.03)
-    lienzo = Image.new("RGBA", (2 * R, 2 * R), (0, 0, 0, 0))
-    lienzo.paste(im.crop((cx - R, cy - R, cx + R, cy + R)), (0, 0))
-    mascara = Image.new("L", (2 * R, 2 * R), 0)
-    ImageDraw.Draw(mascara).ellipse([4, 4, 2 * R - 4, 2 * R - 4], fill=255)
-    mascara = mascara.filter(ImageFilter.GaussianBlur(3))
-    lienzo.putalpha(mascara)
+    (x1, y1), (x2, y2) = [((x - ORIGEN[0]) * k, (y - ORIGEN[1]) * k) for x, y in (p1, p2)]
+    r *= k
+    mascara = Image.new("L", (n, n), 0)
+    d = ImageDraw.Draw(mascara)
+    d.line([(x1, y1), (x2, y2)], fill=255, width=int(2 * r))
+    for x, y in ((x1, y1), (x2, y2)):
+        d.ellipse([x - r, y - r, x + r, y + r], fill=255)
+    mascara = mascara.filter(ImageFilter.GaussianBlur(1))
+    yy, xx = np.mgrid[0:n, 0:n].astype(np.float32)
+    dx, dy = x2 - x1, y2 - y1
+    t = np.clip(((xx - x1) * dx + (yy - y1) * dy) / (dx * dx + dy * dy), 0, 1)
+    rgb = np.stack([c1[i] + (c2[i] - c1[i]) * t for i in range(3)], axis=-1)
+    capa = np.dstack([rgb, np.asarray(mascara, dtype=np.float32)]).astype(np.uint8)
+    return Image.fromarray(capa)
+
+
+def emblema(n: int = 1024) -> Image.Image:
+    """Dibuja la W de Winclus en un lienzo cuadrado transparente."""
+    k = n / 480.0
+    im = Image.new("RGBA", (n, n), (0, 0, 0, 0))
+    for p1, p2, r, c1, c2 in CAPSULAS:
+        capa = _capsula(n, p1, p2, r, c1, c2, k)
+        im.alpha_composite(capa)
+    (cx, cy), r, c1, c2 = PUNTO
+    # El punto: degradado vertical de c1 (abajo) a c2 (arriba)
+    capa = _capsula(n, (cx, cy + r * 0.8), (cx, cy - r * 0.8), r * 0.2, c1, c2, k)
+    mascara = Image.new("L", (n, n), 0)
+    ox, oy = cx - ORIGEN[0], cy - ORIGEN[1]
+    ImageDraw.Draw(mascara).ellipse([(ox - r) * k, (oy - r) * k, (ox + r) * k, (oy + r) * k], fill=255)
+    capa.putalpha(mascara)
+    im.alpha_composite(capa)
+    return _recortar(im).resize((n, n), Image.LANCZOS)
+
+
+def _recortar(im: Image.Image, margen: int = 16) -> Image.Image:
+    """Recorta al contenido y lo centra en un cuadrado con un margen."""
+    caja = im.getbbox()
+    im = im.crop(caja)
+    lado = max(im.size) + 2 * margen
+    lienzo = Image.new("RGBA", (lado, lado), (0, 0, 0, 0))
+    lienzo.paste(im, ((lado - im.width) // 2, (lado - im.height) // 2))
     return lienzo
 
 
 def logo() -> None:
-    """Logo de Gestik: un disco por modo (claro y oscuro), el icono .ico y un PNG."""
-    oscuro = emblema("gestik_oscuro_original.png")
-    claro = emblema("gestik_claro_original.png")
-    oscuro.resize((256, 256), Image.LANCZOS).save(IMAGENES / "logo_gestik_oscuro.png")
-    claro.resize((256, 256), Image.LANCZOS).save(IMAGENES / "logo_gestik_claro.png")
-    ico = oscuro.resize((256, 256), Image.LANCZOS)
+    """Logo de Winclus: el mismo emblema en claro y oscuro, el icono .ico y un PNG."""
+    w = emblema()
+    w.resize((256, 256), Image.LANCZOS).save(IMAGENES / "logo_winclus_claro.png")
+    w.resize((256, 256), Image.LANCZOS).save(IMAGENES / "logo_winclus_oscuro.png")
+    # Icono: la W sobre un cuadrado azul marino redondeado
+    n = 1024
+    ico = Image.new("RGBA", (n, n), (0, 0, 0, 0))
+    ImageDraw.Draw(ico).rounded_rectangle([0, 0, n - 1, n - 1], radius=n // 5, fill=MARCA_NAVY + (255,))
+    g = w.resize((int(n * 0.74), int(n * 0.74)), Image.LANCZOS)
+    ico.paste(g, ((n - g.width) // 2, (n - g.height) // 2), g)
+    ico = ico.resize((256, 256), Image.LANCZOS)
     ico.save(IMAGENES / "icono.png")
     ico.save(IMAGENES / "icono.ico",
              sizes=[(256, 256), (128, 128), (64, 64), (48, 48), (32, 32), (16, 16)])
+    # Versiones grandes para la web (landing)
+    web = RAIZ / "web" / "img"
+    web.mkdir(parents=True, exist_ok=True)
+    w.resize((512, 512), Image.LANCZOS).save(web / "logo.png")
+    w.resize((512, 512), Image.LANCZOS).save(web / "logo_blanco.png")
+    ico.save(web / "icono.png")
 
 
 # ---------------------------------------------------------- Iconos del menú --
@@ -171,6 +225,16 @@ def dibujar_icono(nombre: str, color) -> Image.Image:
     elif nombre == "reloj":
         d.ellipse([10, 10, 86, 86], outline=c, width=g)
         d.line([(48, 26), (48, 50), (64, 60)], fill=c, width=g, joint="curve")
+    elif nombre == "escribir":
+        # Lápiz inclinado sobre una línea de texto
+        d.line([(24, 72), (70, 26)], fill=c, width=14)
+        d.polygon([(18, 78), (30, 76), (20, 66)], fill=c)
+        d.line([(62, 18), (78, 34)], fill=c, width=g)
+        d.line([(12, 88), (86, 88)], fill=c, width=g)
+    elif nombre == "asistente":
+        # Destello de cuatro puntas con una chispa pequeña: «magia»
+        d.polygon([(40, 8), (48, 34), (74, 42), (48, 50), (40, 76), (32, 50), (6, 42), (32, 34)], fill=c)
+        d.polygon([(74, 58), (78, 70), (90, 74), (78, 78), (74, 90), (70, 78), (58, 74), (70, 70)], fill=c)
     elif nombre == "cabeza":
         # Cabeza de perfil con flechas de movimiento a los lados
         d.ellipse([28, 10, 68, 50], outline=c, width=g)
@@ -185,7 +249,8 @@ def dibujar_icono(nombre: str, color) -> Image.Image:
 def iconos_menu() -> None:
     ICONOS.mkdir(parents=True, exist_ok=True)
     for nombre in ["casa", "camara", "puntero", "clic", "teclado", "sol", "luna",
-                   "perfil", "flecha_abajo", "ojo", "boca", "cejas", "reloj", "cabeza"]:
+                   "perfil", "flecha_abajo", "ojo", "boca", "cejas", "reloj", "cabeza",
+                   "escribir", "asistente"]:
         dibujar_icono(nombre, rgb(estilo.TEXTO[0])).save(ICONOS / f"{nombre}_claro.png")
         dibujar_icono(nombre, rgb(estilo.TEXTO[1])).save(ICONOS / f"{nombre}_oscuro.png")
 
@@ -317,7 +382,7 @@ def tema() -> None:
 
 
 if __name__ == "__main__":
-    aviso("activo.png", "Gestik está activo", rgb(estilo.OK[0]), "check")
+    aviso("activo.png", "Winclus está activo", rgb(estilo.OK[0]), "check")
     aviso("en_pausa.png", "En pausa", rgb(estilo.TEXTO_SUAVE[0]), "pausa")
     aviso("sin_cara.png", "No veo tu cara", rgb(estilo.ALERTA[0]), "alerta")
     logo()

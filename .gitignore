@@ -9,3 +9,17 @@ configs/ajustes.json
 
 # Muestras crudas de cada calibración de ojos (datos personales, por perfil)
 configs/*/calibracion_datos.json
+configs/*/clics_aprendidos.json
+
+# Palabras que el teclado en pantalla aprende de cada persona
+configs/palabras_aprendidas.json
+# Capturas de los recorridos de prueba
+herramientas/pruebas/cap_*.png
+herramientas/pruebas/err_*.txt
+
+# Imágenes originales de la web (pesadas; en web/img quedan las optimizadas)
+web/img/originales/
+
+# Registros de las pruebas
+herramientas/pruebas/log_*.txt
+herramientas/pruebas/out_*.txt

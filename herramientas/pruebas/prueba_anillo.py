@@ -32,7 +32,7 @@ def paso2():
     bajo = win32gui.WindowFromPoint((X, Y))
     print("anillo hwnd", hwnd_anillo, "ventana bajo el puntero", bajo,
           "titulo:", win32gui.GetWindowText(bajo))
-    print("ATRAVIESA" if bajo != hwnd_anillo and win32gui.GetWindowText(bajo) != "Gestik anillo" else "BLOQUEA")
+    print("ATRAVIESA" if bajo != hwnd_anillo and win32gui.GetWindowText(bajo) != "Winclus anillo" else "BLOQUEA")
     anillo.actualizar(None)
     root.after(200, root.destroy)
 

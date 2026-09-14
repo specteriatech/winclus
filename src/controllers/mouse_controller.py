@@ -35,6 +35,22 @@ pyautogui.FAILSAFE = False
 N_BUFFER = 100
 
 
+def decidir_salto(fijacion, ultimo_salto_punto, salto_px, mirada_moviendo, cabeza_quieta) -> bool:
+    """Híbrido: ¿debe saltar el puntero a la fijación actual?
+
+    Salta si la mirada se fijó (no está deslizándose) en un sitio nuevo, a
+    «salto_px» o más del último salto, y la cabeza está quieta. La primera
+    fijación siempre salta."""
+    if fijacion is None or mirada_moviendo:
+        return False
+    if ultimo_salto_punto is None:
+        return True
+    if not cabeza_quieta:
+        return False
+    d = np.hypot(fijacion[0] - ultimo_salto_punto[0], fijacion[1] - ultimo_salto_punto[1])
+    return bool(d >= salto_px)
+
+
 class MouseController(metaclass=Singleton):
 
     def __init__(self):
@@ -67,6 +83,10 @@ class MouseController(metaclass=Singleton):
         self.lupa_fuera_desde = None  # desde cuándo la mirada está fuera de la lupa
         self.congelado_hasta = 0.0    # no mover el puntero hasta este instante
         self.ultimo_destino = None    # último punto al que se llevó el puntero
+        # Modo híbrido: la mirada salta, la cabeza afina
+        self.ultimo_salto = 0.0       # cuándo saltó el puntero por la mirada
+        self.ultimo_salto_punto = None
+        self.cabeza_desde_salto = (0.0, 0.0)   # cuánto afinó la cabeza desde el salto
 
     def congelar(self, segundos: float) -> None:
         """Deja quieto el puntero un momento (p. ej. mientras se hace un clic
@@ -141,28 +161,25 @@ class MouseController(metaclass=Singleton):
         self.fijador.reiniciar()
         self.punto_directo = None
         self.fijacion = None
+        self.ultimo_salto_punto = None
+        self.cabeza_desde_salto = (0.0, 0.0)
 
-    def mover_por_mirada_directa(self) -> None:
-        """Modo directo: el puntero va al punto de la pantalla que se mira.
-
-        Se suaviza con la media de las últimas N muestras y, además, el
-        puntero solo se mueve cuando la mirada se aleja más de
-        «ojos_fijacion_px» del sitio donde está: así, mientras se fija la
-        vista en algo, el puntero se queda quieto (y el clic por permanencia
-        puede actuar) en vez de temblar."""
+    def _mirada_filtrada(self):
+        """Punto de pantalla que se mira, suavizado, o None si no hay rasgos
+        nuevos y fiables (parpadeo, sin cara, sin calibrar)."""
         from src.detectors.calibracion import es_valido, predecir
 
         cfg = ConfigManager().config
         modelo = cfg.get("ojos_calibracion")
         if self.curr_rasgos is None:
-            return   # parpadeo o sin cara: el puntero se queda donde está
+            return None   # parpadeo o sin cara: el puntero se queda donde está
         if not es_valido(modelo, len(self.curr_rasgos)):
-            return
+            return None
 
         # Solo se procesa cada rasgo nuevo una vez (llegan a ~30 fps; este
         # bucle va a ~60 Hz)
         if self.curr_rasgos is self.rasgos_ultimo:
-            return
+            return None
         self.rasgos_ultimo = self.curr_rasgos
 
         # Mediana de 5 fotogramas contra saltos sueltos del iris, y One Euro
@@ -186,6 +203,21 @@ class MouseController(metaclass=Singleton):
         self.filtro_directo.configurar(min_cutoff=3.0 / suavizado ** 0.8, beta=0.003)
         px, py = self.filtro_directo(px, py)
         self.punto_directo = (px, py)
+        return px, py
+
+    def mover_por_mirada_directa(self) -> None:
+        """Modo directo: el puntero va al punto de la pantalla que se mira.
+
+        Se suaviza con la media de las últimas N muestras y, además, el
+        puntero solo se mueve cuando la mirada se aleja más de
+        «ojos_fijacion_px» del sitio donde está: así, mientras se fija la
+        vista en algo, el puntero se queda quieto (y el clic por permanencia
+        puede actuar) en vez de temblar."""
+        cfg = ConfigManager().config
+        punto = self._mirada_filtrada()
+        if punto is None:
+            return
+        px, py = punto
 
         # Con la lupa abierta el puntero solo se mueve dentro de ella
         if self.lupa is not None:
@@ -208,6 +240,92 @@ class MouseController(metaclass=Singleton):
         if destino != self.ultimo_destino:
             self.ultimo_destino = destino
             pyautogui.moveTo(*destino)
+
+    def mover_hibrido(self) -> None:
+        """Modo híbrido: la mirada salta el puntero a la zona que se mira y la
+        cabeza lo afina con movimientos pequeños.
+
+        Un salto solo ocurre cuando la mirada se fija en un sitio nuevo, lejos
+        («hibrido_salto_px») del último sitio al que saltó, y la cabeza está
+        quieta: así, afinar con la cabeza (que también mueve un poco la
+        estimación de la mirada) no provoca saltos falsos. Tras el salto, la
+        cabeza no mueve el puntero durante «hibrido_pausa_ms»."""
+        cfg = ConfigManager().config
+        ahora = time.time()
+
+        vel = self._velocidad_cabeza()
+        factor = cfg.get("hibrido_cabeza", 40) / 100
+        vx, vy = (vel[0] * factor, vel[1] * factor) if vel is not None else (0.0, 0.0)
+        cabeza_quieta = np.hypot(vx, vy) < 0.6
+
+        punto = self._mirada_filtrada()
+        if punto is not None:
+            px, py = punto
+            radio = float(cfg.get("ojos_fijacion_px", 60))
+            persistencia = float(cfg.get("ojos_persistencia_ms", 150)) / 1000
+            self.fijacion = self.fijador.actualizar(px, py, radio, persistencia,
+                                                    radio_salto=max(3 * radio, 250.0))
+            if decidir_salto(self.fijacion, self.ultimo_salto_punto,
+                             float(cfg.get("hibrido_salto_px", 150)),
+                             self.fijador.moviendo, cabeza_quieta):
+                destino = (int(self.fijacion[0]), int(self.fijacion[1]))
+                self.ultimo_salto = ahora
+                self.ultimo_salto_punto = self.fijacion
+                self.cabeza_desde_salto = (0.0, 0.0)
+                self.ultimo_destino = destino
+                pyautogui.moveTo(*destino)
+                return
+
+        if vel is None or (vx == 0.0 and vy == 0.0):
+            return
+        if ahora - self.ultimo_salto < cfg.get("hibrido_pausa_ms", 250) / 1000:
+            return
+        pyautogui.move(xOffset=vx, yOffset=vy)
+        self.cabeza_desde_salto = (self.cabeza_desde_salto[0] + vx, self.cabeza_desde_salto[1] + vy)
+
+    def fijar_en(self, x, y) -> None:
+        """El imán (src/iman.py) llevó el puntero a un control: la fijación
+        de la mirada pasa a estar ahí para que no lo devuelva."""
+        punto = (float(x), float(y))
+        self.fijador.punto = punto
+        self.fijador.fuera_desde = None
+        self.fijador.moviendo = False
+        self.fijacion = punto
+        self.ultimo_destino = (int(x), int(y))
+        if self.ultimo_salto_punto is not None:
+            self.ultimo_salto_punto = punto
+
+    def afinado_con_cabeza(self, minimo_px: float = 12.0) -> bool:
+        """Híbrido: ¿la cabeza movió el puntero desde el último salto? Si sí,
+        el puntero está donde la persona quiso de verdad (vale para aprender)."""
+        dx, dy = self.cabeza_desde_salto
+        return float(np.hypot(dx, dy)) >= minimo_px
+
+    def _velocidad_cabeza(self):
+        """(vx, vy) en píxeles por vuelta según el movimiento de la cabeza,
+        o None mientras el búfer de suavizado se llena."""
+        if self.curr_track_loc is None:
+            return None
+        self.buffer = np.roll(self.buffer, shift=-1, axis=0)
+        self.buffer[-1] = self.curr_track_loc
+
+        # Get latest x, y and smooth.
+        smooth_px, smooth_py = utils.apply_smoothing(self.buffer, self.smooth_kernel)
+        vel_x = smooth_px - self.prev_x
+        vel_y = smooth_py - self.prev_y
+        self.prev_x = smooth_px
+        self.prev_y = smooth_py
+
+        # In delay state
+        self.delay_count += 1
+        if self.delay_count < N_BUFFER:
+            return None
+
+        vel_x, vel_y = self.asymmetry_scale(vel_x, vel_y)
+        if ConfigManager().config["mouse_acceleration"]:
+            vel_x *= self.accel(vel_x)
+            vel_y *= self.accel(vel_y)
+        return vel_x, vel_y
 
     def velocidad_por_mirada(self):
         """Modo «ojos»: el puntero se mueve como con una palanca. Mirar a un
@@ -249,66 +367,61 @@ class MouseController(metaclass=Singleton):
             return
 
         while not self.stop_flag.is_set():
-            if not self.is_active.get():
-                time.sleep(0.001)
-                continue
+            try:
+                self._vuelta()
+            except Exception as e:
+                # Sin esto una excepción mataría el hilo y el puntero se
+                # quedaría quieto para siempre sin dejar rastro
+                logger.error(f"Error moviendo el puntero (se sigue): {e}", exc_info=e)
+                time.sleep(0.05)
 
-            if self.calibrando or time.time() < self.congelado_hasta:
-                time.sleep(0.01)
-                continue
+    def _vuelta(self) -> None:
+        """Una vuelta del bucle del puntero (ver main_loop)."""
+        if not self.is_active.get():
+            time.sleep(0.001)
+            return
 
-            if ConfigManager().config.get("modo_puntero") == "ojos":
-                if ConfigManager().config.get("ojos_modo", "directo") == "directo":
-                    try:
-                        self.mover_por_mirada_directa()
-                    except Exception as e:
-                        logger.warning(f"Mirada directa: {e}")
-                else:
-                    vel_x, vel_y = self.velocidad_por_mirada()
-                    if vel_x != 0.0 or vel_y != 0.0:
-                        pyautogui.move(xOffset=vel_x, yOffset=vel_y)
-                # Mantener el búfer de cabeza al día para cambiar de modo sin salto
-                if self.curr_track_loc is not None:
-                    self.buffer = np.roll(self.buffer, shift=-1, axis=0)
-                    self.buffer[-1] = self.curr_track_loc
-                    self.prev_x, self.prev_y = utils.apply_smoothing(
-                        self.buffer, self.smooth_kernel)
+        if self.calibrando or time.time() < self.congelado_hasta:
+            time.sleep(0.01)
+            return
+
+        if ConfigManager().config.get("modo_puntero") == "ojos":
+            submodo = ConfigManager().config.get("ojos_modo", "directo")
+            if submodo == "directo":
+                try:
+                    self.mover_por_mirada_directa()
+                except Exception as e:
+                    logger.warning(f"Mirada directa: {e}")
+            elif submodo == "hibrido":
+                try:
+                    self.mover_hibrido()
+                except Exception as e:
+                    logger.warning(f"Híbrido: {e}")
                 time.sleep(ConfigManager().config["tick_interval_ms"] / 1000)
-                continue
-
-            if self.curr_track_loc is None:
-                time.sleep(0.001)
-                continue
-
-            self.buffer = np.roll(self.buffer, shift=-1, axis=0)
-            self.buffer[-1] = self.curr_track_loc
-
-            # Get latest x, y and smooth.
-            smooth_px, smooth_py = utils.apply_smoothing(
-                self.buffer, self.smooth_kernel)
-
-            vel_x = smooth_px - self.prev_x
-            vel_y = smooth_py - self.prev_y
-
-            self.prev_x = smooth_px
-            self.prev_y = smooth_py
-
-            # In delay state
-            self.delay_count += 1
-            if self.delay_count < N_BUFFER:
-                time.sleep(0.001)
-                continue
-
-            vel_x, vel_y = self.asymmetry_scale(vel_x, vel_y)
-
-            if ConfigManager().config["mouse_acceleration"]:
-                vel_x *= self.accel(vel_x)
-                vel_y *= self.accel(vel_y)
-
-            # pydirectinput is not working here
-            pyautogui.move(xOffset=vel_x, yOffset=vel_y)
-
+                return
+            else:
+                vel_x, vel_y = self.velocidad_por_mirada()
+                if vel_x != 0.0 or vel_y != 0.0:
+                    pyautogui.move(xOffset=vel_x, yOffset=vel_y)
+            # Mantener el búfer de cabeza al día para cambiar de modo sin salto
+            if self.curr_track_loc is not None:
+                self.buffer = np.roll(self.buffer, shift=-1, axis=0)
+                self.buffer[-1] = self.curr_track_loc
+                self.prev_x, self.prev_y = utils.apply_smoothing(
+                    self.buffer, self.smooth_kernel)
             time.sleep(ConfigManager().config["tick_interval_ms"] / 1000)
+            return
+
+        vel = self._velocidad_cabeza()
+        if vel is None:
+            time.sleep(0.001)
+            return
+        vel_x, vel_y = vel
+
+        # pydirectinput is not working here
+        pyautogui.move(xOffset=vel_x, yOffset=vel_y)
+
+        time.sleep(ConfigManager().config["tick_interval_ms"] / 1000)
 
     def set_active(self, flag: bool) -> None:
         self.is_active.set(flag)

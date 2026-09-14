@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Adaptado para Gestik: miniatura de la cámara en una tarjeta con un
+# Adaptado para Winclus: miniatura de la cámara en una tarjeta con un
 # botón grande «Activar / Pausar» en vez del interruptor pequeño original.
 
+import time
 import tkinter
 
 import customtkinter
@@ -23,7 +24,7 @@ from PIL import Image, ImageTk
 from src import estilo
 from src.camera_manager import CameraManager
 from src.config_manager import ConfigManager
-from src.controllers import MouseController
+from src.controllers import ControladorClic, MouseController
 from src.gui.frames.safe_disposable_frame import SafeDisposableFrame
 
 CANVAS_WIDTH = 216
@@ -81,6 +82,7 @@ class FrameCamPreview(SafeDisposableFrame):
 
         # El estado real vive en MouseController (también lo cambian los gestos
         # de pausa); el botón solo lo refleja.
+        self.aviso_hasta = 0.0    # mientras dure, el estado explica cómo pausar
         self.activo_var = MouseController().is_active
         self.activo_var.trace_add("write", lambda *_: self.refrescar())
         if ConfigManager().config["auto_play"]:
@@ -95,6 +97,27 @@ class FrameCamPreview(SafeDisposableFrame):
         self.new_photo = None
         self.after(1, self.camera_loop)
 
+    def contiene_boton(self, x, y) -> bool:
+        """¿Está el punto de pantalla (x, y) sobre el botón Activar/Pausar?"""
+        try:
+            if not self.boton.winfo_viewable():
+                return False
+            x1 = self.boton.winfo_rootx()
+            y1 = self.boton.winfo_rooty()
+            x2 = x1 + self.boton.winfo_width()
+            y2 = y1 + self.boton.winfo_height()
+        except tkinter.TclError:
+            return False
+        return x1 <= x < x2 and y1 <= y < y2
+
+    def avisar_como_pausar(self):
+        """Un parpadeo sobre «Pausar» no pausa: se explica el gesto largo."""
+        self.aviso_hasta = time.time() + 4.0
+        self.estado.configure(
+            text="Para pausar, cierra los ojos 1,2 s mirando este botón.",
+            text_color=estilo.AMBAR)
+        self.after(4100, self.refrescar)
+
     def alternar(self):
         nuevo = not self.activo_var.get()
         self.master_callback("toggle_switch", {"switch_status": nuevo})
@@ -102,24 +125,32 @@ class FrameCamPreview(SafeDisposableFrame):
     def refrescar(self):
         if self.is_destroyed:
             return
+        if time.time() < self.aviso_hasta and self.activo_var.get():
+            return
+        self.estado.configure(text_color=estilo.TEXTO_SUAVE)
         if self.activo_var.get():
             self.boton.configure(text="Pausar",
                                  fg_color=estilo.PRIMARIO,
                                  hover_color=estilo.PRIMARIO_HOVER,
                                  text_color=estilo.TEXTO_SOBRE_PRIMARIO)
             if ConfigManager().config.get("modo_puntero") == "ojos":
-                self.estado.configure(
-                    text="Activo: mueve los ojos para mover el puntero.")
+                texto = "Activo con los ojos."
             else:
-                self.estado.configure(
-                    text="Activo: mueve la cabeza para mover el puntero.")
+                texto = "Activo con la cabeza."
+            # Máximo dos líneas para que la tarjeta no crezca
+            if ControladorClic().arrastrando:
+                self.estado.configure(text="Arrastrando: haz tu gesto de clic para soltar.",
+                                      text_color=estilo.AMBAR)
+                return
+            self.estado.configure(
+                text=texto + " Para pausar: ojos cerrados 1,2 s sobre el botón.")
         else:
             self.boton.configure(text="Activar",
                                  fg_color=estilo.AMBAR,
                                  hover_color=estilo.AMBAR_HOVER,
                                  text_color=estilo.TEXTO_SOBRE_AMBAR)
             self.estado.configure(
-                text="En pausa: pulsa Activar para empezar.")
+                text="En pausa: el puntero no se mueve. Pulsa Activar.")
 
     def camera_loop(self):
         if self.is_destroyed:
@@ -127,7 +158,7 @@ class FrameCamPreview(SafeDisposableFrame):
         if self.is_active:
             if CameraManager().is_destroyed:
                 return
-            modo = ConfigManager().config.get("modo_puntero")
+            modo = (ConfigManager().config.get("modo_puntero"), ControladorClic().arrastrando)
             if modo != getattr(self, "modo_mostrado", None):
                 self.modo_mostrado = modo
                 self.refrescar()

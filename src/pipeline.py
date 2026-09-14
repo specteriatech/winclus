@@ -16,6 +16,7 @@ import logging
 from src.camera_manager import CameraManager
 from src.controllers import ControladorClic, Keybinder, MouseController
 from src.detectors import FaceMesh
+from src.detectors.aprendizaje import AprendizajeClics
 
 
 class Pipeline:
@@ -52,6 +53,8 @@ class Pipeline:
         MouseController().act(track_loc)
         MouseController().act_mirada(FaceMesh().get_mirada())
         MouseController().act_rasgos(FaceMesh().get_rasgos(), FaceMesh().get_cabeza())
+        # Calibración invisible: recuerda los rasgos por si llega un clic
+        AprendizajeClics().registrar(FaceMesh().get_rasgos(), FaceMesh().get_cabeza())
 
         # Control keyboard
         blendshape_values = FaceMesh().get_blendshapes()

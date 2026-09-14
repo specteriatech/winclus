@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Adaptado para Gestik: barra lateral propia con nombre del programa,
+# Adaptado para Winclus: barra lateral propia con nombre del programa,
 # selector de perfil, pestañas con icono y texto, y cambio de modo claro/oscuro.
 
 from functools import partial
@@ -35,6 +35,8 @@ PESTANAS = {
     "page_cursor": ("Puntero", "puntero"),
     "page_gestures": ("Clics", "clic"),
     "page_keyboard": ("Teclas", "teclado"),
+    "page_escribir": ("Escribir", "escribir"),
+    "page_asistente": ("Asistente", "asistente"),
 }
 
 
@@ -50,9 +52,9 @@ class FrameMenu(SafeDisposableFrame):
         self.master_callback = master_callback
 
         # Nombre del programa con su icono
-        marca_im = estilo.imagen_doble("logo_gestik", MARCA_SIZE)
+        marca_im = estilo.imagen_doble("logo_winclus", MARCA_SIZE)
         marca = customtkinter.CTkLabel(master=self,
-                                       text="  Gestik",
+                                       text="  Winclus",
                                        image=marca_im,
                                        compound="left",
                                        anchor="w",

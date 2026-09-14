@@ -89,7 +89,7 @@ class VentanaCalibracion:
         w, h = self.w, self.h
 
         self.ventana = tkinter.Toplevel(tk_root)
-        self.ventana.title("Gestik calibración")
+        self.ventana.title("Winclus calibración")
         self.ventana.overrideredirect(True)
         self.ventana.attributes("-topmost", True)
         self.ventana.geometry(f"{w}x{h}+{x1}+{y1}")
@@ -536,7 +536,7 @@ class VentanaRecentrado:
         self.centro = (x1 + w / 2, y1 + h / 2)
 
         self.ventana = tkinter.Toplevel(tk_root)
-        self.ventana.title("Gestik centro")
+        self.ventana.title("Winclus centro")
         self.ventana.overrideredirect(True)
         self.ventana.attributes("-topmost", True)
         self.ventana.geometry(f"{w}x{h}+{x1}+{y1}")

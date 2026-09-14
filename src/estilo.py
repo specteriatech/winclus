@@ -1,4 +1,4 @@
-"""Estilo visual de Gestik: colores, tipografías y modo claro u oscuro.
+"""Estilo visual de Winclus: colores, tipografías y modo claro u oscuro.
 
 Todos los colores son pares (claro, oscuro): customtkinter elige el que toca
 según el modo. Las demás partes del programa deben tomar de aquí sus colores y
@@ -70,6 +70,12 @@ def fuente(nombre: str) -> customtkinter.CTkFont:
 
 # ------------------------------------------------------------------ Modo --
 _lienzos = []   # (canvas de tkinter, par de colores) para actualizar el fondo
+_avisos_modo = []   # funciones a llamar cuando cambia el modo (p. ej. redibujar)
+
+
+def al_cambiar_modo(fn) -> None:
+    """Registra una función que se llama tras cambiar entre claro y oscuro."""
+    _avisos_modo.append(fn)
 
 
 def es_oscuro() -> bool:
@@ -123,6 +129,11 @@ def aplicar_modo(modo: str, guardar: bool = True) -> None:
             canvas.configure(bg=color_actual(par))
         except Exception:   # el canvas pudo haberse destruido
             pass
+    for fn in _avisos_modo:
+        try:
+            fn()
+        except Exception as e:
+            logger.warning(f"Al cambiar de modo: {e}")
     if guardar:
         datos = _leer_ajustes()
         datos["modo"] = modo

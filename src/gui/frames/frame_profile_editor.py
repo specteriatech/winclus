@@ -17,6 +17,7 @@ import re
 import time
 import tkinter as tk
 from functools import partial
+from tkinter import filedialog
 
 import customtkinter
 
@@ -407,14 +408,33 @@ class FrameProfileEditor():
         # Add  butotn
         add_prof_image = customtkinter.CTkImage(
             Image.open("assets/images/add_prof.png"), size=(16, 12))
-        add_button = customtkinter.CTkButton(master=self.float_window,
-                                             text="Agregar perfil",
+        botones = customtkinter.CTkFrame(master=self.float_window, fg_color="transparent")
+        botones.grid(row=2, column=0, padx=10, pady=5, sticky="new")
+        add_button = customtkinter.CTkButton(master=botones,
+                                             text="Agregar",
                                              image=add_prof_image,
                                              fg_color=estilo.TARJETA,
-                                             width=100,
+                                             width=96,
+                                             height=36,
                                              text_color=DARK_BLUE,
                                              command=self.add_button_callback)
-        add_button.grid(row=2, column=0, padx=15, pady=5, sticky="nw")
+        add_button.grid(row=0, column=0, padx=(5, 4), sticky="w")
+        # Exportar e importar: un archivo .winclus (zip) con ajustes, gestos,
+        # calibración y clics aprendidos, para llevar el perfil a otro equipo
+        customtkinter.CTkButton(master=botones, text="Exportar", width=96, height=36,
+                                fg_color=estilo.TARJETA, border_width=2,
+                                border_color=estilo.PRIMARIO, text_color=DARK_BLUE,
+                                hover_color=estilo.PRIMARIO_SUAVE,
+                                command=self.export_button_callback).grid(row=0, column=1, padx=4)
+        customtkinter.CTkButton(master=botones, text="Importar", width=96, height=36,
+                                fg_color=estilo.TARJETA, border_width=2,
+                                border_color=estilo.PRIMARIO, text_color=DARK_BLUE,
+                                hover_color=estilo.PRIMARIO_SUAVE,
+                                command=self.import_button_callback).grid(row=0, column=2, padx=4)
+        self.aviso = customtkinter.CTkLabel(master=botones, text="", wraplength=310,
+                                            justify=tk.LEFT, text_color=estilo.TEXTO_SUAVE,
+                                            font=estilo.fuente("pequena"))
+        self.aviso.grid(row=1, column=0, columnspan=3, padx=5, pady=(4, 0), sticky="w")
 
         # Inner scrollable frame
         self.inner_frame = ItemProfileEditor(
@@ -431,6 +451,36 @@ class FrameProfileEditor():
     def add_button_callback(self):
         ConfigManager().add_profile()
         self.inner_frame.refresh_frame()
+
+    def export_button_callback(self):
+        perfil = ConfigManager().curr_profile_name.get()
+        ruta = filedialog.asksaveasfilename(
+            title=f"Exportar el perfil «{perfil}»",
+            initialfile=f"{perfil}.winclus",
+            defaultextension=".winclus",
+            filetypes=[("Perfil de Winclus", "*.winclus")])
+        if not ruta:
+            return
+        try:
+            ConfigManager().export_profile(perfil, ruta)
+            self.aviso.configure(text=f"Perfil «{perfil}» guardado en {ruta}")
+        except Exception as e:
+            logger.warning(f"Exportar perfil: {e}")
+            self.aviso.configure(text=f"No se pudo exportar: {e}")
+
+    def import_button_callback(self):
+        ruta = filedialog.askopenfilename(
+            title="Importar un perfil de Winclus",
+            filetypes=[("Perfil de Winclus", "*.winclus *.gestik"), ("Todos los archivos", "*.*")])
+        if not ruta:
+            return
+        try:
+            nombre = ConfigManager().import_profile(ruta)
+            self.inner_frame.refresh_frame()
+            self.aviso.configure(text=f"Perfil «{nombre}» importado. Elígelo en la lista para usarlo.")
+        except Exception as e:
+            logger.warning(f"Importar perfil: {e}")
+            self.aviso.configure(text=f"No se pudo importar: {e}")
 
     def lift_window(self, event):
         """Lift windows when root window get focus

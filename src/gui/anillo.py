@@ -24,7 +24,7 @@ class Anillo:
 
     def __init__(self, tk_root):
         self.ventana = tkinter.Toplevel(tk_root)
-        self.ventana.title("Gestik anillo")
+        self.ventana.title("Winclus anillo")
         self.ventana.overrideredirect(True)
         self.ventana.attributes("-topmost", True)
         self.ventana.attributes("-transparentcolor", COLOR_CLAVE)

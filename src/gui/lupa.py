@@ -32,7 +32,7 @@ class Lupa:
 
     def __init__(self, tk_root):
         self.ventana = tkinter.Toplevel(tk_root)
-        self.ventana.title("Gestik lupa")
+        self.ventana.title("Winclus lupa")
         self.ventana.overrideredirect(True)
         self.ventana.attributes("-topmost", True)
         self.ventana.configure(bg=estilo.PRIMARIO[0])

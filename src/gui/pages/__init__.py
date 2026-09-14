@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from .page_asistente import *
 from .page_cursor import *
+from .page_escribir import *
 from .page_home import *
 from .page_keyboard import *
 from .page_select_camera import *
