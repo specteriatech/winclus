@@ -1,0 +1,17 @@
+# Recurso de versión del ejecutable Winclus.exe (propiedades del archivo en Windows)
+VSVersionInfo(
+  ffi=FixedFileInfo(filevers=(0, 1, 0, 0), prodvers=(0, 1, 0, 0), mask=0x3f, flags=0x0,
+                    OS=0x40004, fileType=0x1, subtype=0x0, date=(0, 0)),
+  kids=[
+    StringFileInfo([StringTable('040A04B0', [
+        StringStruct('CompanyName', 'Winclus'),
+        StringStruct('FileDescription', 'Winclus: mueve el puntero con la cabeza o los ojos'),
+        StringStruct('FileVersion', '0.1.0'),
+        StringStruct('InternalName', 'Winclus'),
+        StringStruct('LegalCopyright', '© 2026 Colaboradores de Winclus. Licencia Apache 2.0.'),
+        StringStruct('OriginalFilename', 'Winclus.exe'),
+        StringStruct('ProductName', 'Winclus'),
+        StringStruct('ProductVersion', '0.1.0')])]),
+    VarFileInfo([VarStruct('Translation', [0x040A, 1200])])
+  ]
+)

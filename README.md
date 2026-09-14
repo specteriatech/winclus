@@ -1,74 +1,52 @@
-# Project Gameface
-Project Gameface helps gamers control their mouse cursor using their head movement and facial gestures.
+# Winclus
 
+**Tecnología que incluye, un mundo que avanza.** · [winclus.com](https://winclus.com)
 
-# Download
-1. Download the program from [Release section](https://github.com/google/project-gameface/releases)
-2. Run `run_app.exe`
+Winclus es un programa gratuito para Windows que mueve el puntero del ratón con la cabeza o con los ojos y hace clic con un parpadeo o un gesto de la cara. Solo necesita una cámara web. Está pensado para personas con discapacidades o dificultades motoras que no pueden usar un ratón o un teclado convencional.
 
+Todo se procesa en el equipo: no hace falta cuenta, no necesita internet y no envía la imagen de la cámara a ningún sitio.
 
-# Python application
+## Instalar
 
-## Installation
-> Environment
->- Windows  
->- Python 3.9
-```
-pip install -r requirements.txt
+**Con un comando** (PowerShell, sin permisos de administrador):
+
+```powershell
+irm https://winclus.com/instalar.ps1 | iex
 ```
 
-## Quick start
-1. Run main application
-    ```
-    python run_app.py
-    ```
+**Con el ZIP**: descarga `Winclus-Windows.zip` desde la [última release](https://github.com/specteriatech/winclus/releases/latest), descomprímelo y abre `Winclus.exe`. Dentro va un `LEEME.txt` con los pasos.
 
+Requisitos: Windows 10 u 11 de 64 bits y una cámara web.
 
-# Configs
-## Basic config
+## Qué hace
 
->[cursor.json](configs/default/cursor.json)  
+- **Puntero** con la cabeza, con los ojos, o híbrido (los ojos para saltar, la cabeza para afinar).
+- **Clic** con parpadeo, boca, cejas o quedándose quieto. Con cada clic aprende y afina la puntería sin calibrar.
+- **Menú de clics**: cerrando los ojos algo más de un segundo aparece un anillo con clic derecho, doble clic, arrastrar, rueda, teclado y pausa.
+- **Teclado en pantalla** con sugerencias de palabras en español.
+- **Voz**: frases guardadas que se leen en voz alta.
+- **Asistente**: «abre el correo», «escribe hola a Ana»… y lo hace paso a paso.
+- **Perfiles** exportables (`.winclus`) para llevar la configuración a otro equipo.
 
-|           |                                       |
-|-----------|---------------------------------------|
-| camera_id | Default camera index on your machine. |
-| tracking_vert_idxs | Tracking points for controlling cursor ([see](assets/images/uv_unwrap_full.png)) |
-| spd_up    | Cursor speed in the upward direction  |
-| spd_down  | Cursor speed in downward direction    |
-| spd_left  | Cursor speed in left direction        |
-| spd_right | Cursor speed in right direction       |
-| pointer_smooth  | Amount of cursor smoothness           |
-| shape_smooth  | Reduces the flickering of the action           |
-| hold_trigger_ms  | Hold action trigger delay in milliseconds           |
-| auto_play  | Automatically begin playing when you launch the program           |
-| mouse_acceleration  | Make the cursor move faster when the head moves quickly        |
-| use_transformation_matrix  | Control cursor using head direction (tracking_vert_idxs will be ignored)   |
- 
+## Ejecutar desde el código
 
-## Keybinds configs
->[mouse_bindings.json](configs/default/mouse_bindings.json)  
->[keyboard_bindings.json](configs/default/keyboard_bindings.json) 
-
-The config parameters for keybinding configuration are in this structure.
 ```
-gesture_name: [device_name, action_name, threshold, trigger_type]
+py -3.9 -m venv .venv
+.venv\Scripts\pip install -r requirements.txt
+.venv\Scripts\pythonw.exe run_app.py
 ```
 
+Construir el ejecutable y el ZIP de distribución:
 
-|              |                                                                                           |
-|--------------|-------------------------------------------------------------------------------------------|
-| gesture_name | Face expression name, see the [list](src/shape_list.py#L16)       |
-| device_name  | "mouse" or "keyboard"                                                                     |
-| action_name  | "left", "right" and "middle" for mouse. "" for keyboard, for instance, "w" for the W key. |
-| threshold    | The action trigger threshold has values ranging from 0.0 to 1.0.        |
-| trigger_type | Action trigger type, use "single" for a single trigger, "hold" for ongoing action.                                 |
-
-
-
-
-
-# Build
 ```
-    pyinstaller build.spec
+.venv\Scripts\python.exe -m PyInstaller --noconfirm build.spec
+.venv\Scripts\python.exe herramientas\empaquetar.py
 ```
 
+La web está en `web/` (HTML estático) y los recursos gráficos se regeneran con `herramientas\generar_recursos.py`.
+
+## Licencia
+
+Apache 2.0. Winclus nace de [Project Gameface](https://github.com/google/project-gameface) de Google, que no patrocina ni respalda este proyecto. Ver `LICENSE` y `NOTICE`.
+
+Winclus es una herramienta de accesibilidad; no es un dispositivo médico.

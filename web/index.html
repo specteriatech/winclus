@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Winclus · Tecnología que incluye, un mundo que avanza</title>
+<meta name="description" content="Winclus es un widget gratuito para Windows que te deja mover el puntero con la cabeza o los ojos y hacer clic con un gesto. Solo necesitas una cámara web.">
+<link rel="icon" href="img/icono.png">
+<meta property="og:title" content="Winclus · Inclusión digital para todos">
+<meta property="og:description" content="Mueve el puntero con tu cabeza o tus ojos y haz clic con un parpadeo. Gratis y de código abierto.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://winclus.com/">
+<meta property="og:image" content="https://winclus.com/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="img/fondo_portada.jpg">
+<style>
+  :root{
+    --navy:#101F3D; --azul:#2F4FD8; --teal:#1AA89A; --menta:#8FD9C4;
+    --morado:#6B4FC2; --amarillo:#F2B705; --verde:#34C26B;
+    --fondo:#FFFFFF; --fondo2:#F3F6FA; --linea:#DCE3EC;
+    --texto:#101F3D; --texto2:#4A5670;
+    --radio:14px;
+    --fuente:"Poppins", "Segoe UI", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} *{transition:none!important;animation:none!important} }
+  body{margin:0;font-family:var(--fuente);color:var(--texto);background:var(--fondo);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  img{max-width:100%;display:block}
+  a{color:var(--azul)}
+  :focus-visible{outline:3px solid var(--amarillo);outline-offset:3px}
+  .contenedor{width:min(1120px,100% - 40px);margin-inline:auto}
+  h1,h2,h3{line-height:1.15;margin:0 0 .4em;font-weight:700}
+  h1{font-size:clamp(2.1rem,4.6vw,3.4rem)}
+  h2{font-size:clamp(1.7rem,3.2vw,2.4rem)}
+  h3{font-size:1.2rem;font-weight:600}
+  p{margin:0 0 1em}
+  .verde{color:var(--teal)}
+  .salto{position:absolute;left:-999px;top:0;background:var(--navy);color:#fff;padding:10px 16px;border-radius:8px;z-index:99}
+  .salto:focus{left:16px;top:16px}
+
+  /* ---------- botones ---------- */
+  .btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:12px 24px;border-radius:999px;font-weight:600;text-decoration:none;cursor:pointer;border:2px solid transparent;font-size:1rem;transition:background .18s,transform .18s}
+  .btn svg{width:22px;height:22px;flex:none}
+  .btn-verde{background:var(--verde);color:var(--navy)}
+  .btn-verde:hover{background:#2bb160;transform:translateY(-1px)}
+  .btn-borde{background:transparent;color:var(--navy);border-color:var(--navy)}
+  .btn-borde:hover{background:var(--fondo2)}
+  .btn-claro{background:#fff;color:var(--navy)}
+  .btn-claro:hover{background:var(--menta)}
+
+  /* ---------- cabecera ---------- */
+  header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);border-bottom:1px solid var(--linea)}
+  .barra{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:72px;position:relative}
+  .marca{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--navy);font-weight:700;font-size:1.35rem;letter-spacing:-.01em}
+  .marca img{width:40px;height:40px}
+  .marca span{color:var(--teal);font-weight:600}
+  nav ul{display:flex;gap:6px;list-style:none;margin:0;padding:0}
+  nav a{display:inline-block;padding:10px 14px;border-radius:8px;text-decoration:none;color:var(--texto2);font-weight:500}
+  nav a:hover{background:var(--fondo2);color:var(--navy)}
+  .menu-btn{display:none;background:none;border:2px solid var(--linea);border-radius:10px;width:46px;height:46px;cursor:pointer;color:var(--navy)}
+  @media (max-width:820px){
+    .menu-btn{display:inline-flex;align-items:center;justify-content:center}
+    nav{display:none;position:absolute;left:-20px;right:-20px;top:72px;background:#fff;border-bottom:1px solid var(--linea);padding:12px 20px 20px}
+    nav.abierto{display:block}
+    nav ul{flex-direction:column}
+    nav a{display:block;padding:12px}
+    .barra .btn{display:none}
+  }
+
+  /* ---------- portada con la foto que se arma como rompecabezas ---------- */
+  .hero{position:relative;overflow:hidden;min-height:640px;display:flex;align-items:center;padding:72px 0 64px;background:var(--fondo2)}
+  .puzzle{position:absolute;inset:0;z-index:0;display:grid;grid-template-columns:repeat(var(--c),1fr);grid-template-rows:repeat(var(--r),1fr)}
+  .puzzle span{display:block;background-image:url(img/fondo_portada.jpg);background-repeat:no-repeat;opacity:0;
+    transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(.6);
+    transition:transform 1s cubic-bezier(.2,.8,.2,1) var(--d),opacity .7s ease var(--d)}
+  .puzzle.listo span{opacity:1;transform:none}
+  .puzzle.fin{background-image:url(img/fondo_portada.jpg);background-repeat:no-repeat}
+  .puzzle.fin span{visibility:hidden}
+  .velo{position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:linear-gradient(90deg,rgba(255,255,255,.97) 0%,rgba(255,255,255,.94) 38%,rgba(255,255,255,.62) 56%,rgba(255,255,255,.08) 78%,rgba(255,255,255,0) 100%)}
+  .hero .contenedor{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .hero-texto p.grande{font-size:1.2rem;color:var(--texto2);max-width:34rem}
+  .hero-acciones{display:flex;flex-wrap:wrap;gap:12px;margin:24px 0 14px}
+  .hero-nota{font-size:.92rem;color:var(--texto2)}
+  .hero-nota strong{color:var(--navy)}
+  .btn-borde{background:rgba(255,255,255,.75)}
+  .hero-visual{position:relative;min-height:380px}
+  .globo{position:absolute;background:#fff;border:1px solid var(--linea);border-radius:12px;padding:10px 14px;box-shadow:0 10px 30px rgba(16,31,61,.14);font-size:.9rem;font-weight:600;display:flex;align-items:center;gap:8px}
+  .globo svg{width:20px;height:20px}
+  .globo.g1{left:-6%;bottom:6%}
+  .globo.g2{left:-9%;top:10%}
+  .globo.g3{left:-3%;top:44%}
+  .globo.g3 img{width:22px;height:22px;border-radius:6px}
+  @media (max-width:900px){
+    .hero{min-height:0;padding:56px 0 48px}
+    .hero .contenedor{grid-template-columns:1fr}
+    .hero-visual{display:none}
+    .velo{background:rgba(255,255,255,.9)}
+  }
+  @media (prefers-reduced-motion:reduce){ .puzzle span{transition:none;opacity:1;transform:none} }
+
+  /* ---------- franja de confianza ---------- */
+  .franja{background:var(--navy);color:#fff;padding:18px 0}
+  .franja ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:12px 36px;justify-content:center;font-weight:500;font-size:.95rem}
+  .franja li{display:flex;align-items:center;gap:10px}
+  .franja svg{width:20px;height:20px;color:var(--verde)}
+
+  /* ---------- secciones ---------- */
+  section{padding:72px 0}
+  .intro{max-width:44rem;margin-bottom:40px}
+  .intro p{color:var(--texto2);font-size:1.08rem}
+  .intro-doble{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;margin-bottom:44px}
+  .intro-doble .intro{margin-bottom:0}
+  .intro-doble img{border-radius:22px;width:100%;height:auto}
+  @media (max-width:820px){.intro-doble{grid-template-columns:1fr}.intro-doble img{max-width:420px;margin-inline:auto}}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+  @media (max-width:900px){.grid3{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:600px){.grid3,.grid2{grid-template-columns:1fr}}
+  .tarjeta{background:#fff;border:1px solid var(--linea);border-radius:var(--radio);padding:26px}
+  .tarjeta .ilus{width:104px;height:104px;border-radius:24px;margin-bottom:16px;object-fit:cover}
+  .tarjeta p{margin:0;color:var(--texto2)}
+
+  .pasos{background:var(--fondo2)}
+  .paso{background:#fff;border:1px solid var(--linea);border-radius:var(--radio);overflow:hidden;display:flex;flex-direction:column}
+  .paso img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+  .paso .cuerpo{padding:22px 24px 26px;display:grid;grid-template-columns:48px 1fr;gap:14px;align-items:start}
+  .paso .num{width:48px;height:48px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:700;font-size:1.2rem}
+  .paso:nth-child(2) .num{background:var(--teal)} .paso:nth-child(3) .num{background:var(--morado)}
+  .paso p{color:var(--texto2);margin:0}
+
+  /* ---------- descarga ---------- */
+  .descarga{position:relative;overflow:hidden;background:var(--navy) url(img/fondo_descarga.jpg) center/cover no-repeat;color:#fff}
+  .descarga .contenedor{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+  @media (max-width:900px){.descarga .contenedor{grid-template-columns:1fr}}
+  .descarga h2{color:#fff}
+  .descarga p{color:#c9d3e6}
+  .descarga a{color:#fff}
+  .descarga .btn-claro{color:var(--navy)}
+  .caja{background:rgba(16,31,61,.55);backdrop-filter:blur(2px);border:1px solid rgba(255,255,255,.18);border-radius:var(--radio);padding:26px}
+  .caja h3{color:#fff;margin-bottom:14px}
+  .caja ul{list-style:none;margin:0 0 22px;padding:0;display:grid;gap:10px}
+  .caja li{display:flex;gap:10px;align-items:flex-start;color:#e4eaf5}
+  .caja li svg{width:20px;height:20px;flex:none;color:var(--verde);margin-top:3px}
+  .caja small{display:block;color:#b7c3da;margin-top:12px;font-size:.85rem}
+  .opciones{display:flex;gap:8px;margin:18px 0 14px;flex-wrap:wrap}
+  .opciones button{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:8px 18px;font:inherit;font-weight:600;cursor:pointer;min-height:44px}
+  .opciones button[aria-selected="true"]{background:#fff;color:var(--navy);border-color:#fff}
+  .panel-desc[hidden]{display:none}
+  .codigo{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:12px 12px 12px 16px;margin:12px 0 10px;font-family:Consolas,"Cascadia Mono",monospace;font-size:.95rem;overflow-x:auto}
+  .codigo code{flex:1;white-space:nowrap;color:#e8fff3}
+  .codigo button{background:var(--verde);color:var(--navy);border:0;border-radius:8px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer;min-height:40px;flex:none}
+  .pasitos{margin:0 0 6px;padding-left:22px;color:#d5ddec;font-size:.95rem}
+  .pasitos li{margin-bottom:4px}
+  .pasitos b{color:#fff;font-weight:600}
+  .version{display:inline-block;background:var(--verde);color:var(--navy);font-weight:600;padding:3px 12px;border-radius:999px;font-size:.85rem;margin-bottom:12px}
+
+  /* ---------- para quién ---------- */
+  .quien .tarjeta{padding:0;overflow:hidden}
+  .quien .tarjeta img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:center 30%}
+  .quien .cuerpo{padding:20px 24px 24px;display:flex;gap:14px;align-items:flex-start}
+  .quien .punto{width:14px;height:14px;border-radius:50%;flex:none;margin-top:8px}
+
+  /* ---------- FAQ ---------- */
+  details{border:1px solid var(--linea);border-radius:12px;padding:0 20px;margin-bottom:10px;background:#fff}
+  summary{cursor:pointer;padding:16px 0;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-size:1.4rem;color:var(--teal);font-weight:500}
+  details[open] summary::after{content:"−"}
+  details p{color:var(--texto2);padding-bottom:16px}
+
+  /* ---------- pie ---------- */
+  footer{border-top:1px solid var(--linea);padding:40px 0 28px;font-size:.92rem;color:var(--texto2)}
+  .pie{display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:flex-start}
+  .pie .marca{font-size:1.15rem}
+  .pie ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px}
+  .pie a{color:var(--texto2)}
+  .legal{margin-top:24px;padding-top:18px;border-top:1px solid var(--linea);font-size:.85rem}
+</style>
+</head>
+<body>
+<a class="salto" href="#contenido">Ir al contenido</a>
+
+<header>
+  <div class="contenedor barra">
+    <a class="marca" href="#"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a>
+    <button class="menu-btn" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú" id="btnMenu">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <nav id="menu" aria-label="Principal">
+      <ul>
+        <li><a href="#que-hace">Qué hace</a></li>
+        <li><a href="#como-funciona">Cómo funciona</a></li>
+        <li><a href="#para-quien">Para quién</a></li>
+        <li><a href="#preguntas">Preguntas</a></li>
+        <li><a href="#descargar">Descargar</a></li>
+      </ul>
+    </nav>
+    <a class="btn btn-verde" href="#descargar">Descargar el widget</a>
+  </div>
+</header>
+
+<main id="contenido">
+
+<!-- ================= HERO ================= -->
+<section class="hero" aria-labelledby="titulo-hero">
+  <div class="puzzle" id="puzzle" role="img" aria-label="Una mujer en silla de ruedas sonríe frente a un portátil con cámara web"></div>
+  <div class="velo" aria-hidden="true"></div>
+
+  <div class="contenedor">
+    <div class="hero-texto">
+      <h1 id="titulo-hero">Tecnología que incluye,<br><span class="verde">un mundo que avanza.</span></h1>
+      <p class="grande">Winclus es un widget gratuito para Windows que mueve el puntero con tu cabeza o con tus ojos y hace clic con un parpadeo o un gesto. Solo necesitas una cámara web.</p>
+      <div class="hero-acciones">
+        <a class="btn btn-verde js-descarga" href="#descargar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14"/></svg>
+          Descargar para Windows
+        </a>
+        <a class="btn btn-borde" href="#como-funciona">Ver cómo funciona</a>
+      </div>
+      <p class="hero-nota"><strong>Gratis y de código abierto.</strong> Sin registro, sin cuenta y sin enviar tu imagen a ningún servidor: todo se procesa en tu equipo.</p>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="globo g2"><svg viewBox="0 0 24 24" fill="none" stroke="#2F4FD8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-7 1-4 7z"/></svg>Clic hecho</div>
+      <div class="globo g3"><img src="img/icono.png" alt="">Puntero: ojos + cabeza</div>
+      <div class="globo g1"><svg viewBox="0 0 24 24" fill="none" stroke="#34C26B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 7"/></svg>Winclus está activo</div>
+    </div>
+  </div>
+</section>
+
+<div class="franja">
+  <div class="contenedor">
+    <ul>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L19 7"/></svg>Fácil de instalar</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L19 7"/></svg>Personalizable y adaptable</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L19 7"/></svg>Funciona sin internet</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L19 7"/></svg>Código abierto, licencia Apache 2.0</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ================= QUÉ HACE ================= -->
+<section id="que-hace" aria-labelledby="t-que">
+  <div class="contenedor">
+    <div class="intro-doble">
+      <div class="intro">
+        <h2 id="t-que">Más accesibilidad, <span class="verde">más oportunidades.</span></h2>
+        <p>Winclus está pensado para personas con discapacidades o dificultades motoras que no pueden usar un ratón o un teclado convencional. Todo el control sale de tu cara: la cámara te ve, el puntero te sigue y un gesto hace el clic.</p>
+      </div>
+      <img src="img/portada_persona.jpg" alt="Ilustración: una mujer en silla de ruedas mira un portátil y una línea de puntos va de sus ojos al cursor" width="900" height="900" loading="lazy">
+    </div>
+    <div class="grid3">
+      <article class="tarjeta">
+        <img class="ilus" src="img/que_hace_1.jpg" alt="" width="600" height="600" loading="lazy">
+        <h3>Puntero con la cabeza o los ojos</h3>
+        <p>Mueve el cursor girando la cabeza, mirando hacia donde quieres ir, o con el modo híbrido: los ojos para saltar y la cabeza para afinar.</p>
+      </article>
+      <article class="tarjeta">
+        <img class="ilus" src="img/que_hace_2.jpg" alt="" width="600" height="600" loading="lazy">
+        <h3>Clic con un gesto</h3>
+        <p>Parpadeo, abrir la boca, levantar las cejas o quedarte quieto sobre un botón. Cada gesto se ajusta a lo que tú puedes hacer con comodidad.</p>
+      </article>
+      <article class="tarjeta">
+        <img class="ilus" src="img/que_hace_3.jpg" alt="" width="600" height="600" loading="lazy">
+        <h3>Menú de clics</h3>
+        <p>Cierra los ojos un momento y aparece un anillo con clic derecho, doble clic, arrastrar, rueda, teclado y pausa. Sin manos.</p>
+      </article>
+      <article class="tarjeta">
+        <img class="ilus" src="img/que_hace_4.jpg" alt="" width="600" height="600" loading="lazy">
+        <h3>Teclado en pantalla</h3>
+        <p>Escribe en cualquier programa con un teclado grande y sugerencias de palabras en español que aprenden de ti.</p>
+      </article>
+      <article class="tarjeta">
+        <img class="ilus" src="img/que_hace_5.jpg" alt="" width="600" height="600" loading="lazy">
+        <h3>Voz y frases guardadas</h3>
+        <p>Winclus puede leer en voz alta frases que dejas preparadas: pedir ayuda, saludar, responder. Útil si hablar te cuesta.</p>
+      </article>
+      <article class="tarjeta">
+        <img class="ilus" src="img/que_hace_6.jpg" alt="" width="600" height="600" loading="lazy">
+        <h3>Asistente</h3>
+        <p>Dile lo que quieres, como «abre el correo» o «escribe hola a Ana», y el asistente lo hace por ti paso a paso, incluso sin conexión.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CÓMO FUNCIONA ================= -->
+<section id="como-funciona" class="pasos" aria-labelledby="t-como">
+  <div class="contenedor">
+    <div class="intro">
+      <h2 id="t-como">Listo en tres pasos</h2>
+      <p>No hace falta instalar nada más ni configurar cuentas. Winclus se calibra solo mientras lo usas.</p>
+    </div>
+    <div class="grid3">
+      <article class="paso">
+        <img src="img/paso_1.jpg" alt="" width="900" height="675" loading="lazy">
+        <div class="cuerpo"><div class="num">1</div><div><h3>Descarga y abre</h3><p>Baja el programa, ábrelo y listo. Winclus aparece como una ventana pequeña que puedes dejar a un lado.</p></div></div>
+      </article>
+      <article class="paso">
+        <img src="img/paso_2.jpg" alt="" width="900" height="675" loading="lazy">
+        <div class="cuerpo"><div class="num">2</div><div><h3>Deja que te vea</h3><p>Elige tu cámara web y ponte frente a ella. Mueve la cabeza o mira la pantalla: el puntero te sigue.</p></div></div>
+      </article>
+      <article class="paso">
+        <img src="img/paso_3.jpg" alt="" width="900" height="675" loading="lazy">
+        <div class="cuerpo"><div class="num">3</div><div><h3>Haz clic con un gesto</h3><p>Parpadea para hacer clic. Con cada clic, Winclus aprende tu forma de mirar y afina la puntería sin que tengas que calibrar.</p></div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PARA QUIÉN ================= -->
+<section id="para-quien" class="quien" aria-labelledby="t-quien">
+  <div class="contenedor">
+    <div class="intro-doble">
+      <div class="intro">
+        <h2 id="t-quien">Inclusión digital <span class="verde">para todos.</span></h2>
+        <p>Winclus sirve a personas en situaciones muy distintas. Cada perfil se guarda y se puede exportar para llevarlo a otro equipo, a la escuela o al trabajo.</p>
+      </div>
+      <img src="img/rompecabezas.jpg" alt="Ilustración: varias personas colocan juntas las piezas de un rompecabezas" width="1200" height="675" loading="lazy">
+    </div>
+    <div class="grid2">
+      <article class="tarjeta">
+        <img src="img/quien_1.jpg" alt="Un hombre en silla de ruedas eléctrica mira sonriendo un portátil con cámara web" width="1200" height="900" loading="lazy">
+        <div class="cuerpo"><span class="punto" style="background:var(--azul)"></span><div><h3>Movilidad reducida en brazos o manos</h3><p>Lesiones medulares, ELA, distrofias, parálisis cerebral, artritis avanzada o amputaciones. El control sale de la cabeza y de los ojos.</p></div></div>
+      </article>
+      <article class="tarjeta">
+        <img src="img/quien_2.jpg" alt="Una joven con parálisis cerebral y una amiga ríen frente a un portátil" width="1200" height="900" loading="lazy">
+        <div class="cuerpo"><span class="punto" style="background:var(--teal)"></span><div><h3>Temblor o movimientos involuntarios</h3><p>Suavizado ajustable, imán a los botones y una lupa para afinar. El puntero se mantiene estable aunque la cabeza no lo esté.</p></div></div>
+      </article>
+      <article class="tarjeta">
+        <img src="img/quien_3.jpg" alt="Una mujer mayor escribe con el teclado en pantalla mientras su hijo lee sonriendo" width="1200" height="900" loading="lazy">
+        <div class="cuerpo"><span class="punto" style="background:var(--morado)"></span><div><h3>Dificultad para hablar</h3><p>El teclado en pantalla y las frases guardadas con voz permiten comunicarse por escrito o en voz alta.</p></div></div>
+      </article>
+      <article class="tarjeta">
+        <img src="img/portada_grupo.jpg" alt="Tres personas, una de ellas en silla de ruedas, miran juntas un portátil y ríen" width="1200" height="600" loading="lazy">
+        <div class="cuerpo"><span class="punto" style="background:var(--amarillo)"></span><div><h3>Familias, escuelas y centros</h3><p>Un mismo equipo puede tener varios perfiles. Quien acompaña configura una vez y la persona usa Winclus sola cada día.</p></div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DESCARGA ================= -->
+<section id="descargar" class="descarga" aria-labelledby="t-desc">
+  <div class="contenedor">
+    <div>
+      <span class="version" id="version">Versión 0.1.0</span>
+      <h2 id="t-desc">Descarga el widget Winclus</h2>
+      <p>Para Windows 10 y 11. No pide cuenta ni conexión a internet para funcionar y no envía tu imagen a ningún sitio.</p>
+      <div class="opciones" role="tablist" aria-label="Forma de instalar">
+        <button role="tab" aria-selected="true" aria-controls="panel-zip" id="tab-zip">Descargar el ZIP</button>
+        <button role="tab" aria-selected="false" aria-controls="panel-cmd" id="tab-cmd">Instalar con un comando</button>
+      </div>
+
+      <div class="panel-desc" id="panel-zip" role="tabpanel" aria-labelledby="tab-zip">
+        <a class="btn btn-claro js-descarga" href="#descargar" id="btnDescarga">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14"/></svg>
+          Descargar Winclus-Windows.zip
+        </a>
+        <ol class="pasitos" style="margin-top:16px">
+          <li><b>Descomprime</b> el ZIP: clic derecho, «Extraer todo».</li>
+          <li>Entra en la carpeta y abre <b>Winclus.exe</b>.</li>
+          <li>Si Windows avisa, pulsa «Más información» y <b>«Ejecutar de todas formas»</b>.</li>
+          <li>Acepta el permiso de cámara, pulsa <b>Activar</b> y parpadea para hacer clic.</li>
+        </ol>
+        <p style="font-size:.88rem;margin:0">Dentro del ZIP va un archivo LEEME con estos pasos y las soluciones a los problemas más comunes.</p>
+      </div>
+
+      <div class="panel-desc" id="panel-cmd" role="tabpanel" aria-labelledby="tab-cmd" hidden>
+        <p style="margin:0">Abre <b style="color:#fff">PowerShell</b> (búscalo en el menú Inicio), pega esta línea y pulsa Intro:</p>
+        <div class="codigo"><code id="cmdInstalar">irm https://winclus.com/instalar.ps1 | iex</code><button type="button" id="btnCopiar" aria-label="Copiar el comando">Copiar</button></div>
+        <ol class="pasitos">
+          <li>Descarga Winclus y lo instala en tu carpeta de usuario. <b>No pide ser administrador.</b></li>
+          <li>Crea los accesos directos en el escritorio y en el menú Inicio.</li>
+          <li>Abre Winclus al terminar. Si vuelves a ejecutarlo, actualiza y conserva tus perfiles.</li>
+        </ol>
+        <p style="font-size:.88rem;margin:0">Para quitarlo: <code style="color:#e8fff3">irm https://winclus.com/instalar.ps1 | iex; Desinstalar-Winclus</code></p>
+      </div>
+      <p style="margin-top:16px;font-size:.9rem">¿Prefieres el código? <a href="#" class="js-codigo">Está en GitHub</a>, con licencia Apache 2.0.</p>
+    </div>
+    <div class="caja">
+      <h3>Qué necesitas</h3>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L19 7"/></svg>Windows 10 u 11 de 64 bits</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L19 7"/></svg>Una cámara web, la del portátil sirve</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L19 7"/></svg>Luz de frente, sin ventana a la espalda</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L19 7"/></svg>Opcional: micrófono para el asistente por voz</li>
+      </ul>
+      <small>Si Windows muestra un aviso de «editor desconocido» al abrir el programa, pulsa «Más información» y luego «Ejecutar de todas formas». Es normal en programas gratuitos sin firma de pago.</small>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PREGUNTAS ================= -->
+<section id="preguntas" aria-labelledby="t-faq">
+  <div class="contenedor">
+    <div class="intro">
+      <h2 id="t-faq">Preguntas frecuentes</h2>
+    </div>
+    <details><summary>¿Winclus es gratis de verdad?</summary><p>Sí. Es software libre con licencia Apache 2.0. Puedes usarlo, copiarlo y compartirlo sin pagar nada. Nace de Project Gameface, de Google, adaptado y ampliado en español.</p></details>
+    <details><summary>¿Mi imagen sale de mi ordenador?</summary><p>No. La cámara se procesa en tu equipo y no se guarda ni se envía ningún vídeo. Winclus funciona sin conexión a internet.</p></details>
+    <details><summary>¿Tengo que calibrar los ojos?</summary><p>No es obligatorio. Winclus aprende de cada clic que haces y va mejorando la puntería por sí solo. Si quieres, hay una calibración guiada de un minuto para afinar más.</p></details>
+    <details><summary>¿Sirve con gafas?</summary><p>Sí, en la mayoría de los casos. Ayuda que no haya reflejos fuertes en los cristales, por eso conviene luz de frente y no a la espalda.</p></details>
+    <details><summary>¿Puedo llevar mi configuración a otro equipo?</summary><p>Sí. Cada perfil se exporta a un archivo .winclus con tus gestos, velocidades y lo aprendido, y se importa en otro ordenador en un clic.</p></details>
+    <details><summary>¿Es un dispositivo médico?</summary><p>No. Winclus es una herramienta de accesibilidad para usar el ordenador. No diagnostica ni trata ninguna condición.</p></details>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="contenedor">
+    <div class="pie">
+      <div>
+        <a class="marca" href="#"><img src="img/logo.png" alt="" width="32" height="32">winclus<span>.com</span></a>
+        <p style="margin-top:8px;max-width:26rem">La inclusión también se diseña. Winclus es un proyecto independiente de software libre para accesibilidad digital.</p>
+      </div>
+      <ul>
+        <li><a href="#que-hace">Qué hace</a></li>
+        <li><a href="#como-funciona">Cómo funciona</a></li>
+        <li><a href="#descargar">Descargar</a></li>
+        <li><a href="#" class="js-codigo">Código fuente</a></li>
+        <li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li>
+      </ul>
+    </div>
+    <div class="legal">© 2026 Colaboradores de Winclus · Licencia Apache 2.0 · Winclus no es un dispositivo médico. Basado en Project Gameface (Google), que no patrocina ni respalda este proyecto.</div>
+  </div>
+</footer>
+
+<script>
+  // Un único sitio para cambiar los enlaces de descarga y del código fuente.
+  var DESCARGA = "https://github.com/specteriatech/winclus/releases/latest/download/Winclus-Windows.zip";
+  var CODIGO   = "https://github.com/specteriatech/winclus";
+  document.querySelectorAll(".js-descarga").forEach(function (a) { a.href = DESCARGA; });
+  document.querySelectorAll(".js-codigo").forEach(function (a) { a.href = CODIGO; });
+
+  // Pestañas de la descarga (ZIP / comando) y botón de copiar
+  var tabs = document.querySelectorAll(".opciones [role=tab]");
+  tabs.forEach(function (t) {
+    t.addEventListener("click", function () {
+      tabs.forEach(function (o) {
+        o.setAttribute("aria-selected", o === t ? "true" : "false");
+        document.getElementById(o.getAttribute("aria-controls")).hidden = (o !== t);
+      });
+    });
+  });
+  var btnCopiar = document.getElementById("btnCopiar");
+  btnCopiar.addEventListener("click", function () {
+    var texto = document.getElementById("cmdInstalar").textContent;
+    function hecho() { btnCopiar.textContent = "Copiado"; setTimeout(function () { btnCopiar.textContent = "Copiar"; }, 1800); }
+    if (navigator.clipboard) { navigator.clipboard.writeText(texto).then(hecho); }
+    else { var r = document.createRange(); r.selectNodeContents(document.getElementById("cmdInstalar")); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); document.execCommand("copy"); hecho(); }
+  });
+
+  var btn = document.getElementById("btnMenu"), menu = document.getElementById("menu");
+  btn.addEventListener("click", function () {
+    var abierto = menu.classList.toggle("abierto");
+    btn.setAttribute("aria-expanded", abierto ? "true" : "false");
+  });
+  menu.addEventListener("click", function (e) {
+    if (e.target.tagName === "A") { menu.classList.remove("abierto"); btn.setAttribute("aria-expanded", "false"); }
+  });
+
+  // Portada: la foto se corta en piezas que llegan desde fuera y encajan una a una.
+  (function () {
+    var puzzle = document.getElementById("puzzle");
+    var reducido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var c = window.innerWidth < 700 ? 6 : 10, r = 5;
+    puzzle.style.setProperty("--c", c);
+    puzzle.style.setProperty("--r", r);
+    var orden = [];
+    for (var i = 0; i < c * r; i++) orden.push(i);
+    for (var j = orden.length - 1; j > 0; j--) { var k = Math.floor(Math.random() * (j + 1)); var t = orden[j]; orden[j] = orden[k]; orden[k] = t; }
+    var piezas = [];
+    for (var f = 0; f < r; f++) {
+      for (var col = 0; col < c; col++) {
+        var s = document.createElement("span");
+        piezas.push({el: s, col: col, fila: f});
+        var ang = Math.random() * Math.PI * 2, dist = 320 + Math.random() * 420;
+        s.style.setProperty("--dx", Math.round(Math.cos(ang) * dist) + "px");
+        s.style.setProperty("--dy", Math.round(Math.sin(ang) * dist) + "px");
+        s.style.setProperty("--rot", Math.round((Math.random() - 0.5) * 70) + "deg");
+        s.style.setProperty("--d", (orden[f * c + col] * (2.2 / (c * r))).toFixed(2) + "s");
+        puzzle.appendChild(s);
+      }
+    }
+    // La foto cubre la portada conservando su proporción (como background-size: cover):
+    // cada pieza muestra su trozo con el mismo tamaño y desplazamiento que tendría la foto entera.
+    var FOTO_ANCHO = 1774, FOTO_ALTO = 887;
+    function colocar() {
+      var W = puzzle.clientWidth, H = puzzle.clientHeight;
+      if (!W || !H) return;
+      var escala = Math.max(W / FOTO_ANCHO, H / FOTO_ALTO);
+      var DW = FOTO_ANCHO * escala, DH = FOTO_ALTO * escala;
+      var ox = (W - DW) / 2, oy = (H - DH) * 0.35;  // recorte algo más arriba, para no cortar la cara
+      var tw = W / c, th = H / r;
+      puzzle.style.backgroundSize = DW + "px " + DH + "px";
+      puzzle.style.backgroundPosition = ox + "px " + oy + "px";
+      piezas.forEach(function (pz) {
+        pz.el.style.backgroundSize = DW + "px " + DH + "px";
+        pz.el.style.backgroundPosition = (ox - pz.col * tw) + "px " + (oy - pz.fila * th) + "px";
+      });
+    }
+    colocar();
+    var pendiente = null;
+    window.addEventListener("resize", function () {
+      if (pendiente) cancelAnimationFrame(pendiente);
+      pendiente = requestAnimationFrame(colocar);
+    });
+    function armar() {
+      colocar(); puzzle.classList.add("listo");
+      setTimeout(function () { puzzle.classList.add("fin"); }, 3600);  // ya armada: foto entera, sin costuras
+    }
+    if (reducido) { puzzle.classList.add("fin"); return; }
+    var im = new Image();
+    im.onload = function () { setTimeout(armar, 120); };
+    im.onerror = armar;
+    im.src = "img/fondo_portada.jpg";
+    setTimeout(armar, 2500);  // por si la imagen tarda: se arma igual
+  })();
+</script>
+</body>
+</html>

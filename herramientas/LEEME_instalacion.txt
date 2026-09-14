@@ -1,0 +1,74 @@
+WINCLUS 0.1.0 · Tecnología que incluye, un mundo que avanza
+https://winclus.com
+
+Winclus mueve el puntero del ratón con tu cabeza o con tus ojos y hace clic
+con un parpadeo o un gesto. Solo necesitas Windows 10 u 11 y una cámara web.
+
+------------------------------------------------------------------
+CÓMO INSTALAR (2 minutos)
+------------------------------------------------------------------
+
+1. Descomprime este ZIP donde quieras, por ejemplo en Documentos.
+   Clic derecho sobre el archivo > «Extraer todo...» > Extraer.
+   Queda una carpeta llamada «Winclus».
+
+2. Entra en la carpeta «Winclus» y abre «Winclus.exe» con doble clic.
+
+3. Si Windows muestra un aviso azul «Windows protegió su PC»:
+   pulsa «Más información» y luego «Ejecutar de todas formas».
+   Es normal en programas gratuitos que no pagan una firma digital.
+
+4. La primera vez, Windows puede pedir permiso para usar la cámara.
+   Acepta. Winclus no graba ni envía tu imagen a ningún sitio:
+   todo se procesa en tu propio equipo, sin internet.
+
+5. Para tener un acceso directo en el escritorio: clic derecho sobre
+   «Winclus.exe» > «Enviar a» > «Escritorio (crear acceso directo)».
+
+------------------------------------------------------------------
+PRIMER USO
+------------------------------------------------------------------
+
+- Ponte frente a la cámara con luz de frente (no con una ventana a la espalda).
+- Pulsa el botón «Activar». El puntero empieza a seguir tu cabeza.
+- Parpadea para hacer clic. Con cada clic Winclus aprende y afina la puntería.
+- Cierra los ojos algo más de un segundo para abrir el menú de clics
+  (clic derecho, doble clic, arrastrar, rueda, teclado, pausa).
+- En «Puntero» puedes elegir controlar con la cabeza, con los ojos o con
+  los dos (los ojos para saltar, la cabeza para afinar).
+
+------------------------------------------------------------------
+INSTALAR CON UN SOLO COMANDO (alternativa al ZIP)
+------------------------------------------------------------------
+
+Abre PowerShell (busca «PowerShell» en el menú Inicio) y pega:
+
+    irm https://winclus.com/instalar.ps1 | iex
+
+Descarga Winclus, lo instala en tu carpeta de usuario, crea los accesos
+directos y lo abre. Para quitarlo:
+
+    irm https://winclus.com/instalar.ps1 | iex; Desinstalar-Winclus
+
+------------------------------------------------------------------
+DESINSTALAR (versión ZIP)
+------------------------------------------------------------------
+
+Cierra Winclus y borra la carpeta «Winclus». No deja nada más en el sistema.
+Tus perfiles están dentro de esa carpeta, en «configs»: cópiala antes si
+quieres conservarlos.
+
+------------------------------------------------------------------
+PROBLEMAS FRECUENTES
+------------------------------------------------------------------
+
+- No se abre nada: mira el archivo «log.txt» dentro de la carpeta y
+  escríbenos a hola@winclus.com adjuntándolo.
+- La cámara no aparece: cierra otros programas que la usen (Zoom, Teams,
+  el navegador) y vuelve a abrir Winclus.
+- El puntero tiembla: en «Puntero» sube el suavizado o activa el imán.
+- Con gafas: evita reflejos fuertes; la luz de frente ayuda.
+
+Winclus es software libre (licencia Apache 2.0), basado en Project Gameface
+de Google, que no patrocina ni respalda este proyecto. No es un dispositivo
+médico.
