@@ -23,3 +23,7 @@ web/img/originales/
 # Registros de las pruebas
 herramientas/pruebas/log_*.txt
 herramientas/pruebas/out_*.txt
+
+# Enlace local con Vercel
+.vercel/
+web/.vercel/
