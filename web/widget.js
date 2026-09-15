@@ -572,7 +572,8 @@
       decir("Cámara activa. Mira al centro un momento mientras aprende cómo son tus ojos abiertos.");
       avisar("Activado");
       if (ajustes.modo_puntero === "ojos" && ajustes.ojos_modo !== "palanca" && !calibracion) {
-        decir("Para mover el puntero con los ojos hay que calibrar: pulsa «Calibrar los ojos». Mientras, el puntero va con la cabeza.");
+        decir("Para mover el puntero con los ojos hay que calibrar una vez: en 3 segundos empieza la calibración (unos 40 s).");
+        setTimeout(function () { if (camaraActiva && !calibracion && !calibrando) { abrir(false); empezarCalibracion(false); } }, 3000);
       }
       requestAnimationFrame(bucle);
     }).catch(function (err) {
@@ -1624,12 +1625,32 @@
     btnActivar = botonGrande("Activar cámara", "", activarCamara); s.appendChild(btnActivar);
     var vista = el("div", { "class": "wcl-cam-vista" }, '<canvas width="320" height="240" aria-label="Vista de la cámara"></canvas>'); s.appendChild(vista);
     s.appendChild(filaSw("camara_ver", "Ver la cámara", function (v) { vista.style.display = v && camaraActiva ? "block" : "none"; }));
+    // Lectura en vivo del detector, para diagnosticar el parpadeo sin adivinar
+    var diag = el("div", { "class": "wcl-estado", "style": "font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap" }); s.appendChild(diag);
+    setInterval(function () {
+      if (!camaraActiva) { diag.textContent = ""; return; }
+      var e = parpadeo.estado, bs = det.bs || {};
+      diag.textContent = (det.cara ? "Cara: sí" : "Cara: NO") + " · modo " + modoEfectivo() + (pausado ? " · EN PAUSA" : "")
+        + "\nOjos abiertos: " + Math.round(e.relacion * 100) + " % (" + (e.listo ? "referencia lista" : "aprendiendo " + parpadeo.bufDer.length + "/" + PB.MIN_BASE) + ")"
+        + "\nApertura der/izq: " + e.apertura[0].toFixed(3) + " / " + e.apertura[1].toFixed(3) + " · normal " + e.base[0].toFixed(3) + " / " + e.base[1].toFixed(3)
+        + "\nParpadeo MediaPipe der/izq: " + (bs.eyeBlinkRight || 0).toFixed(2) + " / " + (bs.eyeBlinkLeft || 0).toFixed(2)
+        + "\nCerrados: " + (e.cerrados ? e.cerradosMs + " ms" : "no") + " · umbral " + ajustes.parpadeo_umbral + " · mínimo " + ajustes.parpadeo_ms + " ms"
+        + (parpadeo.ultimoEpisodio ? "\nÚltimo cierre: " + parpadeo.ultimoEpisodio.ms + " ms → " + parpadeo.ultimoEpisodio.resultado : "");
+    }, 250);
     tabs.cara.appendChild(s);
 
     s = seccion("Cómo se mueve el puntero");
-    s.appendChild(filaOpc("modo_puntero", "", [["cabeza", "Con la cabeza"], ["ojos", "Con los ojos"]], function () { reiniciarPuntero(); }));
+    // Al elegir los ojos sin calibración, se calibra en el acto (en la aplicación la
+    // calibración ya estaba guardada; aquí hay que hacerla una vez por navegador)
+    function alElegirOjos() {
+      reiniciarPuntero();
+      if (ajustes.modo_puntero !== "ojos" || ajustes.ojos_modo === "palanca" || calibracion) return;
+      if (!camaraActiva) { decir("Para usar los ojos: activa la cámara y pulsa «Calibrar los ojos». Hasta entonces el puntero va con la cabeza."); return; }
+      decir("Sin calibrar todavía: empieza la calibración (unos 40 s)."); abrir(false); empezarCalibracion(false);
+    }
+    s.appendChild(filaOpc("modo_puntero", "", [["cabeza", "Con la cabeza"], ["ojos", "Con los ojos"]], alElegirOjos));
     var gOjos = grupo("ojos");
-    gOjos.appendChild(filaOpc("ojos_modo", "Modo de ojos", [["directo", "Directo"], ["hibrido", "Híbrido"], ["palanca", "Palanca"]], function () { reiniciarPuntero(); }));
+    gOjos.appendChild(filaOpc("ojos_modo", "Modo de ojos", [["directo", "Directo"], ["hibrido", "Híbrido"], ["palanca", "Palanca"]], alElegirOjos));
     var estadoCalib = el("div", { "class": "wcl-estado" });
     refrescos.push(function () {
       estadoCalib.textContent = calibracion ? "Ojos calibrados" + (calibracion.error_real_px != null ? " (error unos " + calibracion.error_real_px + " px)" : "") + (calibracion.origen === "clics" ? ", aprendida de tus clics" : calibracion.origen === "clics+calibracion" ? ", afinada con tus clics" : "") + "." : "Sin calibrar: mientras tanto el puntero irá con la cabeza (o calibra con 30 clics, ver abajo).";
