@@ -2078,7 +2078,7 @@
   tabs.ver.appendChild(sec7);
   var sec8 = seccion("Leer con menos esfuerzo");
   sec8.appendChild(filaSw("lupa_pantalla", "Lupa de pantalla: agranda la página alrededor del puntero", aplicarLupaPantalla));
-  sec8.appendChild(filaPaso("lupa_pantalla_zoom", "Aumento de la lupa de pantalla", 2, 8, 1, function (n) { return "×" + n; }, aplicarLupaPantalla));
+  sec8.appendChild(filaPaso("lupa_pantalla_zoom", "Aumento de la lupa de pantalla", 2, 16, 1, function (n) { return "×" + n; }, aplicarLupaPantalla));
   sec8.appendChild(botonGrande("Lectura limpia: solo el texto, grande", "azul", lecturaLimpia));
   sec8.appendChild(filaSw("mascara", "Máscara de enfoque: oscurece todo menos una franja", aplicarClases));
   sec8.appendChild(filaSw("dislexia", "Letras y palabras más separadas", aplicarClases));
