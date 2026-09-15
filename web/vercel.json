@@ -1,7 +1,16 @@
 {
   "cleanUrls": true,
   "headers": [
-    { "source": "/(.*)", "headers": [ { "key": "X-Content-Type-Options", "value": "nosniff" } ] },
-    { "source": "/instalar.ps1", "headers": [ { "key": "Content-Type", "value": "text/plain; charset=utf-8" }, { "key": "Cache-Control", "value": "public, max-age=300" } ] }
+    { "source": "/(.*)", "headers": [
+      { "key": "X-Content-Type-Options", "value": "nosniff" },
+      { "key": "Access-Control-Allow-Origin", "value": "*" }
+    ] },
+    { "source": "/instalar.ps1", "headers": [ { "key": "Content-Type", "value": "text/plain; charset=utf-8" }, { "key": "Cache-Control", "value": "public, max-age=300" } ] },
+    { "source": "/widget.js", "headers": [ { "key": "Cache-Control", "value": "public, max-age=300" } ] },
+    { "source": "/palabras-es.txt", "headers": [ { "key": "Content-Type", "value": "text/plain; charset=utf-8" }, { "key": "Cache-Control", "value": "public, max-age=86400" } ] },
+    { "source": "/mediapipe/(.*)", "headers": [ { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" } ] },
+    { "source": "/mediapipe/(.*).mjs", "headers": [ { "key": "Content-Type", "value": "text/javascript; charset=utf-8" } ] },
+    { "source": "/mediapipe/(.*).wasm", "headers": [ { "key": "Content-Type", "value": "application/wasm" } ] },
+    { "source": "/mediapipe/(.*).task", "headers": [ { "key": "Content-Type", "value": "application/octet-stream" } ] }
   ]
 }

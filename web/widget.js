@@ -29,8 +29,12 @@
     camara: !(script && script.dataset.camara === "no")
   };
   var ORIGEN = (script && script.src) ? script.src.replace(/\/[^\/]*$/, "") : "https://winclus.com";
-  var CDN_MP = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22";
-  var MODELO = "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task";
+  // El detector de caras (MediaPipe Tasks Vision, Apache 2.0) y el modelo se sirven
+  // desde el mismo sitio que este archivo; jsDelivr y Google quedan de respaldo.
+  var FUENTES_MP = [
+    { base: ORIGEN + "/mediapipe", modelo: ORIGEN + "/mediapipe/face_landmarker.task" },
+    { base: "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35", modelo: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task" }
+  ];
   var VERSION = "0.2.0";
   var CAM_W = 640, CAM_H = 480;
   var raiz = document.documentElement;
@@ -520,22 +524,39 @@
   var estadoEl = null, btnActivar = null, ultimoAviso = 0, ultimoT = -1;
   function decir(t) { if (estadoEl) estadoEl.textContent = t; }
   function decirSuave(t) { var a = performance.now(); if (a - ultimoAviso > 1500) { ultimoAviso = a; decir(t); } }
-  function cargarDetector() {
-    if (landmarker) return Promise.resolve();
-    return import(CDN_MP + "/vision_bundle.mjs").then(function (mp) {
-      return mp.FilesetResolver.forVisionTasks(CDN_MP + "/wasm").then(function (fs) {
+  function cargarDetectorDe(fuente) {
+    return import(fuente.base + "/vision_bundle.mjs").then(function (mp) {
+      return mp.FilesetResolver.forVisionTasks(fuente.base + "/wasm").then(function (fs) {
         return mp.FaceLandmarker.createFromOptions(fs, {
-          baseOptions: { modelAssetPath: MODELO, delegate: "GPU" },
+          baseOptions: { modelAssetPath: fuente.modelo, delegate: "GPU" },
           runningMode: "VIDEO", numFaces: 1, outputFaceBlendshapes: true, outputFacialTransformationMatrixes: false
         });
       });
-    }).then(function (lm) { landmarker = lm; });
+    });
+  }
+  function cargarDetector() {
+    if (landmarker) return Promise.resolve();
+    var errores = [];
+    function intentar(i) {
+      if (i >= FUENTES_MP.length) return Promise.reject(new Error("No se pudo descargar el detector de caras (" + errores.join(" · ") + ")"));
+      return cargarDetectorDe(FUENTES_MP[i]).then(function (lm) { landmarker = lm; }, function (e) {
+        errores.push(FUENTES_MP[i].base.replace(/^https?:\/\//, "").split("/")[0] + ": " + (e && e.message ? e.message : e));
+        return intentar(i + 1);
+      });
+    }
+    return intentar(0);
   }
   function activarCamara() {
     if (camaraActiva) { desactivarCamara(); return; }
     btnActivar.disabled = true; decir("Cargando el detector de cara (unos segundos la primera vez)…");
     cargarDetector().then(function () {
-      return navigator.mediaDevices.getUserMedia({ video: { width: CAM_W, height: CAM_H, facingMode: "user" }, audio: false });
+      decir("Detector listo. Pidiendo permiso para la cámara…");
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error("Este navegador no da acceso a la cámara. Hace falta una página https (o localhost).");
+      return navigator.mediaDevices.getUserMedia({ video: { width: CAM_W, height: CAM_H, facingMode: "user" }, audio: false }).catch(function (e) {
+        var n = e && e.name;
+        throw new Error(n === "NotAllowedError" ? "No hay permiso para la cámara. Pulsa el candado de la barra de direcciones y permite la cámara."
+          : n === "NotFoundError" ? "No se encontró ninguna cámara." : n === "NotReadableError" ? "Otra aplicación está usando la cámara." : (e && e.message ? e.message : e));
+      });
     }).then(function (f) {
       flujo = f;
       if (!video) { video = el("video", { "class": "wcl-video", "playsinline": "", "muted": "", "autoplay": "" }); cont.appendChild(video); }
@@ -556,7 +577,7 @@
       requestAnimationFrame(bucle);
     }).catch(function (err) {
       btnActivar.disabled = false;
-      decir("No se pudo activar: " + (err && err.message ? err.message : err) + ". Comprueba el permiso de la cámara en el candado de la barra de direcciones.");
+      decir("No se pudo activar: " + (err && err.message ? err.message : err));
     });
   }
   function desactivarCamara() {
@@ -1797,6 +1818,7 @@
     activarCamara: function () { if (!camaraActiva) activarCamara(); }, desactivarCamara: function () { if (camaraActiva) desactivarCamara(); },
     pausar: pausar, teclado: alternarTeclado, menu: abrirMenu, leer: leerPagina, decir: function (t) { decirVoz(t, true, true); }, orden: ejecutarOrden,
     // Para pruebas e integraciones: llevar el puntero virtual a un punto y hacer el gesto de clic
-    mover: function (x, y) { cursor.style.display = "block"; mover(x, y); }, clic: clic, puntero: P
+    mover: function (x, y) { cursor.style.display = "block"; mover(x, y); }, clic: clic, puntero: P,
+    cargarDetector: cargarDetector
   };
 })();
