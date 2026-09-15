@@ -14,11 +14,18 @@
   .aviso{background:#fff7d6;border:1px solid #f0d97a;border-radius:10px;padding:14px 18px;font-family:"Segoe UI",system-ui,sans-serif;font-size:.95rem}
   .aviso code{background:#fff;padding:2px 6px;border-radius:6px}
   button.demo{font:inherit;padding:10px 18px;border-radius:8px;border:1px solid #888;background:#fff;cursor:pointer}
+  .caja{height:140px;overflow:auto;border:1px solid #ccc;border-radius:8px;padding:10px;background:#fff;font-family:"Segoe UI",system-ui,sans-serif;font-size:.95rem}
+  form.demo{display:grid;gap:10px;max-width:420px;font-family:"Segoe UI",system-ui,sans-serif}
+  form.demo input,form.demo textarea,form.demo select{font:inherit;padding:8px 10px;border:1px solid #999;border-radius:8px;width:100%;box-sizing:border-box}
+  .arrastra{width:90px;height:90px;border-radius:12px;background:#1AA89A;color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Segoe UI",system-ui,sans-serif;font-weight:700;cursor:grab;position:relative;user-select:none}
+  .zona-arrastre{height:150px;border:2px dashed #aaa;border-radius:12px;position:relative;background:#f4f4f0}
+  .menu-ctx{position:fixed;background:#fff;border:1px solid #999;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.2);padding:6px 0;display:none;font-family:"Segoe UI",system-ui,sans-serif;z-index:50}
+  .menu-ctx button{display:block;width:100%;text-align:left;background:none;border:0;padding:8px 16px;font:inherit;cursor:pointer}.menu-ctx button:hover{background:#eef}
   footer{padding:40px 0;color:#666;font-size:.9rem}
 </style>
 </head>
 <body>
-<header><div class="c"><nav><a href="#">Inicio</a><a href="#noticias">Noticias</a><a href="#contacto">Contacto</a></nav></div></header>
+<header><div class="c"><nav><a href="#">Inicio</a><a href="#noticias">Noticias</a><a href="#probar">Probar</a><a href="#contacto">Contacto</a></nav></div></header>
 <main class="c">
   <p class="aviso">Esta es una página cualquiera, con su propio diseño, a la que se le ha añadido Winclus con una sola línea:
   <code>&lt;script src="https://winclus.com/widget.js" async&gt;&lt;/script&gt;</code>.
@@ -33,6 +40,30 @@
     <li><a href="#">Nuevo carril bici hasta el polideportivo</a></li>
     <li><a href="#">Talleres gratuitos de informática para mayores</a></li>
   </ul>
+  <h2 id="probar">Cosas para probar con la cara</h2>
+  <p>Con la cámara activa: pulsa en un campo y escribe con el teclado en pantalla (menú de clics → Teclado, o pestaña Escribir). Cierra los ojos 1,2 s para abrir el menú de clics.</p>
+  <form class="demo" onsubmit="event.preventDefault(); document.getElementById('resultado').textContent='Enviado: ' + this.nombre.value + ' — ' + this.comentario.value;">
+    <label>Tu nombre <input name="nombre" placeholder="Escribe aquí con el teclado en pantalla"></label>
+    <label>Comentario <textarea name="comentario" rows="3" placeholder="Prueba las sugerencias de palabras y el dictado"></textarea></label>
+    <label>Cómo nos conociste <select name="como"><option>Un amigo</option><option>Buscando en internet</option><option>Redes sociales</option></select></label>
+    <label><input type="checkbox" name="aviso" style="width:auto"> Avisadme de las novedades</label>
+    <button class="demo" type="submit">Enviar</button>
+    <div id="resultado" aria-live="polite"></div>
+  </form>
+
+  <h3>Una caja con su propia barra de desplazamiento (rueda del menú, boca o cejas)</h3>
+  <div class="caja">
+    <p>Línea 1: el desplazamiento con la boca o la rueda del menú debe mover esta caja cuando el puntero está dentro.</p>
+    <p>Línea 2: y la página entera cuando está fuera.</p><p>Línea 3</p><p>Línea 4</p><p>Línea 5</p><p>Línea 6</p><p>Línea 7</p><p>Línea 8 (final)</p>
+  </div>
+
+  <h3>Arrastrar (menú de clics → Arrastrar, luego clic para soltar)</h3>
+  <div class="zona-arrastre" id="zona"><div class="arrastra" id="ficha" style="left:10px;top:20px">Ficha</div></div>
+
+  <h3>Clic derecho (menú de clics → Clic derecho)</h3>
+  <p id="con-menu" style="padding:12px;border:1px solid #bbb;border-radius:8px;background:#fff">Este párrafo tiene un menú contextual propio. Haz clic derecho sobre él.</p>
+  <div class="menu-ctx" id="menu-ctx"><button type="button">Opción uno</button><button type="button">Opción dos</button><button type="button">Cerrar</button></div>
+
   <h2 id="contacto">Contacto</h2>
   <p>¿Quieres proponer una noticia? Escríbenos o pulsa el botón.</p>
   <p><button class="demo" onclick="this.textContent='¡Gracias! Botón pulsado.'">Enviar propuesta</button></p>
@@ -40,6 +71,18 @@
 </main>
 <footer class="c">Página de demostración · Winclus no es un dispositivo médico</footer>
 
+<script>
+(function () {
+  var ficha = document.getElementById("ficha"), zona = document.getElementById("zona"), dx = 0, dy = 0, moviendo = false;
+  ficha.addEventListener("mousedown", function (e) { moviendo = true; dx = e.clientX - ficha.offsetLeft; dy = e.clientY - ficha.offsetTop; e.preventDefault(); });
+  document.addEventListener("mousemove", function (e) { if (!moviendo) return; var z = zona.getBoundingClientRect(); ficha.style.left = Math.max(0, Math.min(z.width - 90, e.clientX - dx)) + "px"; ficha.style.top = Math.max(0, Math.min(z.height - 90, e.clientY - dy)) + "px"; });
+  document.addEventListener("mouseup", function () { if (moviendo) { moviendo = false; ficha.textContent = "¡Movida!"; } });
+  var menu = document.getElementById("menu-ctx");
+  document.getElementById("con-menu").addEventListener("contextmenu", function (e) { e.preventDefault(); menu.style.display = "block"; menu.style.left = e.clientX + "px"; menu.style.top = e.clientY + "px"; });
+  menu.addEventListener("click", function (e) { if (e.target.tagName === "BUTTON") { document.getElementById("con-menu").textContent = "Elegiste: " + e.target.textContent; menu.style.display = "none"; } });
+  document.addEventListener("click", function (e) { if (!menu.contains(e.target)) menu.style.display = "none"; });
+})();
+</script>
 <script src="widget.js" async></script>
 </body>
 </html>
