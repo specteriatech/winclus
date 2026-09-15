@@ -1820,7 +1820,7 @@
   }));
   tabs.mas.appendChild(s);
   s = seccion("Acerca de");
-  s.appendChild(el("div", { "class": "wcl-pie", "style": "padding:0" }, 'Winclus widget ' + VERSION + ', código abierto (Apache 2.0). Sin cuentas ni rastreo: todo se procesa en tu navegador.<br><br>¿Quieres controlar todo el ordenador con la cara? <a href="https://winclus.com" target="_blank" rel="noopener">Descarga Winclus para Windows</a>, gratis.'));
+  s.appendChild(el("div", { "class": "wcl-pie", "style": "padding:0" }, 'Winclus widget ' + VERSION + ', código abierto (Apache 2.0). Sin cuentas ni rastreo: todo se procesa en tu navegador.<br><br>¿Quieres controlar todo el ordenador con la cara? <a href="https://winclus.com/#contacto" target="_blank" rel="noopener">Comunícate con nosotros</a>.'));
   tabs.mas.appendChild(s);
 
   TABS.forEach(function (t) { panel.appendChild(tabs[t[0]]); });

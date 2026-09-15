@@ -135,22 +135,7 @@
   .paso:nth-child(2) .num{background:var(--teal)} .paso:nth-child(3) .num{background:var(--morado)}
   .paso p{color:var(--texto2);margin:0}
 
-  /* ---------- widget para webs ---------- */
-  .web{background:var(--fondo2)}
-  .web .contenedor{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
-  @media (max-width:900px){.web .contenedor{grid-template-columns:1fr}}
-  .codigo-claro{display:flex;align-items:center;gap:10px;background:var(--navy);color:#e8fff3;border-radius:12px;padding:14px 12px 14px 16px;margin:14px 0;font-family:Consolas,"Cascadia Mono",monospace;font-size:.95rem;overflow-x:auto}
-  .codigo-claro code{flex:1;white-space:nowrap}
-  .codigo-claro button{background:var(--verde);color:var(--navy);border:0;border-radius:8px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer;min-height:40px;flex:none}
-  .lista-web{margin:0 0 18px;padding-left:22px;color:var(--texto2)}
-  .lista-web li{margin-bottom:6px}
-  .lista-web b{color:var(--navy);font-weight:600}
-  .demo-marco{background:#fff;border:1px solid var(--linea);border-radius:18px;box-shadow:0 20px 60px rgba(16,31,61,.12);overflow:hidden}
-  .demo-marco .barra-demo{display:flex;gap:6px;padding:10px 14px;background:var(--fondo2);border-bottom:1px solid var(--linea)}
-  .demo-marco .barra-demo span{width:10px;height:10px;border-radius:50%;background:#DCE3EC}
-  .demo-marco iframe{width:100%;height:440px;border:0;display:block}
-
-  /* ---------- descarga ---------- */
+  /* ---------- contacto ---------- */
   .descarga{position:relative;overflow:hidden;background:var(--navy) url(img/fondo_descarga.jpg) center/cover no-repeat;color:#fff}
   .descarga .contenedor{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
   @media (max-width:900px){.descarga .contenedor{grid-template-columns:1fr}}
@@ -213,12 +198,11 @@
         <li><a href="#que-hace">Qué hace</a></li>
         <li><a href="#como-funciona">Cómo funciona</a></li>
         <li><a href="#para-quien">Para quién</a></li>
-        <li><a href="#para-tu-web">Para tu web</a></li>
         <li><a href="#preguntas">Preguntas</a></li>
-        <li><a href="#descargar">Descargar</a></li>
+        <li><a href="#contacto">Contacto</a></li>
       </ul>
     </nav>
-    <a class="btn btn-verde" href="#descargar" style="white-space:nowrap">Descargar</a>
+    <a class="btn btn-verde" href="#contacto" style="white-space:nowrap">Comunícate con nosotros</a>
   </div>
 </header>
 
@@ -234,9 +218,9 @@
       <h1 id="titulo-hero">Tecnología que incluye,<br><span class="verde">un mundo que avanza.</span></h1>
       <p class="grande">Winclus es un widget gratuito para Windows que mueve el puntero con tu cabeza o con tus ojos y hace clic con un parpadeo o un gesto. Solo necesitas una cámara web.</p>
       <div class="hero-acciones">
-        <a class="btn btn-verde js-descarga" href="#descargar">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14"/></svg>
-          Descargar para Windows
+        <a class="btn btn-verde" href="#contacto">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>
+          Comunícate con nosotros
         </a>
         <a class="btn btn-borde" href="#como-funciona">Ver cómo funciona</a>
       </div>
@@ -317,7 +301,7 @@
     <div class="grid3">
       <article class="paso">
         <img src="img/paso_1.jpg" alt="" width="900" height="675" loading="lazy">
-        <div class="cuerpo"><div class="num">1</div><div><h3>Descarga y abre</h3><p>Baja el programa, ábrelo y listo. Winclus aparece como una ventana pequeña que puedes dejar a un lado.</p></div></div>
+        <div class="cuerpo"><div class="num">1</div><div><h3>Escríbenos y ábrelo</h3><p>Te hacemos llegar Winclus y lo abres: aparece como una ventana pequeña que puedes dejar a un lado.</p></div></div>
       </article>
       <article class="paso">
         <img src="img/paso_2.jpg" alt="" width="900" height="675" loading="lazy">
@@ -363,64 +347,17 @@
 </section>
 
 <!-- ================= PARA TU WEB ================= -->
-<section id="para-tu-web" class="web" aria-labelledby="t-web">
+<!-- ================= CONTACTO ================= -->
+<section id="contacto" class="descarga" aria-labelledby="t-contacto">
   <div class="contenedor">
     <div>
-      <h2 id="t-web">Añade Winclus <span class="verde">a tu página web.</span></h2>
-      <p style="color:var(--texto2)">Un widget de accesibilidad que se instala con una sola línea, como los de chat. Aparece un botón flotante y quien visita tu web puede leerla mejor, escucharla y hasta manejarla con la cara, sin instalar nada.</p>
-      <div class="codigo-claro"><code id="cmdWidget">&lt;script src="https://winclus.com/widget.js" async&gt;&lt;/script&gt;</code><button type="button" id="btnCopiarWidget" aria-label="Copiar el código del widget">Copiar</button></div>
-      <ul class="lista-web">
-        <li><b>Ver mejor:</b> tamaño del texto, alto contraste, modo oscuro, resaltar enlaces, guía de lectura y pausar animaciones.</li>
-        <li><b>Escuchar:</b> lee en voz alta cualquier párrafo o la página entera.</li>
-        <li><b>Usar con la cara, igual que la app:</b> puntero con la cabeza o con los ojos (directo, híbrido o palanca, con calibración en la propia página y calibración invisible que aprende de tus clics), clic por parpadeo, boca, cejas o quedarse quieto, menú de clics con los ojos cerrados (clic derecho, doble, arrastrar, rueda), lupa, imán a los botones, teclado en pantalla con sugerencias, frases con voz, dictado y órdenes habladas. La cámara se procesa en el navegador y no sale del equipo.</li>
-        <li><b>Sin cuenta ni claves.</b> Gratis, código abierto, un solo archivo. Opciones: <code>data-posicion="izquierda"</code>, <code>data-color="#101F3D"</code>, <code>data-camara="no"</code>.</li>
-      </ul>
-      <a class="btn btn-verde" href="widget-demo.html" target="_blank" rel="noopener">Ver la demostración</a>
-    </div>
-    <div class="demo-marco" aria-label="Demostración del widget en una página de ejemplo">
-      <div class="barra-demo"><span></span><span></span><span></span></div>
-      <iframe src="widget-demo.html" title="Página de ejemplo con el widget Winclus" loading="lazy" allow="camera"></iframe>
-    </div>
-  </div>
-</section>
-
-<!-- ================= DESCARGA ================= -->
-<section id="descargar" class="descarga" aria-labelledby="t-desc">
-  <div class="contenedor">
-    <div>
-      <span class="version" id="version">Versión 0.1.0</span>
-      <h2 id="t-desc">Descarga el widget Winclus</h2>
-      <p>Para Windows 10 y 11. No pide cuenta ni conexión a internet para funcionar y no envía tu imagen a ningún sitio.</p>
-      <div class="opciones" role="tablist" aria-label="Forma de instalar">
-        <button role="tab" aria-selected="true" aria-controls="panel-zip" id="tab-zip">Descargar el ZIP</button>
-        <button role="tab" aria-selected="false" aria-controls="panel-cmd" id="tab-cmd">Instalar con un comando</button>
-      </div>
-
-      <div class="panel-desc" id="panel-zip" role="tabpanel" aria-labelledby="tab-zip">
-        <a class="btn btn-claro js-descarga" href="#descargar" id="btnDescarga">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14"/></svg>
-          Descargar Winclus-Windows.zip
-        </a>
-        <ol class="pasitos" style="margin-top:16px">
-          <li><b>Descomprime</b> el ZIP: clic derecho, «Extraer todo».</li>
-          <li>Entra en la carpeta y abre <b>Winclus.exe</b>.</li>
-          <li>Si Windows avisa, pulsa «Más información» y <b>«Ejecutar de todas formas»</b>.</li>
-          <li>Acepta el permiso de cámara, pulsa <b>Activar</b> y parpadea para hacer clic.</li>
-        </ol>
-        <p style="font-size:.88rem;margin:0">Dentro del ZIP va un archivo LEEME con estos pasos y las soluciones a los problemas más comunes.</p>
-      </div>
-
-      <div class="panel-desc" id="panel-cmd" role="tabpanel" aria-labelledby="tab-cmd" hidden>
-        <p style="margin:0">Abre <b style="color:#fff">PowerShell</b> (búscalo en el menú Inicio), pega esta línea y pulsa Intro:</p>
-        <div class="codigo"><code id="cmdInstalar">irm https://winclus.com/instalar.ps1 | iex</code><button type="button" id="btnCopiar" aria-label="Copiar el comando">Copiar</button></div>
-        <ol class="pasitos">
-          <li>Descarga Winclus y lo instala en tu carpeta de usuario. <b>No pide ser administrador.</b></li>
-          <li>Crea los accesos directos en el escritorio y en el menú Inicio.</li>
-          <li>Abre Winclus al terminar. Si vuelves a ejecutarlo, actualiza y conserva tus perfiles.</li>
-        </ol>
-        <p style="font-size:.88rem;margin:0">Para quitarlo: <code style="color:#e8fff3">irm https://winclus.com/instalar.ps1 | iex; Desinstalar-Winclus</code></p>
-      </div>
-      <p style="margin-top:16px;font-size:.9rem">¿Prefieres el código? <a href="#" class="js-codigo">Está en GitHub</a>, con licencia Apache 2.0.</p>
+      <h2 id="t-contacto">Comunícate con nosotros</h2>
+      <p>¿Quieres Winclus para ti, para un familiar, para tu centro o para tu página web? Escríbenos y te contamos cómo empezar, sin compromiso.</p>
+      <a class="btn btn-claro" href="mailto:hola@winclus.com?subject=Quiero%20saber%20m%C3%A1s%20de%20Winclus" id="btnContacto">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>
+        Escríbenos a hola@winclus.com
+      </a>
+      <p style="margin-top:16px;font-size:.9rem">Respondemos en español y te acompañamos en la puesta en marcha.</p>
     </div>
     <div class="caja">
       <h3>Qué necesitas</h3>
@@ -430,7 +367,7 @@
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L19 7"/></svg>Luz de frente, sin ventana a la espalda</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L19 7"/></svg>Opcional: micrófono para el asistente por voz</li>
       </ul>
-      <small>Si Windows muestra un aviso de «editor desconocido» al abrir el programa, pulsa «Más información» y luego «Ejecutar de todas formas». Es normal en programas gratuitos sin firma de pago.</small>
+      <small>Winclus no envía tu imagen a ningún sitio: la cámara se procesa en tu propio equipo y funciona sin conexión a internet.</small>
     </div>
   </div>
 </section>
@@ -462,7 +399,7 @@
       <ul>
         <li><a href="#que-hace">Qué hace</a></li>
         <li><a href="#como-funciona">Cómo funciona</a></li>
-        <li><a href="#descargar">Descargar</a></li>
+        <li><a href="#contacto">Contacto</a></li>
         <li><a href="#" class="js-codigo">Código fuente</a></li>
         <li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li>
       </ul>
@@ -472,35 +409,9 @@
 </footer>
 
 <script>
-  // Un único sitio para cambiar los enlaces de descarga y del código fuente.
-  var DESCARGA = "https://github.com/specteriatech/winclus/releases/latest/download/Winclus-Windows.zip";
-  var CODIGO   = "https://github.com/specteriatech/winclus";
-  document.querySelectorAll(".js-descarga").forEach(function (a) { a.href = DESCARGA; });
+  // Enlace al código fuente
+  var CODIGO = "https://github.com/specteriatech/winclus";
   document.querySelectorAll(".js-codigo").forEach(function (a) { a.href = CODIGO; });
-
-  // Pestañas de la descarga (ZIP / comando) y botón de copiar
-  var tabs = document.querySelectorAll(".opciones [role=tab]");
-  tabs.forEach(function (t) {
-    t.addEventListener("click", function () {
-      tabs.forEach(function (o) {
-        o.setAttribute("aria-selected", o === t ? "true" : "false");
-        document.getElementById(o.getAttribute("aria-controls")).hidden = (o !== t);
-      });
-    });
-  });
-  var btnCopiarWidget = document.getElementById("btnCopiarWidget");
-  btnCopiarWidget.addEventListener("click", function () {
-    var t = '<script src="https://winclus.com/widget.js" async></' + 'script>';
-    function ok() { btnCopiarWidget.textContent = "Copiado"; setTimeout(function () { btnCopiarWidget.textContent = "Copiar"; }, 1800); }
-    if (navigator.clipboard) { navigator.clipboard.writeText(t).then(ok); } else { ok(); }
-  });
-  var btnCopiar = document.getElementById("btnCopiar");
-  btnCopiar.addEventListener("click", function () {
-    var texto = document.getElementById("cmdInstalar").textContent;
-    function hecho() { btnCopiar.textContent = "Copiado"; setTimeout(function () { btnCopiar.textContent = "Copiar"; }, 1800); }
-    if (navigator.clipboard) { navigator.clipboard.writeText(texto).then(hecho); }
-    else { var r = document.createRange(); r.selectNodeContents(document.getElementById("cmdInstalar")); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); document.execCommand("copy"); hecho(); }
-  });
 
   var btn = document.getElementById("btnMenu"), menu = document.getElementById("menu");
   btn.addEventListener("click", function () {
