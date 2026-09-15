@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Prueba con cámara simulada</title>
+<style>body{font-family:system-ui;margin:0;padding:20px}button.obj{font-size:20px;padding:14px 24px;margin:10px}#log{white-space:pre-wrap;font:12px Consolas,monospace;background:#eee;padding:8px}</style>
+</head><body>
+<h1>Cámara simulada</h1>
+<p>El lienzo de abajo se entrega al widget como si fuera la webcam.</p>
+<canvas id="cam" width="640" height="480" style="width:320px;height:240px;border:1px solid #999"></canvas>
+<div>
+  <button class="obj" id="b1" onclick="cuenta.b1=(cuenta.b1||0)+1;this.textContent='Botón 1 · '+cuenta.b1">Botón 1</button>
+  <button class="obj" id="b2" onclick="cuenta.b2=(cuenta.b2||0)+1;this.textContent='Botón 2 · '+cuenta.b2">Botón 2</button>
+  <input id="campo" placeholder="campo de texto" style="font-size:18px;padding:10px">
+</div>
+<div id="log"></div>
+<script>
+var cuenta = {};
+var cam = document.getElementById("cam"), ctx = cam.getContext("2d");
+var img = new Image(); img.src = "/img/quien_1.jpg";
+// Estado controlable desde las pruebas
+var sim = { dx: 0, dy: 0, parpadeo: false, ojos: null, boca: false, zoom: 1 };
+var CROP = { x: 127, y: 50, w: 427, h: 320 };   // zona de la cara en la foto
+function dibujar() {
+  ctx.fillStyle = "#777"; ctx.fillRect(0, 0, 640, 480);
+  if (img.complete && img.naturalWidth) {
+    var e = sim.zoom, w = 640 * e, h = 480 * e;
+    ctx.drawImage(img, CROP.x, CROP.y, CROP.w, CROP.h, sim.dx + (640 - w) / 2, sim.dy + (480 - h) / 2, w, h);
+  }
+  if (sim.parpadeo && sim.ojos) {   // tapar los ojos con piel: párpados cerrados
+    ctx.fillStyle = "#b98867";
+    sim.ojos.forEach(function (o) { ctx.beginPath(); ctx.ellipse(o[0], o[1], o[2], o[3], 0, 0, 6.3); ctx.fill(); });
+  }
+  requestAnimationFrame(dibujar);
+}
+img.onload = dibujar;
+// cada llamada devuelve un flujo nuevo, como una webcam de verdad
+navigator.mediaDevices.getUserMedia = function () { return Promise.resolve(cam.captureStream(30)); };
+function log(t) { document.getElementById("log").textContent += t + "\n"; }
+</script>
+<script src="/widget.js" async></script>
+</body></html>

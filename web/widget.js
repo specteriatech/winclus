@@ -63,14 +63,18 @@
   };
   var CLAVE = "winclus.ajustes";
   var ajustes = JSON.parse(JSON.stringify(POR_DEFECTO));
+  // Nunca se sustituye el objeto «ajustes» (ni «ajustes.gestos»): los controles del panel guardan su referencia
+  function fusionarAjustes(g) {
+    for (var k in g) if (k in ajustes) {
+      if (k === "gestos") { if (g[k] && typeof g[k] === "object") for (var s in g[k]) if (s in ajustes.gestos) ajustes.gestos[s] = g[k][s]; }
+      else ajustes[k] = g[k];
+    }
+  }
   function cargarAjustes() {
     try {
       var g = JSON.parse(localStorage.getItem(CLAVE));
       if (!g) return;
-      for (var k in g) if (k in ajustes) {
-        if (k === "gestos" && g[k] && typeof g[k] === "object") { for (var s in g[k]) if (s in ajustes.gestos) ajustes.gestos[s] = g[k][s]; }
-        else ajustes[k] = g[k];
-      }
+      fusionarAjustes(g);
       if (g.dwell && g.modo_clic == null) ajustes.modo_clic = "quieto";   // ajuste de la versión 0.1
     } catch (e) {}
   }
@@ -275,6 +279,7 @@
   var camaraActiva = false, pausado = false, video = null, flujo = null, landmarker = null;
   var det = { cara: false, t: 0, lm: null, bs: null, track: null, mirada: null, rasgos: null, relacion: 1, iris: null };
   var historialRasgos = [];   // [(t, rasgos, relacion)] últimos 1,5 s, para la calibración invisible
+  var anclaParpadeo = null, baseAvisada = false;   // dónde estaba el puntero al empezar a cerrar los ojos
 
   function forma(nombre) { return det.bs && det.bs[nombre] != null ? det.bs[nombre] : 0; }
 
@@ -297,7 +302,9 @@
     tAnterior: null, cierreInicio: null, cierreFin: 0, cierreFlags: [false, false],
     episodioDesde: null, episodioMin: [9, 9], episodioAmbosMs: 0, episodioProfundo: false, ultimoEpisodio: null,
     estado: { relacion: 1, cerrados: false, cerradosMs: 0, listo: false, base: [0, 0], apertura: [0, 0] },
-    reiniciar: function () { this.bufDer = []; this.bufIzq = []; this.base = null; this.cerradosDesde = null; this.evento = null; this.episodioDesde = null; },
+    reiniciar: function () { this.bufDer = []; this.bufIzq = []; this.base = null; this.cerradosDesde = null; this.evento = null; this.episodioDesde = null;
+      this.cierreInicio = null; this.cierreFin = 0; this.cierreFlags = [false, false]; this.clicEmitido = false; this.largoEmitido = false; this.tAnterior = null; this.ultimoEpisodio = null;
+      this.estado = { relacion: 1, cerrados: false, cerradosMs: 0, listo: false, base: [0, 0], apertura: [0, 0] }; },
     procesar: function (lm, bs, umbral, minMs, ahora) {
       var aDer = aperturaOjo(lm, OJO_DER), aIzq = aperturaOjo(lm, OJO_IZQ);
       var bsDer = bs ? bs.eyeBlinkRight : null, bsIzq = bs ? bs.eyeBlinkLeft : null;
@@ -371,6 +378,9 @@
     tomarEvento: function () { var e = this.evento; this.evento = null; return e; },
     ojosAbiertos: function (margen) { return this.estado.relacion >= (margen || 0.7); }
   };
+  // Para fiarse del iris basta con que los ojos no estén cerrándose: hay personas
+  // (o sonrisas) con los ojos entrecerrados en reposo, alrededor del 65-70 %.
+  function ojosParaMirar() { return !parpadeo.estado.cerrados && parpadeo.estado.relacion >= 0.5; }
 
   // --- mirada por iris (detectors/mirada.py) -----------------------------
   var IRIS_DER = [468, 469, 470, 471, 472], IRIS_IZQ = [473, 474, 475, 476, 477];
@@ -490,7 +500,7 @@
       X = Rt.map(function (r) { return filaX(r, media, desv); });
       var nFijos = Pf.length, mejor = null;
       for (j = 0; j < candidatos.length; j++) {
-        var e = nFijos >= 4 ? errorLoo(X, Pt, pesos, nFijos, candidatos[j]) : [0];
+        var e = (nFijos >= 4 && candidatos.length > 1) ? errorLoo(X, Pt, pesos, nFijos, candidatos[j]) : [0];
         var med = mediana(e);
         if (!mejor || med < mejor[0]) mejor = [med, candidatos[j], e];
       }
@@ -513,9 +523,10 @@
     // El modelo se hizo con un tamaño de ventana; si cambió, se escala
     var m = modelo.monitor, ex = window.innerWidth / (m[2] - m[0] || 1), ey = window.innerHeight / (m[3] - m[1] || 1);
     x *= ex; y *= ey;
+    if (sinSesgo) return [x, y];   // crudo, sin recortar (para recentrar)
     return [Math.min(Math.max(x, 0), window.innerWidth - 1), Math.min(Math.max(y, 0), window.innerHeight - 1)];
   }
-  function modeloValido(m) { return !!(m && m.coef_x && m.coef_y && m.coef_x.length === N_RASGOS + 1 && m.monitor); }
+  function modeloValido(m) { return !!(m && m.coef_x && m.coef_y && m.coef_x.length === N_RASGOS + 1 && m.coef_y.length === N_RASGOS + 1 && m.media && m.media.length === N_RASGOS && m.desv && m.desv.length === N_RASGOS && m.monitor && m.monitor.length === 4); }
   var calibracion = leerJSON("winclus.calibracion", null);
   if (!modeloValido(calibracion)) calibracion = null;
   var ojosCentro = leerJSON("winclus.ojos_centro", null);
@@ -546,7 +557,9 @@
     }
     return intentar(0);
   }
+  function vistaCamara(ver) { var v = q(".wcl-cam-vista"); if (v) v.style.display = ver ? "block" : "none"; }
   function activarCamara() {
+    if (!opciones.camara || !btnActivar) return;
     if (camaraActiva) { desactivarCamara(); return; }
     btnActivar.disabled = true; decir("Cargando el detector de cara (unos segundos la primera vez)…");
     cargarDetector().then(function () {
@@ -560,6 +573,7 @@
     }).then(function (f) {
       flujo = f;
       if (!video) { video = el("video", { "class": "wcl-video", "playsinline": "", "muted": "", "autoplay": "" }); cont.appendChild(video); }
+      video.muted = true; video.playsInline = true;   // sin esto play() puede fallar si no hubo un clic real antes
       video.srcObject = f;
       return video.play();
     }).then(function () {
@@ -568,41 +582,45 @@
       btnActivar.textContent = "Desactivar cámara"; btnActivar.classList.add("rojo"); btnActivar.disabled = false;
       btnPausa.style.display = "block"; pintarPausa();
       cursor.style.display = "block"; mover(window.innerWidth / 2, window.innerHeight / 2);
-      q(".wcl-cam-vista").style.display = ajustes.camara_ver ? "block" : "none";
+      vistaCamara(ajustes.camara_ver);
       decir("Cámara activa. Mira al centro un momento mientras aprende cómo son tus ojos abiertos.");
       avisar("Activado");
       if (ajustes.modo_puntero === "ojos" && ajustes.ojos_modo !== "palanca" && !calibracion) {
         decir("Para mover el puntero con los ojos hay que calibrar una vez: en 3 segundos empieza la calibración (unos 40 s).");
         setTimeout(function () { if (camaraActiva && !calibracion && !calibrando) { abrir(false); empezarCalibracion(false); } }, 3000);
       }
-      requestAnimationFrame(bucle);
+      generacion++; requestAnimationFrame(bucle.bind(null, generacion));
     }).catch(function (err) {
-      btnActivar.disabled = false;
+      if (btnActivar) btnActivar.disabled = false;
       decir("No se pudo activar: " + (err && err.message ? err.message : err));
     });
   }
+  var generacion = 0;
   function desactivarCamara() {
-    camaraActiva = false;
+    camaraActiva = false; pausado = false;
+    if (calibrando) cerrarCalibracion();
     if (flujo) { flujo.getTracks().forEach(function (t) { t.stop(); }); flujo = null; }
+    if (video) video.srcObject = null;
     cursor.style.display = "none"; btnPausa.style.display = "none";
-    cerrarMenu(); cerrarLupa(); soltarArrastre(); ocultarTeclado(); pararEscucha();
-    q(".wcl-cam-vista").style.display = "none";
-    btnActivar.textContent = "Activar cámara"; btnActivar.classList.remove("rojo");
+    cerrarMenu(); cerrarLupa(); soltarArrastre(); ocultarTeclado();   // las órdenes por voz siguen: no dependen de la cámara
+    historialRasgos = []; anclaParpadeo = null; det.cara = false; det.track = null; det.rasgos = null; det.mirada = null;
+    vistaCamara(false);
+    if (btnActivar) { btnActivar.textContent = "Activar cámara"; btnActivar.classList.remove("rojo"); }
     decir("Cámara apagada.");
   }
-  function bucle() {
-    if (!camaraActiva) return;
+  function bucle(gen) {
+    if (!camaraActiva || gen !== generacion) return;
     var t = performance.now();
     if (video.readyState >= 2 && t !== ultimoT) {
       ultimoT = t;
       var r = null;
       try { r = landmarker.detectForVideo(video, t); } catch (e) {}
       if (r && r.faceLandmarks && r.faceLandmarks.length) procesarCara(r, t / 1000);
-      else { det.cara = false; det.track = null; det.rasgos = null; det.mirada = null; decirSuave("No veo tu cara. Ponte frente a la cámara con luz de frente."); }
+      else { if (det.cara) { bufTrack = []; delayCount = 0; trackUltimo = null; ultimaVel = null; } det.cara = false; det.track = null; det.rasgos = null; det.mirada = null; decirSuave("No veo tu cara. Ponte frente a la cámara con luz de frente."); }
     }
     try { vuelta(t / 1000); } catch (e) { if (window.console) console.warn("Winclus:", e); }
     if (ajustes.camara_ver && panel.classList.contains("abierto")) dibujarCamara();
-    requestAnimationFrame(bucle);
+    requestAnimationFrame(bucle.bind(null, gen));
   }
   function procesarCara(r, tS) {
     var lm = r.faceLandmarks[0], bs = {};
@@ -612,13 +630,17 @@
     // La aplicación espeja la imagen: mover la cabeza a la derecha lleva el puntero a la derecha
     det.track = [(1 - lm[8].x) * CAM_W, lm[8].y * CAM_H];
     parpadeo.procesar(lm, det.bs, ajustes.parpadeo_umbral, ajustes.parpadeo_ms, tS);
+    // Al cerrar los ojos la cabeza y las cejas se mueven un poco y el puntero se
+    // desvía: el clic se hace donde estaba el puntero al EMPEZAR a cerrarlos
+    if (parpadeo.episodioDesde !== null) { if (!anclaParpadeo) anclaParpadeo = [P.x, P.y]; } else anclaParpadeo = null;
     det.relacion = parpadeo.estado.relacion;
     calcularMirada(lm, det.bs);
     if (det.rasgos) {
       historialRasgos.push([tS, det.rasgos, det.relacion]);
       while (historialRasgos.length && tS - historialRasgos[0][0] > 1.5) historialRasgos.shift();
     }
-    if (!parpadeo.estado.listo) decirSuave("Aprendiendo tus ojos abiertos… (" + parpadeo.bufDer.length + "/" + PB.MIN_BASE + ")");
+    if (!parpadeo.estado.listo) { decirSuave("Aprendiendo tus ojos abiertos… (" + parpadeo.bufDer.length + "/" + PB.MIN_BASE + ")"); baseAvisada = false; }
+    else if (!baseAvisada) { baseAvisada = true; ultimoAviso = 0; decirSuave("Listo. Mueve la cabeza para mover el puntero y cierra los ojos medio segundo para hacer clic."); }
     else if (parpadeo.ultimoEpisodio && tS - parpadeo.ultimoEpisodio.t < 0.1) decirSuave("Ojos cerrados " + parpadeo.ultimoEpisodio.ms + " ms: " + parpadeo.ultimoEpisodio.resultado);
   }
   function dibujarCamara() {
@@ -639,7 +661,7 @@
   var bufTrack = [], prevX = 0, prevY = 0, delayCount = 0, kernel = null;
   var filtroDirecto = [new OneEuro(1, 0.004), new OneEuro(1, 0.004)], fijador = new Fijacion(), fijacion = null;
   var rasgosMuestras = [], rasgosUltimo = null, congeladoHasta = 0, ultimoSalto = 0, ultimoSaltoPunto = null, cabezaDesdeSalto = [0, 0];
-  var miradaMuestras = [], centrandoPalanca = null, calibrando = false;
+  var miradaMuestras = [], centrandoPalanca = null, calibrando = false, trackUltimo = null, ultimaVel = null, miradaUltima = null;
   var SEL_CLICABLE = 'a[href],button,input,select,textarea,summary,label,[role=button],[role=link],[role=checkbox],[role=radio],[role=tab],[role=menuitem],[role=option],[role=switch],[onclick],[tabindex]:not([tabindex="-1"]),[contenteditable=""],[contenteditable="true"]';
 
   function kernelHamming(n) {   // np.hamming(2n)[:n], normalizado
@@ -649,12 +671,13 @@
     return k;
   }
   function reiniciarPuntero() {
-    bufTrack = []; delayCount = 0; rasgosMuestras = []; rasgosUltimo = null; miradaMuestras = [];
+    bufTrack = []; delayCount = 0; rasgosMuestras = []; rasgosUltimo = null; miradaMuestras = []; trackUltimo = null; ultimaVel = null; miradaUltima = null;
     filtroDirecto[0].reiniciar(); filtroDirecto[1].reiniciar(); fijador.reiniciar(); fijacion = null;
     ultimoSaltoPunto = null; cabezaDesdeSalto = [0, 0];
   }
   var ultimoHover = null, ultimoMovX = -1, ultimoMovY = -1;
   function mover(x, y) {
+    if (!isFinite(x) || !isFinite(y)) return;
     P.x = Math.max(0, Math.min(window.innerWidth - 1, x));
     P.y = Math.max(0, Math.min(window.innerHeight - 1, y));
     cursor.style.transform = "translate(" + P.x + "px," + P.y + "px)";
@@ -682,22 +705,28 @@
   function velocidadCabeza() {
     if (!det.track) return null;
     var n = Math.max(2, Math.min(30, ajustes.suavizado | 0));
-    if (!kernel || kernel.length !== n) kernel = kernelHamming(n);
-    bufTrack.push(det.track); if (bufTrack.length > n) bufTrack.shift();
+    if (!kernel || kernel.length !== n) { kernel = kernelHamming(n); bufTrack = []; delayCount = 0; }
+    // Cada fotograma de la cámara cuenta una vez aunque este bucle vaya a 60-144 Hz
+    if (det.track === trackUltimo) return ultimaVel;
+    trackUltimo = det.track;
+    bufTrack.push(det.track); while (bufTrack.length > n) bufTrack.shift();
     var sx = 0, sy = 0, off = n - bufTrack.length;
     for (var i = 0; i < bufTrack.length; i++) { sx += kernel[i + off] * bufTrack[i][0]; sy += kernel[i + off] * bufTrack[i][1]; }
+    if (!isFinite(sx) || !isFinite(sy)) { bufTrack = []; delayCount = 0; ultimaVel = null; return null; }
     var vx = sx - prevX, vy = sy - prevY; prevX = sx; prevY = sy;
-    delayCount++;
+    delayCount++; ultimaVel = null;
     if (delayCount < n + 12) return null;   // en espera hasta que el suavizado se llena
     var spd = ajustes.velocidad;
     vx *= spd; vy *= spd;
     if (ajustes.aceleracion) { vx *= acel(vx); vy *= acel(vy); }
-    return [vx, vy];
+    ultimaVel = [vx, vy];
+    return ultimaVel;
   }
   function acel(v) { return 0.6 + 1.2 / (1 + Math.exp(-(Math.abs(v) - 3))); }
 
   function miradaFiltrada(tS) {
-    if (!calibracion || !det.rasgos || !parpadeo.ojosAbiertos(0.7)) return null;   // parpadeo o sin cara: se queda donde está
+    if (!calibracion || !det.rasgos || !ojosParaMirar()) return null;   // parpadeo o sin cara: se queda donde está
+    if (parpadeo.episodioDesde !== null) return null;   // mientras los ojos se cierran o se abren, el iris no vale: el puntero no se mueve
     if (det.rasgos === rasgosUltimo) return null;
     rasgosUltimo = det.rasgos;
     rasgosMuestras.push(det.rasgos); if (rasgosMuestras.length > 5) rasgosMuestras.shift();
@@ -734,13 +763,14 @@
   function moverPalanca(tS) {
     if (!det.mirada) { miradaMuestras = []; return; }
     if (!ojosCentro) {   // sin centro: se toma de lo que se mira el primer segundo y medio
-      centrandoPalanca = centrandoPalanca || []; centrandoPalanca.push(det.mirada);
+      centrandoPalanca = centrandoPalanca || []; if (det.mirada !== miradaUltima) { miradaUltima = det.mirada; centrandoPalanca.push(det.mirada); }
       decirSuave("Mira al centro de la pantalla: tomando el punto de reposo… " + centrandoPalanca.length + "/45");
       if (centrandoPalanca.length >= 45) { fijarCentroPalanca(centrandoPalanca); centrandoPalanca = null; }
       return;
     }
     var n = Math.max(1, ajustes.ojos_suavizado | 0);
-    miradaMuestras.push(det.mirada); if (miradaMuestras.length > n) miradaMuestras.shift();
+    if (det.mirada !== miradaUltima) { miradaUltima = det.mirada; miradaMuestras.push(det.mirada); while (miradaMuestras.length > n) miradaMuestras.shift(); }
+    if (!miradaMuestras.length) return;
     var gx = 0, gy = 0; miradaMuestras.forEach(function (m) { gx += m[0] / miradaMuestras.length; gy += m[1] / miradaMuestras.length; });
     var zona = ajustes.ojos_zona_muerta / 100, gan = ajustes.ojos_velocidad * 2, vert = ajustes.ojos_vertical / 100;
     function palanca(d) { var m = Math.abs(d) - zona; return m <= 0 ? 0 : Math.sign(d) * m * gan; }
@@ -760,12 +790,12 @@
   }
   function vuelta(tS) {
     if (calibrando) { tickCalibracion(tS); return; }
-    if (!pausado && tS >= congeladoHasta) {
-      var modo = modoEfectivo();
-      if (modo === "directo") moverDirecto(tS);
-      else if (modo === "hibrido") moverHibrido(tS);
-      else if (modo === "palanca") moverPalanca(tS);
-      else { var v = velocidadCabeza(); if (v && (v[0] || v[1])) moverRel(v[0], v[1]); }
+    if (!pausado) {
+      var modo = modoEfectivo(), congelado = tS < congeladoHasta;
+      if (modo === "directo") { if (!congelado) moverDirecto(tS); }
+      else if (modo === "hibrido") { if (!congelado) moverHibrido(tS); }
+      else if (modo === "palanca") { if (!congelado) moverPalanca(tS); }
+      else { var v = velocidadCabeza(); if (v && !congelado && (v[0] || v[1])) moverRel(v[0], v[1]); }   // congelado: se calcula pero no se aplica, para que al descongelar no salte
       if (modo !== "cabeza" && modo !== "hibrido" && det.track) velocidadCabeza();   // el búfer de cabeza al día para cambiar de modo sin salto
     }
     tickClics(tS);
@@ -780,7 +810,7 @@
   function tickIman(tS) {
     var modo = modoEfectivo();
     if (!ajustes.iman_activo || (modo === "cabeza" && !ajustes.iman_cabeza) || lupa || menuVisible || tecladoContiene(P.x, P.y) || arrastrando) return;
-    if (Math.abs(P.x - imanX) > 3 || Math.abs(P.y - imanY) > 3) { imanX = P.x; imanY = P.y; imanQuietoDesde = tS; imanHecho = false; return; }
+    if (Math.abs(P.x - imanX) > 6 || Math.abs(P.y - imanY) > 6) { imanX = P.x; imanY = P.y; imanQuietoDesde = tS; imanHecho = false; return; }
     if (imanHecho || tS - imanQuietoDesde < 0.3) return;
     imanHecho = true;
     var e = bajoPuntero();
@@ -822,9 +852,11 @@
   function valorGesto(nombre) { return nombre === "mouthSmile" ? (forma("mouthSmileLeft") + forma("mouthSmileRight")) / 2 : forma(nombre); }
 
   function tickClics(tS) {
+    if (!det.cara) return;
     var evento = parpadeo.tomarEvento();
-    if (!det.cara) { return; }
     if (pausado) { if (evento === "largo") reanudar(); return; }
+    // El gesto vale donde estaba el puntero al empezar a cerrar los ojos (si no se fue lejos: entonces es que se estaba moviendo a propósito)
+    if (evento && anclaParpadeo && !menuVisible && !arrastrando && Math.hypot(P.x - anclaParpadeo[0], P.y - anclaParpadeo[1]) < 80) { congelar(0.4); mover(anclaParpadeo[0], anclaParpadeo[1]); }
     if (evento === "largo") {
       cerrarLupa(); reiniciarQuieto();
       if (sobrePausar()) { pausar(); return; }
@@ -967,17 +999,17 @@
   // gui/lupa.py: en modo directo el primer gesto agranda la página alrededor del puntero y el segundo pulsa
   function lupaCorresponde() { return modoEfectivo() === "directo" && ajustes.lupa_activa && !tecladoContiene(P.x, P.y) && !menuVisible; }
   function abrirLupa() {
-    var b = document.body, r = b.getBoundingClientRect();
+    var b = document.body, r = b.getBoundingClientRect(), trfPrevio = b.style.transform, orgPrevio = b.style.transformOrigin;
     b.style.transformOrigin = (P.x - r.left) + "px " + (P.y - r.top) + "px";
     raiz.classList.add("wcl-lupa");
     b.style.transform = "scale(" + ajustes.lupa_zoom + ")";
-    lupa = { rasgos: det.rasgos ? det.rasgos.slice() : null }; lupaDesde = performance.now() / 1000;
+    lupa = { rasgos: det.rasgos ? det.rasgos.slice() : null, trf: trfPrevio, org: orgPrevio }; lupaDesde = performance.now() / 1000;
     reiniciarQuieto(); qAncla = [P.x, P.y]; qDesde = lupaDesde; qArmado = true; qYaClic = false;
     avisar("Lupa: mira y vuelve a hacer el gesto");
   }
   function cerrarLupa() {
     if (!lupa) return;
-    lupa = null; document.body.style.transform = ""; document.body.style.transformOrigin = "";
+    var l = lupa; lupa = null; document.body.style.transform = l.trf || ""; document.body.style.transformOrigin = l.org || "";
     setTimeout(function () { raiz.classList.remove("wcl-lupa"); }, 300);
   }
 
@@ -1291,7 +1323,7 @@
     if (tecHover) tecHover.el.classList.remove("hover");
     tecHover = t; if (t) t.el.classList.add("hover");
   }
-  function pulsarTeclaEn(x, y) { var t = teclaEn(x, y); if (t) pulsarTecla(t); }
+  function pulsarTeclaEn(x, y) { var t = teclaEn(x, y); if (t) pulsarTecla(t); else avisar("Ahí no hay tecla", true); }
   function pulsarTecla(t) {
     if (ajustes.teclado_sonido) pitido(880, 25);
     t.el.classList.add("destello"); setTimeout(function () { t.el.classList.remove("destello"); }, 130);
@@ -1442,8 +1474,13 @@
     var pe = calibEl.querySelector(".punto"), desde = (tS - calib.tInicio) * 1000;
     if (desde < ESPERA_MS) { if (desde > ESPERA_MS * 0.6) pe.classList.remove("grande"); return; }
     if (desde < ESPERA_MS + MEDIDA_MS) {
-      if (det.rasgos && parpadeo.ojosAbiertos(0.7) && det.rasgos !== calib.ultimo) { calib.ultimo = det.rasgos; calib.muestras.push(det.rasgos); }
+      if (det.rasgos && ojosParaMirar() && det.rasgos !== calib.ultimo) { calib.ultimo = det.rasgos; calib.muestras.push(det.rasgos); }
       return;
+    }
+    // Si en los primeros cuatro puntos no se pudo medir nada, no tiene sentido seguir 30 s más
+    if (calib.fase === "puntos" && calib.i === 3 && !calib.puntosHechos.length && calib.muestras.length < 5) {
+      calibEl.querySelector(".txt").textContent = "No consigo medir tus ojos (abiertos al " + Math.round(parpadeo.estado.relacion * 100) + " %). Acércate a la cámara, con luz de frente y sin gafas oscuras, e inténtalo otra vez.";
+      calib.fase = "fin"; calib.tFin = tS + 4; return;
     }
     var lista = calib.fase === "comprobar" ? calib.comprob.puntos : calib.puntos, p = lista[calib.i];
     if (calib.muestras.length >= 5) {
@@ -1483,7 +1520,7 @@
       refrescos.forEach(function (f) { f(); });
     }
   }
-  function cancelarCalibracion() { if (calib) { var txt = calibEl.querySelector(".txt"); txt.textContent = "Calibración cancelada."; calib.fase = "fin"; calib.tFin = performance.now() / 1000 + 0.8; } }
+  function cancelarCalibracion() { if (!calib) return; calibEl.querySelector(".txt").textContent = "Calibración cancelada."; calib.fase = "fin"; calib.tFin = performance.now() / 1000 + 0.8; if (!camaraActiva) cerrarCalibracion(); }
   function cerrarCalibracion() { calib = null; calibrando = false; calibEl.classList.remove("visible"); if (camaraActiva) cursor.style.display = "block"; reiniciarPuntero(); refrescos.forEach(function (f) { f(); }); }
   function recentrar() { if (!calibracion) { avisar("Primero calibra los ojos", true); return; } empezarCalibracion(true); }
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && calibrando) cancelarCalibracion(); });
@@ -1511,7 +1548,7 @@
     clicsAprendidos.push({ x: x / window.innerWidth, y: y / window.innerHeight, r: r, f: fuente, t: Date.now() });
     if (clicsAprendidos.length > 400) clicsAprendidos.splice(0, clicsAprendidos.length - 400);
     escribirJSON("winclus.clics", clicsAprendidos); clicsNuevos++;
-    if (clicsNuevos >= (calibracion ? 10 : 5) && Date.now() - ultimoAjusteClics > 30000) ajustarConClics(false);
+    if (clicsNuevos >= (calibracion ? 10 : 5) && Date.now() - ultimoAjusteClics > 120000) setTimeout(function () { ajustarConClics(false); refrescarEstadoAprendizaje(); }, 0);
     refrescarEstadoAprendizaje();
   }
   function ajustarConClics(forzado) {
@@ -1624,7 +1661,7 @@
     s.appendChild(estadoEl);
     btnActivar = botonGrande("Activar cámara", "", activarCamara); s.appendChild(btnActivar);
     var vista = el("div", { "class": "wcl-cam-vista" }, '<canvas width="320" height="240" aria-label="Vista de la cámara"></canvas>'); s.appendChild(vista);
-    s.appendChild(filaSw("camara_ver", "Ver la cámara", function (v) { vista.style.display = v && camaraActiva ? "block" : "none"; }));
+    s.appendChild(filaSw("camara_ver", "Ver la cámara", function (v) { vistaCamara(v && camaraActiva); }));
     // Lectura en vivo del detector, para diagnosticar el parpadeo sin adivinar
     var diag = el("div", { "class": "wcl-estado", "style": "font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap" }); s.appendChild(diag);
     setInterval(function () {
@@ -1718,7 +1755,7 @@
   bc[0].addEventListener("click", function () { cambiarCierre(-5); }); bc[1].addEventListener("click", function () { cambiarCierre(5); });
   refrescos.push(pintarCierre); gParp.appendChild(fCierre);
   var estadoParp = el("div", { "class": "wcl-estado", "aria-live": "off" }); gParp.appendChild(estadoParp);
-  setInterval(function () { if (camaraActiva && parpadeo.ultimoEpisodio) estadoParp.textContent = "Último cierre: " + parpadeo.ultimoEpisodio.ms + " ms → " + parpadeo.ultimoEpisodio.resultado; }, 300);
+  setInterval(function () { if (!camaraActiva) { estadoParp.textContent = ""; return; } if (parpadeo.ultimoEpisodio) estadoParp.textContent = "Último cierre: " + parpadeo.ultimoEpisodio.ms + " ms → " + parpadeo.ultimoEpisodio.resultado; }, 300);
   s.appendChild(gParp);
   var gQ = grupo("quieto");
   gQ.appendChild(filaPaso("quieto_ms", "Tiempo quieto", 500, 3000, 100, ms));
@@ -1767,8 +1804,7 @@
     var f = entrada.files[0]; if (!f) return;
     f.text().then(function (t) {
       var p = JSON.parse(t); if (!p || !p.ajustes) throw new Error("no es un perfil");
-      for (var k in p.ajustes) if (k in ajustes) ajustes[k] = p.ajustes[k];
-      guardar(); if (modeloValido(p.calibracion)) { calibracion = p.calibracion; escribirJSON("winclus.calibracion", calibracion); }
+      fusionarAjustes(p.ajustes); guardar(); if (modeloValido(p.calibracion)) { calibracion = p.calibracion; escribirJSON("winclus.calibracion", calibracion); }
       if (p.ojos_centro) { ojosCentro = p.ojos_centro; escribirJSON("winclus.ojos_centro", ojosCentro); }
       if (p.frases) { frases = p.frases; escribirJSON("winclus.frases", frases); areaFrases.value = frases.join("\n"); }
       if (p.palabras) { aprendidas = p.palabras; escribirJSON("winclus.palabras", aprendidas); diccionario = null; }
@@ -1780,7 +1816,7 @@
   s.appendChild(entrada);
   s.appendChild(botonGrande("Importar perfil", "suave", function () { entrada.click(); }));
   s.appendChild(botonGrande("Restablecer todo", "suave", function () {
-    ajustes = JSON.parse(JSON.stringify(POR_DEFECTO)); guardar(); window.Winclus.ajustes = ajustes; aplicarTodo(); avisar("Ajustes restablecidos");
+    fusionarAjustes(JSON.parse(JSON.stringify(POR_DEFECTO))); guardar(); aplicarTodo(); avisar("Ajustes restablecidos");
   }));
   tabs.mas.appendChild(s);
   s = seccion("Acerca de");
@@ -1837,9 +1873,9 @@
     version: VERSION, ajustes: ajustes,
     abrir: function () { abrir(true); }, cerrar: function () { abrir(false); },
     activarCamara: function () { if (!camaraActiva) activarCamara(); }, desactivarCamara: function () { if (camaraActiva) desactivarCamara(); },
-    pausar: pausar, teclado: alternarTeclado, menu: abrirMenu, leer: leerPagina, decir: function (t) { decirVoz(t, true, true); }, orden: ejecutarOrden,
+    pausar: pausar, teclado: alternarTeclado, menu: function () { if (camaraActiva) abrirMenu(); }, leer: leerPagina, decir: function (t) { decirVoz(t, true, true); }, orden: ejecutarOrden,
     // Para pruebas e integraciones: llevar el puntero virtual a un punto y hacer el gesto de clic
     mover: function (x, y) { cursor.style.display = "block"; mover(x, y); }, clic: clic, puntero: P,
-    cargarDetector: cargarDetector
+    cargarDetector: cargarDetector, deteccion: det, parpadeo: parpadeo
   };
 })();
