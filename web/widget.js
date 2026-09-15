@@ -597,7 +597,7 @@
   }
   var generacion = 0;
   function desactivarCamara() {
-    camaraActiva = false; pausado = false;
+    camaraActiva = false; pausado = false; pintarPausa();
     if (calibrando) cerrarCalibracion();
     if (flujo) { flujo.getTracks().forEach(function (t) { t.stop(); }); flujo = null; }
     if (video) video.srcObject = null;
@@ -1455,7 +1455,7 @@
     cerrarMenu(); cerrarLupa(); ocultarTeclado(); soltarArrastre();
     calib = { fase: "puntos", puntos: soloRecentrar ? [[window.innerWidth / 2, window.innerHeight / 2]] : rejillaCalibracion(), i: -1, tInicio: 0, muestras: [],
               rasgosFijos: [], puntosHechos: [], comprob: null, recentrar: !!soloRecentrar, tFin: 0 };
-    calibEl.innerHTML = '<div class="txt">' + (soloRecentrar ? "Mira el punto del centro sin mover la cabeza." : "Mira cada punto naranja hasta que desaparezca. No muevas la cabeza, solo los ojos.") + '</div><div class="punto"></div><button type="button" class="cancelar">Cancelar (o cierra los ojos 1,2 s)</button>';
+    calibEl.innerHTML = '<div class="txt">' + (soloRecentrar ? "Mira el punto del centro sin mover la cabeza." : "Mira cada punto naranja hasta que desaparezca. No muevas la cabeza, solo los ojos.") + '</div><div class="punto"></div><button type="button" class="cancelar">Cancelar (o tecla Esc)</button>';
     calibEl.querySelector(".cancelar").addEventListener("click", cancelarCalibracion);
     calibEl.classList.add("visible"); calibrando = true; cursor.style.display = "none";
     siguientePunto(performance.now() / 1000);
@@ -1469,7 +1469,7 @@
   }
   function tickCalibracion(tS) {
     if (!calib) return;
-    if (parpadeo.tomarEvento() === "largo") { cancelarCalibracion(); return; }
+    parpadeo.tomarEvento();   // los cierres largos no cancelan: hay personas que cierran los ojos más de 1,2 s sin querer (medido el 15-sep-2026)
     if (calib.fase === "fin") { if (tS >= calib.tFin) cerrarCalibracion(); return; }
     var pe = calibEl.querySelector(".punto"), desde = (tS - calib.tInicio) * 1000;
     if (desde < ESPERA_MS) { if (desde > ESPERA_MS * 0.6) pe.classList.remove("grande"); return; }
