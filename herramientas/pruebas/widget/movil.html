@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Vista móvil</title>
+<style>body{margin:0;background:#333;display:flex;gap:8px;padding:6px;align-items:flex-start}iframe{border:0;background:#fff;flex:none}</style></head>
+<body>
+<script>
+  // ?pagina=/index.html&anchos=320,360,390,430&desde=0
+  var q = new URLSearchParams(location.search);
+  var pagina = q.get("pagina") || "/index.html", anchos = (q.get("anchos") || "320,360,390,430").split(","), desde = +(q.get("desde") || 0);
+  anchos.forEach(function (a) { var f = document.createElement("iframe"); f.src = pagina; f.width = a; f.height = 680; document.body.appendChild(f); });
+  window.addEventListener("load", function () {
+    setTimeout(function () {
+      document.querySelectorAll("iframe").forEach(function (f) { try { f.contentDocument.documentElement.style.scrollBehavior = "auto"; f.contentWindow.scrollTo({ top: desde, behavior: "instant" }); } catch (e) {} });
+    }, 1500);
+  });
+</script>
+</body></html>

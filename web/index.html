@@ -29,6 +29,7 @@
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
+  html,body{overflow-x:hidden;max-width:100%}
   @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} *{transition:none!important;animation:none!important} }
   body{margin:0;font-family:var(--fuente);color:var(--texto);background:var(--fondo);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
   img{max-width:100%;display:block}
@@ -102,6 +103,24 @@
     .hero .contenedor{grid-template-columns:1fr}
     .hero-visual{display:none}
     .velo{background:rgba(255,255,255,.9)}
+  }
+  @media (max-width:480px){
+    .contenedor{width:min(1120px,100% - 32px)}
+    .hero{padding:40px 0 36px}
+    h1{font-size:2rem}
+    .hero-texto p.grande{font-size:1.08rem}
+    .hero-acciones{flex-direction:column;align-items:stretch}
+    .hero-acciones .btn{justify-content:center}
+    .btn{padding:12px 18px}
+    section{padding:52px 0}
+    .franja ul{gap:8px 20px;font-size:.9rem}
+    .marca{font-size:1.15rem}
+    .marca img{width:34px;height:34px}
+    .barra{min-height:64px}
+    nav{top:64px;left:-16px;right:-16px;padding:10px 16px 16px}
+    .caja{padding:20px}
+    .pie ul{flex-direction:column;gap:8px}
+    footer{padding:32px 0 22px}
   }
   @media (prefers-reduced-motion:reduce){ .puzzle span{transition:none;opacity:1;transform:none} }
 

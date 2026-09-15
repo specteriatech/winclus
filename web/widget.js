@@ -92,6 +92,11 @@
     + '.wcl-btn svg{width:34px;height:34px}.wcl-btn:focus-visible{outline:3px solid #F2B705;outline-offset:3px}'
     + '.wcl-pausa{position:fixed;bottom:30px;' + LADO + ':92px;z-index:2147483010;display:none;min-height:44px;padding:8px 16px;border-radius:999px;border:0;background:#1AA89A;color:#fff;font:700 15px "Segoe UI",system-ui,sans-serif;box-shadow:0 6px 18px rgba(16,31,61,.3);cursor:pointer}'
     + '.wcl-pausa.en-pausa{background:#F2B705;color:#101F3D}'
+    + '.wcl-pausa{max-width:calc(100vw - 120px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+    + '@media (max-width:480px){.wcl-panel{left:8px;right:8px;width:auto;max-width:none;bottom:88px;max-height:calc(100vh - 100px);border-radius:16px}'
+    + '.wcl-tabs{top:60px}.wcl-tabs button{font-size:11.5px;min-height:38px}.wcl-cab{padding:10px 12px}.wcl-sec{padding:10px 12px}.wcl-fila{gap:6px}.wcl-mm button{width:36px}'
+    + '.wcl-tec button{font-size:17px;text-overflow:clip;padding:0 1px}.wcl-tec button.esp{font-size:11px;white-space:normal;line-height:1.05}.wcl-tec button.pred{font-size:14px}.wcl-tec{padding:4px;gap:4px}.wcl-tec .fila{gap:4px}'
+    + '.wcl-btn{width:52px;height:52px;bottom:16px;' + LADO + ':16px}.wcl-btn svg{width:30px;height:30px}.wcl-pausa{bottom:22px;' + LADO + ':78px;font-size:13px;padding:6px 12px;min-height:40px}}'
     + '.wcl-panel{position:fixed;bottom:92px;' + LADO + ':22px;z-index:2147483011;width:360px;max-width:calc(100vw - 32px);max-height:calc(100vh - 120px);overflow:auto;background:#fff;color:#101F3D;border-radius:18px;box-shadow:0 18px 60px rgba(16,31,61,.28);display:none}'
     + '.wcl-panel.abierto{display:block}'
     + '.wcl-cab{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#101F3D;color:#fff;border-radius:18px 18px 0 0;position:sticky;top:0;z-index:2}'
@@ -1020,7 +1025,7 @@
     return P.x >= b.left && P.x <= b.right && P.y >= b.top && P.y <= b.bottom;
   }
   function pintarPausa() {
-    btnPausa.textContent = pausado ? "En pausa · ojos cerrados 1,2 s para seguir" : "Pausar";
+    btnPausa.textContent = pausado ? (window.innerWidth < 600 ? "En pausa · ojos 1,2 s" : "En pausa · ojos cerrados 1,2 s para seguir") : "Pausar";
     btnPausa.classList.toggle("en-pausa", pausado);
     btnPausa.setAttribute("aria-label", pausado ? "Reanudar el puntero" : "Pausar el puntero");
   }
@@ -1034,7 +1039,7 @@
 
   // ------------------------------------------------------- menú de clics --
   // gui/menu_clics.py: anillo de 8 sectores alrededor del puntero
-  var RE = 170, RI = 58, menuVisible = false, menuCentro = [0, 0], menuAncla = null, menuDesde = 0, menuSectores = [], menuHover = null;
+  var RE = 170, RI = 58, RE_MAX = 170, menuVisible = false, menuCentro = [0, 0], menuAncla = null, menuDesde = 0, menuSectores = [], menuHover = null;
   function opcionesMenu() {
     var puedeRecentrar = modoEfectivo() === "directo" || modoEfectivo() === "hibrido";
     return [["derecho", "Clic derecho"], ["doble", "Doble clic"], arrastrando ? ["soltar", "Soltar"] : ["arrastrar", "Arrastrar"], ["teclado", "Teclado"],
@@ -1042,6 +1047,9 @@
   }
   function polar(r, gradosTk) { var a = gradosTk * Math.PI / 180; return [RE + 6 + r * Math.cos(a), RE + 6 - r * Math.sin(a)]; }
   function mostrarMenu(x, y) {
+    // En pantallas estrechas el anillo se encoge para caber entero
+    RE = Math.max(110, Math.min(RE_MAX, Math.floor(Math.min(window.innerWidth, window.innerHeight) / 2) - 10));
+    RI = RE >= 150 ? 58 : 46;
     var lado = 2 * (RE + 6), m = lado / 2;
     var cx = Math.min(Math.max(x, m), window.innerWidth - m), cy = Math.min(Math.max(y, m), window.innerHeight - m);
     menuCentro = [cx, cy]; menuSectores = opcionesMenu();
@@ -1264,20 +1272,42 @@
   }
 
   // --- dibujo del teclado ------------------------------------------------
+  function pantallaEstrecha() { return window.innerWidth < 600; }
   function filasCapa(c) {
-    if (c !== "frases") return CAPAS[c];
+    if (c !== "frases") {
+      var filas = CAPAS[c];
+      // En pantallas estrechas la fila de abajo se parte en dos para que las teclas con texto quepan
+      if (pantallaEstrecha() && filas[filas.length - 1] === FILA_ABAJO) {
+        return filas.slice(0, -1).concat([[K_NUM, K_ACENTOS, K_ESPACIO, K_IZQ, K_DER, K_CERRAR], [K_DECIR, K_FRASES, K_DICTAR, K_MAS]]);
+      }
+      if (pantallaEstrecha() && c !== "mas" && c !== "abc" && c !== "ABC") {
+        var ultima = filas[filas.length - 1];
+        return filas.slice(0, -1).concat([[ultima[0], ultima[1], K_ESPACIO, K_IZQ, K_DER, K_CERRAR], [K_DECIR, K_FRASES, K_DICTAR, K_MAS]]);
+      }
+      return filas;
+    }
     var filas = [], i;
     for (i = 0; i < frases.length; i += 4) filas.push(frases.slice(i, i + 4).map(function (f) { return [f, "frase", f, 1]; }));
     if (!filas.length) filas.push([["(Añade frases en la pestaña Escribir)", "frase", "", 1]]);
     filas.push([K_ABC, ["Callar", "callar", null, 1.3], K_DECIR, K_CERRAR]);
     return filas;
   }
-  function defTecla(d) { return typeof d === "string" ? { etiqueta: d, tipo: "texto", valor: d, ancho: 1 } : { etiqueta: d[0], tipo: d[1], valor: d[2], ancho: d[3] }; }
+  var ETIQUETA_CORTA = { backspace: "⌫", enter: "⏎", left: "←", right: "→" };
+  function defTecla(d) {
+    if (typeof d === "string") return { etiqueta: d, tipo: "texto", valor: d, ancho: 1 };
+    var t = { etiqueta: d[0], tipo: d[1], valor: d[2], ancho: d[3] };
+    if (pantallaEstrecha()) {   // en el móvil no caben las palabras en las teclas especiales
+      if (t.tipo === "tecla" && ETIQUETA_CORTA[t.valor]) t.etiqueta = ETIQUETA_CORTA[t.valor];
+      else if (t.tipo === "mayus") t.etiqueta = "⇧";
+      else if (t.tipo === "cerrar") t.etiqueta = "✕";
+    }
+    return t;
+  }
   function dibujarTeclado() {
     tecEl.innerHTML = ""; teclas = []; tecHover = null;
     tecEl.classList.toggle("arriba", ajustes.teclado_posicion === "arriba");
     tecEl.style.top = ajustes.teclado_posicion === "arriba" ? "0" : ""; tecEl.style.bottom = ajustes.teclado_posicion === "arriba" ? "" : "0";
-    tecEl.style.height = ajustes.teclado_altura + "vh";
+    tecEl.style.height = (pantallaEstrecha() ? Math.max(ajustes.teclado_altura, 42) : ajustes.teclado_altura) + "vh";   // en el móvil las teclas necesitan más alto
     tecTextoEl = el("div", { "class": "texto", "aria-live": "polite" }); tecEl.appendChild(tecTextoEl);
     if (ajustes.teclado_prediccion && capa !== "frases") {
       var fs = el("div", { "class": "fila sug" });
