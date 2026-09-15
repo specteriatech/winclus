@@ -181,6 +181,11 @@
   .version{display:inline-block;background:var(--verde);color:var(--navy);font-weight:600;padding:3px 12px;border-radius:999px;font-size:.85rem;margin-bottom:12px}
 
   /* ---------- para quién ---------- */
+  .diez{list-style:none;margin:0 0 44px;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:12px 28px;color:var(--texto2)}
+  .diez li{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--linea);border-radius:14px;padding:14px 16px}
+  .diez .n{flex:none;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:700;font-size:.95rem}
+  .diez b{color:var(--navy);font-weight:600;display:block}
+  @media (max-width:640px){.diez{grid-template-columns:1fr}}
   .quien .tarjeta{padding:0;overflow:hidden}
   .quien .tarjeta img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:center 30%}
   .quien .cuerpo{padding:20px 24px 24px;display:flex;gap:14px;align-items:flex-start}
@@ -340,10 +345,22 @@
     <div class="intro-doble">
       <div class="intro">
         <h2 id="t-quien">Inclusión digital <span class="verde">para todos.</span></h2>
-        <p>Winclus sirve a personas en situaciones muy distintas. Cada perfil se guarda y se puede exportar para llevarlo a otro equipo, a la escuela o al trabajo.</p>
+        <p>Winclus cubre diez necesidades distintas, en el ordenador y en cualquier página web. Cada perfil se guarda y se puede exportar para llevarlo a otro equipo, a la escuela o al trabajo.</p>
       </div>
       <img src="img/rompecabezas.jpg" alt="Ilustración: varias personas colocan juntas las piezas de un rompecabezas" width="1200" height="675" loading="lazy">
     </div>
+    <ul class="diez" aria-label="Las diez necesidades que cubre Winclus">
+      <li><span class="n">1</span><div><b>Movilidad reducida en brazos o manos</b>Puntero con la cabeza o los ojos, clic con un gesto, menú de clics, teclado en pantalla.</div></li>
+      <li><span class="n">2</span><div><b>Temblor o poca precisión</b>Imán a los botones, zona quieta, suavizado, lupa y clic anclado.</div></li>
+      <li><span class="n">3</span><div><b>Baja visión</b>Texto hasta el 200 %, alto contraste, modo oscuro, lupa, guía de lectura y voz.</div></li>
+      <li><span class="n">4</span><div><b>Ceguera</b>Lector de pantalla con voz que recorre encabezados, enlaces, botones y campos con el teclado.</div></li>
+      <li><span class="n">5</span><div><b>Daltonismo</b>Corrección de color para protanopia, deuteranopia y tritanopia, y escala de grises.</div></li>
+      <li><span class="n">6</span><div><b>Dificultad para leer y dislexia</b>Lectura limpia, letras y palabras más separadas, lectura en voz alta al pulsar.</div></li>
+      <li><span class="n">7</span><div><b>Discapacidad cognitiva y TDAH</b>Modo fácil con seis botones grandes, máscara de enfoque, sin distracciones.</div></li>
+      <li><span class="n">8</span><div><b>Dificultad para hablar</b>Tecla «Decir», frases guardadas con voz y dictado.</div></li>
+      <li><span class="n">9</span><div><b>Epilepsia fotosensible y sensibilidad sensorial</b>Modo calma: sin animaciones, destellos ni vídeos que arranquen solos.</div></li>
+      <li><span class="n">10</span><div><b>Sordera</b>Todo se avisa de forma visual; ninguna función depende del sonido.</div></li>
+    </ul>
     <div class="grid2">
       <article class="tarjeta">
         <img src="img/quien_1.jpg" alt="Un hombre en silla de ruedas eléctrica mira sonriendo un portátil con cámara web" width="1200" height="900" loading="lazy">

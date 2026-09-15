@@ -59,7 +59,8 @@
     gestos_umbral: 50,
     avisos_visuales: true, avisos_sonido: false,
     teclado_altura: 32, teclado_posicion: "abajo", teclado_prediccion: true, teclado_sonido: true,
-    camara_ver: true, dwell: false
+    camara_ver: true, dwell: false,
+    dalton: "no", calma: false, dislexia: false, sinimg: false, mascara: false, lector: false, facil: false
   };
   var CLAVE = "winclus.ajustes";
   var ajustes = JSON.parse(JSON.stringify(POR_DEFECTO));
@@ -132,8 +133,7 @@
     + '.wcl-calib{position:fixed;inset:0;z-index:2147483030;background:#1B2422;color:#F1ECE2;display:none;font:18px "Segoe UI",system-ui,sans-serif}.wcl-calib.visible{display:block}'
     + '.wcl-calib .punto{position:absolute;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;background:#F0B455;box-shadow:0 0 0 6px rgba(240,180,85,.3)}.wcl-calib .punto.grande{width:68px;height:68px;margin:-34px 0 0 -34px}'
     + '.wcl-calib .txt{position:absolute;left:0;right:0;top:12%;text-align:center;padding:0 24px;font-size:22px}.wcl-calib .cancelar{position:absolute;right:16px;top:16px;min-height:44px;padding:0 16px;border-radius:10px;border:1px solid #F1ECE2;background:transparent;color:#F1ECE2;font:700 15px "Segoe UI",system-ui,sans-serif;cursor:pointer}'
-    + 'html.wcl-contraste{filter:contrast(1.35) saturate(1.15)}'
-    + 'html.wcl-oscuro{filter:invert(1) hue-rotate(180deg)}html.wcl-oscuro img,html.wcl-oscuro video,html.wcl-oscuro .wcl-root{filter:invert(1) hue-rotate(180deg)}'
+    + 'html.wcl-oscuro img,html.wcl-oscuro video,html.wcl-oscuro .wcl-root{filter:invert(1) hue-rotate(180deg)}'
     + 'html.wcl-enlaces a{outline:3px solid #F2B705!important;outline-offset:2px;text-decoration:underline!important;background:rgba(242,183,5,.18)!important}'
     + 'html.wcl-anim *{animation-play-state:paused!important;transition:none!important;scroll-behavior:auto!important}'
     + 'html.wcl-lupa body{transition:transform .25s}'
@@ -242,7 +242,7 @@
   }
   function callar() { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); if (leyendo) { leyendo.classList.remove("wcl-leyendo"); leyendo = null; } }
   function leerElemento(elm) {
-    if (!elm || (elm.closest && elm.closest(".wcl-root"))) return;
+    if (!elm || (elm.closest && elm.closest(".wcl-root") && !elm.closest(".wcl-limpia-texto"))) return;
     var bloque = elm.closest("p,h1,h2,h3,h4,h5,h6,li,td,th,a,button,label,figcaption,blockquote,summary,dd,dt,input,textarea") || elm;
     if (leyendo) leyendo.classList.remove("wcl-leyendo");
     leyendo = bloque; bloque.classList.add("wcl-leyendo");
@@ -687,6 +687,7 @@
     P.y = Math.max(0, Math.min(window.innerHeight - 1, y));
     cursor.style.transform = "translate(" + P.x + "px," + P.y + "px)";
     if (ajustes.guia) guia.style.top = P.y + "px";
+    if (ajustes.mascara) actualizarMascara(P.y);
   }
   function moverRel(dx, dy) { mover(P.x + dx, P.y + dy); }
   function congelar(s) { congeladoHasta = performance.now() / 1000 + s; fijacion = null; fijador.reiniciar(); }
@@ -928,6 +929,7 @@
     cursor.classList.add("clic"); setTimeout(function () { cursor.classList.remove("clic"); }, 220);
     var e = document.elementFromPoint(P.x, P.y); if (!e) return;
     if (e.closest(".wcl-root")) {   // controles del propio widget
+      if (e.closest(".wcl-limpia-texto")) { leerElemento(e); avisar("Leyendo"); return; }
       var b = e.closest("button,a,textarea");
       if (b && b.tagName === "TEXTAREA") { try { b.focus({ preventScroll: true }); } catch (x) {} objetivoTexto = b; avisar("Escribir aquí"); }
       else if (b) { try { b.click(); } catch (x) {} avisar("Clic"); }
@@ -1855,6 +1857,233 @@
 
   TABS.forEach(function (t) { panel.appendChild(tabs[t[0]]); });
 
+  // ==================================== más necesidades: diez en total ==
+  // 7) ceguera: lector de pantalla básico · 8) daltonismo: corrección de color ·
+  // 9) epilepsia fotosensible y sensibilidad sensorial: modo calma ·
+  // 10) discapacidad cognitiva y TDAH: lectura limpia, máscara de enfoque, modo fácil
+  var css2 = ''
+    + 'html.wcl-calma *,html.wcl-calma *::before,html.wcl-calma *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}'
+    + 'html.wcl-dislexia body{letter-spacing:.05em;word-spacing:.16em;line-height:1.8}html.wcl-dislexia body p,html.wcl-dislexia body li{max-width:38em}'
+    + 'html.wcl-sinimg body img,html.wcl-sinimg body video,html.wcl-sinimg body iframe,html.wcl-sinimg body picture,html.wcl-sinimg body canvas{opacity:.12!important}'
+    + '.wcl-mascara{position:fixed;left:0;right:0;background:rgba(10,14,25,.62);pointer-events:none;z-index:2147482998;display:none}'
+    + '.wcl-limpia{position:fixed;inset:0;z-index:2147483014;background:#FBF8F1;color:#1d1d1d;overflow:auto;font:20px/1.9 "Segoe UI",system-ui,sans-serif;letter-spacing:.02em}'
+    + '.wcl-limpia-barra{position:sticky;top:0;display:flex;gap:8px;align-items:center;padding:10px 14px;background:#101F3D;color:#fff;z-index:1;flex-wrap:wrap}.wcl-limpia-barra b{flex:1;font-size:16px}'
+    + '.wcl-limpia-barra button{min-height:44px;min-width:44px;padding:0 14px;border-radius:10px;border:0;background:#E8F7F3;color:#101F3D;font:700 15px "Segoe UI",system-ui,sans-serif;cursor:pointer}'
+    + '.wcl-limpia-texto{max-width:36rem;margin:0 auto;padding:28px 20px 80px}.wcl-limpia-texto h1,.wcl-limpia-texto h2,.wcl-limpia-texto h3,.wcl-limpia-texto h4{line-height:1.3;margin:1.2em 0 .4em;color:#101F3D}.wcl-limpia-texto p{margin:0 0 1em}.wcl-limpia-texto figure{margin:1em 0}.wcl-limpia-texto img{max-width:100%;border-radius:10px}.wcl-limpia-texto figcaption{font-size:.8em;color:#555}'
+    + '.wcl-facil{display:none;padding:12px 16px 16px}.wcl-facil .wcl-big{min-height:64px;font-size:19px;margin:6px 0}.wcl-panel.facil .wcl-tabs,.wcl-panel.facil .wcl-tab{display:none}.wcl-panel.facil .wcl-facil{display:block}'
+    + '.wcl-lector{outline:4px solid #F2B705!important;outline-offset:3px;box-shadow:0 0 0 8px rgba(242,183,5,.25)!important}';
+  var estilo2 = document.createElement("style"); estilo2.textContent = css2; (document.head || raiz).appendChild(estilo2);
+  // Filtros de color (daltonización de Fidaner: M = I + E·(I − S), con la simulación de Machado 2009)
+  var FILTROS = el("svg", { "style": "position:absolute;width:0;height:0", "aria-hidden": "true" },
+    '<filter id="wcl-f-protan" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0.479 0.477 0.044 0 0  0.597 -0.689 1.091 0 0  0 0 0 1 0"/></filter>'
+    + '<filter id="wcl-f-deutan" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0.163 0.725 0.112 0 0  0.455 -0.645 1.191 0 0  0 0 0 1 0"/></filter>'
+    + '<filter id="wcl-f-tritan" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  -0.100 1.123 -0.022 0 0  -0.184 -0.638 1.821 0 0  0 0 0 1 0"/></filter>'
+    + '<filter id="wcl-f-gris" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/></filter>');
+  var mascaraArriba = el("div", { "class": "wcl-mascara", "aria-hidden": "true" }), mascaraAbajo = el("div", { "class": "wcl-mascara", "aria-hidden": "true" });
+  function actualizarMascara(y) {
+    if (!ajustes.mascara) return;
+    var banda = 70;
+    mascaraArriba.style.top = "0"; mascaraArriba.style.height = Math.max(0, y - banda) + "px";
+    mascaraAbajo.style.top = (y + banda) + "px"; mascaraAbajo.style.bottom = "0"; mascaraAbajo.style.height = "";
+  }
+  document.addEventListener("mousemove", function (e) { if (ajustes.mascara && !camaraActiva) actualizarMascara(e.clientY); });
+
+  // --- modo calma: nada que parpadee, se mueva solo o suene sin pedirlo -----
+  var ultimaInteraccion = 0;
+  ["pointerdown", "keydown", "touchstart"].forEach(function (t) { document.addEventListener(t, function () { ultimaInteraccion = performance.now(); }, true); });
+  document.addEventListener("play", function (e) {
+    if (!ajustes.calma || !e.target || !(e.target instanceof HTMLMediaElement)) return;
+    if (performance.now() - ultimaInteraccion > 1500) { try { e.target.pause(); } catch (x) {} }   // reproducción automática, no pedida
+  }, true);
+  function congelarGifs(si) {
+    document.querySelectorAll("body img").forEach(function (im) {
+      if (si) {
+        if (!/\.gif(\?|#|$)/i.test(im.currentSrc || im.src) || im.dataset.wclGif) return;
+        try {
+          var c = document.createElement("canvas"); c.width = im.naturalWidth || im.width; c.height = im.naturalHeight || im.height;
+          c.getContext("2d").drawImage(im, 0, 0); var quieto = c.toDataURL();
+          im.dataset.wclGif = im.src; im.src = quieto;
+        } catch (x) {}   // imagen de otro dominio: no se puede copiar, se deja
+      } else if (im.dataset.wclGif) { im.src = im.dataset.wclGif; delete im.dataset.wclGif; }
+    });
+  }
+  function aplicarCalma(si) {
+    raiz.classList.toggle("wcl-calma", si);
+    if (si) document.querySelectorAll("video,audio").forEach(function (m) { try { m.pause(); m.autoplay = false; m.removeAttribute("autoplay"); m.loop = false; } catch (x) {} });
+    congelarGifs(si);
+  }
+
+  // --- lectura limpia: solo el texto de la página, grande y sin distracciones ---
+  var limpiaEl = null, limpiaTam = 20;
+  function esc(t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
+  function visibleEl(e) { var r = e.getBoundingClientRect(); if (!r.width && !r.height) return false; var cs = getComputedStyle(e); return cs.visibility !== "hidden" && cs.display !== "none"; }
+  function lecturaLimpia() {
+    if (limpiaEl) { cerrarLimpia(); return; }
+    var m = document.querySelector("main,article,[role=main]") || document.body, partes = [];
+    m.querySelectorAll("h1,h2,h3,h4,p,li,blockquote,img,figcaption").forEach(function (e) {
+      if (e.closest(".wcl-root,nav,header,footer,aside,[aria-hidden=true]") || !visibleEl(e)) return;
+      if (e.tagName === "IMG") { if (e.alt && (e.naturalWidth > 80)) partes.push('<figure><img src="' + esc(e.currentSrc || e.src) + '" alt="' + esc(e.alt) + '"><figcaption>' + esc(e.alt) + '</figcaption></figure>'); return; }
+      if (e.querySelector("p,li,h1,h2,h3,h4,blockquote")) return;   // contenedor: sus hijos ya se listan
+      var t = (e.innerText || "").replace(/\s+/g, " ").trim(); if (!t) return;
+      var tag = e.tagName === "LI" ? "p" : e.tagName.toLowerCase();
+      partes.push("<" + tag + ">" + (e.tagName === "LI" ? "• " : "") + esc(t) + "</" + tag + ">");
+    });
+    limpiaEl = el("div", { "class": "wcl-limpia", "role": "dialog", "aria-label": "Lectura limpia" },
+      '<div class="wcl-limpia-barra"><b>Lectura limpia</b><button type="button" data-a="leer">Leer en voz alta</button><button type="button" data-a="callar">Callar</button><button type="button" data-a="menos" aria-label="Texto más pequeño">A−</button><button type="button" data-a="mas" aria-label="Texto más grande">A+</button><button type="button" data-a="cerrar" aria-label="Cerrar la lectura limpia">✕ Cerrar</button></div>'
+      + '<div class="wcl-limpia-texto">' + (partes.join("") || "<p>Esta página no tiene texto que mostrar.</p>") + "</div>");
+    limpiaEl.style.fontSize = limpiaTam + "px";
+    limpiaEl.addEventListener("click", function (ev) {
+      var b = ev.target.closest("button"); if (!b) return;
+      var a = b.dataset.a;
+      if (a === "cerrar") cerrarLimpia();
+      else if (a === "leer") decirVoz((limpiaEl.querySelector(".wcl-limpia-texto").innerText || "").slice(0, 15000), true, true);
+      else if (a === "callar") callar();
+      else { limpiaTam = Math.max(16, Math.min(34, limpiaTam + (a === "mas" ? 2 : -2))); limpiaEl.style.fontSize = limpiaTam + "px"; }
+    });
+    cont.appendChild(limpiaEl); abrir(false);
+    try { limpiaEl.querySelector("button").focus(); } catch (x) {}
+    refrescos.forEach(function (f) { f(); });
+  }
+  function cerrarLimpia() { if (!limpiaEl) return; callar(); limpiaEl.remove(); limpiaEl = null; refrescos.forEach(function (f) { f(); }); }
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && limpiaEl) cerrarLimpia(); });
+
+  // --- lector de pantalla básico: leer la página con el teclado y voz ---------
+  // Flechas ↓↑ recorren el contenido; h encabezados, l enlaces, b botones, f campos, i imágenes
+  // (con Mayús, hacia atrás); Intro activa; Espacio repite; Esc calla; F1 o ? ayuda.
+  var lectorIdx = -1, lectorEl = null, lectorLista = [];
+  var SEL_LECTOR = "h1,h2,h3,h4,h5,h6,p,li,dt,dd,td,th,a[href],button,input,select,textarea,summary,label,figcaption,blockquote,img,[role=button],[role=link],[role=checkbox],[role=tab],[role=menuitem]";
+  var BLOQUE_TEXTO = /^(P|H[1-6]|LI|DT|DD|TD|TH|BLOCKQUOTE|FIGCAPTION|LABEL)$/;
+  function bloquesLector(filtro) {
+    var lista = [];
+    document.querySelectorAll(SEL_LECTOR).forEach(function (e) {
+      if (e.closest(".wcl-root") || !visibleEl(e) || e.closest("[aria-hidden=true]")) return;
+      if (filtro && !filtro(e)) return;
+      if (e.tagName === "IMG" && !e.alt) return;
+      if (BLOQUE_TEXTO.test(e.tagName) && !(e.innerText || "").trim()) return;
+      if (!filtro) {
+        // dentro de un párrafo, los enlaces y botones se leen con el propio párrafo (con «l» y «b» se llega a ellos)
+        if ((e.tagName === "A" || e.tagName === "BUTTON" || e.tagName === "LABEL") && e.parentElement && e.parentElement.closest("p,li,td,th,dd,h1,h2,h3,h4,h5,h6,figcaption,blockquote")) return;
+        if (BLOQUE_TEXTO.test(e.tagName) && e.querySelector("p,li,h1,h2,h3,h4,h5,h6") && e.tagName !== "LI") return;
+        if (e.tagName === "LI" && e.querySelector("li")) return;
+        if (e.tagName === "LABEL" && e.querySelector("input,select,textarea")) return;
+      }
+      lista.push(e);
+    });
+    return lista;
+  }
+  function etiquetaCampo(e) {
+    var l = e.labels && e.labels[0] ? e.labels[0].innerText : (e.closest("label") ? e.closest("label").innerText : "");
+    return (l || e.getAttribute("aria-label") || e.placeholder || e.title || e.name || "").replace(/\s+/g, " ").trim();
+  }
+  function describir(e) {
+    var t = (e.innerText || e.textContent || "").replace(/\s+/g, " ").trim(), n = e.tagName;
+    if (/^H[1-6]$/.test(n)) return "Encabezado nivel " + n[1] + ": " + t;
+    if (n === "A" || e.getAttribute("role") === "link") return "Enlace: " + (t || nombreDe(e));
+    if (n === "BUTTON" || e.getAttribute("role") === "button") return "Botón: " + (t || nombreDe(e));
+    if (n === "INPUT") {
+      var tipo = (e.type || "text").toLowerCase(), et = etiquetaCampo(e);
+      if (tipo === "checkbox" || e.getAttribute("role") === "checkbox") return "Casilla " + (e.checked ? "marcada" : "sin marcar") + ": " + et;
+      if (tipo === "radio") return "Opción " + (e.checked ? "elegida" : "no elegida") + ": " + et;
+      if (tipo === "submit" || tipo === "button") return "Botón: " + (e.value || et);
+      return "Campo de texto, " + et + (e.value ? ": " + e.value : ", vacío");
+    }
+    if (n === "SELECT") return "Lista desplegable, " + etiquetaCampo(e) + ": " + (e.options[e.selectedIndex] ? e.options[e.selectedIndex].text : "");
+    if (n === "TEXTAREA") return "Área de texto, " + etiquetaCampo(e) + (e.value ? ": " + e.value.slice(0, 200) : ", vacía");
+    if (n === "IMG") return "Imagen: " + e.alt;
+    if (n === "SUMMARY") return "Desplegable " + (e.parentElement && e.parentElement.open ? "abierto" : "cerrado") + ": " + t;
+    if (n === "LI") return "Elemento de lista: " + t;
+    if (n === "TD" || n === "TH") return "Celda: " + t;
+    return t;
+  }
+  function anunciar(texto) { decirVoz(texto, true, true); decir(texto.slice(0, 120)); }
+  function irLector(e, texto) {
+    if (lectorEl) lectorEl.classList.remove("wcl-lector");
+    lectorEl = e; e.classList.add("wcl-lector");
+    try { e.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (x) { e.scrollIntoView(); }
+    if (e.tabIndex >= 0 || /^(A|BUTTON|INPUT|SELECT|TEXTAREA|SUMMARY)$/.test(e.tagName)) { try { e.focus({ preventScroll: true }); } catch (x) {} }
+    anunciar(texto || describir(e));
+  }
+  function moverLector(paso, filtro, nombre) {
+    var lista = filtro ? bloquesLector(filtro) : (lectorLista = bloquesLector());
+    if (!lista.length) { anunciar("No hay " + (nombre || "contenido") + " en esta página."); return; }
+    var i = lectorEl ? lista.indexOf(lectorEl) : -1;
+    if (i < 0 && lectorEl) {   // el elemento actual no está en esta lista: se busca el siguiente en el orden del documento
+      for (var k = 0; k < lista.length; k++) if (lectorEl.compareDocumentPosition(lista[k]) & Node.DOCUMENT_POSITION_FOLLOWING) { i = paso > 0 ? k - 1 : k; break; }
+      if (i < 0 && k === lista.length) i = paso > 0 ? -1 : lista.length;
+    }
+    var j = i + paso;
+    if (j < 0) { anunciar("Principio de la página. " + describir(lista[0])); irLector(lista[0]); return; }
+    if (j >= lista.length) { anunciar("Final de la página."); return; }
+    irLector(lista[j]);
+  }
+  var FILTROS_LECTOR = {
+    h: [function (e) { return /^H[1-6]$/.test(e.tagName); }, "encabezados"],
+    l: [function (e) { return e.tagName === "A" || e.getAttribute("role") === "link"; }, "enlaces"],
+    b: [function (e) { return e.tagName === "BUTTON" || e.getAttribute("role") === "button" || (e.tagName === "INPUT" && /^(submit|button)$/i.test(e.type)); }, "botones"],
+    f: [function (e) { return /^(INPUT|SELECT|TEXTAREA)$/.test(e.tagName) && !/^(submit|button|hidden)$/i.test(e.type || ""); }, "campos de formulario"],
+    i: [function (e) { return e.tagName === "IMG"; }, "imágenes"]
+  };
+  function activarLector(si) {
+    if (si) {
+      var enc = bloquesLector(FILTROS_LECTOR.h[0]).length, enl = bloquesLector(FILTROS_LECTOR.l[0]).length;
+      lectorEl = null; lectorLista = bloquesLector();
+      anunciar("Lector de pantalla de Winclus activado. " + (document.title || "Página") + ". " + enc + " encabezados y " + enl + " enlaces. Flecha abajo para leer, h para encabezados, l para enlaces, Intro para activar, F1 para ayuda.");
+    } else { if (lectorEl) lectorEl.classList.remove("wcl-lector"); lectorEl = null; callar(); }
+  }
+  document.addEventListener("focusin", function (e) {
+    if (!ajustes.lector || !e.target || e.target.closest(".wcl-root") || e.target === lectorEl) return;
+    lectorEl = e.target; anunciar(describir(e.target));
+  });
+  document.addEventListener("keydown", function (e) {
+    if (!ajustes.lector || e.ctrlKey || e.altKey || e.metaKey) return;
+    var act = document.activeElement;
+    if (esEditable(act) && e.key !== "Escape" && e.key !== "F1") return;   // escribiendo: el teclado es para el campo
+    var k = e.key, paso = e.shiftKey ? -1 : 1, hecho = true;
+    if (k === "ArrowDown") moverLector(1); else if (k === "ArrowUp") moverLector(-1);
+    else if (k === "Home") { var l0 = bloquesLector(); if (l0.length) irLector(l0[0]); }
+    else if (k === "End") { var l1 = bloquesLector(); if (l1.length) irLector(l1[l1.length - 1]); }
+    else if (FILTROS_LECTOR[k.toLowerCase()] && k.length === 1) { var f = FILTROS_LECTOR[k.toLowerCase()]; moverLector(paso, f[0], f[1]); }
+    else if (k === "Enter" && lectorEl && !esEditable(lectorEl)) {
+      if (lectorEl.tagName === "SUMMARY") lectorEl.click(); else despachar(lectorEl.closest(SEL_CLICABLE) || lectorEl, ["pointerdown", "mousedown", "pointerup", "mouseup", "click"]);
+      setTimeout(function () { if (lectorEl) anunciar(describir(lectorEl)); }, 300);
+    }
+    else if (k === " " && lectorEl) anunciar(describir(lectorEl));
+    else if (k === "Escape") callar();
+    else if (k === "F1" || k === "?") anunciar("Flecha abajo y arriba leen el contenido. h encabezados, l enlaces, b botones, f campos, i imágenes; con Mayús hacia atrás. Intro activa lo leído, Espacio lo repite, Escape calla. Tabulador recorre los enlaces y botones como siempre.");
+    else hecho = false;
+    if (hecho) e.preventDefault();
+  }, true);
+
+  // --- panel: controles nuevos --------------------------------------------
+  var sec7 = seccion("Colores y calma");
+  sec7.appendChild(filaOpc("dalton", "Corrección de color para daltonismo", [["no", "Ninguna"], ["protan", "Protanopia (rojo)"], ["deutan", "Deuteranopia (verde)"], ["tritan", "Tritanopia (azul)"], ["gris", "Escala de grises"]], aplicarClases));
+  sec7.appendChild(filaSw("calma", "Modo calma: sin destellos, animaciones ni vídeos que arranquen solos", aplicarClases));
+  tabs.ver.appendChild(sec7);
+  var sec8 = seccion("Leer con menos esfuerzo");
+  sec8.appendChild(botonGrande("Lectura limpia: solo el texto, grande", "azul", lecturaLimpia));
+  sec8.appendChild(filaSw("mascara", "Máscara de enfoque: oscurece todo menos una franja", aplicarClases));
+  sec8.appendChild(filaSw("dislexia", "Letras y palabras más separadas", aplicarClases));
+  sec8.appendChild(filaSw("sinimg", "Atenuar imágenes y vídeos", aplicarClases));
+  tabs.ver.appendChild(sec8);
+  var sec9 = seccion("Lector de pantalla");
+  sec9.appendChild(el("div", { "class": "wcl-estado" }, "Para personas ciegas o con muy poca visión: lee la página con voz y se maneja con el teclado (↓ ↑ leen, h encabezados, l enlaces, b botones, f campos, Intro activa, F1 ayuda)."));
+  sec9.appendChild(filaSw("lector", "Lector de pantalla activado", activarLector));
+  tabs.oir.appendChild(sec9);
+  var sec10 = seccion("Modo fácil");
+  sec10.appendChild(el("div", { "class": "wcl-estado" }, "Un panel con solo seis botones grandes, para quien se pierde con tantas opciones."));
+  sec10.appendChild(filaSw("facil", "Modo fácil", function () { refrescos.forEach(function (f) { f(); }); }));
+  tabs.mas.appendChild(sec10);
+  var facilEl = el("div", { "class": "wcl-facil" });
+  facilEl.appendChild(botonGrande("🔊 Leer la página", "suave", leerPagina));
+  facilEl.appendChild(botonGrande("🔇 Callar", "suave", callar));
+  facilEl.appendChild(botonGrande("A+ Texto más grande", "suave", function () { ajustes.texto = Math.min(200, ajustes.texto + 10); aplicarTexto(); guardar(); }));
+  facilEl.appendChild(botonGrande("◐ Alto contraste", "suave", function () { ajustes.contraste = !ajustes.contraste; guardar(); aplicarTodo(); }));
+  facilEl.appendChild(botonGrande("📖 Lectura limpia", "suave", lecturaLimpia));
+  if (opciones.camara) facilEl.appendChild(botonGrande("📷 Usar con la cara", "", function () { if (!camaraActiva) activarCamara(); else desactivarCamara(); }));
+  facilEl.appendChild(botonGrande("Ver todas las opciones", "azul", function () { ajustes.facil = false; guardar(); refrescos.forEach(function (f) { f(); }); }));
+  panel.appendChild(facilEl);
+  refrescos.push(function () { panel.classList.toggle("facil", !!ajustes.facil); });
+
   // Mostrar solo los ajustes del modo elegido
   function visibilidad() {
     var modo = ajustes.modo_puntero === "ojos" ? ajustes.ojos_modo : "cabeza", clic = ajustes.modo_clic;
@@ -1868,11 +2097,21 @@
 
   // ------------------------------------------------------- aplicar --
   function aplicarClases() {
-    raiz.classList.toggle("wcl-contraste", ajustes.contraste);
     raiz.classList.toggle("wcl-oscuro", ajustes.oscuro);
     raiz.classList.toggle("wcl-enlaces", ajustes.enlaces);
     raiz.classList.toggle("wcl-anim", ajustes.animaciones);
+    raiz.classList.toggle("wcl-dislexia", ajustes.dislexia);
+    raiz.classList.toggle("wcl-sinimg", ajustes.sinimg);
     guia.style.display = ajustes.guia ? "block" : "none";
+    var f = [];
+    if (ajustes.contraste) f.push("contrast(1.35) saturate(1.15)");
+    if (ajustes.oscuro) f.push("invert(1) hue-rotate(180deg)");
+    if (ajustes.calma) f.push("saturate(.7) brightness(.93)");
+    if (ajustes.dalton && ajustes.dalton !== "no") f.push("url(#wcl-f-" + ajustes.dalton + ")");
+    raiz.style.filter = f.join(" ");
+    aplicarCalma(!!ajustes.calma);
+    mascaraArriba.style.display = mascaraAbajo.style.display = ajustes.mascara ? "block" : "none";
+    if (ajustes.mascara) actualizarMascara(P.y);
   }
   function aplicarTexto() { raiz.style.fontSize = ajustes.texto === 100 ? "" : ajustes.texto + "%"; refrescos.forEach(function (f) { f(); }); }
   function aplicarTodo() { aplicarClases(); raiz.style.fontSize = ajustes.texto === 100 ? "" : ajustes.texto + "%"; refrescos.forEach(function (f) { f(); }); }
@@ -1890,12 +2129,14 @@
   window.addEventListener("resize", function () { if (tecVisible) dibujarTeclado(); });
 
   function montar() {
+    cont.appendChild(FILTROS); cont.appendChild(mascaraArriba); cont.appendChild(mascaraAbajo);
     cont.appendChild(guia); cont.appendChild(boton); cont.appendChild(btnPausa); cont.appendChild(panel);
     cont.appendChild(tecEl); cont.appendChild(menuEl); cont.appendChild(cursor); cont.appendChild(aviso); cont.appendChild(calibEl);
     raiz.appendChild(cont);
     var t = "ver"; try { t = sessionStorage.getItem("winclus.tab") || "ver"; } catch (e) {}
     elegirTab(tabs[t] ? t : "ver");
     aplicarTodo();
+    if (ajustes.lector) setTimeout(function () { activarLector(true); }, 800);
   }
   if (document.body) montar(); else document.addEventListener("DOMContentLoaded", montar);
 
