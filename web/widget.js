@@ -60,7 +60,8 @@
     avisos_visuales: true, avisos_sonido: false,
     teclado_altura: 32, teclado_posicion: "abajo", teclado_prediccion: true, teclado_sonido: true,
     camara_ver: true, dwell: false,
-    dalton: "no", calma: false, dislexia: false, sinimg: false, mascara: false, lector: false, facil: false
+    dalton: "no", calma: false, dislexia: false, sinimg: false, mascara: false, lector: false, facil: false,
+    lupa_pantalla: false, lupa_pantalla_zoom: 2
   };
   var CLAVE = "winclus.ajustes";
   var ajustes = JSON.parse(JSON.stringify(POR_DEFECTO));
@@ -688,6 +689,7 @@
     cursor.style.transform = "translate(" + P.x + "px," + P.y + "px)";
     if (ajustes.guia) guia.style.top = P.y + "px";
     if (ajustes.mascara) actualizarMascara(P.y);
+    if (ajustes.lupa_pantalla) seguirLupaPantalla(P.x, P.y);
   }
   function moverRel(dx, dy) { mover(P.x + dx, P.y + dy); }
   function congelar(s) { congeladoHasta = performance.now() / 1000 + s; fijacion = null; fijador.reiniciar(); }
@@ -1004,7 +1006,7 @@
 
   // ---------------------------------------------------------------- lupa --
   // gui/lupa.py: en modo directo el primer gesto agranda la página alrededor del puntero y el segundo pulsa
-  function lupaCorresponde() { return modoEfectivo() === "directo" && ajustes.lupa_activa && !tecladoContiene(P.x, P.y) && !menuVisible; }
+  function lupaCorresponde() { return modoEfectivo() === "directo" && ajustes.lupa_activa && !ajustes.lupa_pantalla && !tecladoContiene(P.x, P.y) && !menuVisible; }
   function abrirLupa() {
     var b = document.body, r = b.getBoundingClientRect(), trfPrevio = b.style.transform, orgPrevio = b.style.transformOrigin;
     b.style.transformOrigin = (P.x - r.left) + "px " + (P.y - r.top) + "px";
@@ -1871,6 +1873,7 @@
     + '.wcl-limpia-barra button{min-height:44px;min-width:44px;padding:0 14px;border-radius:10px;border:0;background:#E8F7F3;color:#101F3D;font:700 15px "Segoe UI",system-ui,sans-serif;cursor:pointer}'
     + '.wcl-limpia-texto{max-width:36rem;margin:0 auto;padding:28px 20px 80px}.wcl-limpia-texto h1,.wcl-limpia-texto h2,.wcl-limpia-texto h3,.wcl-limpia-texto h4{line-height:1.3;margin:1.2em 0 .4em;color:#101F3D}.wcl-limpia-texto p{margin:0 0 1em}.wcl-limpia-texto figure{margin:1em 0}.wcl-limpia-texto img{max-width:100%;border-radius:10px}.wcl-limpia-texto figcaption{font-size:.8em;color:#555}'
     + '.wcl-facil{display:none;padding:12px 16px 16px}.wcl-facil .wcl-big{min-height:64px;font-size:19px;margin:6px 0}.wcl-panel.facil .wcl-tabs,.wcl-panel.facil .wcl-tab{display:none}.wcl-panel.facil .wcl-facil{display:block}'
+    + 'html.wcl-lupap{overflow-x:hidden}html.wcl-lupap body{transition:none!important}'
     + '.wcl-lector{outline:4px solid #F2B705!important;outline-offset:3px;box-shadow:0 0 0 8px rgba(242,183,5,.25)!important}';
   var estilo2 = document.createElement("style"); estilo2.textContent = css2; (document.head || raiz).appendChild(estilo2);
   // Filtros de color (daltonización de Fidaner: M = I + E·(I − S), con la simulación de Machado 2009)
@@ -1886,7 +1889,21 @@
     mascaraArriba.style.top = "0"; mascaraArriba.style.height = Math.max(0, y - banda) + "px";
     mascaraAbajo.style.top = (y + banda) + "px"; mascaraAbajo.style.bottom = "0"; mascaraAbajo.style.height = "";
   }
-  document.addEventListener("mousemove", function (e) { if (ajustes.mascara && !camaraActiva) actualizarMascara(e.clientY); });
+  document.addEventListener("mousemove", function (e) { if (ajustes.mascara && !camaraActiva) actualizarMascara(e.clientY); if (ajustes.lupa_pantalla && !camaraActiva) seguirLupaPantalla(e.clientX, e.clientY); });
+
+  // --- lupa de pantalla (magnificador): toda la página agrandada alrededor del puntero ---
+  // Como el punto bajo el puntero siempre es el contenido real, mover el puntero recorre la página
+  // como una lupa de mano. Sustituye a un magnificador como MAGic dentro de la página.
+  function seguirLupaPantalla(x, y) {
+    var b = document.body;
+    b.style.transformOrigin = (x - b.offsetLeft) + "px " + (y + window.scrollY - b.offsetTop) + "px";
+  }
+  function aplicarLupaPantalla() {
+    var b = document.body;
+    raiz.classList.toggle("wcl-lupap", !!ajustes.lupa_pantalla);
+    if (ajustes.lupa_pantalla) { if (lupa) cerrarLupa(); seguirLupaPantalla(P.x, P.y); b.style.transform = "scale(" + ajustes.lupa_pantalla_zoom + ")"; }
+    else if (!lupa) { b.style.transform = ""; b.style.transformOrigin = ""; }
+  }
 
   // --- modo calma: nada que parpadee, se mueva solo o suene sin pedirlo -----
   var ultimaInteraccion = 0;
@@ -2060,6 +2077,8 @@
   sec7.appendChild(filaSw("calma", "Modo calma: sin destellos, animaciones ni vídeos que arranquen solos", aplicarClases));
   tabs.ver.appendChild(sec7);
   var sec8 = seccion("Leer con menos esfuerzo");
+  sec8.appendChild(filaSw("lupa_pantalla", "Lupa de pantalla: agranda la página alrededor del puntero", aplicarLupaPantalla));
+  sec8.appendChild(filaPaso("lupa_pantalla_zoom", "Aumento de la lupa de pantalla", 2, 8, 1, function (n) { return "×" + n; }, aplicarLupaPantalla));
   sec8.appendChild(botonGrande("Lectura limpia: solo el texto, grande", "azul", lecturaLimpia));
   sec8.appendChild(filaSw("mascara", "Máscara de enfoque: oscurece todo menos una franja", aplicarClases));
   sec8.appendChild(filaSw("dislexia", "Letras y palabras más separadas", aplicarClases));
@@ -2079,6 +2098,7 @@
   facilEl.appendChild(botonGrande("A+ Texto más grande", "suave", function () { ajustes.texto = Math.min(200, ajustes.texto + 10); aplicarTexto(); guardar(); }));
   facilEl.appendChild(botonGrande("◐ Alto contraste", "suave", function () { ajustes.contraste = !ajustes.contraste; guardar(); aplicarTodo(); }));
   facilEl.appendChild(botonGrande("📖 Lectura limpia", "suave", lecturaLimpia));
+  facilEl.appendChild(botonGrande("🔍 Lupa de pantalla", "suave", function () { ajustes.lupa_pantalla = !ajustes.lupa_pantalla; guardar(); aplicarLupaPantalla(); refrescos.forEach(function (f) { f(); }); }));
   if (opciones.camara) facilEl.appendChild(botonGrande("📷 Usar con la cara", "", function () { if (!camaraActiva) activarCamara(); else desactivarCamara(); }));
   facilEl.appendChild(botonGrande("Ver todas las opciones", "azul", function () { ajustes.facil = false; guardar(); refrescos.forEach(function (f) { f(); }); }));
   panel.appendChild(facilEl);
@@ -2109,7 +2129,7 @@
     if (ajustes.calma) f.push("saturate(.7) brightness(.93)");
     if (ajustes.dalton && ajustes.dalton !== "no") f.push("url(#wcl-f-" + ajustes.dalton + ")");
     raiz.style.filter = f.join(" ");
-    aplicarCalma(!!ajustes.calma);
+    aplicarCalma(!!ajustes.calma); aplicarLupaPantalla();
     mascaraArriba.style.display = mascaraAbajo.style.display = ajustes.mascara ? "block" : "none";
     if (ajustes.mascara) actualizarMascara(P.y);
   }
