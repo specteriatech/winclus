@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Winclus · Presentación</title>
+<meta name="description" content="Presentación de Winclus: tecnología de apoyo embebida en cualquier sitio web, gratis para la persona, de código abierto y con evidencia pública.">
+<link rel="icon" href="img/icono.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#101F3D;--azul:#2F4FD8;--teal:#0F7A70;--verde:#34C26B;--amarillo:#F2B705;--fondo:#FFFFFF;--fondo2:#F3F6FA;--texto:#101F3D;--texto2:#4A5670}
+  *{box-sizing:border-box}html,body{margin:0;background:#101F3D;font-family:"Poppins","Segoe UI",system-ui,sans-serif;color:var(--texto)}
+  .diapo{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:6vh 8vw;background:var(--fondo);border-bottom:8px solid var(--navy);scroll-snap-align:start}
+  .diapo.oscura{background:var(--navy);color:#fff}.diapo.oscura .sub,.diapo.oscura p{color:#DCE3EC}
+  html{scroll-snap-type:y proximity}
+  h1{font-size:clamp(2rem,5vw,4rem);line-height:1.08;margin:0 0 .3em}h2{font-size:clamp(1.6rem,3.6vw,2.8rem);line-height:1.12;margin:0 0 .5em}
+  .sub{font-size:clamp(1.1rem,2vw,1.5rem);color:var(--texto2);max-width:30em}
+  p,li{font-size:clamp(1.05rem,1.7vw,1.4rem);line-height:1.5}ul{padding-left:1.2em}li{margin:.35em 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:20px}
+  .caja{background:var(--fondo2);border-radius:16px;padding:18px 22px}.oscura .caja{background:rgba(255,255,255,.08)}
+  .caja b{display:block;font-size:1.15em;margin-bottom:.3em}
+  .kpi{font-size:clamp(2.4rem,6vw,4.5rem);font-weight:700;line-height:1;color:var(--teal)}.oscura .kpi{color:var(--verde)}
+  .nota{font-size:.95rem;color:var(--texto2)}.verde{color:var(--teal)}.oscura .verde{color:var(--verde)}
+  .num{position:absolute;right:20px;bottom:14px;font-size:.85rem;color:#4A5670}.oscura .num{color:#C8D0DC}.diapo{position:relative}
+  a{color:var(--azul)}.oscura a{color:#8FD9C4}
+  table{border-collapse:collapse;width:100%;font-size:clamp(.95rem,1.4vw,1.15rem)}th,td{text-align:left;padding:8px 10px;border-bottom:1px solid #DCE3EC}th{background:var(--fondo2)}
+  .si{color:#0A4A3C;font-weight:700}.no{color:#8A2E20;font-weight:700}
+  .tabla{overflow-x:auto}.tabla table{min-width:640px}code{overflow-wrap:anywhere;font-size:.9em}.caja{min-width:0;overflow-wrap:anywhere}
+  .grid{grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr))}
+  .ayuda{position:fixed;left:12px;bottom:10px;font-size:.8rem;color:#8892A6;background:rgba(255,255,255,.85);padding:4px 10px;border-radius:999px}
+  @media print{.diapo{min-height:auto;page-break-after:always;border:0;padding:24px}.ayuda{display:none}html,body{background:#fff}}
+</style>
+</head>
+<body>
+<span class="ayuda" aria-hidden="true">Avanza con ↓ o Espacio · imprime con Ctrl+P</span>
+
+<section class="diapo oscura" id="d1">
+  <p class="sub" style="color:#8FD9C4;font-weight:600;letter-spacing:.08em;text-transform:uppercase">Winclus</p>
+  <h1>Tecnología que incluye,<br>un mundo que avanza.</h1>
+  <p class="sub">Tecnología de apoyo dentro de cualquier página web: cara, ojos, voz, un solo pulsador, teclado en pantalla, pictogramas y lenguaje claro. Gratis para la persona. Código abierto. Procesado en su propio navegador.</p>
+  <p class="nota" style="color:#8892A6">winclus.com · hola@winclus.com · versión 0.5.0 · septiembre de 2026</p>
+  <span class="num">1</span>
+</section>
+
+<section class="diapo" id="d2">
+  <h2>El problema que nadie está resolviendo en la web</h2>
+  <div class="grid">
+    <div class="caja"><b>Quien no puede usar ratón ni teclado</b>ELA, lesión medular, parálisis cerebral, distrofia, Parkinson. Para ellos una sede electrónica es una puerta cerrada: ningún widget de accesibilidad les sirve. El hardware que sí sirve cuesta entre USD 1 000 y 3 000 y no se subsidia.</div>
+    <div class="caja"><b>Quien no habla, no oye o no entiende</b>Afasia, autismo no verbal, sordera con LSC como primera lengua, discapacidad intelectual, mayores frente a un trámite en lenguaje jurídico.</div>
+    <div class="caja"><b>Las entidades obligadas</b>La Resolución 1519 de 2020 exige accesibilidad; el ITA las mide; los «overlays» que compran no arreglan el sitio y ya han costado sanciones y demandas en otros países.</div>
+  </div>
+  <span class="num">2</span>
+</section>
+
+<section class="diapo" id="d3">
+  <h2>Qué es Winclus</h2>
+  <p class="sub">Una línea de código en el sitio. La persona pulsa un botón y elige cómo usarlo.</p>
+  <div class="grid">
+    <div class="caja"><b>Con la cara y los ojos</b>Puntero por cabeza o mirada con la cámara normal; clic con parpadeo, boca, cejas o permanencia; menú de clics; imán a los botones; calibración invisible.</div>
+    <div class="caja"><b>Con un solo pulsador</b>Barrido: marca uno a uno lo que se puede accionar; una tecla, un gesto o un clic lo activa. Teclado por filas y teclas.</div>
+    <div class="caja"><b>Con la voz</b>Órdenes, dictado con confirmación, «números» y «clic 12», subtítulos en vivo.</div>
+    <div class="caja"><b>Sin hablar</b>Tablero de pictogramas ARASAAC con voz y predicción; frases guardadas.</div>
+    <div class="caja"><b>Sin entender</b>«Explícame esta página»: frases cortas, palabras corrientes, glosario; ayuda en formularios; asistente «¿qué quieres hacer?».</div>
+    <div class="caja"><b>Sin oír, viendo poco, con dislexia, con epilepsia</b>Avisos de sonido, subtítulos, Centro de Relevo; texto 200 %, lupa 16×, contraste, daltonismo real; lectura limpia; modo calma.</div>
+  </div>
+  <span class="num">3</span>
+</section>
+
+<section class="diapo oscura" id="d4">
+  <h2>Demostración en vivo</h2>
+  <p class="sub">winclus.com/demo · una sede electrónica de ejemplo con un trámite</p>
+  <ul>
+    <li>Rellenar y enviar el formulario <b>solo con Espacio</b> (barrido).</li>
+    <li>Llegar al enlace <b>solo con la cara</b>; la pestaña Red del navegador demuestra que nada sale del equipo.</li>
+    <li>«Explícame esta página» sobre el texto jurídico.</li>
+    <li>Decir «yo necesito ayuda» <b>sin hablar</b>, con pictogramas.</li>
+    <li>Plan B si la sala no tiene cámara o micrófono: los tres vídeos de la misma página, grabados automáticamente por las pruebas.</li>
+  </ul>
+  <span class="num">4</span>
+</section>
+
+<section class="diapo" id="d5">
+  <h2>Frente a lo que ya existe</h2>
+  <div class="tabla" tabindex="0" role="region" aria-label="Comparación resumida"><table>
+    <thead><tr><th>Puede la persona…</th><th>Overlays (accessiBe, UserWay, EqualWeb, AudioEye)</th><th>Tobii · JAWS · Grid 3</th><th>Winclus</th></tr></thead>
+    <tbody>
+      <tr><td>usar el sitio con la cara o los ojos</td><td class="no">No</td><td class="si">Sí, con hardware de USD 1 000+</td><td class="si">Sí, con la webcam</td></tr>
+      <tr><td>usarlo con un solo pulsador</td><td class="no">No</td><td class="si">Grid 3</td><td class="si">Sí</td></tr>
+      <tr><td>comunicarse con pictogramas</td><td class="no">No</td><td class="si">Grid 3, de pago</td><td class="si">Sí, ARASAAC</td></tr>
+      <tr><td>entender un texto jurídico en fácil</td><td class="no">No</td><td class="no">No</td><td class="si">Sí</td></tr>
+      <tr><td>ver texto grande, contraste, lectura en voz alta</td><td class="si">Sí</td><td class="no">No</td><td class="si">Sí</td></tr>
+      <tr><td>saber dónde van sus datos</td><td class="no">Servidores del proveedor</td><td class="si">Equipo</td><td class="si">Su navegador; código abierto</td></tr>
+      <tr><td>comprobar que funciona</td><td class="no">Sin pruebas públicas; sanción de la FTC (2025)</td><td class="no">Sin pruebas públicas</td><td class="si">22 pruebas públicas, evidencia con fecha y commit</td></tr>
+    </tbody>
+  </table></div>
+  <p class="nota">Detalle, fuentes y «dónde nos ganan hoy» en winclus.com/comparar.</p>
+  <span class="num">5</span>
+</section>
+
+<section class="diapo" id="d6">
+  <h2>Evidencia, no promesas</h2>
+  <div class="grid">
+    <div class="caja"><span class="kpi">22</span>pruebas automáticas públicas, 292 comprobaciones, corriendo en GitHub con cada cambio. Resultado en winclus.com/evidencia.</div>
+    <div class="caja"><span class="kpi">0</span>incumplimientos de WCAG 2.1 y 2.2 AA en el propio widget y en winclus.com, en escritorio y móvil (axe-core más contraste calculado a mano).</div>
+    <div class="caja"><span class="kpi">0</span>servidores con datos de las personas. Sin cuentas, sin cookies, sin rastreo. Ley 1581: consentimiento explícito para la cámara.</div>
+    <div class="caja"><span class="kpi">9/9</span>grupos de discapacidad del catálogo del W3C con funciones útiles. Declaración de accesibilidad y ACR (formato VPAT) publicados.</div>
+  </div>
+  <span class="num">6</span>
+</section>
+
+<section class="diapo oscura" id="d7">
+  <h2>Lo que decimos y lo que no decimos</h2>
+  <ul>
+    <li><b>Decimos:</b> Winclus es tecnología de apoyo. Permite usar el sitio con la cara, la voz, un pulsador y pictogramas. Cumple por sí mismo la norma y no interfiere con los lectores de pantalla.</li>
+    <li><b>No decimos:</b> que hace conforme el sitio que lo instala. Un sitio cumple cuando su código cumple. Para eso ofrecemos <b>Winclus Audit</b>: escáner por criterio de la Resolución 1519 con borrador de declaración.</li>
+    <li><b>Reconocemos:</b> no tenemos aún informes de pruebas con personas usuarias. El protocolo, el consentimiento y la plantilla del informe son públicos y la primera ronda es lo primero que haremos con quien nos elija.</li>
+  </ul>
+  <span class="num">7</span>
+</section>
+
+<section class="diapo" id="d8">
+  <h2>Cómo se integra</h2>
+  <div class="grid">
+    <div class="caja"><b>Una línea</b><code>&lt;script src="https://winclus.com/widget-0.5.0.js" async&gt;&lt;/script&gt;</code><br>Versión fija que no cambia sin que la entidad lo decida. Funciona con CSP estricta.</div>
+    <div class="caja"><b>Plantillas del Estado</b>GOV.CO y MiColombiaDigital (código en el pie), WordPress (plugin con ajustes), Drupal (módulo), React y Vue (web component).</div>
+    <div class="caja"><b>Sin cambiar el sitio</b>Vive en un shadow root: ni el sitio rompe el widget ni el widget rompe el sitio.</div>
+    <div class="caja"><b>Cifras para reportar</b>Cuántas gestiones se completan con la cara, con pulsador, con pictogramas. Solo números, y solo si la persona lo activa.</div>
+  </div>
+  <span class="num">8</span>
+</section>
+
+<section class="diapo" id="d9">
+  <h2>Modelo</h2>
+  <div class="grid">
+    <div class="caja"><b>Gratis, siempre</b>Para las personas y para cualquier sitio. Código Apache 2.0: sin dependencia del proveedor, requisito natural para el sector público.</div>
+    <div class="caja"><b>Para entidades y empresas</b>Soporte con acuerdo de nivel de servicio, auditoría del sitio con Winclus Audit e informe para el ITA, capacitación del equipo y de las personas usuarias, versión fija mantenida, pruebas con personas usuarias documentadas.</div>
+    <div class="caja"><b>Para plataformas</b>Licencia enterprise para SaaS gubernamentales, banca y salud que lo embeban en sus productos, con idiomas y funciones a medida.</div>
+  </div>
+  <span class="num">9</span>
+</section>
+
+<section class="diapo oscura" id="d10">
+  <h2>Propuesta: un piloto de 60 días</h2>
+  <ul>
+    <li><b>Semana 1:</b> Winclus en la sede electrónica (una línea) y Winclus Audit sobre ella, con informe y borrador de declaración.</li>
+    <li><b>Semanas 2 a 6:</b> pruebas con personas usuarias de la propia entidad y de INCI, INSOR y fundaciones: cinco por grupo, protocolo público, consentimiento en lenguaje claro y LSC.</li>
+    <li><b>Semanas 7 y 8:</b> correcciones, informe público sin datos personales, cifras de gestiones completadas.</li>
+    <li><b>Coste del piloto para la entidad:</b> cero. Lo que pedimos: acceso, tiempo de su equipo y permiso para publicar el informe.</li>
+  </ul>
+  <span class="num">10</span>
+</section>
+
+<section class="diapo" id="d11">
+  <h2>Hoja de ruta</h2>
+  <ul>
+    <li><b>Ya:</b> todo lo de esta presentación está en producción, con pruebas públicas.</li>
+    <li><b>Próximos 3 meses:</b> primera ronda de pruebas con personas; auditoría de tercero (ICONTEC u organismo ONAC) del widget y de un sitio de referencia; registro en SECOP II.</li>
+    <li><b>6 meses:</b> reconocimiento de voz local (sin Google ni Microsoft); frases y pictogramas en lenguas nativas colombianas con hablantes que las validen; más idiomas del panel.</li>
+    <li><b>12 meses:</b> avatar de Lengua de Señas para textos cortos; Winclus como tecnología de apoyo de referencia en programas como ConVerTIC.</li>
+  </ul>
+  <span class="num">11</span>
+</section>
+
+<section class="diapo oscura" id="d12">
+  <h1>Compruébalo, no nos creas.</h1>
+  <p class="sub">winclus.com/demo · winclus.com/evidencia · winclus.com/comparar · github.com/specteriatech/winclus</p>
+  <p class="sub">hola@winclus.com</p>
+  <p class="nota" style="color:#C8D0DC"><a href="demo">Demostración</a> · <a href="evidencia">Evidencia</a> · <a href="comparar">Comparación</a> · <a href="una-pagina">Hoja de una página</a> · <a href="accesibilidad">Accesibilidad</a> · <a href="privacidad">Privacidad y datos</a></p>
+  <span class="num">12</span>
+</section>
+
+<script>
+  document.addEventListener("keydown", function (e) {
+    if (["ArrowDown", " ", "PageDown", "ArrowRight"].indexOf(e.key) < 0 && ["ArrowUp", "PageUp", "ArrowLeft"].indexOf(e.key) < 0) return;
+    var ds = Array.from(document.querySelectorAll(".diapo")), y = window.scrollY + 10, i = ds.findIndex(function (d) { return d.offsetTop > y; });
+    var adelante = ["ArrowDown", " ", "PageDown", "ArrowRight"].indexOf(e.key) >= 0;
+    var actual = adelante ? i : Math.max(0, (i < 0 ? ds.length : i) - 2);
+    if (adelante && i < 0) return;
+    e.preventDefault(); ds[actual].scrollIntoView({ behavior: "smooth" });
+  });
+</script>
+<script src="widget.js" async></script>
+</body>
+</html>

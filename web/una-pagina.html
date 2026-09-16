@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Winclus en una página</title>
+<meta name="description" content="Resumen de una página de Winclus para quien decide: qué es, para quién, qué lo diferencia, qué evidencia hay y qué proponemos.">
+<link rel="icon" href="img/icono.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="paginas.css">
+<style>
+  main{max-width:820px}h1{font-size:1.8rem}h2{font-size:1.1rem;margin:1.1em 0 .3em;border:0;padding:0;color:var(--teal);text-transform:uppercase;letter-spacing:.06em}
+  p,li{font-size:.98rem;line-height:1.45;margin:.2em 0}ul{margin:.2em 0;padding-left:1.2em}
+  .dos{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}@media (max-width:640px){.dos{grid-template-columns:1fr}}
+  .marco{border:2px solid var(--navy);border-radius:12px;padding:10px 14px;margin:10px 0}
+  .pie-hoja{margin-top:16px;font-size:.9rem;color:var(--texto2);border-top:1px solid var(--linea);padding-top:8px}
+  @media print{header,footer,.volver{display:none}main{margin:0;max-width:none}body{font-size:12.5px}h1{font-size:1.5rem}}
+</style>
+</head>
+<body>
+<a class="salto" href="#contenido">Ir al contenido</a>
+<header><div class="barra"><a class="marca" href="/"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a><a class="volver" href="/">Volver a la portada</a></div></header>
+<main id="contenido">
+  <h1>Winclus: tecnología de apoyo dentro de cualquier sitio web</h1>
+  <p><strong>Una línea de código</strong> y una sede electrónica se puede usar con la cara, los ojos, la voz, un solo pulsador, un teclado en pantalla o pictogramas, y se explica en lenguaje claro. Gratis para la persona, código abierto (Apache 2.0), procesado en su propio navegador. Versión 0.5.0, septiembre de 2026.</p>
+
+  <div class="dos">
+    <div>
+      <h2>Para quién</h2>
+      <ul>
+        <li><b>Motriz severa:</b> puntero por cabeza u ojos con la webcam, clic por gesto, barrido con un pulsador.</li>
+        <li><b>Sin habla:</b> pictogramas ARASAAC con voz y predicción, frases guardadas.</li>
+        <li><b>Cognitiva, mayores:</b> «explícame esta página», asistente con tus palabras, ayuda en formularios, modo fácil.</li>
+        <li><b>Sordera:</b> avisos de sonido, subtítulos grandes y en vivo, Centro de Relevo.</li>
+        <li><b>Baja visión, daltonismo, dislexia, epilepsia:</b> texto 200 %, lupa 16×, contraste, corrección de color real, lectura limpia, modo calma.</li>
+      </ul>
+      <h2>Qué lo diferencia</h2>
+      <ul>
+        <li>Los widgets de accesibilidad (accessiBe, UserWay, EqualWeb, AudioEye) no hacen nada de lo motriz, del habla ni del lenguaje claro; el hardware que lo hace (Tobii, Grid 3) cuesta USD 1 000 a 3 000 por persona.</li>
+        <li>Nunca se vende como «cumplimiento»: es tecnología de apoyo. El cumplimiento del sitio se diagnostica con Winclus Audit (informe por criterio de la Res. 1519 y borrador de declaración).</li>
+        <li>Sin cuentas, sin rastreo, sin servidores con datos; consentimiento explícito para la cámara (Ley 1581).</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Evidencia comprobable</h2>
+      <ul>
+        <li><b>22 pruebas públicas</b> (292 comprobaciones) corriendo en GitHub con cada cambio: <b>winclus.com/evidencia</b>.</li>
+        <li><b>0 incumplimientos</b> WCAG 2.1/2.2 AA en el widget y en winclus.com, escritorio y móvil.</li>
+        <li>Declaración de accesibilidad e informe de conformidad (ACR, formato VPAT) públicos.</li>
+        <li>Demostración de cinco minutos con vídeos: <b>winclus.com/demo</b>. Comparación con fuentes: <b>winclus.com/comparar</b>.</li>
+        <li>Pendiente y en curso: pruebas con personas usuarias (protocolo público) y auditoría de tercero.</li>
+      </ul>
+      <h2>Integración</h2>
+      <ul>
+        <li>GOV.CO y MiColombiaDigital (código en el pie), WordPress, Drupal, React, Vue. Versión fija inmutable. Compatible con CSP estricta.</li>
+      </ul>
+      <h2>Modelo</h2>
+      <ul>
+        <li>Gratis para personas y sitios. De pago: soporte con SLA, auditoría e informe para el ITA, capacitación, pruebas con personas usuarias, licencia enterprise para plataformas.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="marco">
+    <h2 style="margin-top:0">Propuesta: piloto de 60 días, sin coste para la entidad</h2>
+    <p>Semana 1: Winclus en la sede y Winclus Audit con informe. Semanas 2 a 6: pruebas con personas usuarias de la entidad, INCI, INSOR y fundaciones, cinco por grupo. Semanas 7 y 8: correcciones e informe público con cifras de gestiones completadas. Pedimos acceso, tiempo del equipo y permiso para publicar.</p>
+  </div>
+
+  <p class="pie-hoja">winclus.com · hola@winclus.com · github.com/specteriatech/winclus · Winclus no es un dispositivo médico ni una certificación. Basado en Project Gameface (Google, Apache 2.0). Pictogramas de ARASAAC (CC BY-NC-SA).</p>
+</main>
+<footer><div class="pie"><div>© 2026 Colaboradores de Winclus</div><ul><li><a href="/">Portada</a></li><li><a href="presentacion">Presentación</a></li><li><a href="privacidad">Privacidad y datos</a></li><li><a href="accesibilidad">Accesibilidad</a></li></ul></div></footer>
+<script src="widget.js" async></script>
+</body>
+</html>
