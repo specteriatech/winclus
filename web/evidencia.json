@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-16T21:22:16.575Z",
-  "commit": "ede6c83",
-  "version": "0.5.0",
+  "fecha": "2026-09-16T23:59:21.147Z",
+  "commit": "a99bc01",
+  "version": "0.5.1",
   "pruebas": 24,
-  "comprobaciones": 368,
+  "comprobaciones": 369,
   "fallan": 0,
   "resultados": [
     {
@@ -382,7 +382,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 3,
+      "segundos": 2,
       "lineas": [
         "OK  un audio de la página muestra el aviso con su nombre",
         "OK  un audio creado por código",
@@ -406,7 +406,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 7,
+      "segundos": 2,
       "lineas": [
         "OK  «números» pone etiquetas 1, 2, 3… sobre lo que se puede pulsar",
         "OK  «clic 2» pulsa el botón que lleva el 2",
@@ -503,7 +503,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 7,
       "lineas": [
         "OK  «¿Dónde estoy?» dice título, ruta, encabezados y avance",
         "OK  hay resumen: de qué va y lo más importante",
@@ -674,7 +674,7 @@
       "criterios": [
         "Robustez"
       ],
-      "ok": 15,
+      "ok": 16,
       "mal": 0,
       "bien": true,
       "segundos": 9,
@@ -693,6 +693,7 @@
         "OK  la voz sigue funcionando con voz_velocidad inválida",
         "OK  tras cerrar el panel el barrido no marca controles ocultos del panel",
         "OK  «deberá» y «obligatorio» no generan HTML anidado ni texto roto",
+        "OK  la corrección de color sigue funcionando aunque el sitio reemplace <body>",
         "OK  sin errores JS en toda la sesión"
       ]
     },

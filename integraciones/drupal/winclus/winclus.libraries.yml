@@ -1,4 +1,4 @@
 widget:
-  version: 0.5.0
+  version: 0.5.1
   js:
-    https://winclus.com/widget-0.5.0.js: { type: external, attributes: { async: true, data-posicion: derecha, data-idioma: es-CO } }
+    https://winclus.com/widget-0.5.1.js: { type: external, attributes: { async: true, data-posicion: derecha, data-idioma: es-CO } }

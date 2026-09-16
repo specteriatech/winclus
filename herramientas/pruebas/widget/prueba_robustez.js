@@ -128,6 +128,22 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   comprobar(!glos.roto && !glos.anidado && glos.abbr > 3, "«deberá» y «obligatorio» no generan HTML anidado ni texto roto", JSON.stringify(glos));
   await ctx.close();
 
+  // --- SPA que reemplaza <body> después de cargar el widget: la corrección de color sigue (uncorazoncontigo.com, 16-sep-2026) ---
+  ctx = await nav.newContext({ viewport: { width: 600, height: 400 } });
+  await ctx.addInitScript(init);
+  await ctx.addInitScript(() => localStorage.setItem("winclus.ajustes", JSON.stringify({ dalton: "gris", voz_activa: false })));
+  page = await ctx.newPage();
+  await page.goto(PAGINA);
+  await page.waitForFunction(() => window.Winclus);
+  await page.evaluate(() => { document.body.innerHTML = '<div id="rojo" style="position:fixed;left:0;top:0;width:100px;height:100px;background:rgb(255,0,0)"></div><main><p>Aplicación que reconstruye la página</p></main>'; });
+  await page.waitForTimeout(300);
+  const pixelSpa = await page.screenshot({ clip: { x: 10, y: 10, width: 2, height: 2 } });
+  await page.evaluate(() => { Winclus.ajustes.dalton = "no"; Winclus.abrir(); Array.from(Winclus.caja.querySelectorAll(".wcl-opc button")).find((b) => /Ninguna/.test(b.textContent)).click(); });
+  await page.waitForTimeout(300);
+  const pixelSin = await page.screenshot({ clip: { x: 10, y: 10, width: 2, height: 2 } });
+  comprobar(!pixelSpa.equals(pixelSin) && (await page.evaluate(() => !!document.getElementById("wcl-f-gris"))), "la corrección de color sigue funcionando aunque el sitio reemplace <body> (SPA)");
+  await ctx.close();
+
   comprobar(errores.length === 0, "sin errores JS en toda la sesión", errores.join(" | "));
   await nav.close();
   console.log(fallos ? fallos + " comprobación(es) MAL" : "todo bien");
