@@ -64,7 +64,7 @@
     teclado_altura: 32, teclado_posicion: "abajo", teclado_prediccion: true, teclado_sonido: true,
     camara_ver: true, dwell: false, ahorro: false, cursor_grande: false,
     barrido: false, barrido_ms: 1200, barrido_senal: "espacio", barrido_voz: true,
-    subtitulos: false, alertas_sonido: false, dictado_confirmar: false, formularios: true,
+    subtitulos: false, alertas_sonido: false, dictado_confirmar: false, formularios: true, volumen_max: 100,
     dalton: "no", calma: false, dislexia: false, sinimg: false, mascara: false, lector: false, facil: false,
     lupa_pantalla: false, lupa_pantalla_zoom: 2
   };
@@ -338,6 +338,16 @@
 
   // --------------------------------------------------------------- voz --
   var leyendo = null, colaVoz = [];
+  // Las voces neuronales del navegador (Edge «Natural», Google «Online», Apple «Premium/Enhanced») suenan mucho
+  // más humanas: si hay una, va primero; y entre ellas, la del país de la persona (es-CO) antes que otras.
+  function vozPreferida(vs) {
+    if (!vs.length) return null;
+    var neural = /natural|neural|online|premium|enhanced|wavenet/i, pais = IDIOMA_VOZ.toLowerCase();
+    var mejor = vs.filter(function (v) { return neural.test(v.name) && v.lang.toLowerCase() === pais; })[0]
+      || vs.filter(function (v) { return neural.test(v.name); })[0]
+      || vs.filter(function (v) { return v.lang.toLowerCase() === pais; })[0];
+    return mejor || vs[0];
+  }
   function vocesEs() {
     if (!("speechSynthesis" in window)) return [];
     // Voces del idioma del panel; si no hay ninguna, mejor sin voz fija (el navegador elige por el lang) que una en español
@@ -359,7 +369,7 @@
       u.rate = Math.pow(1.18, ajustes.voz_velocidad || 0); window.speechSynthesis.speak(u); return;
     }
     if (ajustes.voz_nombre) for (var i = 0; i < voces.length; i++) if (voces[i].name === ajustes.voz_nombre) v = voces[i];
-    if (!v && voces.length) v = voces[0];
+    if (!v && voces.length) v = vozPreferida(voces);
     if (v) { u.voice = v; u.lang = v.lang; }
     u.rate = Math.pow(1.18, ajustes.voz_velocidad || 0);
     window.speechSynthesis.speak(u);
@@ -1640,6 +1650,26 @@
     });
   }
   document.addEventListener("play", function (e) { if (ajustes.subtitulos && e.target && e.target.tagName === "VIDEO") aplicarSubtitulos(); }, true);
+  // --- limitador de volumen (sonidos súbitos, hipersensibilidad): ningún medio de la página pasa del máximo -----
+  var limitando = false;
+  function limitarVolumen(m) {
+    if (!(m instanceof HTMLMediaElement) || enWidget(m) || limitando) return;
+    var max = Math.max(0.1, Math.min(1, (ajustes.volumen_max || 100) / 100));
+    if (m.volume > max + 0.001) { limitando = true; try { m.volume = max; } catch (e) {} limitando = false; }
+  }
+  function limitarVolumenTodos() { Array.prototype.forEach.call(document.querySelectorAll("audio,video"), limitarVolumen); }
+  document.addEventListener("play", function (e) { limitarVolumen(e.target); }, true);
+  document.addEventListener("volumechange", function (e) { limitarVolumen(e.target); }, true);
+  // Transcribir un medio de la página: los subtítulos en vivo escuchan por el micrófono lo que sale por los altavoces
+  function transcribirMedio() {
+    var medios = Array.prototype.filter.call(document.querySelectorAll("video,audio"), function (m) { return !enWidget(m) && (m.currentSrc || m.src || m.querySelector("source")); });
+    if (!medios.length) { avisar("No hay vídeo ni audio en esta página", true); decirVoz("No hay vídeo ni audio en esta página.", true, true); return; }
+    var m = medios.find(function (x) { return !x.paused; }) || medios[0];
+    empezarSubvivo();
+    try { m.muted = false; if (m.volume < 0.5) m.volume = 0.7; m.play(); } catch (e) {}
+    avisar("Transcribiendo por el micrófono");
+    decirVoz("Sube el volumen de los altavoces: el micrófono escuchará el audio y lo escribirá abajo.", true, true);
+  }
   function ejecutarOrden(texto) {
     var t = sinAcentos(texto.trim()), m;
     var ok = function (msg) { avisar(msg); decir("Orden: " + texto); };
@@ -1675,7 +1705,7 @@
     else if (/^(donde estoy|en que pagina estoy|situacion)$/.test(t)) { dondeEstoy(); }
     else if (/^(explica|explicame|explicar)( esta| la)? pagina$|^(lectura|leer) facil$/.test(t)) { if (!limpiaEl) lecturaLimpia(); explicarFacil(); }
     else if ((m = /^(di|dice|decir) (.+)$/.exec(t))) { decirVoz(texto.trim().replace(/^\S+\s+/, ""), true, true); }
-    else avisar("No entendí: " + texto, true);
+    else if (!asistenteGuiado(texto)) avisar("No entendí: " + texto, true);   // lo que no es una orden se lo queda el asistente
   }
   // --- ayuda en formularios: dónde estoy, errores en lenguaje claro, pegar siempre permitido (WCAG 3.3.1, 3.3.3, 3.3.7, 3.3.8) ---
   var SEL_CAMPO = "input:not([type=hidden]):not([type=submit]):not([type=button]):not([type=reset]):not([type=image]),select,textarea,[contenteditable=''],[contenteditable='true']";
@@ -2061,6 +2091,7 @@
 
   // --- Ver mejor ---
   var s = seccion("Ver mejor");
+  s.appendChild(cajaAsistente());
   s.appendChild(filaPaso("texto", "Tamaño del texto", 80, 200, 10, pct, aplicarTexto));
   s.appendChild(filaSw("contraste", "Alto contraste", aplicarClases));
   s.appendChild(filaSw("oscuro", "Modo oscuro", aplicarClases));
@@ -2082,7 +2113,7 @@
   var fVoz = el("div", { "class": "wcl-fila" }, '<span id="wcl-l-voz">Voz</span><div class="wcl-mm" role="group" aria-labelledby="wcl-l-voz"><button type="button" aria-label="Voz anterior" aria-describedby="wcl-voz-nombre">−</button><span id="wcl-voz-nombre" aria-live="polite"></span><button type="button" aria-label="Voz siguiente" aria-describedby="wcl-voz-nombre">+</button></div>');
   var bv = fVoz.querySelectorAll("button"), vv = fVoz.querySelector("#wcl-voz-nombre"); vv.style.minWidth = "120px"; vv.style.fontSize = "12px";
   function cambiarVoz(d) { var vs = vocesEs(); if (!vs.length) return; var i = vs.findIndex(function (v) { return v.name === ajustes.voz_nombre; }); i = (i + d + vs.length) % vs.length; ajustes.voz_nombre = vs[i].name; guardar(); pintarVoz(); }
-  function pintarVoz() { var vs = vocesEs(); var v = vs.find(function (x) { return x.name === ajustes.voz_nombre; }) || vs[0]; vv.textContent = v ? v.name.replace(/Microsoft |Google |Desktop| - .*$/g, "") : "sin voces en español"; }
+  function pintarVoz() { var vs = vocesEs(); var v = vs.find(function (x) { return x.name === ajustes.voz_nombre; }) || vozPreferida(vs); vv.textContent = v ? v.name.replace(/Microsoft |Google |Desktop| - .*$/g, "") : "sin voces en español"; }
   bv[0].addEventListener("click", function () { cambiarVoz(-1); }); bv[1].addEventListener("click", function () { cambiarVoz(1); });
   refrescos.push(pintarVoz); if ("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged = pintarVoz;
   s.appendChild(fVoz);
@@ -2113,6 +2144,8 @@
   s.appendChild(el("div", { "class": "wcl-estado" }, "Para quien no oye o oye poco: avisos en pantalla cuando algo suena, subtítulos grandes y con fondo en los vídeos que los traigan, y subtítulos en vivo de lo que se habla cerca (una videollamada, una consulta) usando el micrófono."));
   s.appendChild(filaSw("alertas_sonido", "Avisar en pantalla cuando algo suena"));
   s.appendChild(filaSw("subtitulos", "Subtítulos grandes en los vídeos (si los traen)", aplicarClases));
+  s.appendChild(filaPaso("volumen_max", "Volumen máximo de vídeos y audios", 10, 100, 10, pct, limitarVolumenTodos));
+  s.appendChild(botonGrande("Transcribir el vídeo o audio de la página (micrófono)", "suave", transcribirMedio));
   var btnSubvivo = botonGrande("Subtítulos en vivo (micrófono)", "azul", function () { if (subtitulando) pararSubvivo(); else empezarSubvivo(); });
   refrescos.push(function () { btnSubvivo.textContent = subtitulando ? "Parar los subtítulos en vivo" : "Subtítulos en vivo (micrófono)"; btnSubvivo.classList.toggle("rojo", subtitulando); });
   s.appendChild(btnSubvivo);
@@ -2348,6 +2381,7 @@
     + '.wcl-limpia-texto{max-width:36rem;margin:0 auto;padding:28px 20px 80px}.wcl-limpia-texto h1,.wcl-limpia-texto h2,.wcl-limpia-texto h3,.wcl-limpia-texto h4{line-height:1.3;margin:1.2em 0 .4em;color:#101F3D}.wcl-limpia-texto p{margin:0 0 1em}.wcl-limpia-texto figure{margin:1em 0}.wcl-limpia-texto img{max-width:100%;border-radius:10px}.wcl-limpia-texto figcaption{font-size:.8em;color:#555}'
     + '.wcl-limpia .w.act{background:#F2B705;color:#101F3D;border-radius:3px}.wcl-limpia abbr{text-decoration:underline dotted #0F7A70;text-decoration-thickness:2px;cursor:help}'
     + '.wcl-limpia .facil{background:#E8F7F3;border-left:6px solid #0F7A70;padding:12px 16px;border-radius:0 10px 10px 0}.wcl-limpia .facil h2{font-size:1.15em;margin:1em 0 .4em}.wcl-limpia .facil .nota{font-size:.8em;color:#5A6784}'
+    + '.wcl-guia-caja{margin:4px 0 10px}.wcl-guia-caja label{display:block;font-weight:700;margin-bottom:6px}.wcl-guia-fila{display:flex;gap:6px}.wcl-guia-fila input{flex:1;min-width:0}.wcl-guia-fila .wcl-big{width:auto;min-width:44px;padding:0 14px;margin:0}'
     + '.wcl-facil{display:none;padding:12px 16px 16px}.wcl-facil .wcl-big{min-height:64px;font-size:19px;margin:6px 0}.wcl-panel.facil .wcl-tabs,.wcl-panel.facil .wcl-tab{display:none}.wcl-panel.facil .wcl-facil{display:block}'
     + 'html.wcl-lupap{overflow-x:hidden}html.wcl-lupap body{transition:none!important}'
     // Cursor grande y de alto contraste para el ratón real (baja visión): flecha negra con borde blanco de 48 px
@@ -2706,7 +2740,52 @@
   sec10.appendChild(el("div", { "class": "wcl-estado" }, "Un panel con solo seis botones grandes, para quien se pierde con tantas opciones."));
   sec10.appendChild(filaSw("facil", "Modo fácil", function () { refrescos.forEach(function (f) { f(); }); }));
   tabs.mas.appendChild(sec10);
+  // --- asistente guiado: «¿Qué quieres hacer?» (COGA, mayores): con tus palabras, sin buscar en el panel ---------
+  var GUIA = [
+    [/no veo bien|veo poco|letra (muy )?peque|mas grande|agrand|no puedo leer/, function () { ajustes.texto = Math.max(ajustes.texto, 150); ajustes.contraste = true; guardar(); aplicarTodo(); return "Texto más grande y más contraste. Si necesitas más, di «lupa»."; }],
+    [/\blupa\b|ampliar|zoom/, function () { ajustes.lupa_pantalla = true; guardar(); aplicarLupaPantalla(); refrescos.forEach(function (f) { f(); }); return "Lupa de pantalla activada: sigue al puntero."; }],
+    [/no oigo|oigo poco|sord|hipoacus|subtitul|no escucho/, function () { ajustes.alertas_sonido = true; ajustes.subtitulos = true; guardar(); aplicarTodo(); return "Avisos en pantalla cuando algo suene y subtítulos grandes en los vídeos. Para lo que se habla cerca, pulsa «Subtítulos en vivo»."; }],
+    [/no puedo (usar|mover) (el |la )?(raton|mouse|mano|manos)|con la cara|con la cabeza|con los ojos|sin manos|cuadriple|tetraple/, function () { if (opciones.camara) { activarCamara(); return "Vamos a usar la cámara: mueve la cabeza y el puntero te sigue; cierra los ojos un momento para hacer clic."; } return "En esta página no hay control con la cámara; puedes usar el barrido con un pulsador o la voz."; }],
+    [/pulsador|un solo boton|barrido|solo puedo pulsar/, function () { ajustes.barrido = true; guardar(); aplicarBarrido(); refrescos.forEach(function (f) { f(); }); return "Barrido activado: espera a que el marco azul esté en lo que quieres y pulsa."; }],
+    [/no puedo hablar|no hablo|hablar por mi|pictograma|dibujos|comunicar/, function () { abrirPictos(); return "Tablero de dibujos: toca los que quieras y pulsa Decir."; }],
+    [/escribir|teclado|escribo/, function () { mostrarTeclado(); return "Teclado en pantalla abierto. Pulsa un campo y escribe."; }],
+    [/no entiendo|explica|facil|sencillo|que dice|resumen|resume/, function () { if (!limpiaEl) lecturaLimpia(); explicarFacil(); return "Te muestro la página en lenguaje claro."; }],
+    [/leer|lee|leeme|en voz alta/, function () { lecturaLimpia(); return "Lectura limpia abierta: solo el texto, grande, con botón para leerlo en voz alta."; }],
+    [/donde estoy|perdid|en que pagina/, function () { return dondeEstoy(); }],
+    [/calma|nervios|me marea|movimiento|destello|parpade[ao]n|epilep|migra/, function () { ajustes.calma = true; ajustes.animaciones = true; guardar(); aplicarTodo(); return "Modo calma: sin destellos, animaciones ni vídeos que arranquen solos."; }],
+    [/colores|daltoni|rojo y verde|no distingo/, function () { ajustes.dalton = "protan"; guardar(); aplicarTodo(); abrir(true); elegirTab("ver"); return "He puesto la corrección para rojo y verde. En la pestaña Ver puedes elegir otra."; }],
+    [/contact|llamar|telefono|correo|hablar con alguien|persona|ayuda humana|pqrs|queja|reclamo/, function () { return pulsarPorTexto("contacto") || pulsarPorTexto("contáctenos") || pulsarPorTexto("pqrs") || pulsarPorTexto("atención") ? "Te llevo a la página de contacto." : "No encuentro un enlace de contacto en esta página."; }],
+    [/^(quiero |necesito |busco |ir a |abrir |entrar (a|en) |ve a |donde esta |encuentra )?(el |la |los |las |un |una )?(.+)$/, function (m) { var t = m[m.length - 1].replace(/\?$/, "").trim(); return t && pulsarPorTexto(t) ? "Te llevo a «" + t + "»." : ""; }]
+  ];
+  function asistenteGuiado(texto) {
+    var t = sinAcentos((texto || "").trim().replace(/[¿?¡!.]/g, "")), respuesta = "";
+    if (!t) return false;
+    for (var i = 0; i < GUIA.length && !respuesta; i++) { var m = GUIA[i][0].exec(t); if (m) { try { respuesta = GUIA[i][1](m); } catch (e) { respuesta = ""; } if (respuesta === "" && i < GUIA.length - 1) break; } }
+    if (!respuesta) respuesta = "No sé hacer eso todavía. Puedes decirme: no veo bien, no oigo, no puedo usar el ratón, escribir, leer, explica esta página, dónde estoy, calma, contacto, o el nombre de un enlace.";
+    avisar(respuesta.slice(0, 60)); decir(respuesta); decirVoz(respuesta, true, true);
+    return true;
+  }
+  function cajaAsistente(sufijo) {
+    var id = "wcl-que" + (sufijo || "");
+    var w = el("div", { "class": "wcl-guia-caja" }, '<label for="' + id + '">' + T("¿Qué quieres hacer? Dímelo con tus palabras") + '</label>');
+    var fila = el("div", { "class": "wcl-guia-fila" });
+    var inp = el("input", { "type": "text", "id": id, "class": "wcl-sel", "placeholder": "Por ejemplo: no veo bien, quiero escribir, contacto…", "autocomplete": "off" });
+    var ir = el("button", { "type": "button", "class": "wcl-big", "aria-label": "Hacerlo" }, "Ir");
+    var mic = el("button", { "type": "button", "class": "wcl-big suave", "aria-label": "Decirlo con la voz" }, "🎤");
+    ir.addEventListener("click", function () { asistenteGuiado(inp.value); inp.value = ""; });
+    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); asistenteGuiado(inp.value); inp.value = ""; } });
+    mic.addEventListener("click", function () {
+      if (!Reconocedor) { avisar("Este navegador no reconoce la voz (usa Chrome o Edge)", true); return; }
+      var r = new Reconocedor(); r.lang = IDIOMA_VOZ; r.continuous = false; r.interimResults = false;
+      r.onresult = function (e) { var t = e.results[0][0].transcript; inp.value = t; asistenteGuiado(t); inp.value = ""; };
+      r.onerror = function () { avisar("No te oí", true); };
+      try { r.start(); avisar("Te escucho…"); } catch (e) {}
+    });
+    fila.appendChild(inp); fila.appendChild(ir); fila.appendChild(mic); w.appendChild(fila);
+    return w;
+  }
   var facilEl = el("div", { "class": "wcl-facil" });
+  facilEl.appendChild(cajaAsistente("-facil"));
   facilEl.appendChild(botonGrande("🔊 Leer la página", "suave", leerPagina));
   facilEl.appendChild(botonGrande("🔇 Callar", "suave", callar));
   facilEl.appendChild(botonGrande("A+ Texto más grande", "suave", function () { ajustes.texto = Math.min(200, ajustes.texto + 10); aplicarTexto(); guardar(); }));

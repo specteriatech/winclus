@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Winclus frente a otras soluciones</title>
+<meta name="description" content="Comparación verificable de Winclus con los widgets de accesibilidad (accessiBe, UserWay, EqualWeb, AudioEye) y con la tecnología de apoyo de escritorio (Tobii, JAWS, Grid 3): qué hace cada uno, qué cuesta y cómo comprobarlo.">
+<link rel="icon" href="img/icono.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="paginas.css">
+<style>
+  .si{color:#0F7A70;font-weight:700}.no{color:#A6402F;font-weight:700}.parcial{color:#9A6A12;font-weight:700}.duda{color:#4A5670}
+  .leyenda{font-size:.92rem;color:#4A5670;margin:8px 0 18px}
+  .tabla table{min-width:860px}th:first-child,td:first-child{min-width:220px}
+  .ventaja{background:#E8F7F3;border-left:6px solid #0F7A70;border-radius:0 12px 12px 0;padding:12px 16px;margin:16px 0}
+  .honesto{background:#FFF6DB;border-left:6px solid #C99A1E;border-radius:0 12px 12px 0;padding:12px 16px;margin:16px 0}
+</style>
+</head>
+<body>
+<a class="salto" href="#contenido">Ir al contenido</a>
+<header>
+  <div class="barra">
+    <a class="marca" href="/"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a>
+    <a class="volver" href="/">Volver a la portada</a>
+  </div>
+</header>
+
+<main id="contenido">
+  <h1>Winclus frente a lo que ya existe</h1>
+  <p class="meta">Actualizado el 16 de septiembre de 2026 para Winclus 0.5.0. Lo que se dice de otros productos sale de su documentación pública en esa fecha; donde no consta, lo marcamos con «?» y hay que verificarlo antes de usarlo en una oferta. Corrige cualquier error escribiendo a <a href="mailto:hola@winclus.com">hola@winclus.com</a>.</p>
+
+  <div class="ventaja"><p><strong>La diferencia de fondo.</strong> Los widgets de accesibilidad (overlays) añaden un panel de texto grande, contraste y lectura en voz alta. La tecnología de apoyo de escritorio (Tobii, JAWS, Grid 3) permite usar el ordenador a quien no puede con ratón, teclado o voz, y cuesta cientos o miles de dólares por persona. Winclus mete lo segundo dentro de cualquier página web, gratis para la persona, con el código abierto y el procesamiento en su propio navegador. No compite con los overlays en lo que ellos hacen; hace lo que ellos no hacen.</p></div>
+
+  <h2>1. Qué puede hacer la persona con cada uno</h2>
+  <p class="leyenda">Sí = lo tiene · Parcial = lo tiene con límites · No = no lo tiene · ? = no consta en su documentación pública. Winclus: todo lo marcado «Sí» tiene una prueba automática pública en el repositorio.</p>
+  <div class="tabla" tabindex="0" role="region" aria-label="Comparación de funciones"><table>
+    <thead><tr><th>Función</th><th>Winclus</th><th>accessiBe</th><th>UserWay</th><th>EqualWeb</th><th>AudioEye</th><th>Tobii (hardware)</th><th>JAWS</th><th>Grid 3</th></tr></thead>
+    <tbody>
+      <tr><td>Mover el puntero con la cabeza o los ojos usando la cámara normal</td><td class="si">Sí</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="si">Sí (cámara propia, USD 1 000 a 3 000)</td><td class="no">No</td><td class="parcial">Con hardware aparte</td></tr>
+      <tr><td>Clic con parpadeo, boca, cejas o permanencia</td><td class="si">Sí</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="parcial">Permanencia</td><td class="no">No</td><td class="parcial">Permanencia</td></tr>
+      <tr><td>Barrido con un solo pulsador (una tecla, un gesto)</td><td class="si">Sí</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="si">Sí</td></tr>
+      <tr><td>Teclado en pantalla con predicción de palabras</td><td class="si">Sí (12 000 palabras, aprende)</td><td class="no">No</td><td class="duda">?</td><td class="duda">?</td><td class="no">No</td><td class="parcial">Con software aparte</td><td class="no">No</td><td class="si">Sí</td></tr>
+      <tr><td>Comunicación con pictogramas (CAA) con voz y predicción</td><td class="si">Sí (ARASAAC)</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="si">Sí</td></tr>
+      <tr><td>Frases guardadas dichas con voz</td><td class="si">Sí</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="si">Sí</td></tr>
+      <tr><td>Órdenes por voz, dictado, enlaces numerados («clic 12»)</td><td class="si">Sí</td><td class="no">No</td><td class="parcial">Navegación por voz</td><td class="duda">?</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="parcial">Con software aparte</td></tr>
+      <tr><td>Leer la página en voz alta</td><td class="si">Sí, con la palabra resaltada</td><td class="si">Sí</td><td class="si">Sí</td><td class="si">Sí</td><td class="si">Sí</td><td class="no">No</td><td class="si">Sí (lector completo)</td><td class="parcial">Sí</td></tr>
+      <tr><td>Lector de pantalla por teclado (encabezados, enlaces, campos)</td><td class="parcial">Básico, sin pisar a NVDA/JAWS</td><td class="parcial">Básico</td><td class="parcial">Básico</td><td class="parcial">Básico</td><td class="no">No</td><td class="no">No</td><td class="si">Sí (completo)</td><td class="no">No</td></tr>
+      <tr><td>Texto grande, contraste, modo oscuro, guía de lectura, espaciado para dislexia</td><td class="si">Sí</td><td class="si">Sí</td><td class="si">Sí</td><td class="si">Sí</td><td class="si">Sí</td><td class="no">No</td><td class="no">No</td><td class="no">No</td></tr>
+      <tr><td>Corrección de color por tipo de daltonismo (protan, deutan, tritan)</td><td class="si">Sí (Machado 2009, probado píxel a píxel)</td><td class="parcial">Ajustes de color</td><td class="parcial">Ajustes de color</td><td class="parcial">Ajustes de color</td><td class="duda">?</td><td class="no">No</td><td class="no">No</td><td class="no">No</td></tr>
+      <tr><td>Lupa de pantalla</td><td class="si">Sí, 2× a 16×</td><td class="parcial">Lupa de texto</td><td class="parcial">Lupa de texto</td><td class="duda">?</td><td class="no">No</td><td class="no">No</td><td class="no">No (ZoomText aparte)</td><td class="no">No</td></tr>
+      <tr><td>Modo calma: congela GIF, para vídeos, baja saturación</td><td class="si">Sí</td><td class="parcial">Parar animaciones</td><td class="parcial">Parar animaciones</td><td class="parcial">Parar animaciones</td><td class="duda">?</td><td class="no">No</td><td class="no">No</td><td class="no">No</td></tr>
+      <tr><td>«Explícame esta página» en lenguaje claro</td><td class="si">Sí (reglas + IA opcional del sitio)</td><td class="parcial">Diccionario</td><td class="parcial">Diccionario</td><td class="duda">?</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td></tr>
+      <tr><td>Ayuda en formularios: «campo 3 de 8», errores en lenguaje claro, pegar permitido</td><td class="si">Sí</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="parcial">Lee etiquetas</td><td class="no">No</td></tr>
+      <tr><td>Avisos visuales de sonido, subtítulos grandes, subtítulos en vivo</td><td class="si">Sí</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td></tr>
+      <tr><td>Enlace a intérprete de Lengua de Señas Colombiana (Centro de Relevo)</td><td class="si">Sí</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td></tr>
+      <tr><td>Asistente «¿qué quieres hacer?» con tus palabras</td><td class="si">Sí</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td></tr>
+      <tr><td>Modo fácil (pocos botones grandes)</td><td class="si">Sí</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="si">Sí</td></tr>
+      <tr><td>La configuración viaja a otro equipo</td><td class="si">Sí (archivo o enlace, sin cuenta)</td><td class="duda">?</td><td class="duda">?</td><td class="duda">?</td><td class="duda">?</td><td class="parcial">Perfil local</td><td class="parcial">Perfil local</td><td class="si">Sí (cuenta)</td></tr>
+      <tr><td>Idiomas del panel</td><td class="parcial">Español e inglés; otros los añade el sitio</td><td class="si">Muchos</td><td class="si">Muchos</td><td class="si">Muchos</td><td class="si">Varios</td><td class="si">Varios</td><td class="si">Varios</td><td class="si">Varios</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>2. Cómo se hace, qué cuesta y qué riesgo tiene</h2>
+  <div class="tabla" tabindex="0" role="region" aria-label="Comparación de modelo, coste y riesgo"><table>
+    <thead><tr><th>Aspecto</th><th>Winclus</th><th>Overlays (accessiBe, UserWay, EqualWeb, AudioEye)</th><th>Tobii, JAWS, Grid 3</th></tr></thead>
+    <tbody>
+      <tr><td>Dónde se procesan los datos de la persona</td><td class="si">En su navegador. La cámara nunca sale del equipo (verificable en el código). Solo la voz del dictado usa el reconocedor del navegador, y se avisa.</td><td class="parcial">El panel se carga desde los servidores del proveedor; el tratamiento de datos depende de su política.</td><td class="si">En el equipo.</td></tr>
+      <tr><td>Código</td><td class="si">Abierto, Apache 2.0, auditable por cualquiera.</td><td class="no">Cerrado.</td><td class="no">Cerrado.</td></tr>
+      <tr><td>Cuentas, cookies, rastreo</td><td class="si">Ninguno.</td><td class="parcial">Según proveedor; varios usan analítica.</td><td class="si">Ninguno (licencia).</td></tr>
+      <tr><td>Aislamiento del sitio (shadow root) y CSP estricta sin <code>'unsafe-inline'</code></td><td class="si">Sí, con prueba pública.</td><td class="duda">?</td><td class="parcial">No aplica (escritorio).</td></tr>
+      <tr><td>Pruebas automáticas públicas de accesibilidad del propio producto</td><td class="si">22 guiones (axe-core, teclado, contraste, posición, CSP, idiomas…) que cualquiera puede repetir.</td><td class="no">No públicas.</td><td class="no">No públicas.</td></tr>
+      <tr><td>Declaración de accesibilidad e informe de conformidad (ACR/VPAT) del producto</td><td class="si">Públicos (autoevaluación; auditoría de tercero pendiente).</td><td class="parcial">Algunos publican VPAT.</td><td class="parcial">Algunos publican VPAT.</td></tr>
+      <tr><td>Precio para la persona</td><td class="si">Gratis.</td><td class="si">Gratis (paga el sitio).</td><td class="no">Cientos o miles de dólares por licencia o equipo; en Colombia JAWS y ZoomText se subsidian vía ConVerTIC, el resto no.</td></tr>
+      <tr><td>Precio para el sitio</td><td class="si">Gratis; soporte, auditoría y capacitación de pago (opcional).</td><td class="parcial">Suscripción mensual por sitio (consulta sus webs).</td><td class="parcial">No aplica.</td></tr>
+      <tr><td>Riesgo legal para quien lo instala</td><td class="si">Se presenta como tecnología de apoyo, nunca como «cumplimiento»; la declaración lo dice.</td><td class="no">accessiBe fue sancionado por la FTC (USD 1 millón, 2025) por afirmaciones de cumplimiento; cientos de sitios con overlay han sido demandados igualmente; más de 800 expertos firman el Overlay Fact Sheet en contra.</td><td class="si">Ninguno.</td></tr>
+      <tr><td>Escáner del sitio con informe por criterio de la Res. 1519 y borrador de declaración</td><td class="si">Winclus Audit, abierto.</td><td class="parcial">Escáneres propios, de pago.</td><td class="no">No.</td></tr>
+      <tr><td>Integración</td><td class="si">Una línea, web component, WordPress, Drupal, GOV.CO; versión fija inmutable.</td><td class="si">Una línea, plugins.</td><td class="no">Instalación en cada equipo.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>3. Dónde nos ganan hoy, para no prometer de más</h2>
+  <div class="honesto">
+    <ul>
+      <li><strong>Idiomas:</strong> los overlays traen decenas de idiomas de fábrica; Winclus, español e inglés, y otros los aporta el sitio.</li>
+      <li><strong>Trayectoria y soporte:</strong> ellos tienen años en el mercado, soporte 24/7 y miles de clientes. Winclus está empezando: nuestra evidencia son las pruebas públicas, los pilotos y la declaración, no los años.</li>
+      <li><strong>Precisión de la mirada:</strong> una cámara de Tobii es más precisa que una webcam normal. Winclus lo compensa con el modo híbrido (los ojos saltan, la cabeza afina), el imán a los botones y la calibración invisible, y cuesta cero.</li>
+      <li><strong>Lector de pantalla:</strong> JAWS y NVDA son lectores completos; el de Winclus es básico y está pensado para quien no los tiene. Por eso no interfiere con ellos.</li>
+      <li><strong>Pruebas con personas usuarias:</strong> todavía no tenemos informes publicados; hay un protocolo y se harán con INCI, INSOR y fundaciones.</li>
+    </ul>
+  </div>
+
+  <h2>4. Cómo comprobar lo que decimos (en cinco minutos, delante de quien decide)</h2>
+  <ol>
+    <li>Abre cualquier sede electrónica con Winclus y pide a alguien que la use <strong>solo con la cara</strong>, luego <strong>solo con Espacio</strong> (barrido) y luego <strong>solo con la voz</strong>. Con un overlay no se puede hacer ninguna de las tres.</li>
+    <li>Abre el tablero de pictogramas y forma una frase sin escribir.</li>
+    <li>Pulsa «Explicar en fácil» en un texto jurídico.</li>
+    <li>Abre las herramientas de desarrollo del navegador: en la pestaña de red no sale ningún vídeo ni imagen de la cámara hacia ningún servidor.</li>
+    <li>Ejecuta <code>npm test</code> en el repositorio: 22 pruebas públicas, todas en verde, sobre el propio widget.</li>
+    <li>Pasa <code>auditar.js</code> sobre tu sitio y obtén el informe por criterio de la Resolución 1519 y el borrador de declaración.</li>
+  </ol>
+
+  <h2>Fuentes</h2>
+  <ul>
+    <li>Documentación pública de accessiBe, UserWay, EqualWeb, AudioEye, Tobii Dynavox, Freedom Scientific (JAWS) y Smartbox (Grid 3), consultada en septiembre de 2026.</li>
+    <li>FTC, orden contra accessiBe (enero de 2025); Overlay Fact Sheet (overlayfactsheet.com).</li>
+    <li>Pruebas públicas de Winclus: <a href="https://github.com/specteriatech/winclus/tree/main/herramientas/pruebas/widget">github.com/specteriatech/winclus</a>.</li>
+  </ul>
+</main>
+
+<footer>
+  <div class="pie">
+    <div>© 2026 Colaboradores de Winclus · Licencia Apache 2.0</div>
+    <ul>
+      <li><a href="/">Portada</a></li>
+      <li><a href="accesibilidad">Accesibilidad</a></li>
+      <li><a href="integrar">Integrar</a></li>
+      <li><a href="privacidad">Privacidad y datos</a></li>
+      <li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="widget.js" async></script>
+</body>
+</html>

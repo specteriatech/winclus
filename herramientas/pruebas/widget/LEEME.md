@@ -49,6 +49,7 @@
 - `node prueba_sdk.js`: `<winclus-widget>` (pagina-sdk.html), guía integrar.html, plugin WordPress y módulo Drupal.
 - `node prueba_idiomas.js`: panel en inglés en página en inglés, `data-ui`, idioma añadido con `WinclusIdiomas`, sin diccionario → español.
 - `node auditar.js https://sitio [--salida carpeta] [--entidad "Nombre"]`: el escáner (no es una prueba).
+- `node prueba_maximo.js`: limitador de volumen, voz neuronal preferida, asistente «¿Qué quieres hacer?» (texto y orden por voz), transcribir un medio.
 - Todas las pruebas del widget usan `Winclus.caja` (el shadow root) para llegar a sus piezas; los selectores de
   Playwright (`page.click("#wcl-tab-ver")`) atraviesan el shadow root solos.
 - La foto tiene los ojos entrecerrados (relación 0,69 en reposo): para probar el clic poner `Winclus.ajustes.parpadeo_umbral = 0.45`.

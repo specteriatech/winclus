@@ -39,6 +39,7 @@ Requisitos: Windows 10 u 11 de 64 bits y una cámara web.
 - `widget.js` es siempre la última versión (caché de 5 minutos); `widget-X.Y.Z.js` es una copia inmutable de cada versión, para que un sitio no cambie sin querer. Al publicar una versión nueva: subir `VERSION` en `widget.js`, copiarlo a `widget-X.Y.Z.js` y actualizar la declaración de accesibilidad.
 - Atributos opcionales en el `<script>`: `data-posicion="izquierda"`, `data-color="#101F3D"`, `data-camara="no"`.
 - Pruebas del widget (Playwright + axe-core) en `herramientas/pruebas/widget`.
+- Comparación con overlays y hardware de apoyo: https://winclus.com/comparar
 - Guía de integración (CSP, web component, React/Vue, WordPress, Drupal, GOV.CO, IA, idiomas): https://winclus.com/integrar
 - Declaración de accesibilidad: https://winclus.com/accesibilidad · Datos personales: https://winclus.com/privacidad
 - Winclus Audit (escáner de un sitio con informe y borrador de declaración): `node herramientas/pruebas/widget/auditar.js https://sitio`

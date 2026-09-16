@@ -27,7 +27,7 @@
 
   <h2>1. Una línea</h2>
   <p>Antes de <code>&lt;/body&gt;</code>. La versión fija no cambia sin que tú lo decidas; <code>widget.js</code> es siempre la última.</p>
-  <pre><code>&lt;script src="https://winclus.com/widget-0.5.0.js" async&gt;&lt;/script&gt;</code></pre>
+  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.5.0.js" async&gt;&lt;/script&gt;</code></pre>
   <p>Atributos opcionales en el mismo <code>&lt;script&gt;</code>:</p>
   <div class="tabla" tabindex="0" role="region" aria-label="Atributos del script"><table>
     <thead><tr><th>Atributo</th><th>Valores</th><th>Qué hace</th></tr></thead>
@@ -44,19 +44,19 @@
 
   <h2>2. Política de seguridad de contenido (CSP)</h2>
   <p>Winclus vive en un shadow root y no usa atributos <code>style</code> en línea, así que no necesita <code>'unsafe-inline'</code>. Si tu CSP usa nonce, ponlo en el <code>&lt;script&gt;</code>: el widget lo propaga a los <code>&lt;style&gt;</code> que inyecta. Directivas mínimas:</p>
-  <pre><code>script-src 'nonce-XYZ' https://winclus.com;
+  <pre tabindex="0"><code>script-src 'nonce-XYZ' https://winclus.com;
 style-src  'nonce-XYZ';
 img-src    https://static.arasaac.org data:;       /* pictogramas */
 connect-src https://winclus.com;                   /* detector de caras y diccionario, la primera vez */
 media-src  blob:;                                  /* la cámara, si se permite */</code></pre>
-  <pre><code>&lt;script nonce="XYZ" src="https://winclus.com/widget-0.5.0.js" async&gt;&lt;/script&gt;</code></pre>
+  <pre tabindex="0"><code>&lt;script nonce="XYZ" src="https://winclus.com/widget-0.5.0.js" async&gt;&lt;/script&gt;</code></pre>
 
   <h2>3. Web component, React, Vue, Angular, Svelte</h2>
   <p>Con <code>winclus-elemento.js</code> el widget es un elemento HTML. Sirve en cualquier framework y evita manipular el <code>&lt;head&gt;</code> a mano.</p>
-  <pre><code>&lt;script src="https://winclus.com/winclus-elemento.js" async&gt;&lt;/script&gt;
+  <pre tabindex="0"><code>&lt;script src="https://winclus.com/winclus-elemento.js" async&gt;&lt;/script&gt;
 &lt;winclus-widget posicion="izquierda" idioma="es-CO"&gt;&lt;/winclus-widget&gt;</code></pre>
   <p>React (en el componente raíz, una sola vez):</p>
-  <pre><code>useEffect(() =&gt; {
+  <pre tabindex="0"><code>useEffect(() =&gt; {
   const s = document.createElement("script");
   s.src = "https://winclus.com/widget-0.5.0.js"; s.async = true; s.dataset.idioma = "es-CO";
   document.body.appendChild(s);
@@ -79,7 +79,7 @@ media-src  blob:;                                  /* la cámara, si se permite 
 
   <h2 id="ia">6. Lectura fácil con tu propio servicio de IA</h2>
   <p>Con <code>data-explicar="https://tu-servidor/explicar"</code>, el botón «Explicar en fácil» envía el texto de la página a tu servicio y muestra lo que devuelve (así los datos van a un servidor tuyo, no a uno de Winclus). Contrato:</p>
-  <pre><code>POST /explicar            Content-Type: application/json
+  <pre tabindex="0"><code>POST /explicar            Content-Type: application/json
 { "texto": "…texto de la página…", "idioma": "es", "titulo": "Título" }
 
 200 OK                    Content-Type: application/json
@@ -88,7 +88,7 @@ media-src  blob:;                                  /* la cámara, si se permite 
 
   <h2 id="audit">7. Winclus Audit: cómo está tu sitio</h2>
   <p>Escáner de accesibilidad de código abierto: axe-core (WCAG 2.1 y 2.2 AA) en escritorio y móvil, más comprobaciones de la Resolución 1519 (texto al 200 %, declaración, ir al contenido, subtítulos). Genera un informe agrupado por criterio con cómo corregir cada cosa y un borrador de declaración de accesibilidad.</p>
-  <pre><code>git clone https://github.com/specteriatech/winclus
+  <pre tabindex="0"><code>git clone https://github.com/specteriatech/winclus
 cd winclus/herramientas/pruebas/widget
 npm install &amp;&amp; npx playwright install chromium
 node auditar.js https://tu-sitio.gov.co https://tu-sitio.gov.co/tramites --entidad "Alcaldía de …" --salida informe</code></pre>
@@ -96,7 +96,7 @@ node auditar.js https://tu-sitio.gov.co https://tu-sitio.gov.co/tramites --entid
 
   <h2>8. Añadir un idioma al panel</h2>
   <p>Los textos del panel salen de un diccionario por idioma. Español e inglés van incluidos. Para otro idioma, define antes de cargar el widget un objeto con las cadenas en español como clave:</p>
-  <pre><code>&lt;script nonce="XYZ"&gt;
+  <pre tabindex="0"><code>&lt;script nonce="XYZ"&gt;
   window.WinclusIdiomas = { pt: { "Ver mejor": "Ver melhor", "Tamaño del texto": "Tamanho do texto", /* … */ } };
 &lt;/script&gt;
 &lt;script nonce="XYZ" src="https://winclus.com/widget-0.5.0.js" data-ui="pt" async&gt;&lt;/script&gt;</code></pre>
