@@ -43,6 +43,12 @@
 - `node prueba_pictogramas.js`: tablero ARASAAC: categorías, frase con voz, predicción por defecto y aprendida,
   guardar frase (pasa a las frases del teclado), barrido dentro del tablero. Las imágenes vienen de
   static.arasaac.org (no se comprueba que carguen).
+- `node prueba_facil.js`: `pagina-tramite.html`: «Explicar en fácil» por reglas (jerga → palabras corrientes con glosario,
+  frases cortas, lo importante primero), con servicio de IA simulado y su caída, resaltado palabra a palabra, «¿Dónde estoy?».
+- `node prueba_auditar.js`: Winclus Audit sobre la portada local y una página mala: informe, declaración y JSON.
+- `node prueba_sdk.js`: `<winclus-widget>` (pagina-sdk.html), guía integrar.html, plugin WordPress y módulo Drupal.
+- `node prueba_idiomas.js`: panel en inglés en página en inglés, `data-ui`, idioma añadido con `WinclusIdiomas`, sin diccionario → español.
+- `node auditar.js https://sitio [--salida carpeta] [--entidad "Nombre"]`: el escáner (no es una prueba).
 - Todas las pruebas del widget usan `Winclus.caja` (el shadow root) para llegar a sus piezas; los selectores de
   Playwright (`page.click("#wcl-tab-ver")`) atraviesan el shadow root solos.
 - La foto tiene los ojos entrecerrados (relación 0,69 en reposo): para probar el clic poner `Winclus.ajustes.parpadeo_umbral = 0.45`.

@@ -33,13 +33,16 @@ Requisitos: Windows 10 u 11 de 64 bits y una cámara web.
 `web/widget.js` lleva lo mismo a cualquier página: se añade con una línea y funciona sin cuentas ni servidores propios.
 
 ```html
-<script src="https://winclus.com/widget-0.4.0.js" async></script>
+<script src="https://winclus.com/widget-0.5.0.js" async></script>
 ```
 
 - `widget.js` es siempre la última versión (caché de 5 minutos); `widget-X.Y.Z.js` es una copia inmutable de cada versión, para que un sitio no cambie sin querer. Al publicar una versión nueva: subir `VERSION` en `widget.js`, copiarlo a `widget-X.Y.Z.js` y actualizar la declaración de accesibilidad.
 - Atributos opcionales en el `<script>`: `data-posicion="izquierda"`, `data-color="#101F3D"`, `data-camara="no"`.
 - Pruebas del widget (Playwright + axe-core) en `herramientas/pruebas/widget`.
+- Guía de integración (CSP, web component, React/Vue, WordPress, Drupal, GOV.CO, IA, idiomas): https://winclus.com/integrar
 - Declaración de accesibilidad: https://winclus.com/accesibilidad · Datos personales: https://winclus.com/privacidad
+- Winclus Audit (escáner de un sitio con informe y borrador de declaración): `node herramientas/pruebas/widget/auditar.js https://sitio`
+- Plugin de WordPress y módulo de Drupal en `integraciones/`.
 
 ## Ejecutar desde el código
 

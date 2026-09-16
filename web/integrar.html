@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Integrar Winclus · Guía técnica</title>
+<meta name="description" content="Cómo añadir el widget Winclus a un sitio: una línea de script, atributos, versión fija, CSP con nonce, web component, React y Vue, WordPress, Drupal, GOV.CO, lectura fácil con IA y Winclus Audit.">
+<link rel="icon" href="img/icono.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="paginas.css">
+<style>pre{background:#101F3D;color:#EEF1EA;padding:14px 16px;border-radius:10px;overflow-x:auto;font:14px/1.5 Consolas,ui-monospace,monospace;white-space:pre}code{font-family:Consolas,ui-monospace,monospace;font-size:.92em;background:#F3F6FA;padding:1px 5px;border-radius:4px}pre code{background:none;padding:0}</style>
+</head>
+<body>
+<a class="salto" href="#contenido">Ir al contenido</a>
+<header>
+  <div class="barra">
+    <a class="marca" href="/"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a>
+    <a class="volver" href="/">Volver a la portada</a>
+  </div>
+</header>
+
+<main id="contenido">
+  <h1>Integrar Winclus en tu sitio</h1>
+  <p class="meta">Guía técnica para el widget 0.5.0. Winclus es tecnología de apoyo que se añade a un sitio: no lo hace conforme con la norma por sí solo. Para saber cómo está tu sitio, usa <a href="#audit">Winclus Audit</a>.</p>
+
+  <h2>1. Una línea</h2>
+  <p>Antes de <code>&lt;/body&gt;</code>. La versión fija no cambia sin que tú lo decidas; <code>widget.js</code> es siempre la última.</p>
+  <pre><code>&lt;script src="https://winclus.com/widget-0.5.0.js" async&gt;&lt;/script&gt;</code></pre>
+  <p>Atributos opcionales en el mismo <code>&lt;script&gt;</code>:</p>
+  <div class="tabla" tabindex="0" role="region" aria-label="Atributos del script"><table>
+    <thead><tr><th>Atributo</th><th>Valores</th><th>Qué hace</th></tr></thead>
+    <tbody>
+      <tr><td><code>data-posicion</code></td><td><code>derecha</code> (defecto), <code>izquierda</code></td><td>Lado del botón flotante y del panel.</td></tr>
+      <tr><td><code>data-color</code></td><td>color CSS</td><td>Color del botón flotante.</td></tr>
+      <tr><td><code>data-camara</code></td><td><code>no</code></td><td>No ofrece el puntero con la cara (todo lo demás sigue).</td></tr>
+      <tr><td><code>data-idioma</code></td><td><code>es-CO</code> (defecto), <code>es-MX</code>, <code>en-US</code>…</td><td>Idioma del reconocimiento de voz (dictado, órdenes, subtítulos en vivo).</td></tr>
+      <tr><td><code>data-ui</code></td><td><code>es</code>, <code>en</code></td><td>Idioma de los textos del panel. Sin él, se toma del <code>lang</code> de la página.</td></tr>
+      <tr><td><code>data-relevo</code></td><td><code>no</code></td><td>Quita los botones al Centro de Relevo y al diccionario de LSC (para sitios fuera de Colombia).</td></tr>
+      <tr><td><code>data-explicar</code></td><td>URL</td><td>Servicio propio de lectura fácil con IA (ver <a href="#ia">más abajo</a>). Sin él, la lectura fácil funciona por reglas.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>2. Política de seguridad de contenido (CSP)</h2>
+  <p>Winclus vive en un shadow root y no usa atributos <code>style</code> en línea, así que no necesita <code>'unsafe-inline'</code>. Si tu CSP usa nonce, ponlo en el <code>&lt;script&gt;</code>: el widget lo propaga a los <code>&lt;style&gt;</code> que inyecta. Directivas mínimas:</p>
+  <pre><code>script-src 'nonce-XYZ' https://winclus.com;
+style-src  'nonce-XYZ';
+img-src    https://static.arasaac.org data:;       /* pictogramas */
+connect-src https://winclus.com;                   /* detector de caras y diccionario, la primera vez */
+media-src  blob:;                                  /* la cámara, si se permite */</code></pre>
+  <pre><code>&lt;script nonce="XYZ" src="https://winclus.com/widget-0.5.0.js" async&gt;&lt;/script&gt;</code></pre>
+
+  <h2>3. Web component, React, Vue, Angular, Svelte</h2>
+  <p>Con <code>winclus-elemento.js</code> el widget es un elemento HTML. Sirve en cualquier framework y evita manipular el <code>&lt;head&gt;</code> a mano.</p>
+  <pre><code>&lt;script src="https://winclus.com/winclus-elemento.js" async&gt;&lt;/script&gt;
+&lt;winclus-widget posicion="izquierda" idioma="es-CO"&gt;&lt;/winclus-widget&gt;</code></pre>
+  <p>React (en el componente raíz, una sola vez):</p>
+  <pre><code>useEffect(() =&gt; {
+  const s = document.createElement("script");
+  s.src = "https://winclus.com/widget-0.5.0.js"; s.async = true; s.dataset.idioma = "es-CO";
+  document.body.appendChild(s);
+}, []);</code></pre>
+  <p>Vue (en <code>App.vue</code>, <code>onMounted</code>) es idéntico. Angular: en <code>ngOnInit</code> del componente raíz. Svelte: en <code>onMount</code>. En todos los casos, el widget se inicializa una vez y sobrevive a la navegación interna (SPA); si el contenido cambia, no hace falta avisarle.</p>
+  <p>Desde JavaScript puedes hablarle: <code>Winclus.abrir()</code>, <code>Winclus.cerrar()</code>, <code>Winclus.leer()</code>, <code>Winclus.decir("texto")</code>, <code>Winclus.teclado()</code>, <code>Winclus.orden("baja")</code>, <code>Winclus.ajustes</code> (los ajustes vivos), <code>Winclus.caja</code> (el shadow root).</p>
+
+  <h2>4. WordPress y Drupal</h2>
+  <p><strong>WordPress:</strong> copia la carpeta <code>integraciones/wordpress/winclus</code> del repositorio a <code>wp-content/plugins/</code> y actívalo. En Ajustes → Winclus eliges posición, cámara, idioma, Centro de Relevo, servicio de IA y si quieres versión fija o la última.</p>
+  <p><strong>Drupal 9, 10 u 11:</strong> copia <code>integraciones/drupal/winclus</code> a <code>modules/custom/</code> y actívalo (<code>drush en winclus</code>). Adjunta la librería externa a todas las páginas; los atributos se cambian en <code>winclus.libraries.yml</code>.</p>
+
+  <h2>5. Sedes electrónicas en Colombia: GOV.CO y MiColombiaDigital</h2>
+  <p>Las plantillas de GOV.CO y de MiColombiaDigital permiten incluir scripts en el pie de todas las páginas desde la administración del sitio (bloque de «código en el pie» o el pie de la plantilla). Pega ahí la línea del punto 1 con <code>data-idioma="es-CO"</code>. Recomendaciones para sujetos obligados por la Resolución 1519:</p>
+  <ul>
+    <li>Usa <strong>versión fija</strong> (<code>widget-0.5.0.js</code>) y anótala en tu declaración de accesibilidad.</li>
+    <li>Publica tu <strong>declaración de accesibilidad</strong> y enlázala desde el pie. <a href="#audit">Winclus Audit</a> te genera el borrador.</li>
+    <li>Añade a tu política de tratamiento de datos que el widget procesa la cámara en el navegador del usuario y que el dictado usa el reconocedor del navegador (texto de referencia en <a href="privacidad">winclus.com/privacidad</a>).</li>
+    <li>No describas Winclus como «cumplimiento» ni «certificación»: descríbelo como tecnología de apoyo para usar el sitio con la cara, la voz, un solo pulsador y pictogramas.</li>
+  </ul>
+
+  <h2 id="ia">6. Lectura fácil con tu propio servicio de IA</h2>
+  <p>Con <code>data-explicar="https://tu-servidor/explicar"</code>, el botón «Explicar en fácil» envía el texto de la página a tu servicio y muestra lo que devuelve (así los datos van a un servidor tuyo, no a uno de Winclus). Contrato:</p>
+  <pre><code>POST /explicar            Content-Type: application/json
+{ "texto": "…texto de la página…", "idioma": "es", "titulo": "Título" }
+
+200 OK                    Content-Type: application/json
+{ "texto": "# Resumen\n\nFrases cortas…\n\n# Pasos\n\n…" }   /* párrafos separados por línea en blanco; «# » hace un título */</code></pre>
+  <p>Si el servicio falla, el widget usa las reglas locales. Un ejemplo de servicio con la API de Claude en Node o Python cabe en 30 líneas: recibe el texto, pide «reescríbelo en lenguaje claro, frases de menos de 20 palabras, sin jerga, con los pasos en lista» y devuelve el resultado.</p>
+
+  <h2 id="audit">7. Winclus Audit: cómo está tu sitio</h2>
+  <p>Escáner de accesibilidad de código abierto: axe-core (WCAG 2.1 y 2.2 AA) en escritorio y móvil, más comprobaciones de la Resolución 1519 (texto al 200 %, declaración, ir al contenido, subtítulos). Genera un informe agrupado por criterio con cómo corregir cada cosa y un borrador de declaración de accesibilidad.</p>
+  <pre><code>git clone https://github.com/specteriatech/winclus
+cd winclus/herramientas/pruebas/widget
+npm install &amp;&amp; npx playwright install chromium
+node auditar.js https://tu-sitio.gov.co https://tu-sitio.gov.co/tramites --entidad "Alcaldía de …" --salida informe</code></pre>
+  <p>Un escáner detecta entre el 30 y el 50 % de las barreras; el resto sale de la revisión manual y de probar con personas con discapacidad. El informe lo dice.</p>
+
+  <h2>8. Añadir un idioma al panel</h2>
+  <p>Los textos del panel salen de un diccionario por idioma. Español e inglés van incluidos. Para otro idioma, define antes de cargar el widget un objeto con las cadenas en español como clave:</p>
+  <pre><code>&lt;script nonce="XYZ"&gt;
+  window.WinclusIdiomas = { pt: { "Ver mejor": "Ver melhor", "Tamaño del texto": "Tamanho do texto", /* … */ } };
+&lt;/script&gt;
+&lt;script nonce="XYZ" src="https://winclus.com/widget-0.5.0.js" data-ui="pt" async&gt;&lt;/script&gt;</code></pre>
+  <p>Lo que no esté traducido sale en español. Las voces, el reconocimiento y la lectura de la página siguen el idioma de la página (<code>lang</code>) y <code>data-idioma</code>.</p>
+
+  <h2>Licencia y código</h2>
+  <p>Apache 2.0. Código, pruebas y este documento: <a href="https://github.com/specteriatech/winclus">github.com/specteriatech/winclus</a>. Pictogramas de ARASAAC (CC BY-NC-SA). Detector de caras MediaPipe (Apache 2.0).</p>
+</main>
+
+<footer>
+  <div class="pie">
+    <div>© 2026 Colaboradores de Winclus · Licencia Apache 2.0</div>
+    <ul>
+      <li><a href="/">Portada</a></li>
+      <li><a href="accesibilidad">Accesibilidad</a></li>
+      <li><a href="privacidad">Privacidad y datos</a></li>
+      <li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="widget.js" async></script>
+</body>
+</html>

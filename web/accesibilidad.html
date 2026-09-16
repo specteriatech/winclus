@@ -22,7 +22,7 @@
 
 <main id="contenido">
   <h1>Declaración de accesibilidad</h1>
-  <p class="meta">Alcance: el sitio winclus.com y el widget web Winclus 0.4.0 (el panel, el teclado en pantalla, el menú de clics y la calibración). Fecha de esta declaración: 16 de septiembre de 2026. Se revisa con cada versión del widget.</p>
+  <p class="meta">Alcance: el sitio winclus.com y el widget web Winclus 0.5.0 (el panel, el teclado en pantalla, el menú de clics y la calibración). Fecha de esta declaración: 16 de septiembre de 2026. Se revisa con cada versión del widget.</p>
 
   <div class="resumen">
     <p><strong>Estado.</strong> winclus.com y el widget Winclus cumplen, según nuestra evaluación, el nivel <strong>AA de las WCAG 2.1</strong>, que es lo que exige el Anexo 1 de la Resolución 1519 de 2020 de MinTIC, y los criterios nuevos de las WCAG 2.2 que les aplican. Las excepciones conocidas están más abajo.</p>
@@ -47,7 +47,9 @@
     <li><strong>El lector básico no sustituye a un lector de pantalla.</strong> Está pensado para quien no tiene NVDA, JAWS o VoiceOver instalados. Si ya usas uno, no lo actives: se leerían las cosas dos veces. El panel lo advierte.</li>
     <li><strong>Texto al 200 % y espaciado para dislexia</strong> solo afectan a sitios que definen sus tamaños en unidades relativas (rem, em). En sitios con píxeles fijos el cambio es parcial; el zoom del navegador sigue funcionando.</li>
     <li><strong>La lupa de pantalla</strong> escala el contenido y puede descolocar cabeceras fijas del sitio anfitrión mientras está activa.</li>
-    <li><strong>Subtítulos automáticos y pictogramas</strong> no existen aún: son las siguientes funciones previstas.</li>
+    <li><strong>Los subtítulos en vivo</strong> usan el micrófono y el reconocedor del navegador: sirven para lo que se habla cerca (una videollamada, una consulta), no para el audio interno de un vídeo sin pistas de subtítulos.</li>
+    <li><strong>La lectura fácil por reglas</strong> acorta frases y cambia jerga por palabras corrientes, pero no entiende el texto: lo importante hay que confirmarlo en el original. Con un servicio de IA propio del sitio mejora, y también puede equivocarse.</li>
+    <li><strong>Avatar de Lengua de Señas y voces neuronales</strong> no existen aún.</li>
   </ul>
 
   <h2>Lo que puedes hacer con Winclus si…</h2>
@@ -57,7 +59,13 @@
       <tr><td>No puedes usar el ratón</td><td>Puntero por cabeza o por mirada con la cámara; clic por parpadeo, boca, cejas o quedándote quieto; menú radial para clic derecho, doble clic, arrastrar y rueda; imán a los botones y suavizado del temblor.</td></tr>
       <tr><td>No puedes usar el teclado</td><td>Teclado en pantalla con predicción y dictado; también se maneja con un pulsador que emule Tab e Intro.</td></tr>
       <tr><td>Solo puedes accionar una cosa (un pulsador, una tecla, un gesto)</td><td>Barrido: Winclus marca uno a uno los botones, enlaces y campos de la página y las filas y teclas del teclado, con voz y tiempo ajustable; la señal activa lo marcado.</td></tr>
-      <tr><td>No puedes hablar</td><td>Frases guardadas con voz y tecla «Decir» que lee lo escrito.</td></tr>
+      <tr><td>No puedes hablar</td><td>Frases guardadas con voz, tecla «Decir» que lee lo escrito y tablero de pictogramas ARASAAC con predicción para formar frases y decirlas.</td></tr>
+      <tr><td>No oyes o oyes poco</td><td>Aviso en pantalla y vibración cuando algo suena, subtítulos grandes con fondo en los vídeos que los traen, subtítulos en vivo por micrófono, botones al Centro de Relevo y al diccionario de LSC.</td></tr>
+      <tr><td>No entiendes el texto (jerga, oraciones largas)</td><td>«Explicar en fácil» en la lectura limpia: frases cortas, palabras corrientes con el término original al pasar el cursor, lo importante primero; lectura en voz alta con la palabra resaltada; «¿Dónde estoy?».</td></tr>
+      <tr><td>Te pierdes en los formularios</td><td>«Campo 3 de 8: Correo, obligatorio» al entrar, errores explicados en lenguaje claro con el foco en el primero, pegar siempre permitido.</td></tr>
+      <tr><td>Usas la voz para todo</td><td>Órdenes por voz, «números» para numerar enlaces y campos y «clic 12», dictado con confirmación.</td></tr>
+      <tr><td>Cambias de equipo</td><td>Perfil exportable (.winclus) y perfil por enlace que se importa al abrirlo, sin cuentas.</td></tr>
+      <tr><td>Tu página está en otro idioma</td><td>El panel sale en inglés en páginas en inglés (y en otros idiomas si el sitio aporta la traducción); el contenido se lee con voz de su idioma.</td></tr>
       <tr><td>Ves poco</td><td>Texto hasta el 200 %, alto contraste, modo oscuro, lupa 2× a 16×, guía de lectura, lectura en voz alta de lo que pulsas.</td></tr>
       <tr><td>No ves</td><td>Lector básico con voz manejado por teclado (encabezados, enlaces, botones, campos, imágenes).</td></tr>
       <tr><td>Confundes colores</td><td>Corrección para protanopia, deuteranopia y tritanopia, y escala de grises.</td></tr>

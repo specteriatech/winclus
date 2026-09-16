@@ -1,0 +1,5 @@
+name: Winclus
+type: module
+description: 'Widget de accesibilidad Winclus: uso con la cara, la voz, un solo pulsador, teclado en pantalla, pictogramas y ajustes de lectura y color.'
+package: Accesibilidad
+core_version_requirement: ^9 || ^10 || ^11

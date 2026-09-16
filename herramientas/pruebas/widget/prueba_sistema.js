@@ -59,7 +59,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   await page.evaluate(() => Winclus.leer());
   await page.evaluate(() => Winclus.decir("hola"));
   u = await page.evaluate(() => window.__u);
-  comprobar(u.length === 2 && /^en/.test(u[0].lang) && /^es/.test(u[1].lang), "página en inglés: el contenido se lee en inglés y el panel sigue en español", JSON.stringify(u));
+  comprobar(u.length === 2 && /^en/.test(u[0].lang) && /^en/.test(u[1].lang), "página en inglés: el contenido y el panel se leen en inglés (el panel sigue el idioma de la página)", JSON.stringify(u));
 
   // --- cursor grande ---
   await page.evaluate(() => Winclus.abrir());
