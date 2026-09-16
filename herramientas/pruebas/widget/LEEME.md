@@ -9,4 +9,11 @@
   oscuro y recarga. Necesita una vez `npm i` y `npx playwright install chromium` en esta carpeta.
   Nació del fallo crítico de la auditoría del 16-sep-2026: un `filter` sobre `.wcl-root` (0×0) sacaba el
   widget de la pantalla en modo oscuro y el ajuste quedaba guardado.
+- `node prueba_axe.js`: pasa axe-core (WCAG 2.1/2.2 AA y buenas prácticas) sobre el propio widget: cada
+  pestaña del panel, el teclado, la capa Frases y el modo fácil; y calcula a mano el contraste de lo que axe
+  no mira (interruptores, bordes, foco, botón Pausar, teclas). Sale 1 si hay algo incumplido.
+- `node prueba_teclado_fisico.js`: con Tab se llega a las teclas y a las frases, Intro y Espacio las pulsan y
+  el foco se queda en la tecla (también tras Mayús, que redibuja el teclado); con el lector básico activo,
+  Espacio e Intro siguen activando botones y casillas reales, las flechas siguen siendo del desplegable
+  enfocado, y sin control enfocado mueven el lector.
 - La foto tiene los ojos entrecerrados (relación 0,69 en reposo): para probar el clic poner `Winclus.ajustes.parpadeo_umbral = 0.45`.

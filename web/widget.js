@@ -91,8 +91,8 @@
     + '.wcl-root{position:fixed;left:0;top:0;width:0;height:0;z-index:2147483000;font:15px/1.45 "Segoe UI",system-ui,sans-serif;color:#101F3D}'
     + '.wcl-root *{box-sizing:border-box}'
     + '.wcl-btn{position:fixed;bottom:22px;' + LADO + ':22px;z-index:2147483010;width:60px;height:60px;border-radius:50%;border:0;background:' + opciones.color + ';box-shadow:0 8px 24px rgba(16,31,61,.35);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}'
-    + '.wcl-btn svg{width:34px;height:34px}.wcl-btn:focus-visible{outline:3px solid #F2B705;outline-offset:3px}'
-    + '.wcl-pausa{position:fixed;bottom:30px;' + LADO + ':92px;z-index:2147483010;display:none;min-height:44px;padding:8px 16px;border-radius:999px;border:0;background:#1AA89A;color:#fff;font:700 15px "Segoe UI",system-ui,sans-serif;box-shadow:0 6px 18px rgba(16,31,61,.3);cursor:pointer}'
+    + '.wcl-btn svg{width:34px;height:34px}.wcl-btn:focus-visible{outline:3px solid #2F4FD8;outline-offset:3px;box-shadow:0 0 0 3px #fff}'
+    + '.wcl-pausa{position:fixed;bottom:30px;' + LADO + ':92px;z-index:2147483010;display:none;min-height:44px;padding:8px 16px;border-radius:999px;border:0;background:#0F7A70;color:#fff;font:700 15px "Segoe UI",system-ui,sans-serif;box-shadow:0 6px 18px rgba(16,31,61,.3);cursor:pointer}'
     + '.wcl-pausa.en-pausa{background:#F2B705;color:#101F3D}'
     + '.wcl-pausa{max-width:calc(100vw - 120px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
     + '@media (max-width:480px){.wcl-panel{left:8px;right:8px;width:auto;max-width:none;bottom:88px;max-height:calc(100vh - 100px);border-radius:16px}'
@@ -105,16 +105,16 @@
     + '.wcl-cab svg{width:26px;height:26px}.wcl-cab b{flex:1;font-size:16px}.wcl-cab button{background:transparent;border:0;color:#fff;font-size:22px;cursor:pointer;width:40px;height:40px;border-radius:8px}.wcl-cab button:hover{background:rgba(255,255,255,.15)}'
     + '.wcl-tabs{display:flex;background:#E8ECF3;position:sticky;top:64px;z-index:2}.wcl-tabs button{flex:1;min-height:42px;border:0;background:transparent;font:600 13px "Segoe UI",system-ui,sans-serif;color:#5A6784;cursor:pointer;border-bottom:3px solid transparent}.wcl-tabs button[aria-selected="true"]{color:#2F4FD8;border-bottom-color:#2F4FD8;background:#fff}'
     + '.wcl-tab{display:none}.wcl-tab.activa{display:block}'
-    + '.wcl-sec{padding:12px 16px;border-bottom:1px solid #E3E8F0}.wcl-sec h4{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#5A6784}'
+    + '.wcl-sec{padding:12px 16px;border-bottom:1px solid #E3E8F0}.wcl-sec h2{margin:0 0 6px;padding:0;border:0;background:none;font-family:inherit;font-weight:700;line-height:1.3;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#5A6784}'
     + '.wcl-fila{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 0}.wcl-fila>label,.wcl-fila>span:first-child{flex:1}'
-    + '.wcl-sw{position:relative;width:46px;height:26px;border-radius:999px;background:#C8D0DC;border:0;cursor:pointer;flex:none;padding:0}.wcl-sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s}.wcl-sw[aria-checked="true"]{background:#1AA89A}.wcl-sw[aria-checked="true"]::after{left:23px}.wcl-sw:focus-visible{outline:3px solid #F2B705;outline-offset:2px}'
-    + '.wcl-mm{display:flex;gap:6px;align-items:center}.wcl-mm button{width:40px;height:36px;border-radius:10px;border:1px solid #C8D0DC;background:#fff;font-size:18px;cursor:pointer;color:#101F3D}.wcl-mm span{min-width:52px;text-align:center;font-weight:600;font-size:14px}'
-    + '.wcl-opc{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 6px}.wcl-opc button{min-height:36px;padding:0 12px;border-radius:10px;border:1px solid #C8D0DC;background:#fff;color:#101F3D;font:600 13px "Segoe UI",system-ui,sans-serif;cursor:pointer}.wcl-opc button[aria-pressed="true"]{background:#2F4FD8;border-color:#2F4FD8;color:#fff}'
-    + '.wcl-sel{width:100%;min-height:38px;border-radius:10px;border:1px solid #C8D0DC;padding:0 8px;font:14px "Segoe UI",system-ui,sans-serif;background:#fff;color:#101F3D}'
+    + '.wcl-sw{position:relative;width:46px;height:26px;border-radius:999px;background:#8892A6;border:0;cursor:pointer;flex:none;padding:0}.wcl-sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s}.wcl-sw[aria-checked="true"]{background:#0F7A70}.wcl-sw[aria-checked="true"]::after{left:23px}.wcl-sw:focus-visible{outline:3px solid #2F4FD8;outline-offset:2px}'
+    + '.wcl-mm{display:flex;gap:6px;align-items:center}.wcl-mm button{width:40px;height:36px;border-radius:10px;border:1px solid #8892A6;background:#fff;font-size:18px;cursor:pointer;color:#101F3D}.wcl-mm span{min-width:52px;text-align:center;font-weight:600;font-size:14px}'
+    + '.wcl-opc{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 6px}.wcl-opc button{min-height:36px;padding:0 12px;border-radius:10px;border:1px solid #8892A6;background:#fff;color:#101F3D;font:600 13px "Segoe UI",system-ui,sans-serif;cursor:pointer}.wcl-opc button[aria-pressed="true"]{background:#2F4FD8;border-color:#2F4FD8;color:#fff}'
+    + '.wcl-sel{width:100%;min-height:38px;border-radius:10px;border:1px solid #8892A6;padding:0 8px;font:14px "Segoe UI",system-ui,sans-serif;background:#fff;color:#101F3D}'
     + '.wcl-estado{font-size:13px;color:#5A6784;min-height:18px;padding:2px 0}'
     + '.wcl-big{width:100%;min-height:46px;border-radius:12px;border:0;background:#34C26B;color:#101F3D;font-weight:700;font-size:15px;cursor:pointer;margin:4px 0}.wcl-big.rojo{background:#F2B705}.wcl-big.suave{background:#E8F7F3}.wcl-big.azul{background:#2F4FD8;color:#fff}'
     + '.wcl-pie{padding:12px 16px;font-size:13px;color:#5A6784}.wcl-pie a{color:#2F4FD8}'
-    + '.wcl-area{width:100%;min-height:120px;border-radius:10px;border:1px solid #C8D0DC;padding:8px;font:14px "Segoe UI",system-ui,sans-serif;resize:vertical}'
+    + '.wcl-area{width:100%;min-height:120px;border-radius:10px;border:1px solid #8892A6;padding:8px;font:14px "Segoe UI",system-ui,sans-serif;resize:vertical}'
     + '.wcl-cam-vista{position:relative;width:100%;aspect-ratio:4/3;background:#101F3D;border-radius:12px;overflow:hidden;display:none}.wcl-cam-vista canvas{width:100%;height:100%;display:block}'
     + '.wcl-cursor{position:fixed;left:0;top:0;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:3px solid #2F4FD8;background:rgba(47,79,216,.18);z-index:2147483020;pointer-events:none;display:none}'
     + '.wcl-cursor::after{content:"";position:absolute;left:11px;top:11px;width:6px;height:6px;border-radius:50%;background:#2F4FD8}'
@@ -123,10 +123,10 @@
     + '.wcl-aviso{position:fixed;left:0;top:0;z-index:2147483021;pointer-events:none;display:none;padding:6px 12px;border-radius:999px;background:#101F3D;color:#fff;font:700 14px "Segoe UI",system-ui,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.3);white-space:nowrap;transform:translate(24px,24px)}.wcl-aviso.ambar{background:#F2B705;color:#101F3D}'
     + '.wcl-guia{position:fixed;left:0;right:0;height:38px;margin-top:-19px;background:rgba(242,183,5,.18);border-top:2px solid #F2B705;border-bottom:2px solid #F2B705;pointer-events:none;z-index:2147482999;display:none}'
     + '.wcl-video{position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;left:-10px;top:-10px}'
-    + '.wcl-menu{position:fixed;z-index:2147483015;display:none;pointer-events:none}.wcl-menu svg{display:block;overflow:visible}.wcl-menu path,.wcl-menu circle{fill:#fff;stroke:#C8D0DC;stroke-width:2}.wcl-menu .hov{fill:#2F4FD8;stroke:#2F4FD8}.wcl-menu text{font:700 13px "Segoe UI",system-ui,sans-serif;fill:#101F3D;text-anchor:middle;dominant-baseline:middle;pointer-events:none}.wcl-menu .hov+text{fill:#fff}.wcl-menu .centro text{fill:#5A6784;font-weight:400}'
-    + '.wcl-tec{position:fixed;left:0;right:0;z-index:2147483012;display:none;background:#F3F5F9;border-top:2px solid #C8D0DC;padding:6px;user-select:none;-webkit-user-select:none}.wcl-tec.arriba{border-top:0;border-bottom:2px solid #C8D0DC}.wcl-tec.visible{display:flex;flex-direction:column;gap:6px}'
+    + '.wcl-menu{position:fixed;z-index:2147483015;display:none;pointer-events:none}.wcl-menu svg{display:block;overflow:visible}.wcl-menu path,.wcl-menu circle{fill:#fff;stroke:#8892A6;stroke-width:2}.wcl-menu .hov{fill:#2F4FD8;stroke:#2F4FD8}.wcl-menu text{font:700 13px "Segoe UI",system-ui,sans-serif;fill:#101F3D;text-anchor:middle;dominant-baseline:middle;pointer-events:none}.wcl-menu .hov+text{fill:#fff}.wcl-menu .centro text{fill:#5A6784;font-weight:400}'
+    + '.wcl-tec{position:fixed;left:0;right:0;z-index:2147483012;display:none;background:#F3F5F9;border-top:2px solid #8892A6;padding:6px;user-select:none;-webkit-user-select:none}.wcl-tec.arriba{border-top:0;border-bottom:2px solid #8892A6}.wcl-tec.visible{display:flex;flex-direction:column;gap:6px}'
     + '.wcl-tec .fila{display:flex;gap:6px;flex:1;min-height:0}.wcl-tec .fila.sug{flex:.75}'
-    + '.wcl-tec button{flex:1 1 0;min-width:0;border-radius:10px;border:1px solid #C8D0DC;background:#fff;color:#101F3D;font:22px "Segoe UI",system-ui,sans-serif;cursor:pointer;padding:0 2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
+    + '.wcl-tec button{flex:1 1 0;min-width:0;border-radius:10px;border:1px solid #7E8A9E;background:#fff;color:#101F3D;font:22px "Segoe UI",system-ui,sans-serif;cursor:pointer;padding:0 2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
     + '.wcl-tec button.esp{background:#E8ECF3;font-size:15px;font-weight:700}.wcl-tec button.pred{color:#2F4FD8;font-weight:700;font-size:17px;background:#F3F5F9;border-color:#F3F5F9}.wcl-tec button.pred:empty{visibility:hidden}'
     + '.wcl-tec button.frase{font-size:14px;white-space:normal;line-height:1.15}'
     + '.wcl-tec button.activa{background:#DCE4FA;border:3px solid #2F4FD8}.wcl-tec button.fija{background:#2F4FD8;color:#fff}.wcl-tec button.hover{background:#DCE4FA;border:3px solid #2F4FD8}.wcl-tec button.destello{background:#2F4FD8;color:#fff}'
@@ -141,8 +141,11 @@
     + 'html.wcl-enlaces a{outline:3px solid #F2B705!important;outline-offset:2px;text-decoration:underline!important;background:rgba(242,183,5,.18)!important}'
     + 'html.wcl-anim *{animation-play-state:paused!important;transition:none!important;scroll-behavior:auto!important}'
     + 'html.wcl-lupa body{transition:transform .25s}'
-    + '.wcl-leyendo{outline:3px solid #1AA89A!important;outline-offset:2px}'
-    + '.wcl-iman{outline:3px solid #1AA89A!important;outline-offset:2px}';
+    + '.wcl-leyendo{outline:3px solid #0F7A70!important;outline-offset:2px}'
+    + '.wcl-iman{outline:3px solid #0F7A70!important;outline-offset:2px}'
+    // Foco de teclado visible en todo el widget (azul 6,5:1 sobre blanco); en las teclas hacia dentro para que no se solapen
+    + '.wcl-panel button:focus-visible,.wcl-panel select:focus-visible,.wcl-panel textarea:focus-visible,.wcl-panel input:focus-visible,.wcl-limpia button:focus-visible,.wcl-calib button:focus-visible{outline:3px solid #2F4FD8;outline-offset:2px}'
+    + '.wcl-tec button:focus-visible{outline:3px solid #2F4FD8;outline-offset:-3px}';
   var estilo = document.createElement("style"); estilo.textContent = css; (document.head || raiz).appendChild(estilo);
 
   // ----------------------------------------------------------------- DOM --
@@ -215,7 +218,7 @@
     w.appendChild(g);
     return w;
   }
-  function seccion(titulo) { return el("div", { "class": "wcl-sec" }, titulo ? "<h4>" + titulo + "</h4>" : ""); }
+  function seccion(titulo) { return el("div", { "class": "wcl-sec" }, titulo ? "<h2>" + titulo + "</h2>" : ""); }
   function botonGrande(texto, clase, alPulsar) {
     var b = el("button", { "type": "button", "class": "wcl-big " + (clase || "") }, texto);
     b.addEventListener("click", alPulsar);
@@ -1318,14 +1321,14 @@
     tecTextoEl = el("div", { "class": "texto", "aria-live": "polite" }); tecEl.appendChild(tecTextoEl);
     if (ajustes.teclado_prediccion && capa !== "frases") {
       var fs = el("div", { "class": "fila sug" });
-      for (var i = 0; i < 5; i++) { var b = el("button", { "type": "button", "class": "pred", "tabindex": "-1" }); b.dataset.i = i; fs.appendChild(b); teclas.push({ tipo: "pred", el: b, indice: i, valor: "" }); }
+      for (var i = 0; i < 5; i++) { var b = el("button", { "type": "button", "class": "pred" }); b.dataset.i = i; fs.appendChild(b); teclas.push({ tipo: "pred", el: b, indice: i, valor: "" }); }
       tecEl.appendChild(fs);
       cargarDiccionario();
     }
     filasCapa(capa).forEach(function (fila) {
       var f = el("div", { "class": "fila" });
       fila.forEach(function (d) {
-        var t = defTecla(d), b = el("button", { "type": "button", "tabindex": "-1" }, t.etiqueta.replace(/</g, "&lt;"));
+        var t = defTecla(d), b = el("button", { "type": "button" }, t.etiqueta.replace(/</g, "&lt;"));   // tabulable: quien usa un pulsador con Tab también llega a las teclas y a las frases
         b.style.flexGrow = t.ancho; if (t.tipo !== "texto") b.classList.add("esp"); if (t.tipo === "frase") b.classList.add("frase");
         if ((t.tipo === "mayus" && (capa === "ABC" || bloqMayus)) || (t.tipo === "capa" && t.valor === capa)) b.classList.add("activa");
         if (t.tipo === "mayus" && bloqMayus) b.classList.add("fija");
@@ -1336,7 +1339,15 @@
     });
     // Con el ratón de verdad también funciona; mousedown no roba el foco al campo
     tecEl.onmousedown = function (e) { e.preventDefault(); };
-    tecEl.onclick = function (e) { if (!e.isTrusted) return; var b = e.target.closest("button"); if (b) { var t = teclaDe(b); if (t) pulsarTecla(t); } };
+    tecEl.onclick = function (e) {
+      if (!e.isTrusted) return;
+      var b = e.target.closest("button"), t = b && teclaDe(b); if (!t) return;
+      // Pulsada con Intro o Espacio desde el teclado físico: el foco vuelve a la tecla (escribir lo lleva al campo),
+      // y si el teclado se redibujó (Mayús, otra capa) a la tecla que ocupa el mismo sitio
+      var conFoco = document.activeElement === b, i = teclas.indexOf(t);
+      pulsarTecla(t);
+      if (conFoco) { var nb = document.contains(b) ? b : (teclas[i] && teclas[i].el); if (nb) { try { nb.focus({ preventScroll: true }); } catch (x) {} } }
+    };
     refrescarSugerencias(); pintarTexto();
   }
   function teclaDe(b) { for (var i = 0; i < teclas.length; i++) if (teclas[i].el === b) return teclas[i]; return null; }
@@ -2056,9 +2067,18 @@
   });
   document.addEventListener("keydown", function (e) {
     if (!ajustes.lector || e.ctrlKey || e.altKey || e.metaKey) return;
-    var act = document.activeElement;
-    if (esEditable(act) && e.key !== "Escape" && e.key !== "F1") return;   // escribiendo: el teclado es para el campo
-    var k = e.key, paso = e.shiftKey ? -1 : 1, hecho = true;
+    var act = document.activeElement, k = e.key, paso = e.shiftKey ? -1 : 1, hecho = true;
+    if (esEditable(act) && k !== "Escape" && k !== "F1") return;   // escribiendo: el teclado es para el campo
+    // Sobre un control real de la página el lector no se queda con las teclas que el control necesita:
+    // Espacio e Intro los ejecuta el navegador (botón, casilla, enlace, desplegable) y luego se lee el resultado;
+    // listas, opciones, deslizadores, pestañas y menús usan las flechas y las letras por su cuenta.
+    var control = act && act !== document.body && act.closest && !act.closest(".wcl-root") && act.closest(SEL_CLICABLE);
+    if (control) {
+      if (k === " " || k === "Enter") { setTimeout(function () { if (lectorEl) anunciar(describir(lectorEl)); }, 300); return; }
+      var rol = act.getAttribute("role") || "";
+      if (act.tagName === "SELECT" || (act.tagName === "INPUT" && /^(radio|range|number|date|time|month|week|color)$/i.test(act.type || ""))
+          || /^(listbox|option|combobox|slider|spinbutton|tab|menuitem|menuitemradio|menuitemcheckbox|radio|tree|treeitem|grid|gridcell|scrollbar)$/.test(rol)) return;
+    }
     if (k === "ArrowDown") moverLector(1); else if (k === "ArrowUp") moverLector(-1);
     else if (k === "Home") { var l0 = bloquesLector(); if (l0.length) irLector(l0[0]); }
     else if (k === "End") { var l1 = bloquesLector(); if (l1.length) irLector(l1[l1.length - 1]); }
@@ -2088,7 +2108,7 @@
   sec8.appendChild(filaSw("sinimg", "Atenuar imágenes y vídeos", aplicarClases));
   tabs.ver.appendChild(sec8);
   var sec9 = seccion("Lector de pantalla");
-  sec9.appendChild(el("div", { "class": "wcl-estado" }, "Para personas ciegas o con muy poca visión: lee la página con voz y se maneja con el teclado (↓ ↑ leen, h encabezados, l enlaces, b botones, f campos, Intro activa, F1 ayuda)."));
+  sec9.appendChild(el("div", { "class": "wcl-estado" }, "Para personas ciegas o con muy poca visión: lee la página con voz y se maneja con el teclado (↓ ↑ leen, h encabezados, l enlaces, b botones, f campos, Intro activa, F1 ayuda). Si ya usas NVDA, JAWS o VoiceOver no lo actives: se pisarían."));
   sec9.appendChild(filaSw("lector", "Lector de pantalla activado", activarLector));
   tabs.oir.appendChild(sec9);
   var sec10 = seccion("Modo fácil");
