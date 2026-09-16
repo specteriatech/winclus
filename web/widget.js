@@ -35,7 +35,7 @@
     { base: ORIGEN + "/mediapipe", modelo: ORIGEN + "/mediapipe/face_landmarker.task" },
     { base: "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35", modelo: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task" }
   ];
-  var VERSION = "0.2.0";
+  var VERSION = "0.3.0";
   var CAM_W = 640, CAM_H = 480;
   var raiz = document.documentElement;
   var LADO = opciones.posicion === "izquierda" ? "left" : "right";

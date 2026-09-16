@@ -33,7 +33,7 @@
   <div class="aviso">Este texto es un borrador para revisión jurídica. Los datos del responsable entre corchetes deben completarse antes de publicarlo como definitivo y, si aplica por activos o ingresos, registrar las bases de datos en el RNBD de la Superintendencia de Industria y Comercio.</div>
 
   <h2>2. Qué datos se tratan, dónde y para qué</h2>
-  <table>
+  <div class="tabla" tabindex="0" role="region" aria-label="Tabla de datos tratados"><table>
     <thead><tr><th>Dato</th><th>Dónde se procesa</th><th>Se guarda</th><th>Sale del equipo</th><th>Para qué</th></tr></thead>
     <tbody>
       <tr><td><strong>Imagen de la cámara</strong> (tu cara, en tiempo real)</td><td>En tu equipo (app de Windows) o en tu navegador (widget web), con el detector de caras de MediaPipe</td><td>No. Ningún fotograma ni vídeo se guarda</td><td>No</td><td>Mover el puntero con la cabeza o los ojos y detectar los gestos del clic</td></tr>
@@ -44,7 +44,7 @@
       <tr><td><strong>Texto del asistente</strong> (app de Windows, opcional)</td><td>Según lo que elijas: un modelo local (Ollama) no sale del equipo; la API de Claude envía tu petición y la descripción de la ventana a Anthropic</td><td>No lo guarda Winclus</td><td>Solo con la API de Claude, y solo lo que escribes al asistente</td><td>Hacer por ti lo que le pides</td></tr>
       <tr><td><strong>Datos de navegación en winclus.com</strong></td><td>Servidor de alojamiento (Vercel)</td><td>Registros técnicos del alojamiento (dirección IP, fecha), sin cookies ni analítica de Winclus</td><td>Sí, como en cualquier sitio web</td><td>Servir la página</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <p>Al usar el widget web, el navegador descarga una vez el detector de caras y el diccionario de palabras desde winclus.com. Esa descarga no lleva ningún dato tuyo.</p>
 
   <h2>3. Datos sensibles y consentimiento</h2>
@@ -87,5 +87,6 @@
     </ul>
   </div>
 </footer>
+<script src="widget.js" async></script>
 </body>
 </html>

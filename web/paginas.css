@@ -36,4 +36,7 @@ dl dd{margin:0}
 footer{border-top:1px solid var(--linea);background:var(--fondo2)}
 .pie{width:min(1120px,100% - 40px);margin-inline:auto;padding:24px 0;font-size:.92rem;color:var(--texto2);display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
 .pie ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px 18px}
+main{overflow-wrap:anywhere}
+.tabla{overflow-x:auto;margin:12px 0 20px}
+.tabla table{margin:0;min-width:640px}
 @media (max-width:600px){ .barra{min-height:64px} .volver{padding:8px 14px} table{font-size:.88rem} th,td{padding:7px 6px} }
