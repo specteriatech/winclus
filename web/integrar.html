@@ -65,7 +65,7 @@ media-src  blob:;                                  /* la cámara, si se permite 
   <p>Desde JavaScript puedes hablarle: <code>Winclus.abrir()</code>, <code>Winclus.cerrar()</code>, <code>Winclus.leer()</code>, <code>Winclus.decir("texto")</code>, <code>Winclus.teclado()</code>, <code>Winclus.orden("baja")</code>, <code>Winclus.ajustes</code> (los ajustes vivos), <code>Winclus.caja</code> (el shadow root).</p>
 
   <h2>4. WordPress y Drupal</h2>
-  <p><strong>WordPress:</strong> copia la carpeta <code>integraciones/wordpress/winclus</code> del repositorio a <code>wp-content/plugins/</code> y actívalo. En Ajustes → Winclus eliges posición, cámara, idioma, Centro de Relevo, servicio de IA y si quieres versión fija o la última.</p>
+  <p><strong>WordPress:</strong> copia la carpeta <code>integraciones/wordpress/winclus</code> (se entrega con el acuerdo) a <code>wp-content/plugins/</code> y actívalo. En Ajustes → Winclus eliges posición, cámara, idioma, Centro de Relevo, servicio de IA y si quieres versión fija o la última.</p>
   <p><strong>Drupal 9, 10 u 11:</strong> copia <code>integraciones/drupal/winclus</code> a <code>modules/custom/</code> y actívalo (<code>drush en winclus</code>). Adjunta la librería externa a todas las páginas; los atributos se cambian en <code>winclus.libraries.yml</code>.</p>
 
   <h2>5. Sedes electrónicas en Colombia: GOV.CO y MiColombiaDigital</h2>
@@ -87,11 +87,8 @@ media-src  blob:;                                  /* la cámara, si se permite 
   <p>Si el servicio falla, el widget usa las reglas locales. Un ejemplo de servicio con la API de Claude en Node o Python cabe en 30 líneas: recibe el texto, pide «reescríbelo en lenguaje claro, frases de menos de 20 palabras, sin jerga, con los pasos en lista» y devuelve el resultado.</p>
 
   <h2 id="audit">7. Winclus Audit: cómo está tu sitio</h2>
-  <p>Escáner de accesibilidad de código abierto: axe-core (WCAG 2.1 y 2.2 AA) en escritorio y móvil, más comprobaciones de la Resolución 1519 (texto al 200 %, declaración, ir al contenido, subtítulos). Genera un informe agrupado por criterio con cómo corregir cada cosa y un borrador de declaración de accesibilidad.</p>
-  <pre tabindex="0"><code>git clone https://github.com/specteriatech/winclus
-cd winclus/herramientas/pruebas/widget
-npm install &amp;&amp; npx playwright install chromium
-node auditar.js https://tu-sitio.gov.co https://tu-sitio.gov.co/tramites --entidad "Alcaldía de …" --salida informe</code></pre>
+  <p>Escáner de accesibilidad: axe-core (WCAG 2.1 y 2.2 AA) en escritorio y móvil, más comprobaciones de la Resolución 1519 (texto al 200 %, declaración, ir al contenido, subtítulos). Genera un informe agrupado por criterio con cómo corregir cada cosa y un borrador de declaración de accesibilidad.</p>
+  <p>Se entrega con el acuerdo de soporte. Ejecución: <code>node auditar.js https://tu-sitio.gov.co --entidad "Alcaldía de …" --salida informe</code>. Pídelo en hola@winclus.com.</p>
   <p>Un escáner detecta entre el 30 y el 50 % de las barreras; el resto sale de la revisión manual y de probar con personas con discapacidad. El informe lo dice.</p>
 
   <h2>8. Añadir un idioma al panel</h2>
@@ -102,13 +99,13 @@ node auditar.js https://tu-sitio.gov.co https://tu-sitio.gov.co/tramites --entid
 &lt;script nonce="XYZ" src="https://winclus.com/widget-0.5.0.js" data-ui="pt" async&gt;&lt;/script&gt;</code></pre>
   <p>Lo que no esté traducido sale en español. Las voces, el reconocimiento y la lectura de la página siguen el idioma de la página (<code>lang</code>) y <code>data-idioma</code>.</p>
 
-  <h2>Licencia y código</h2>
-  <p>Apache 2.0. Código, pruebas y este documento: <a href="https://github.com/specteriatech/winclus">github.com/specteriatech/winclus</a>. Pictogramas de ARASAAC (CC BY-NC-SA). Detector de caras MediaPipe (Apache 2.0).</p>
+  <h2>Componentes de terceros</h2>
+  <p>Pictogramas de ARASAAC (CC BY-NC-SA). Detector de caras MediaPipe y componentes de Project Gameface (Google), que no patrocinan ni respaldan este producto.</p>
 </main>
 
 <footer>
   <div class="pie">
-    <div>© 2026 Colaboradores de Winclus · Licencia Apache 2.0</div>
+    <div>© 2026 Winclus</div>
     <ul>
       <li><a href="/">Portada</a></li>
       <li><a href="accesibilidad">Accesibilidad</a></li>

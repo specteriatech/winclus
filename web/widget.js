@@ -2404,7 +2404,7 @@
   }));
   tabs.mas.appendChild(s);
   s = seccion("Acerca de");
-  s.appendChild(el("div", { "class": "wcl-pie", "style": "padding:0" }, 'Winclus widget ' + VERSION + ', código abierto (Apache 2.0). Sin cuentas, sin rastreo y sin servidores propios: la cámara, la calibración y tus ajustes se quedan en este navegador. Solo el dictado y las órdenes por voz usan el reconocedor del navegador (Google o Microsoft). <a href="https://winclus.com/privacidad" target="_blank" rel="noopener">Política de tratamiento de datos</a>.<br><br>¿Quieres controlar todo el ordenador con la cara? <a href="https://winclus.com/#contacto" target="_blank" rel="noopener">Comunícate con nosotros</a>.'));
+  s.appendChild(el("div", { "class": "wcl-pie", "style": "padding:0" }, 'Winclus widget ' + VERSION + '. Sin cuentas, sin rastreo y sin servidores propios: la cámara, la calibración y tus ajustes se quedan en este navegador. Solo el dictado y las órdenes por voz usan el reconocedor del navegador (Google o Microsoft). <a href="https://winclus.com/privacidad" target="_blank" rel="noopener">Política de tratamiento de datos</a>.<br><br>¿Quieres controlar todo el ordenador con la cara? <a href="https://winclus.com/#contacto" target="_blank" rel="noopener">Comunícate con nosotros</a>.'));
   tabs.mas.appendChild(s);
 
   TABS.forEach(function (t) { panel.appendChild(tabs[t[0]]); });

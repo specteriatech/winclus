@@ -31,10 +31,10 @@
   <h1>Winclus frente a lo que ya existe</h1>
   <p class="meta">Actualizado el 16 de septiembre de 2026 para Winclus 0.5.0. Lo que se dice de otros productos sale de su documentación pública en esa fecha; donde no consta, lo marcamos con «?» y hay que verificarlo antes de usarlo en una oferta. Corrige cualquier error escribiendo a <a href="mailto:hola@winclus.com">hola@winclus.com</a>.</p>
 
-  <div class="ventaja"><p><strong>La diferencia de fondo.</strong> Los widgets de accesibilidad (overlays) añaden un panel de texto grande, contraste y lectura en voz alta. La tecnología de apoyo de escritorio (Tobii, JAWS, Grid 3) permite usar el ordenador a quien no puede con ratón, teclado o voz, y cuesta cientos o miles de dólares por persona. Winclus mete lo segundo dentro de cualquier página web, gratis para la persona, con el código abierto y el procesamiento en su propio navegador. No compite con los overlays en lo que ellos hacen; hace lo que ellos no hacen.</p></div>
+  <div class="ventaja"><p><strong>La diferencia de fondo.</strong> Los widgets de accesibilidad (overlays) añaden un panel de texto grande, contraste y lectura en voz alta. La tecnología de apoyo de escritorio (Tobii, JAWS, Grid 3) permite usar el ordenador a quien no puede con ratón, teclado o voz, y cuesta cientos o miles de dólares por persona. Winclus mete lo segundo dentro de cualquier página web, gratis para la persona y con el procesamiento en su propio navegador. No compite con los overlays en lo que ellos hacen; hace lo que ellos no hacen.</p></div>
 
   <h2>1. Qué puede hacer la persona con cada uno</h2>
-  <p class="leyenda">Sí = lo tiene · Parcial = lo tiene con límites · No = no lo tiene · ? = no consta en su documentación pública. Winclus: todo lo marcado «Sí» tiene una prueba automática pública en el repositorio.</p>
+  <p class="leyenda">Sí = lo tiene · Parcial = lo tiene con límites · No = no lo tiene · ? = no consta en su documentación pública. Winclus: todo lo marcado «Sí» tiene una prueba automática cuyo resultado se publica en winclus.com/evidencia.</p>
   <div class="tabla" tabindex="0" role="region" aria-label="Comparación de funciones"><table>
     <thead><tr><th>Función</th><th>Winclus</th><th>accessiBe</th><th>UserWay</th><th>EqualWeb</th><th>AudioEye</th><th>Tobii (hardware)</th><th>JAWS</th><th>Grid 3</th></tr></thead>
     <tbody>
@@ -67,10 +67,10 @@
     <thead><tr><th>Aspecto</th><th>Winclus</th><th>Overlays (accessiBe, UserWay, EqualWeb, AudioEye)</th><th>Tobii, JAWS, Grid 3</th></tr></thead>
     <tbody>
       <tr><td>Dónde se procesan los datos de la persona</td><td class="si">En su navegador. La cámara nunca sale del equipo (verificable en el código). Solo la voz del dictado usa el reconocedor del navegador, y se avisa.</td><td class="parcial">El panel se carga desde los servidores del proveedor; el tratamiento de datos depende de su política.</td><td class="si">En el equipo.</td></tr>
-      <tr><td>Código</td><td class="si">Abierto, Apache 2.0, auditable por cualquiera.</td><td class="no">Cerrado.</td><td class="no">Cerrado.</td></tr>
+      <tr><td>Código</td><td class="parcial">Auditable por la entidad que lo contrata, bajo acuerdo.</td><td class="no">Cerrado.</td><td class="no">Cerrado.</td></tr>
       <tr><td>Cuentas, cookies, rastreo</td><td class="si">Ninguno.</td><td class="parcial">Según proveedor; varios usan analítica.</td><td class="si">Ninguno (licencia).</td></tr>
-      <tr><td>Aislamiento del sitio (shadow root) y CSP estricta sin <code>'unsafe-inline'</code></td><td class="si">Sí, con prueba pública.</td><td class="duda">?</td><td class="parcial">No aplica (escritorio).</td></tr>
-      <tr><td>Pruebas automáticas públicas de accesibilidad del propio producto</td><td class="si">22 guiones (axe-core, teclado, contraste, posición, CSP, idiomas…) que cualquiera puede repetir.</td><td class="no">No públicas.</td><td class="no">No públicas.</td></tr>
+      <tr><td>Aislamiento del sitio (shadow root) y CSP estricta sin <code>'unsafe-inline'</code></td><td class="si">Sí, con prueba automática publicada.</td><td class="duda">?</td><td class="parcial">No aplica (escritorio).</td></tr>
+      <tr><td>Pruebas automáticas públicas de accesibilidad del propio producto</td><td class="si">22 guiones (axe-core, teclado, contraste, posición, CSP, idiomas…) con resultado publicado en winclus.com/evidencia.</td><td class="no">No públicas.</td><td class="no">No públicas.</td></tr>
       <tr><td>Declaración de accesibilidad e informe de conformidad (ACR/VPAT) del producto</td><td class="si">Públicos (autoevaluación; auditoría de tercero pendiente).</td><td class="parcial">Algunos publican VPAT.</td><td class="parcial">Algunos publican VPAT.</td></tr>
       <tr><td>Precio para la persona</td><td class="si">Gratis.</td><td class="si">Gratis (paga el sitio).</td><td class="no">Cientos o miles de dólares por licencia o equipo; en Colombia JAWS y ZoomText se subsidian vía ConVerTIC, el resto no.</td></tr>
       <tr><td>Precio para el sitio</td><td class="si">Gratis; soporte, auditoría y capacitación de pago (opcional).</td><td class="parcial">Suscripción mensual por sitio (consulta sus webs).</td><td class="parcial">No aplica.</td></tr>
@@ -84,7 +84,7 @@
   <div class="honesto">
     <ul>
       <li><strong>Idiomas:</strong> los overlays traen decenas de idiomas de fábrica; Winclus, español e inglés, y otros los aporta el sitio.</li>
-      <li><strong>Trayectoria y soporte:</strong> ellos tienen años en el mercado, soporte 24/7 y miles de clientes. Winclus está empezando: nuestra evidencia son las pruebas públicas, los pilotos y la declaración, no los años.</li>
+      <li><strong>Trayectoria y soporte:</strong> ellos tienen años en el mercado, soporte 24/7 y miles de clientes. Winclus está empezando: nuestra evidencia son las pruebas publicadas, los pilotos y la declaración, no los años.</li>
       <li><strong>Precisión de la mirada:</strong> una cámara de Tobii es más precisa que una webcam normal. Winclus lo compensa con el modo híbrido (los ojos saltan, la cabeza afina), el imán a los botones y la calibración invisible, y cuesta cero.</li>
       <li><strong>Lector de pantalla:</strong> JAWS y NVDA son lectores completos; el de Winclus es básico y está pensado para quien no los tiene. Por eso no interfiere con ellos.</li>
       <li><strong>Pruebas con personas usuarias:</strong> todavía no tenemos informes publicados; hay un protocolo y se harán con INCI, INSOR y fundaciones.</li>
@@ -97,21 +97,21 @@
     <li>Abre el tablero de pictogramas y forma una frase sin escribir.</li>
     <li>Pulsa «Explicar en fácil» en un texto jurídico.</li>
     <li>Abre las herramientas de desarrollo del navegador: en la pestaña de red no sale ningún vídeo ni imagen de la cámara hacia ningún servidor.</li>
-    <li>Ejecuta <code>npm test</code> en el repositorio: 22 pruebas públicas, todas en verde, sobre el propio widget.</li>
-    <li>Pasa <code>auditar.js</code> sobre tu sitio y obtén el informe por criterio de la Resolución 1519 y el borrador de declaración.</li>
+    <li>Abre winclus.com/evidencia: 22 pruebas automáticas sobre el propio widget, todas en verde, con fecha y versión.</li>
+    <li>Pídenos Winclus Audit sobre tu sitio: informe por criterio de la Resolución 1519 y borrador de declaración.</li>
   </ol>
 
   <h2>Fuentes</h2>
   <ul>
     <li>Documentación pública de accessiBe, UserWay, EqualWeb, AudioEye, Tobii Dynavox, Freedom Scientific (JAWS) y Smartbox (Grid 3), consultada en septiembre de 2026.</li>
     <li>FTC, orden contra accessiBe (enero de 2025); Overlay Fact Sheet (overlayfactsheet.com).</li>
-    <li>Pruebas públicas de Winclus: <a href="https://github.com/specteriatech/winclus/tree/main/herramientas/pruebas/widget">github.com/specteriatech/winclus</a>.</li>
+    <li>Pruebas de Winclus: <a href="evidencia">winclus.com/evidencia</a>.</li>
   </ul>
 </main>
 
 <footer>
   <div class="pie">
-    <div>© 2026 Colaboradores de Winclus · Licencia Apache 2.0</div>
+    <div>© 2026 Winclus</div>
     <ul>
       <li><a href="/">Portada</a></li>
       <li><a href="accesibilidad">Accesibilidad</a></li>

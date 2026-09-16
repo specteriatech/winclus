@@ -25,7 +25,7 @@
   <p class="meta">Winclus widget 0.5.0 · septiembre de 2026 · Complementa la <a href="guia">guía para personas usuarias</a>, la <a href="integrar">guía técnica de integración</a> y la <a href="accesibilidad">declaración de accesibilidad</a>.</p>
 
   <h2>1. Qué es y qué no es</h2>
-  <p>Winclus es <strong>tecnología de apoyo embebida</strong>: un componente que se añade a un sitio web para que las personas puedan usarlo con la cara, los ojos, la voz, un solo pulsador, un teclado en pantalla o pictogramas, y con ajustes de lectura, color, calma y lenguaje claro. Es gratuito, de código abierto (Apache 2.0) y se procesa en el navegador de la persona.</p>
+  <p>Winclus es <strong>tecnología de apoyo embebida</strong>: un componente que se añade a un sitio web para que las personas puedan usarlo con la cara, los ojos, la voz, un solo pulsador, un teclado en pantalla o pictogramas, y con ajustes de lectura, color, calma y lenguaje claro. Es gratuito para la persona y se procesa en su navegador.</p>
   <p>Winclus <strong>no hace conforme</strong> un sitio con las WCAG ni con la Resolución 1519 de 2020. Un sitio cumple cuando su propio código cumple. Para saber qué le falta, use Winclus Audit (sección 6). En pliegos, comunicaciones y contratos describa Winclus como tecnología de apoyo, nunca como «cumplimiento» ni «certificación».</p>
 
   <h2>2. Instalación</h2>
@@ -35,7 +35,7 @@
   <h3>2.2 Plantillas y gestores</h3>
   <ul class="lista">
     <li><strong>GOV.CO y MiColombiaDigital:</strong> administración del sitio → código en el pie (o pie de la plantilla). Pegue la línea anterior.</li>
-    <li><strong>WordPress:</strong> plugin en <code>integraciones/wordpress/winclus</code> del repositorio; Ajustes → Winclus.</li>
+    <li><strong>WordPress:</strong> plugin en <code>integraciones/wordpress/winclus</code> (se entrega con el acuerdo); Ajustes → Winclus.</li>
     <li><strong>Drupal 9 a 11:</strong> módulo en <code>integraciones/drupal/winclus</code>.</li>
     <li><strong>React, Vue, Angular, Svelte:</strong> web component <code>&lt;winclus-widget&gt;</code> con <code>winclus-elemento.js</code>.</li>
   </ul>
@@ -51,7 +51,7 @@
   <h3>2.4 Política de seguridad de contenido (CSP)</h3>
   <p>No necesita <code>'unsafe-inline'</code>. Con nonce, póngalo en el <code>&lt;script&gt;</code> y el widget lo propaga. Directivas mínimas: <code>script-src 'nonce-…' https://winclus.com; style-src 'nonce-…'; img-src https://static.arasaac.org data:; connect-src https://winclus.com; media-src blob:</code>.</p>
   <h3>2.5 Comprobar que funciona</h3>
-  <p>Abra el sitio, pulse el botón redondo, pestaña Ver, «Alto contraste». Si la página cambia, está bien. Para una comprobación completa: <code>node prueba_produccion.js https://su-sitio</code> en el repositorio recorre las funciones de los nueve grupos de discapacidad sobre su página.</p>
+  <p>Abra el sitio, pulse el botón redondo, pestaña Ver, «Alto contraste». Si la página cambia, está bien. Para una comprobación completa: <code>node prueba_produccion.js https://su-sitio</code> (se entrega con el acuerdo) recorre las funciones de los nueve grupos de discapacidad sobre su página.</p>
 
   <h2>3. Qué ofrece a las personas</h2>
   <ul class="lista">
@@ -76,10 +76,7 @@
   <p>Sin configuración, «Explicar en fácil» funciona por reglas. Con <code>data-explicar="https://su-servidor/explicar"</code>, el widget envía el texto de la página a su servicio y muestra la respuesta. Contrato: <code>POST</code> JSON <code>{texto, idioma, titulo}</code> → <code>{texto}</code> (párrafos separados por línea en blanco; «# » hace un título). Si el servicio falla, se usan las reglas. Así los datos van a un servidor de la entidad, no a Winclus.</p>
 
   <h2>6. Winclus Audit: cómo está su sitio</h2>
-  <pre tabindex="0"><code>git clone https://github.com/specteriatech/winclus
-cd winclus/herramientas/pruebas/widget
-npm install &amp;&amp; npx playwright install chromium
-node auditar.js https://su-sitio.gov.co https://su-sitio.gov.co/tramites --entidad "Nombre de la entidad" --salida informe</code></pre>
+  <p>Winclus Audit se entrega con el acuerdo de soporte. Ejecución: <code>node auditar.js https://su-sitio.gov.co --entidad "Nombre de la entidad" --salida informe</code>.</p>
   <p>Genera <code>informe.html</code> (incumplimientos agrupados por criterio de la Resolución 1519, con cómo corregir cada uno, en escritorio y móvil), <code>declaracion.html</code> (borrador de declaración de accesibilidad con los huecos por rellenar) y <code>resultados.json</code>. Un escáner detecta entre el 30 y el 50 % de las barreras: complete con revisión manual y pruebas con personas.</p>
 
   <h2>7. Cifras de uso para reportar</h2>
@@ -89,14 +86,14 @@ node auditar.js https://su-sitio.gov.co https://su-sitio.gov.co/tramites --entid
   <ul class="lista">
     <li>Publique su declaración (borrador de Winclus Audit) enlazada desde el pie de todas las páginas: nivel alcanzado, método, fecha, excepciones, contacto y plazo de respuesta.</li>
     <li>Indique que el sitio incluye Winclus como tecnología de apoyo y enlace la guía para personas usuarias.</li>
-    <li>Palabras que no debe usar sobre Winclus: «cumple la norma por usted», «hace el sitio accesible», «certificado». Palabras correctas: «permite usar el sitio con la cara, la voz y un solo pulsador», «procesado en el dispositivo», «código abierto».</li>
+    <li>Palabras que no debe usar sobre Winclus: «cumple la norma por usted», «hace el sitio accesible», «certificado». Palabras correctas: «permite usar el sitio con la cara, la voz y un solo pulsador», «procesado en el dispositivo».</li>
   </ul>
 
   <h2>9. Mantenimiento</h2>
   <ul class="lista">
-    <li><strong>Versiones:</strong> con la versión fija nada cambia. Para actualizar, cambie el número en el <code>&lt;script&gt;</code> tras leer las notas de la versión en el repositorio y pasar <code>prueba_produccion.js</code> sobre su sitio.</li>
+    <li><strong>Versiones:</strong> con la versión fija nada cambia. Para actualizar, cambie el número en el <code>&lt;script&gt;</code> tras leer las notas de la versión y pasar <code>prueba_produccion.js</code> sobre su sitio.</li>
     <li><strong>Evidencia:</strong> el resultado de las pruebas automáticas del widget está en <a href="evidencia">winclus.com/evidencia</a> con fecha y commit; se regenera con cada cambio.</li>
-    <li><strong>Incidencias:</strong> hola@winclus.com o el repositorio público. Respuesta en máximo 10 días hábiles; con acuerdo de soporte, los plazos del acuerdo.</li>
+    <li><strong>Incidencias:</strong> hola@winclus.com. Respuesta en máximo 10 días hábiles; con acuerdo de soporte, los plazos del acuerdo.</li>
     <li><strong>Capacitación:</strong> sesión de una hora para el equipo de atención (cómo ayudar a una persona a activar lo que necesita) y de dos horas para el equipo técnico (integración, Audit, declaración).</li>
   </ul>
 
@@ -109,10 +106,10 @@ node auditar.js https://su-sitio.gov.co https://su-sitio.gov.co/tramites --entid
     <li>Declaración de accesibilidad publicada y enlazada desde el pie.</li>
     <li>Guía para personas usuarias enlazada desde la página de accesibilidad.</li>
     <li>Equipo de atención capacitado.</li>
-    <li>Primera ronda de pruebas con personas usuarias programada (protocolo público en el repositorio).</li>
+    <li>Primera ronda de pruebas con personas usuarias programada (protocolo disponible a petición).</li>
   </ol>
 </main>
-<footer><div class="pie"><div>© 2026 Colaboradores de Winclus · Licencia Apache 2.0</div><ul><li><a href="/">Portada</a></li><li><a href="guia">Guía para personas</a></li><li><a href="integrar">Integrar</a></li><li><a href="accesibilidad">Accesibilidad</a></li><li><a href="privacidad">Privacidad y datos</a></li></ul></div></footer>
+<footer><div class="pie"><div>© 2026 Winclus</div><ul><li><a href="/">Portada</a></li><li><a href="guia">Guía para personas</a></li><li><a href="integrar">Integrar</a></li><li><a href="accesibilidad">Accesibilidad</a></li><li><a href="privacidad">Privacidad y datos</a></li></ul></div></footer>
 <script src="widget.js" async></script>
 </body>
 </html>

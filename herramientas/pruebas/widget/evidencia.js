@@ -74,7 +74,7 @@ let h = `<!DOCTYPE html>
 <header><div class="barra"><a class="marca" href="/"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a><a class="volver" href="/">Volver a la portada</a></div></header>
 <main id="contenido">
   <h1>Evidencia: lo que las pruebas demuestran</h1>
-  <p class="meta">Generado automáticamente el ${esc(fechaTxt)} · widget ${esc(json.version)} · commit <code>${esc(json.commit)}</code>. Las pruebas corren en GitHub en cada cambio del código y cualquiera puede repetirlas: <code>npm test</code> en <a href="https://github.com/specteriatech/winclus/tree/main/herramientas/pruebas/widget">herramientas/pruebas/widget</a>.</p>
+  <p class="meta">Generado automáticamente el ${esc(fechaTxt)} · widget ${esc(json.version)} · commit <code>${esc(json.commit)}</code>. Las pruebas corren automáticamente con cada cambio del código.</p>
   <div class="kpi"><div><b>${json.pruebas}</b>pruebas</div><div><b>${json.comprobaciones}</b>comprobaciones</div><div><b class="${fallan ? "mal" : "ok"}">${fallan ? fallan + " fallan" : "0 fallan"}</b>estado</div></div>
   <div class="${fallan ? "aviso" : "resumen"}"><p>${fallan ? "<strong>Hay pruebas que fallan.</strong> Esta versión no debería desplegarse hasta corregirlas; el detalle está abajo." : "<strong>Todas las pruebas pasan.</strong> Esto demuestra lo que el widget hace por sí mismo; no sustituye a las pruebas con personas usuarias ni a una auditoría de tercero, que están en curso."}</p></div>
   <h2>Por criterio</h2>
@@ -85,13 +85,8 @@ h += `</tbody></table></div>
 resultados.forEach((r) => {
   h += `<details><summary><span class="${r.bien ? "ok" : "mal"}">${r.bien ? "✓" : "✗"}</span> ${esc(r.archivo)} · ${r.ok} comprobaciones${r.mal ? ", " + r.mal + " fallan" : ""} · ${r.segundos} s</summary><p>${esc(r.que)}</p><p>${r.criterios.map((c) => `<span class="tag">${esc(c)}</span>`).join("")}</p><ul class="lineas">${r.lineas.map((l) => `<li class="${l.startsWith("OK") ? "" : "mal"}">${esc(l.replace(/^(OK|MAL)\s+/, ""))}</li>`).join("")}</ul></details>`;
 });
-h += `<h2>Cómo repetirlo</h2><pre tabindex="0"><code>git clone https://github.com/specteriatech/winclus
-cd winclus/herramientas/pruebas/widget
-npm install &amp;&amp; npx playwright install chromium
-npm test            # las ${json.pruebas} pruebas
-node evidencia.js   # regenera esta página</code></pre>
-</main>
-<footer><div class="pie"><div>© 2026 Colaboradores de Winclus · Licencia Apache 2.0</div><ul><li><a href="/">Portada</a></li><li><a href="accesibilidad">Accesibilidad</a></li><li><a href="comparar">Frente a otras soluciones</a></li><li><a href="privacidad">Privacidad y datos</a></li><li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li></ul></div></footer>
+h += `</main>
+<footer><div class="pie"><div>© 2026 Winclus</div><ul><li><a href="/">Portada</a></li><li><a href="accesibilidad">Accesibilidad</a></li><li><a href="comparar">Frente a otras soluciones</a></li><li><a href="privacidad">Privacidad y datos</a></li><li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li></ul></div></footer>
 <script src="widget.js" async></script>
 </body>
 </html>`;
