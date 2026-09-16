@@ -59,7 +59,7 @@
     gestos_umbral: 50,
     avisos_visuales: true, avisos_sonido: false,
     teclado_altura: 32, teclado_posicion: "abajo", teclado_prediccion: true, teclado_sonido: true,
-    camara_ver: true, dwell: false, ahorro: false,
+    camara_ver: true, dwell: false, ahorro: false, cursor_grande: false,
     dalton: "no", calma: false, dislexia: false, sinimg: false, mascara: false, lector: false, facil: false,
     lupa_pantalla: false, lupa_pantalla_zoom: 2
   };
@@ -73,14 +73,25 @@
     }
   }
   function cargarAjustes() {
-    try {
-      var g = JSON.parse(localStorage.getItem(CLAVE));
-      if (!g) return;
+    var g = null;
+    try { g = JSON.parse(localStorage.getItem(CLAVE)); } catch (e) {}
+    if (g) {
       fusionarAjustes(g);
       if (g.dwell && g.modo_clic == null) ajustes.modo_clic = "quieto";   // ajuste de la versión 0.1
-    } catch (e) {}
+    }
+    preferenciasDelSistema(g || {});
+  }
+  // Lo que la persona ya pidió al sistema operativo se respeta sin que tenga que repetirlo aquí (EN 301 549 11.7),
+  // pero solo mientras no haya tocado ese ajuste en el widget: lo guardado manda.
+  function preferenciasDelSistema(g) {
+    var mm = function (q) { try { return !!(window.matchMedia && window.matchMedia(q).matches); } catch (e) { return false; } };
+    if (mm("(prefers-reduced-motion: reduce)")) { if (!("animaciones" in g)) ajustes.animaciones = true; if (!("calma" in g)) ajustes.calma = true; }
+    if (mm("(prefers-contrast: more)") && !("contraste" in g)) ajustes.contraste = true;
   }
   cargarAjustes();
+  // Idioma de la página (para leerla con la voz que toca) y del reconocimiento de voz (español de Colombia por defecto)
+  var IDIOMA_PAGINA = (document.documentElement.lang || "es").toLowerCase();
+  var IDIOMA_VOZ = (script && script.dataset.idioma) || "es-CO";
   function guardar() { try { localStorage.setItem(CLAVE, JSON.stringify(ajustes)); } catch (e) {} }
   function leerJSON(clave, defecto) { try { var v = JSON.parse(localStorage.getItem(clave)); return v == null ? defecto : v; } catch (e) { return defecto; } }
   function escribirJSON(clave, valor) { try { if (valor == null) localStorage.removeItem(clave); else localStorage.setItem(clave, JSON.stringify(valor)); } catch (e) {} }
@@ -255,13 +266,20 @@
     if (!("speechSynthesis" in window)) return [];
     return window.speechSynthesis.getVoices().filter(function (v) { return v.lang && v.lang.toLowerCase().indexOf("es") === 0; });
   }
-  function decirVoz(texto, interrumpir, forzar) {
+  // idioma: el de la página cuando se lee su contenido (WCAG 3.1.1); sin él, la voz en español del panel
+  function decirVoz(texto, interrumpir, forzar, idioma) {
     if (!("speechSynthesis" in window) || !texto) return;
     if (!ajustes.voz_activa && !forzar) return;
     if (interrumpir !== false) window.speechSynthesis.cancel();
     var u = new SpeechSynthesisUtterance(texto);
     u.lang = "es";
     var voces = vocesEs(), v = null;
+    if (idioma && !/^es\b/.test(idioma)) {   // página en otro idioma: una voz de ese idioma si la hay
+      var todas = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [], base = idioma.split("-")[0];
+      for (var j = 0; j < todas.length; j++) if (todas[j].lang && todas[j].lang.toLowerCase().indexOf(base) === 0) { v = todas[j]; break; }
+      u.lang = idioma; if (v) u.voice = v;
+      u.rate = Math.pow(1.18, ajustes.voz_velocidad || 0); window.speechSynthesis.speak(u); return;
+    }
     if (ajustes.voz_nombre) for (var i = 0; i < voces.length; i++) if (voces[i].name === ajustes.voz_nombre) v = voces[i];
     if (!v && voces.length) v = voces[0];
     if (v) { u.voice = v; u.lang = v.lang; }
@@ -275,12 +293,12 @@
     if (leyendo) leyendo.classList.remove("wcl-leyendo");
     leyendo = bloque; bloque.classList.add("wcl-leyendo");
     var t = bloque.value != null && bloque.tagName !== "BUTTON" ? (bloque.value || bloque.placeholder || "") : (bloque.innerText || bloque.textContent || "");
-    decirVoz(t.trim().slice(0, 2000), true, true);
+    decirVoz(t.trim().slice(0, 2000), true, true, IDIOMA_PAGINA);
   }
   function leerPagina() {
     var m = document.querySelector("main,article,[role=main]") || document.body;
     var texto = (m.innerText || "").replace(/\s+/g, " ").trim().slice(0, 15000);
-    decirVoz(texto || "La página no tiene texto que leer.", true, true);
+    decirVoz(texto || "La página no tiene texto que leer.", true, true, texto ? IDIOMA_PAGINA : null);
   }
   // Con el ratón de verdad: leer lo que se pulsa (los clics del puntero virtual lo hacen desde clic())
   document.addEventListener("click", function (e) { if (ajustes.lectura && e.isTrusted && !e.target.closest(".wcl-root")) leerElemento(e.target); }, true);
@@ -1469,7 +1487,7 @@
   function empezarDictado() {
     if (!Reconocedor) { avisar("Este navegador no dicta (usa Chrome o Edge)", true); return; }
     try {
-      rec = new Reconocedor(); rec.lang = "es-ES"; rec.continuous = true; rec.interimResults = false;
+      rec = new Reconocedor(); rec.lang = IDIOMA_VOZ; rec.continuous = true; rec.interimResults = false;
       rec.onresult = function (e) { for (var i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) { var t = e.results[i][0].transcript.trim(); if (t) { insertarTexto((frase && !/\s$/.test(frase) ? " " : "") + t); frase += t + " "; pintarTexto(); } } };
       rec.onend = function () { if (dictando) { try { rec.start(); } catch (x) {} } };
       rec.onerror = function (e) { if (e.error === "not-allowed") { avisar("Sin permiso para el micrófono", true); pararDictado(); } };
@@ -1482,7 +1500,7 @@
   function empezarEscucha() {
     if (!Reconocedor) { decir("Este navegador no reconoce la voz (usa Chrome o Edge)."); return; }
     if (escuchando) return;
-    recOrdenes = new Reconocedor(); recOrdenes.lang = "es-ES"; recOrdenes.continuous = true; recOrdenes.interimResults = false;
+    recOrdenes = new Reconocedor(); recOrdenes.lang = IDIOMA_VOZ; recOrdenes.continuous = true; recOrdenes.interimResults = false;
     recOrdenes.onresult = function (e) { for (var i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) ejecutarOrden(e.results[i][0].transcript); };
     recOrdenes.onend = function () { if (escuchando) { try { recOrdenes.start(); } catch (x) {} } };
     recOrdenes.onerror = function (e) { if (e.error === "not-allowed") { decir("Sin permiso para el micrófono."); pararEscucha(); } };
@@ -1728,6 +1746,7 @@
   s.appendChild(filaSw("oscuro", "Modo oscuro", aplicarClases));
   s.appendChild(filaSw("enlaces", "Resaltar enlaces", aplicarClases));
   s.appendChild(filaSw("guia", "Guía de lectura", aplicarClases));
+  s.appendChild(filaSw("cursor_grande", "Cursor del ratón grande", aplicarClases));
   s.appendChild(filaSw("animaciones", "Pausar animaciones", aplicarClases));
   tabs.ver.appendChild(s);
 
@@ -1960,6 +1979,8 @@
     + '.wcl-limpia-texto{max-width:36rem;margin:0 auto;padding:28px 20px 80px}.wcl-limpia-texto h1,.wcl-limpia-texto h2,.wcl-limpia-texto h3,.wcl-limpia-texto h4{line-height:1.3;margin:1.2em 0 .4em;color:#101F3D}.wcl-limpia-texto p{margin:0 0 1em}.wcl-limpia-texto figure{margin:1em 0}.wcl-limpia-texto img{max-width:100%;border-radius:10px}.wcl-limpia-texto figcaption{font-size:.8em;color:#555}'
     + '.wcl-facil{display:none;padding:12px 16px 16px}.wcl-facil .wcl-big{min-height:64px;font-size:19px;margin:6px 0}.wcl-panel.facil .wcl-tabs,.wcl-panel.facil .wcl-tab{display:none}.wcl-panel.facil .wcl-facil{display:block}'
     + 'html.wcl-lupap{overflow-x:hidden}html.wcl-lupap body{transition:none!important}'
+    // Cursor grande y de alto contraste para el ratón real (baja visión): flecha negra con borde blanco de 48 px
+    + 'html.wcl-cursorg,html.wcl-cursorg *,:host(.wcl-cursorg) *{cursor:url("data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M6 4l30 24-13 1 8 14-6 3-8-14-9 10z" fill="#000" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></svg>') + '") 6 4,auto!important}'
     + '.wcl-lector{outline:4px solid #F2B705!important;outline-offset:3px;box-shadow:0 0 0 8px rgba(242,183,5,.25)!important}';
   (document.head || raiz).appendChild(estiloCon(css2)); estilosSombra.push(css2);
   // Filtros de color (daltonización de Fidaner: M = I + E·(I − S), con la simulación de Machado 2009)
@@ -2039,7 +2060,7 @@
       var b = ev.target.closest("button"); if (!b) return;
       var a = b.dataset.a;
       if (a === "cerrar") cerrarLimpia();
-      else if (a === "leer") decirVoz((limpiaEl.querySelector(".wcl-limpia-texto").innerText || "").slice(0, 15000), true, true);
+      else if (a === "leer") decirVoz((limpiaEl.querySelector(".wcl-limpia-texto").innerText || "").slice(0, 15000), true, true, IDIOMA_PAGINA);
       else if (a === "callar") callar();
       else { limpiaTam = Math.max(16, Math.min(34, limpiaTam + (a === "mas" ? 2 : -2))); limpiaEl.style.fontSize = limpiaTam + "px"; }
     });
@@ -2098,7 +2119,7 @@
     if (n === "TD" || n === "TH") return "Celda: " + t;
     return t;
   }
-  function anunciar(texto) { decirVoz(texto, true, true); decir(texto.slice(0, 120)); }
+  function anunciar(texto) { decirVoz(texto, true, true, IDIOMA_PAGINA); decir(texto.slice(0, 120)); }
   function irLector(e, texto) {
     if (lectorEl) lectorEl.classList.remove("wcl-lector");
     lectorEl = e; e.classList.add("wcl-lector");
@@ -2214,6 +2235,7 @@
   // ------------------------------------------------------- aplicar --
   function aplicarClases() {
     raiz.classList.toggle("wcl-oscuro", ajustes.oscuro); cont.classList.toggle("wcl-osc", ajustes.oscuro);
+    raiz.classList.toggle("wcl-cursorg", ajustes.cursor_grande); cont.classList.toggle("wcl-cursorg", ajustes.cursor_grande);
     raiz.classList.toggle("wcl-enlaces", ajustes.enlaces);
     raiz.classList.toggle("wcl-anim", ajustes.animaciones);
     raiz.classList.toggle("wcl-dislexia", ajustes.dislexia);
