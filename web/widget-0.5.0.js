@@ -38,13 +38,13 @@
   function contar(clave) {
     try {
       if (!uso) { uso = JSON.parse(localStorage.getItem("winclus.uso") || "null") || { desde: new Date().toISOString().slice(0, 10), n: {} }; }
-      uso.n[clave] = (uso.n[clave] || 0) + 1; localStorage.setItem("winclus.uso", JSON.stringify(uso));
+      uso.n = uso.n || {}; uso.n[clave] = (uso.n[clave] || 0) + 1; localStorage.setItem("winclus.uso", JSON.stringify(uso));
     } catch (e) {}
   }
   var NOMBRES_USO = { clics_cara: "clics hechos con la cara", barrido: "acciones con el barrido", frases: "frases dichas con voz", pictos: "frases dichas con pictogramas", teclado: "veces que se abrió el teclado", dictado: "dictados escritos", errores: "errores de formulario explicados", facil: "páginas explicadas en fácil", limpia: "lecturas limpias", camara: "sesiones con la cámara", ordenes: "órdenes por voz ejecutadas", asistente: "peticiones al asistente" };
   function resumenUso() {
     try { uso = uso || JSON.parse(localStorage.getItem("winclus.uso") || "null"); } catch (e) {}
-    if (!uso || !Object.keys(uso.n).length) return "Todavía no hay cifras de uso en este navegador.";
+    if (!uso || !uso.n || !Object.keys(uso.n).length) return "Todavía no hay cifras de uso en este navegador.";
     return "Uso de Winclus en este navegador desde el " + uso.desde + " (sitio: " + location.hostname + "):\n" + Object.keys(uso.n).map(function (k) { return "· " + uso.n[k] + " " + (NOMBRES_USO[k] || k); }).join("\n");
   }
   var URL_RELEVO = "https://www.centroderelevo.gov.co/", URL_DICCIONARIO_LSC = "https://educativo.insor.gov.co/diccionario/";
@@ -88,10 +88,13 @@
   var CLAVE = "winclus.ajustes";
   var ajustes = JSON.parse(JSON.stringify(POR_DEFECTO));
   // Nunca se sustituye el objeto «ajustes» (ni «ajustes.gestos»): los controles del panel guardan su referencia
+  // Solo entra lo que tenga el mismo tipo que el valor por defecto y, si es número, sea finito: un perfil (archivo,
+  // enlace o localStorage tocado) con "20 rápido" o null no puede dejar un NaN guardado que mate el puntero o la voz
   function fusionarAjustes(g) {
-    for (var k in g) if (k in ajustes) {
-      if (k === "gestos") { if (g[k] && typeof g[k] === "object") for (var s in g[k]) if (s in ajustes.gestos) ajustes.gestos[s] = g[k][s]; }
-      else ajustes[k] = g[k];
+    for (var k in g) if (Object.prototype.hasOwnProperty.call(ajustes, k)) {
+      var v = g[k], d = ajustes[k];
+      if (k === "gestos") { if (v && typeof v === "object") for (var s in v) if (s in ajustes.gestos && typeof v[s] === "string") ajustes.gestos[s] = v[s]; }
+      else if (typeof v === typeof d && (typeof v !== "number" || isFinite(v))) ajustes[k] = v;
     }
   }
   function cargarAjustes() {
@@ -166,7 +169,7 @@
     }
   };
   try { if (window.WinclusIdiomas) for (var idi in window.WinclusIdiomas) DICC[idi] = Object.assign(DICC[idi] || {}, window.WinclusIdiomas[idi]); } catch (e) {}
-  var IDIOMA_UI = ((script && script.dataset.ui) || IDIOMA_PAGINA).split("-")[0];
+  var IDIOMA_UI = ((script && script.dataset.ui) || IDIOMA_PAGINA).split("-")[0].toLowerCase();
   if (!DICC[IDIOMA_UI] && IDIOMA_UI !== "es") IDIOMA_UI = "es";
   function T(s) { var d = DICC[IDIOMA_UI]; return (d && typeof s === "string" && d[s]) || s; }
   function guardar() { try { localStorage.setItem(CLAVE, JSON.stringify(ajustes)); } catch (e) {} }
@@ -183,10 +186,6 @@
     + '.wcl-pausa{position:fixed;bottom:30px;' + LADO + ':92px;z-index:2147483010;display:none;min-height:44px;padding:8px 16px;border-radius:999px;border:0;background:#0F7A70;color:#fff;font:700 15px "Segoe UI",system-ui,sans-serif;box-shadow:0 6px 18px rgba(16,31,61,.3);cursor:pointer}'
     + '.wcl-pausa.en-pausa{background:#F2B705;color:#101F3D}'
     + '.wcl-pausa{max-width:calc(100vw - 120px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
-    + '@media (max-width:480px){.wcl-panel{left:8px;right:8px;width:auto;max-width:none;bottom:88px;max-height:calc(100vh - 100px);border-radius:16px}'
-    + '.wcl-tabs{top:60px}.wcl-tabs button{font-size:11.5px;min-height:38px}.wcl-cab{padding:10px 12px}.wcl-sec{padding:10px 12px}.wcl-fila{gap:6px}.wcl-mm button{width:36px}'
-    + '.wcl-tec button{font-size:17px;text-overflow:clip;padding:0 1px}.wcl-tec button.esp{font-size:11px;white-space:normal;line-height:1.05}.wcl-tec button.pred{font-size:14px}.wcl-tec{padding:4px;gap:4px}.wcl-tec .fila{gap:4px}'
-    + '.wcl-btn{width:52px;height:52px;bottom:16px;' + LADO + ':16px}.wcl-btn svg{width:30px;height:30px}.wcl-pausa{bottom:22px;' + LADO + ':78px;font-size:13px;padding:6px 12px;min-height:40px}}'
     + '.wcl-panel{position:fixed;bottom:92px;' + LADO + ':22px;z-index:2147483011;width:360px;max-width:calc(100vw - 32px);max-height:calc(100vh - 120px);overflow:auto;background:#fff;color:#101F3D;border-radius:18px;box-shadow:0 18px 60px rgba(16,31,61,.28);display:none}'
     + '.wcl-panel.abierto{display:block}'
     + '.wcl-cab{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#101F3D;color:#fff;border-radius:18px 18px 0 0;position:sticky;top:0;z-index:2}'
@@ -252,7 +251,12 @@
     // Números sobre enlaces y campos para las órdenes por voz («clic 12») y barra de confirmación del dictado
     + '.wcl-nums{position:fixed;inset:0;pointer-events:none;z-index:2147483018}.wcl-num{position:absolute;min-width:22px;height:22px;padding:0 5px;border-radius:6px;background:#F2B705;color:#101F3D;font:700 13px/22px "Segoe UI",system-ui,sans-serif;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.45)}'
     + '.wcl-dictconf{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:2147483017;display:none;width:min(94vw,720px);padding:14px 18px;border-radius:12px;background:#101F3D;color:#fff;font:18px/1.4 "Segoe UI",system-ui,sans-serif}.wcl-dictconf .t{display:block;font-size:22px;margin-bottom:10px}.wcl-dictconf button{min-height:44px;padding:0 16px;margin-right:8px;border-radius:10px;border:0;background:#34C26B;color:#101F3D;font:700 15px "Segoe UI",system-ui,sans-serif;cursor:pointer}.wcl-dictconf button.no{background:#E8ECF3}'
-    + '.wcl-vivo{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}';
+    + '.wcl-vivo{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}'
+    // Móvil: va al FINAL para ganar a las reglas base (misma especificidad: manda la última). dvh: en iOS la barra del navegador
+    + '@media (max-width:480px){.wcl-panel{left:8px;right:8px;width:auto;max-width:none;bottom:88px;max-height:calc(100vh - 100px);max-height:calc(100dvh - 100px);border-radius:16px}'
+    + '.wcl-tabs{top:60px}.wcl-tabs button{font-size:11.5px;min-height:38px}.wcl-cab{padding:10px 12px}.wcl-sec{padding:10px 12px}.wcl-fila{gap:6px}.wcl-mm button{width:36px}'
+    + '.wcl-tec button{font-size:17px;text-overflow:clip;padding:0 1px}.wcl-tec button.esp{font-size:11px;white-space:normal;line-height:1.05}.wcl-tec button.pred{font-size:14px}.wcl-tec{padding:4px;gap:4px}.wcl-tec .fila{gap:4px}'
+    + '.wcl-btn{width:52px;height:52px;bottom:16px;' + LADO + ':16px}.wcl-btn svg{width:30px;height:30px}.wcl-pausa{bottom:22px;' + LADO + ':78px;font-size:13px;padding:6px 12px;min-height:40px}}';
   // El mismo CSS va dos veces: en el documento (reglas html.wcl-* y el contenedor) y dentro del shadow root (las piezas).
   // Con CSP estricta hace falta el nonce del <script> en los <style> que inyectamos.
   var NONCE = (script && script.nonce) || "";
@@ -316,6 +320,7 @@
     var f = el("div", { "class": "wcl-fila" }, '<span id="wcl-l-' + clave + '">' + etiqueta + '</span><div class="wcl-mm" role="group" aria-labelledby="wcl-l-' + clave + '"><button type="button" aria-label="Reducir: ' + etiqueta + '" aria-describedby="wcl-v-' + clave + '">−</button><span id="wcl-v-' + clave + '" aria-live="polite"></span><button type="button" aria-label="Aumentar: ' + etiqueta + '" aria-describedby="wcl-v-' + clave + '">+</button></div>');
     var b = f.querySelectorAll("button"), v = f.querySelector("span[aria-live]");
     function poner(n) {
+      if (!isFinite(n)) n = POR_DEFECTO[clave];   // un ajuste corrupto no puede dejar NaN
       n = Math.round(Math.min(max, Math.max(min, n)) / paso) * paso;
       n = +n.toFixed(4);
       ajustes[clave] = n; v.textContent = formato ? formato(n) : String(n); guardar();
@@ -368,38 +373,46 @@
     return mejor || vs[0];
   }
   function vocesEs() {
-    if (!("speechSynthesis" in window)) return [];
+    if (!(window.speechSynthesis)) return [];
     // Voces del idioma del panel; si no hay ninguna, mejor sin voz fija (el navegador elige por el lang) que una en español
     return window.speechSynthesis.getVoices().filter(function (v) { return v.lang && v.lang.toLowerCase().indexOf(IDIOMA_UI) === 0; });
   }
   // idioma: el de la página cuando se lee su contenido (WCAG 3.1.1); sin él, la voz en español del panel
   function decirVoz(texto, interrumpir, forzar, idioma) {
-    if (!("speechSynthesis" in window) || !texto) return;
+    if (!(window.speechSynthesis) || !texto) return;
     if (!ajustes.voz_activa && !forzar) return;
-    if (interrumpir !== false) window.speechSynthesis.cancel();
+    if (interrumpir !== false) { window.speechSynthesis.cancel(); vozGen++; }
     texto = T(texto);
-    var u = new SpeechSynthesisUtterance(texto);
-    u.lang = IDIOMA_UI;
-    var voces = vocesEs(), v = null;
+    var lang = IDIOMA_UI, voces = vocesEs(), v = null;
     if (idioma && !/^es\b/.test(idioma)) {   // página en otro idioma: una voz de ese idioma si la hay
       var todas = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [], base = idioma.split("-")[0];
       for (var j = 0; j < todas.length; j++) if (todas[j].lang && todas[j].lang.toLowerCase().indexOf(base) === 0) { v = todas[j]; break; }
-      u.lang = idioma; if (v) u.voice = v;
-      u.rate = Math.pow(1.18, ajustes.voz_velocidad || 0); window.speechSynthesis.speak(u); return;
+      lang = idioma;
+    } else {
+      if (ajustes.voz_nombre) for (var i = 0; i < voces.length; i++) if (voces[i].name === ajustes.voz_nombre) v = voces[i];
+      if (!v && voces.length) v = vozPreferida(voces);
+      if (v) lang = v.lang;
     }
-    if (ajustes.voz_nombre) for (var i = 0; i < voces.length; i++) if (voces[i].name === ajustes.voz_nombre) v = voces[i];
-    if (!v && voces.length) v = vozPreferida(voces);
-    if (v) { u.voice = v; u.lang = v.lang; }
-    u.rate = Math.pow(1.18, ajustes.voz_velocidad || 0);
-    window.speechSynthesis.speak(u);
+    var rate = Math.pow(1.18, isFinite(ajustes.voz_velocidad) ? ajustes.voz_velocidad : 0);
+    // Chrome corta las voces remotas a los ~15 s y no avisa: se habla por trozos de una frase (≤ 200 caracteres) encadenados
+    var trozos = texto.match(/[^.!?…\n]{1,200}[.!?…\n]?/g) || [texto], k = 0, gen = vozGen;
+    (function siguiente() {
+      if (k >= trozos.length || gen !== vozGen) return;
+      var u = new SpeechSynthesisUtterance(trozos[k++]);
+      u.lang = lang; if (v) u.voice = v; u.rate = rate;
+      u.onend = siguiente; u.onerror = function () { if (gen === vozGen) siguiente(); };
+      window.speechSynthesis.speak(u);
+    })();
   }
-  function callar() { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); if (leyendo) { leyendo.classList.remove("wcl-leyendo"); leyendo = null; } }
+  var vozGen = 0;
+  function callar() { vozGen++; if (window.speechSynthesis) window.speechSynthesis.cancel(); if (leyendo) { leyendo.classList.remove("wcl-leyendo"); leyendo = null; } }
   function leerElemento(elm) {
     if (!elm || (enWidget(elm) && !(elm.closest && elm.closest(".wcl-limpia-texto")))) return;
     var bloque = elm.closest("p,h1,h2,h3,h4,h5,h6,li,td,th,a,button,label,figcaption,blockquote,summary,dd,dt,input,textarea") || elm;
     if (leyendo) leyendo.classList.remove("wcl-leyendo");
     leyendo = bloque; bloque.classList.add("wcl-leyendo");
-    var t = bloque.value != null && bloque.tagName !== "BUTTON" ? (bloque.value || bloque.placeholder || "") : (bloque.innerText || bloque.textContent || "");
+    var esCampo = /^(INPUT|TEXTAREA|SELECT)$/.test(bloque.tagName);   // <li> también tiene .value (numérico): no vale como criterio
+    var t = esCampo ? (esSecreto(bloque) ? "campo de contraseña" : (bloque.value || bloque.placeholder || "")) : (bloque.innerText || bloque.textContent || "");
     decirVoz(t.trim().slice(0, 2000), true, true, IDIOMA_PAGINA);
   }
   function leerPagina() {
@@ -415,6 +428,7 @@
   function pitido(hz, msDur) {
     try {
       audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") audioCtx.resume();   // nace suspendido si no hubo gesto real: sin esto los pitidos son mudos
       var o = audioCtx.createOscillator(), g = audioCtx.createGain();
       o.frequency.value = hz || 1000; g.gain.value = 0.08;
       o.connect(g); g.connect(audioCtx.destination);
@@ -583,6 +597,7 @@
   OneEuro.prototype.reiniciar = function () { this.xPrev = null; this.dxPrev = 0; this.tPrev = null; };
   OneEuro.prototype.alpha = function (cutoff, dt) { var tau = 1 / (2 * Math.PI * cutoff); return 1 / (1 + tau / dt); };
   OneEuro.prototype.filtrar = function (x, t) {
+    if (!isFinite(x)) return this.xPrev === null ? x : this.xPrev;   // un NaN no puede quedarse dentro del filtro para siempre
     if (this.xPrev === null) { this.xPrev = x; this.tPrev = t; return x; }
     var dt = Math.max(1e-3, t - this.tPrev); this.tPrev = t;
     var dx = (x - this.xPrev) / dt, ad = this.alpha(this.dCutoff, dt);
@@ -688,7 +703,10 @@
     if (sinSesgo) return [x, y];   // crudo, sin recortar (para recentrar)
     return [Math.min(Math.max(x, 0), window.innerWidth - 1), Math.min(Math.max(y, 0), window.innerHeight - 1)];
   }
-  function modeloValido(m) { return !!(m && m.coef_x && m.coef_y && m.coef_x.length === N_RASGOS + 1 && m.coef_y.length === N_RASGOS + 1 && m.media && m.media.length === N_RASGOS && m.desv && m.desv.length === N_RASGOS && m.monitor && m.monitor.length === 4); }
+  function modeloValido(m) {
+    function ok(a, n) { return Array.isArray(a) && a.length === n && a.every(function (v) { return typeof v === "number" && isFinite(v); }); }
+    return !!(m && ok(m.coef_x, N_RASGOS + 1) && ok(m.coef_y, N_RASGOS + 1) && ok(m.media, N_RASGOS) && ok(m.desv, N_RASGOS) && m.desv.every(function (d) { return d > 0; }) && ok(m.monitor, 4));
+  }
   var calibracion = leerJSON("winclus.calibracion", null);
   if (!modeloValido(calibracion)) calibracion = null;
   var ojosCentro = leerJSON("winclus.ojos_centro", null);
@@ -700,15 +718,20 @@
   function cargarDetectorDe(fuente) {
     return import(fuente.base + "/vision_bundle.mjs").then(function (mp) {
       return mp.FilesetResolver.forVisionTasks(fuente.base + "/wasm").then(function (fs) {
-        return mp.FaceLandmarker.createFromOptions(fs, {
-          baseOptions: { modelAssetPath: fuente.modelo, delegate: "GPU" },
-          runningMode: "VIDEO", numFaces: 1, outputFaceBlendshapes: true, outputFacialTransformationMatrixes: false
-        });
+        var crear = function (delegado) {
+          return mp.FaceLandmarker.createFromOptions(fs, {
+            baseOptions: { modelAssetPath: fuente.modelo, delegate: delegado },
+            runningMode: "VIDEO", numFaces: 1, outputFaceBlendshapes: true, outputFacialTransformationMatrixes: false
+          });
+        };
+        return crear("GPU").catch(function () { return crear("CPU"); });   // sin WebGL2 (iframe sandbox, escritorio remoto, GPU bloqueada): CPU
       });
     });
   }
+  var promesaDetector = null;
   function cargarDetector() {
     if (landmarker) return Promise.resolve();
+    if (promesaDetector) return promesaDetector;   // dos activaciones seguidas no cargan dos detectores
     var errores = [];
     function intentar(i) {
       if (i >= FUENTES_MP.length) return Promise.reject(new Error("No se pudo descargar el detector de caras (" + errores.join(" · ") + ")"));
@@ -717,7 +740,8 @@
         return intentar(i + 1);
       });
     }
-    return intentar(0);
+    promesaDetector = intentar(0).then(function () { promesaDetector = null; }, function (e) { promesaDetector = null; throw e; });
+    return promesaDetector;
   }
   function vistaCamara(ver) { var v = q(".wcl-cam-vista"); if (v) v.style.display = ver ? "block" : "none"; }
   // Consentimiento explícito antes de la primera activación: los rasgos de la cara son dato biométrico sensible (Ley 1581/2012)
@@ -728,6 +752,7 @@
       '<p>Para mover el puntero, Winclus mira tu cara con la cámara. El vídeo se analiza en este navegador y no se guarda ni se envía a ningún sitio. Si calibras los ojos, guarda en este navegador unos números sobre tu mirada (dato biométrico), que puedes borrar en «Más → Restablecer». <a href="https://winclus.com/privacidad" target="_blank" rel="noopener">Cómo tratamos tus datos</a>.</p>');
     var si = botonGrande("Acepto y activo la cámara", "", function () {
       escribirJSON("winclus.consentimiento_camara", { fecha: new Date().toISOString(), version: VERSION });
+      consentidoAhora = true;   // aunque localStorage esté bloqueado (iframe de otro origen, modo privado): vale para esta sesión
       consentEl.remove(); consentEl = null; activarCamara();
     });
     var no = botonGrande("Ahora no", "suave", function () { consentEl.remove(); consentEl = null; btnActivar.focus(); });
@@ -735,12 +760,15 @@
     btnActivar.parentNode.insertBefore(consentEl, btnActivar.nextSibling);
     si.focus();
   }
+  var consentidoAhora = false, activando = false;
   function activarCamara() {
-    if (!opciones.camara || !btnActivar) return;
+    if (!opciones.camara || !btnActivar || activando) return;
     if (camaraActiva) { desactivarCamara(); return; }
-    if (!leerJSON("winclus.consentimiento_camara", null)) { pedirConsentimientoCamara(); return; }
+    if (!consentidoAhora && !leerJSON("winclus.consentimiento_camara", null)) { pedirConsentimientoCamara(); return; }
+    activando = true; var gen = ++generacion;   // si algo apaga la cámara mientras carga, esta activación se abandona
     btnActivar.disabled = true; decir("Cargando el detector de cara (unos segundos la primera vez)…");
     cargarDetector().then(function () {
+      if (gen !== generacion) throw new Error("cancelado");
       decir("Detector listo. Pidiendo permiso para la cámara…");
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error("Este navegador no da acceso a la cámara. Hace falta una página https (o localhost).");
       return navigator.mediaDevices.getUserMedia({ video: { width: CAM_W, height: CAM_H, facingMode: "user" }, audio: false }).catch(function (e) {
@@ -749,15 +777,17 @@
           : n === "NotFoundError" ? "No se encontró ninguna cámara." : n === "NotReadableError" ? "Otra aplicación está usando la cámara." : (e && e.message ? e.message : e));
       });
     }).then(function (f) {
+      if (gen !== generacion) { f.getTracks().forEach(function (t) { t.stop(); }); throw new Error("cancelado"); }
       flujo = f;
       if (!video) { video = el("video", { "class": "wcl-video", "playsinline": "", "muted": "", "autoplay": "" }); caja.appendChild(video); }
       video.muted = true; video.playsInline = true;   // sin esto play() puede fallar si no hubo un clic real antes
       video.srcObject = f;
       return video.play();
     }).then(function () {
-      camaraActiva = true; pausado = false; contar("camara");
+      if (gen !== generacion) throw new Error("cancelado");
+      activando = false; camaraActiva = true; pausado = false; contar("camara");
       parpadeo.reiniciar(); reiniciarPuntero();
-      btnActivar.textContent = "Desactivar cámara"; btnActivar.classList.add("rojo"); btnActivar.disabled = false;
+      btnActivar.textContent = T("Apagar cámara"); btnActivar.classList.add("rojo"); btnActivar.disabled = false;
       btnPausa.style.display = "block"; pintarPausa();
       cursor.style.display = "block"; mover(window.innerWidth / 2, window.innerHeight / 2);
       vistaCamara(ajustes.camara_ver);
@@ -767,14 +797,19 @@
         decir("Para mover el puntero con los ojos hay que calibrar una vez: en 3 segundos empieza la calibración (unos 40 s).");
         setTimeout(function () { if (camaraActiva && !calibracion && !calibrando) { abrir(false); empezarCalibracion(false); } }, 3000);
       }
-      generacion++; requestAnimationFrame(bucle.bind(null, generacion));
+      requestAnimationFrame(bucle.bind(null, gen));
     }).catch(function (err) {
+      activando = false;
+      if (flujo) { flujo.getTracks().forEach(function (t) { t.stop(); }); flujo = null; }   // sin flujo huérfano con la luz de la cámara encendida
+      if (video) { try { video.srcObject = null; } catch (x) {} }
       if (btnActivar) btnActivar.disabled = false;
-      decir("No se pudo activar: " + (err && err.message ? err.message : err));
+      if (!(err && err.message === "cancelado")) decir("No se pudo activar: " + (err && err.message ? err.message : err));
     });
   }
   var generacion = 0;
   function desactivarCamara() {
+    generacion++; activando = false;   // invalida cualquier activación a medias
+    if (btnActivar) btnActivar.disabled = false;
     camaraActiva = false; pausado = false; pintarPausa();
     if (calibrando) cerrarCalibracion();
     if (flujo) { flujo.getTracks().forEach(function (t) { t.stop(); }); flujo = null; }
@@ -784,23 +819,27 @@
     historialRasgos = []; anclaParpadeo = null; det.cara = false; det.track = null; det.rasgos = null; det.mirada = null;
     rvfcActivo = false; cuadroNuevo = true;
     vistaCamara(false);
-    if (btnActivar) { btnActivar.textContent = "Activar cámara"; btnActivar.classList.remove("rojo"); }
+    if (btnActivar) { btnActivar.textContent = T("Activar cámara"); btnActivar.classList.remove("rojo"); }
     decir("Cámara apagada.");
   }
   // La inferencia va a la tasa de la cámara, no a la del refresco de pantalla: requestVideoFrameCallback avisa de cada
   // cuadro nuevo (Chrome, Edge, Safari, Firefox ≥ 132); donde no existe se infiere en cada refresco como antes.
   // En modo ahorro, como mucho 15 veces por segundo. El puntero (vuelta) sí se mueve en cada refresco, para que vaya suave.
   var cuadroNuevo = true, rvfcActivo = false, ultimaInferencia = 0;
-  function marcarCuadro() { cuadroNuevo = true; if (camaraActiva && rvfcActivo) video.requestVideoFrameCallback(marcarCuadro); }
+  function marcarCuadro(gen) { if (gen !== generacion || !camaraActiva) return; cuadroNuevo = true; video.requestVideoFrameCallback(marcarCuadro.bind(null, gen)); }   // una sola cadena por activación
+  var fallosDeteccion = 0;
   function bucle(gen) {
     if (!camaraActiva || gen !== generacion) return;
     var t = performance.now();
-    if (!rvfcActivo && video.requestVideoFrameCallback) { rvfcActivo = true; video.requestVideoFrameCallback(marcarCuadro); }
+    if (!rvfcActivo && video.requestVideoFrameCallback) { rvfcActivo = true; video.requestVideoFrameCallback(marcarCuadro.bind(null, gen)); }
     var toca = video.readyState >= 2 && t !== ultimoT && (!rvfcActivo || cuadroNuevo) && (!ajustes.ahorro || t - ultimaInferencia >= 66);
     if (toca) {
       ultimoT = t; cuadroNuevo = false; ultimaInferencia = t; det.inferencias = (det.inferencias || 0) + 1;
       var r = null;
-      try { r = landmarker.detectForVideo(video, t); } catch (e) {}
+      try { r = landmarker.detectForVideo(video, t); fallosDeteccion = 0; } catch (e) {
+        // Contexto WebGL perdido (móvil que vuelve de segundo plano): tras 30 fallos seguidos se recrea el detector
+        if (++fallosDeteccion === 30) { try { landmarker.close(); } catch (x) {} landmarker = null; fallosDeteccion = 0; decir("Reiniciando el detector de cara…"); cargarDetector().then(function () { decir("Detector listo."); }, function () { decir("No se pudo reiniciar el detector. Apaga y enciende la cámara."); }); }
+      }
       if (r && r.faceLandmarks && r.faceLandmarks.length) procesarCara(r, t / 1000);
       else { if (det.cara) { bufTrack = []; delayCount = 0; trackUltimo = null; ultimaVel = null; } det.cara = false; det.track = null; det.rasgos = null; det.mirada = null; decirSuave("No veo tu cara. Ponte frente a la cámara con luz de frente."); }
     }
@@ -1024,7 +1063,9 @@
     avisar(nombreDe(mejor.el));
   }
   function nombreDe(e) {
-    var t = e.getAttribute("aria-label") || e.getAttribute("title") || e.value || e.placeholder || e.innerText || e.alt || e.tagName.toLowerCase();
+    // Los campos de formulario se nombran por su etiqueta o placeholder, nunca por lo escrito (contraseñas, datos)
+    var esCampo = e.matches && e.matches("input,textarea,select");
+    var t = e.getAttribute("aria-label") || e.getAttribute("title") || (esCampo ? (etiquetaCampo(e) || e.placeholder || e.name) : (e.value || e.innerText || e.alt)) || e.tagName.toLowerCase();
     t = String(t).replace(/\s+/g, " ").trim(); return t.length > 28 ? t.slice(0, 27) + "…" : t;
   }
 
@@ -1121,8 +1162,8 @@
     var inter = e.closest(SEL_CLICABLE), el2 = inter || e;
     if (el2.focus) try { el2.focus({ preventScroll: true }); } catch (x) {}
     if (ajustes.lectura && !inter) { leerElemento(e); avisar("Leyendo"); return; }
-    if (el2.tagName === "SELECT") {   // el menú nativo no se puede abrir: se pasa a la opción siguiente
-      el2.selectedIndex = (el2.selectedIndex + 1) % el2.options.length;
+    if (el2.tagName === "SELECT" && el2.options.length && !el2.multiple) {   // el menú nativo no se puede abrir: se pasa a la opción siguiente
+      el2.selectedIndex = (Math.max(0, el2.selectedIndex) + 1) % el2.options.length;
       el2.dispatchEvent(new Event("input", { bubbles: true })); el2.dispatchEvent(new Event("change", { bubbles: true }));
       avisar(el2.options[el2.selectedIndex].text); return;
     }
@@ -1369,8 +1410,9 @@
     if (e.tagName === "INPUT") return !e.disabled && !e.readOnly && !/^(button|submit|reset|checkbox|radio|file|range|color|image|hidden)$/i.test(e.type || "text");
     return false;
   }
+  function esSecreto(c) { return !!(c && c.tagName === "INPUT" && /^password$/i.test(c.type || "")); }
   function campo() {
-    if (objetivoTexto && document.contains(objetivoTexto) && esEditable(objetivoTexto)) return objetivoTexto;
+    if (objetivoTexto && objetivoTexto.isConnected && esEditable(objetivoTexto)) return objetivoTexto;   // isConnected: también dentro del shadow root (área de frases)
     var a = document.activeElement; return esEditable(a) ? (objetivoTexto = a) : null;
   }
   function enfocar(c) { try { c.focus({ preventScroll: true }); } catch (e) {} }
@@ -1432,7 +1474,8 @@
   }
   function siguienteCampo(dir) {
     var lista = Array.prototype.filter.call(document.querySelectorAll(SEL_CLICABLE), function (e) { return !e.closest(".wcl-root") && e.tabIndex >= 0 && e.getBoundingClientRect().width > 0; });
-    var i = lista.indexOf(document.activeElement), sig = lista[(i + dir + lista.length) % lista.length];
+    var act = focoActual(); if (enWidget(act)) act = objetivoTexto;   // desde el teclado en pantalla: seguir desde el campo donde se escribe
+    var i = lista.indexOf(act), sig = lista[(i + dir + lista.length) % lista.length];
     if (sig) { enfocar(sig); sig.scrollIntoView({ block: "center", behavior: "smooth" }); if (esEditable(sig)) objetivoTexto = sig; avisar(nombreDe(sig)); }
   }
   function orden(nombre) {
@@ -1440,10 +1483,13 @@
     if (nombre === "copiar" || nombre === "cortar") {
       var sel = c && !c.isContentEditable ? c.value.slice(c.selectionStart, c.selectionEnd) : String(window.getSelection());
       if (!sel && c && !c.isContentEditable) sel = c.value;
-      if (sel && navigator.clipboard) navigator.clipboard.writeText(sel).then(function () { avisar(nombre === "copiar" ? "Copiado" : "Cortado"); }, function () { avisar("No se pudo copiar", true); });
+      if (sel && navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(sel).then(function () { avisar(nombre === "copiar" ? "Copiado" : "Cortado"); }, function () { avisar("No se pudo copiar", true); });
+      else if (sel && c && !c.isContentEditable) { try { enfocar(c); c.select(); document.execCommand("copy"); avisar(nombre === "copiar" ? "Copiado" : "Cortado"); } catch (x) { avisar("Este navegador no deja usar el portapapeles aquí", true); } }
+      else if (sel) avisar("Este navegador no deja usar el portapapeles aquí", true);
       if (nombre === "cortar" && c) { enfocar(c); if (c.isContentEditable) document.execCommand("delete"); else if (c.selectionStart !== c.selectionEnd) fijarValor(c, c.value.slice(0, c.selectionStart) + c.value.slice(c.selectionEnd), c.selectionStart); else fijarValor(c, "", 0); }
     } else if (nombre === "pegar") {
       if (navigator.clipboard && navigator.clipboard.readText) navigator.clipboard.readText().then(function (t) { if (t) { insertarTexto(t); avisar("Pegado"); } }, function () { avisar("El navegador no deja leer el portapapeles", true); });
+      else avisar("Este navegador no deja pegar desde aquí: usa Ctrl+V", true);
     } else if (nombre === "deshacer" || nombre === "rehacer") { if (c) { enfocar(c); document.execCommand(nombre === "deshacer" ? "undo" : "redo"); } }
     else if (nombre === "todo") { if (c) { enfocar(c); if (c.isContentEditable) document.execCommand("selectAll"); else c.select(); } else document.execCommand("selectAll"); }
     else if (nombre === "buscar") { var b = document.querySelector('input[type=search],input[name*=busc i],input[name*=search i],input[placeholder*=busc i],input[placeholder*=search i]'); if (b) { enfocar(b); objetivoTexto = b; b.scrollIntoView({ block: "center" }); avisar("Buscar"); } else avisar("La página no tiene buscador", true); }
@@ -1527,9 +1573,9 @@
     refrescarSugerencias(); pintarTexto();
   }
   function teclaDe(b) { for (var i = 0; i < teclas.length; i++) if (teclas[i].el === b) return teclas[i]; return null; }
-  function pintarTexto() { if (tecTextoEl) tecTextoEl.textContent = frase ? "Escrito: " + frase.slice(-80) : (campo() ? "Escribiendo en: " + nombreDe(campo()) : "Pulsa en un campo de la página para escribir en él, o escribe y pulsa «Decir»."); }
+  function pintarTexto() { if (tecTextoEl) tecTextoEl.textContent = frase ? "Escrito: " + (esSecreto(campo()) ? "••••" : frase.slice(-80)) : (campo() ? "Escribiendo en: " + nombreDe(campo()) : "Pulsa en un campo de la página para escribir en él, o escribe y pulsa «Decir»."); }
   function refrescarSugerencias() {
-    sugerencias = ajustes.teclado_prediccion ? sugerir(palabra, 5) : [];
+    sugerencias = ajustes.teclado_prediccion && !esSecreto(campo()) ? sugerir(palabra, 5) : [];
     teclas.forEach(function (t) { if (t.tipo === "pred") { t.valor = sugerencias[t.indice] || ""; t.el.textContent = t.valor; } });
   }
   function mostrarTeclado() { tecVisible = true; dibujarTeclado(); tecEl.classList.add("visible"); avisar("Teclado"); contar("teclado"); }
@@ -1570,6 +1616,7 @@
     else if (tipo === "dictar") alternarDictado();
   }
   function escribir(texto) {
+    if (esSecreto(campo())) { insertarTexto(texto); palabra = ""; frase = ""; pintarTexto(); return; }   // contraseñas: ni se acumulan, ni se aprenden, ni se leen
     insertarTexto(texto); frase += texto;
     if (/^[a-záéíóúüñ]$/i.test(texto)) palabra += texto; else terminarPalabra(true);
     if (capa === "ABC" && !bloqMayus) { capa = "abc"; dibujarTeclado(); return; }
@@ -1594,56 +1641,72 @@
   // Honestidad sobre la voz: la Web Speech API de Chrome y Edge no reconoce en el equipo, manda el audio a Google o Microsoft
   var AVISO_VOZ = "Aviso: mientras escuchas, el navegador envía tu voz a los servidores de Google o Microsoft para reconocerla; nada más sale de tu equipo. Más en winclus.com/privacidad.";
   function alternarDictado() { if (dictando) pararDictado(); else empezarDictado(); }
+  // Un solo reconocedor vivo por página: en Chrome y Edge arrancar un segundo aborta al primero, y si cada uno se
+  // reinicia en onend se abortan entre sí sin fin. Aquí, arrancar uno para al anterior, y un error grave
+  // (sin micrófono, sin red, sin permiso, idioma no soportado) no reintenta.
+  var recActivo = null;
+  var ERRORES_VOZ = { "not-allowed": "Sin permiso para el micrófono", "service-not-allowed": "El reconocimiento de voz no está permitido en este navegador", "audio-capture": "No se encontró micrófono", "network": "El reconocimiento de voz necesita conexión a internet", "language-not-supported": "Este idioma no está disponible para reconocer la voz" };
+  function crearReconocedor(cfg) {
+    if (recActivo && recActivo.parar) { var viejo = recActivo; viejo.parar(); if (viejo.alSustituir) viejo.alSustituir("sustituido"); }   // quien usaba el micrófono se entera y apaga su botón
+    var r = new Reconocedor(), vivo = true, fatal = false;
+    r.alSustituir = cfg.onfatal;
+    r.lang = IDIOMA_VOZ; r.continuous = true; r.interimResults = !!cfg.interim;
+    r.onresult = cfg.onresult;
+    r.onerror = function (e) {
+      if (e.error === "no-speech" || e.error === "aborted") return;
+      fatal = true; var msg = ERRORES_VOZ[e.error] || ("No se pudo reconocer la voz (" + e.error + ")");
+      avisar(msg, true); decir(msg + "."); if (cfg.onfatal) cfg.onfatal(e.error);
+    };
+    r.onend = function () { if (vivo && !fatal && recActivo === r) setTimeout(function () { if (vivo && recActivo === r) { try { r.start(); } catch (x) {} } }, 250); };
+    r.parar = function () { vivo = false; if (recActivo === r) recActivo = null; try { r.stop(); } catch (x) {} };
+    recActivo = r; r.start(); return r;
+  }
   function empezarDictado() {
     if (!Reconocedor) { avisar("Este navegador no dicta (usa Chrome o Edge)", true); return; }
+    if (dictando) return;
     try {
-      rec = new Reconocedor(); rec.lang = IDIOMA_VOZ; rec.continuous = true; rec.interimResults = false;
-      rec.onresult = function (e) { for (var i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) { var t = e.results[i][0].transcript.trim(); if (t) manejarDictado(t); } };
-      rec.onend = function () { if (dictando) { try { rec.start(); } catch (x) {} } };
-      rec.onerror = function (e) { if (e.error === "not-allowed") { avisar("Sin permiso para el micrófono", true); pararDictado(); } };
-      rec.start(); dictando = true; avisar("Dictando… habla"); if (tecVisible) dibujarTeclado();
+      rec = crearReconocedor({ onresult: function (e) { for (var i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) { var t = e.results[i][0].transcript.trim(); if (t) manejarDictado(t); } }, onfatal: function () { pararDictado(); } });
+      dictando = true; avisar("Dictando… habla"); if (tecVisible) dibujarTeclado();
     } catch (e) { avisar("No se pudo empezar el dictado", true); }
   }
-  function pararDictado() { if (!dictando) return; dictando = false; try { rec.stop(); } catch (e) {} if (tecVisible) dibujarTeclado(); avisar("Dictado parado"); }
+  function pararDictado() { if (!dictando) return; dictando = false; if (rec && rec.parar) rec.parar(); if (tecVisible) dibujarTeclado(); avisar("Dictado parado"); }
 
   // Órdenes habladas: «baja», «sube», «clic», «pulsa contacto», «escribe hola», «lee», «teclado», «menú», «pausa»…
   function empezarEscucha() {
     if (!Reconocedor) { decir("Este navegador no reconoce la voz (usa Chrome o Edge)."); return; }
     if (escuchando) return;
-    recOrdenes = new Reconocedor(); recOrdenes.lang = IDIOMA_VOZ; recOrdenes.continuous = true; recOrdenes.interimResults = false;
-    recOrdenes.onresult = function (e) { for (var i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) ejecutarOrden(e.results[i][0].transcript); };
-    recOrdenes.onend = function () { if (escuchando) { try { recOrdenes.start(); } catch (x) {} } };
-    recOrdenes.onerror = function (e) { if (e.error === "not-allowed") { decir("Sin permiso para el micrófono."); pararEscucha(); } };
-    try { recOrdenes.start(); escuchando = true; avisar("Escuchando órdenes"); } catch (e) {}
+    try {
+      recOrdenes = crearReconocedor({ onresult: function (e) { for (var i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) ejecutarOrden(e.results[i][0].transcript); }, onfatal: function () { pararEscucha(); } });
+      escuchando = true; avisar("Escuchando órdenes");
+    } catch (e) { avisar("No se pudo empezar a escuchar", true); }
     refrescos.forEach(function (f) { f(); });
   }
-  function pararEscucha() { if (!escuchando) return; escuchando = false; try { recOrdenes.stop(); } catch (e) {} refrescos.forEach(function (f) { f(); }); }
+  function pararEscucha() { if (!escuchando) return; escuchando = false; if (recOrdenes && recOrdenes.parar) recOrdenes.parar(); refrescos.forEach(function (f) { f(); }); }
 
   // --- subtítulos en vivo: lo que se habla cerca del micrófono, en una barra grande abajo --------
   var subtitulando = false, recSub = null, subFinal = "";
   function empezarSubvivo() {
     if (!Reconocedor) { avisar("Este navegador no reconoce la voz (usa Chrome o Edge)", true); return; }
     if (subtitulando) return;
-    recSub = new Reconocedor(); recSub.lang = IDIOMA_VOZ; recSub.continuous = true; recSub.interimResults = true;
     subFinal = ""; subvivoEl.innerHTML = '<span class="final">Escuchando…</span> <span class="parcial"></span>'; subvivoEl.style.display = "block";
-    recSub.onresult = function (e) {
-      var parcial = "";
-      for (var i = e.resultIndex; i < e.results.length; i++) { if (e.results[i].isFinal) subFinal += e.results[i][0].transcript + " "; else parcial += e.results[i][0].transcript; }
-      subFinal = subFinal.slice(-220);   // solo lo último: cabe en dos líneas
-      subvivoEl.querySelector(".final").textContent = subFinal.trim(); subvivoEl.querySelector(".parcial").textContent = parcial;
-    };
-    recSub.onend = function () { if (subtitulando) { try { recSub.start(); } catch (x) {} } };
-    recSub.onerror = function (e) { if (e.error === "not-allowed") { avisar("Sin permiso para el micrófono", true); pararSubvivo(); } };
-    try { recSub.start(); subtitulando = true; } catch (e) {}
+    try {
+      recSub = crearReconocedor({ interim: true, onresult: function (e) {
+        var parcial = "";
+        for (var i = e.resultIndex; i < e.results.length; i++) { if (e.results[i].isFinal) subFinal += e.results[i][0].transcript + " "; else parcial += e.results[i][0].transcript; }
+        subFinal = subFinal.slice(-220);   // solo lo último: cabe en dos líneas
+        subvivoEl.querySelector(".final").textContent = subFinal.trim(); subvivoEl.querySelector(".parcial").textContent = parcial;
+      }, onfatal: function () { pararSubvivo(); } });
+      subtitulando = true;
+    } catch (e) { subvivoEl.style.display = "none"; avisar("No se pudieron empezar los subtítulos", true); }
     refrescos.forEach(function (f) { f(); });
   }
-  function pararSubvivo() { if (!subtitulando) return; subtitulando = false; try { recSub.stop(); } catch (e) {} subvivoEl.style.display = "none"; refrescos.forEach(function (f) { f(); }); }
+  function pararSubvivo() { if (!subtitulando) return; subtitulando = false; if (recSub && recSub.parar) recSub.parar(); subvivoEl.style.display = "none"; refrescos.forEach(function (f) { f(); }); }
 
   // --- avisos visuales de sonido y subtítulos de los vídeos de la página ------------------------
   var sonidoTimer = 0;
   function nombreMedio(m) {
     var n = m.getAttribute("aria-label") || m.title || (m.closest("figure") && m.closest("figure").querySelector("figcaption") ? m.closest("figure").querySelector("figcaption").textContent : "");
-    if (!n) { var src = m.currentSrc || m.src || ""; n = src && !/^(data|blob):/.test(src) ? decodeURIComponent(src.split("/").pop().split("?")[0]).replace(/\.[a-z0-9]+$/i, "").replace(/[-_]+/g, " ") : ""; }
+    if (!n) { var src = m.currentSrc || m.src || ""; try { n = src && !/^(data|blob):/.test(src) ? decodeURIComponent(src.split("/").pop().split("?")[0]).replace(/\.[a-z0-9]+$/i, "").replace(/[-_]+/g, " ") : ""; } catch (e) { n = ""; } }
     return (n || (m.tagName === "VIDEO" ? "un vídeo" : "un audio")).trim().slice(0, 60);
   }
   function avisoSonido(m) {
@@ -1657,7 +1720,7 @@
   // Audios creados por código (new Audio) no están en el documento y no avisan por eventos: se envuelve play()
   try {
     var playOriginal = HTMLMediaElement.prototype.play;
-    HTMLMediaElement.prototype.play = function () { if (!this.isConnected) avisoSonido(this); return playOriginal.apply(this, arguments); };
+    HTMLMediaElement.prototype.play = function () { try { if (!this.isConnected) avisoSonido(this); limitarVolumen(this); } catch (e) {} return playOriginal.apply(this, arguments); };   // nunca romper el play() del sitio
   } catch (e) {}
   function aplicarSubtitulos() {
     if (!ajustes.subtitulos) return;
@@ -1685,7 +1748,7 @@
     if (!medios.length) { avisar("No hay vídeo ni audio en esta página", true); decirVoz("No hay vídeo ni audio en esta página.", true, true); return; }
     var m = medios.find(function (x) { return !x.paused; }) || medios[0];
     empezarSubvivo();
-    try { m.muted = false; if (m.volume < 0.5) m.volume = 0.7; m.play(); } catch (e) {}
+    try { m.muted = false; if (m.volume < 0.5) m.volume = 0.7; var pr = m.play(); if (pr && pr.catch) pr.catch(function () {}); } catch (e) {}
     avisar("Transcribiendo por el micrófono");
     decirVoz("Sube el volumen de los altavoces: el micrófono escuchará el audio y lo escribirá abajo.", true, true);
   }
@@ -1774,14 +1837,22 @@
     clearTimeout(errorTimer); errorTimer = setTimeout(mostrarErrores, 30);   // todos los inválidos del envío llegan seguidos
   }, true);
   // Errores que marca el propio sitio con aria-invalid
+  var ultimoInvalido = null, tInvalido = 0;
   try {
     new MutationObserver(function (ms) {
       if (!ajustes.formularios) return;
-      ms.forEach(function (m) { var e = m.target; if (e.getAttribute && e.getAttribute("aria-invalid") === "true" && !enWidget(e) && e.matches(SEL_CAMPO)) { var d = e.getAttribute("aria-describedby"), t = d && document.getElementById(d.split(" ")[0]); var msg = "Revisa «" + nombreCampo(e) + "»" + (t && t.textContent.trim() ? ": " + t.textContent.trim() : "."); avisar(msg, true); decirVoz(msg, true, false, IDIOMA_PAGINA); } });
-    }).observe(document.documentElement, { attributes: true, subtree: true, attributeFilter: ["aria-invalid"] });
+      ms.forEach(function (m) { var e = m.target; if (m.oldValue === "true") return; if (e === ultimoInvalido && Date.now() - tInvalido < 4000) return; if (e.getAttribute && e.getAttribute("aria-invalid") === "true" && !enWidget(e) && e.matches(SEL_CAMPO)) { ultimoInvalido = e; tInvalido = Date.now(); var d = e.getAttribute("aria-describedby"), t = d && document.getElementById(d.split(" ")[0]); var msg = "Revisa «" + nombreCampo(e) + "»" + (t && t.textContent.trim() ? ": " + t.textContent.trim() : "."); avisar(msg, true); decirVoz(msg, true, false, IDIOMA_PAGINA); } });
+    }).observe(document.documentElement, { attributes: true, subtree: true, attributeFilter: ["aria-invalid"], attributeOldValue: true });
   } catch (e) {}
   // Pegar siempre permitido: los manejadores del sitio no llegan a cancelar el pegado
-  document.addEventListener("paste", function (ev) { if (ajustes.formularios && !enWidget(ev.target)) ev.stopPropagation(); }, true);
+  // Solo en <input> y <textarea> con texto: el evento sigue llegando al sitio (editores, chats con imágenes…),
+  // pero no puede cancelar el pegado
+  document.addEventListener("paste", function (ev) {
+    var t = ev.target;
+    if (!ajustes.formularios || !t || enWidget(t) || !t.tagName || (t.tagName !== "INPUT" && t.tagName !== "TEXTAREA")) return;
+    if (ev.clipboardData && ev.clipboardData.files && ev.clipboardData.files.length) return;
+    ev.preventDefault = function () {};
+  }, true);
 
   // ================================ pictogramas (CAA) con ARASAAC ==
   // Tablero de comunicación para quien no lee ni escribe bien: pictogramas de ARASAAC (Gobierno de Aragón,
@@ -2017,7 +2088,9 @@
   // --- calibración invisible (detectors/aprendizaje.py) ------------------
   // Cada clic hecho con la cabeza (o afinado con ella) es una muestra:
   // rasgos de los ojos justo antes del clic → punto de la pantalla.
-  var clicsAprendidos = leerJSON("winclus.clics", []), clicsNuevos = 0, ultimoAjusteClics = 0;
+  // Solo muestras completas y finitas: una con null o de otra versión dejaría un modelo NaN y el puntero ocular muerto
+  function clicsValidos(lista) { return (Array.isArray(lista) ? lista : []).filter(function (c) { return c && Array.isArray(c.r) && c.r.length === N_RASGOS && c.r.every(function (v) { return typeof v === "number" && isFinite(v); }) && isFinite(c.x) && isFinite(c.y); }); }
+  var clicsAprendidos = clicsValidos(leerJSON("winclus.clics", [])), clicsNuevos = 0, ultimoAjusteClics = 0;
   function anotarClicPuntero(porParpadeo) {
     var modo = modoEfectivo(), fuente;
     if (modo === "cabeza") fuente = "cabeza"; else if (modo === "palanca") fuente = "palanca";
@@ -2060,6 +2133,7 @@
     var mejor = null;
     LAMBDAS.forEach(function (lam) { var m = ajustarModelo(Pb, Rb, Ptr, Rtr, Wtr, lam); var e = Pte.length ? errorDe(m, Pte, Rte) : m.error_px; if (!mejor || e < mejor[0]) mejor = [e, lam]; });
     var err = mejor[0];
+    if (!isFinite(err)) return "No se pudo ajustar con estos clics.";
     if (!valido && err > 200) return "Todavía no acierta bastante (" + Math.round(err) + " px). Sigue haciendo clics.";
     if (valido && !forzado) {
       var errActual = Pte.length ? errorDe(calibracion, Pte, Rte) : 1e9;
@@ -2134,7 +2208,8 @@
   function cambiarVoz(d) { var vs = vocesEs(); if (!vs.length) return; var i = vs.findIndex(function (v) { return v.name === ajustes.voz_nombre; }); i = (i + d + vs.length) % vs.length; ajustes.voz_nombre = vs[i].name; guardar(); pintarVoz(); }
   function pintarVoz() { var vs = vocesEs(); var v = vs.find(function (x) { return x.name === ajustes.voz_nombre; }) || vozPreferida(vs); vv.textContent = v ? v.name.replace(/Microsoft |Google |Desktop| - .*$/g, "") : "sin voces en español"; }
   bv[0].addEventListener("click", function () { cambiarVoz(-1); }); bv[1].addEventListener("click", function () { cambiarVoz(1); });
-  refrescos.push(pintarVoz); if ("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged = pintarVoz;
+  refrescos.push(pintarVoz);
+  try { if (window.speechSynthesis) window.speechSynthesis.onvoiceschanged = pintarVoz; } catch (e) {}   // sin síntesis de voz (algunas WebView) el panel debe seguir montándose
   s.appendChild(fVoz);
   s.appendChild(filaPaso("voz_velocidad", "Velocidad de la voz", -5, 5, 1, function (n) { return n > 0 ? "+" + n : String(n); }));
   s.appendChild(filaSw("voz_eco", "Leer cada palabra al escribirla"));
@@ -2347,7 +2422,7 @@
     if (ahora - ultimo < 7 * 86400000) return;
     try {
       fetch(opciones.metricas, { method: "POST", headers: { "Content-Type": "application/json" }, keepalive: true, body: JSON.stringify({ sitio: location.hostname, version: VERSION, desde: uso.desde, cifras: uso.n }) })
-        .then(function () { escribirJSON("winclus.uso_enviado", ahora); });
+        .then(function () { escribirJSON("winclus.uso_enviado", ahora); }).catch(function () {});
     } catch (e) {}
   }
   setTimeout(enviarMetricasSiToca, 5000);
@@ -2366,13 +2441,14 @@
     if (p.ojos_centro) { ojosCentro = p.ojos_centro; escribirJSON("winclus.ojos_centro", ojosCentro); }
     if (Array.isArray(p.frases) && p.frases.every(function (x) { return typeof x === "string"; })) { frases = p.frases.slice(0, 64); escribirJSON("winclus.frases", frases); areaFrases.value = frases.join("\n"); }
     if (p.palabras && typeof p.palabras === "object") { aprendidas = p.palabras; escribirJSON("winclus.palabras", aprendidas); diccionario = null; }
-    if (Array.isArray(p.clics)) { clicsAprendidos = p.clics; escribirJSON("winclus.clics", clicsAprendidos); }
-    aplicarTodo(); avisar("Perfil importado");
+    if (Array.isArray(p.clics)) { clicsAprendidos = clicsValidos(p.clics); escribirJSON("winclus.clics", clicsAprendidos); }
+    aplicarTodo(); aplicarBarrido(); activarLector(!!ajustes.lector); avisar("Perfil importado");
   }
   function perfilActual() { return { winclus: VERSION, ajustes: ajustes, calibracion: calibracion, ojos_centro: ojosCentro, frases: frases, palabras: aprendidas }; }
   function perfilAEnlace() {
     var json = JSON.stringify(perfilActual()), b64 = btoa(unescape(encodeURIComponent(json))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-    return location.href.replace(/#.*$/, "") + "#winclus=" + b64;
+    var h = (location.hash || "").replace(/[#&]winclus=[A-Za-z0-9_-]+/, "");   // se conserva la ruta de las SPA (#/tramites/…)
+    return location.href.replace(/#.*$/, "") + (h.length > 1 ? h + "&" : "#") + "winclus=" + b64;
   }
   function perfilDeEnlace() {
     var m = /[#&]winclus=([A-Za-z0-9_-]+)/.exec(location.hash || "");
@@ -2388,19 +2464,23 @@
   var entrada = el("input", { "type": "file", "accept": ".winclus,.json", "style": "display:none" });
   entrada.addEventListener("change", function () {
     var f = entrada.files[0]; if (!f) return;
-    f.text().then(function (t) { importarPerfil(JSON.parse(t)); }).catch(function () { avisar("No se pudo leer el perfil", true); });
+    var lector2 = new FileReader();   // FileReader: Blob.text() no existe en Safari < 14
+    lector2.onload = function () { try { importarPerfil(JSON.parse(lector2.result)); } catch (x) { avisar("No se pudo leer el perfil", true); } };
+    lector2.onerror = function () { avisar("No se pudo leer el perfil", true); };
+    lector2.readAsText(f);
     entrada.value = "";
   });
   s.appendChild(entrada);
   s.appendChild(botonGrande("Importar perfil", "suave", function () { entrada.click(); }));
   s.appendChild(el("div", { "class": "wcl-estado" }, "Borra de este navegador todo lo que Winclus guarda: ajustes, calibración de los ojos, clics aprendidos, frases, palabras y el permiso de la cámara."));
   s.appendChild(botonGrande("Restablecer todo", "suave", function () {
-    if (camaraActiva) desactivarCamara();
+    desactivarCamara(); consentidoAhora = false;   // también si estaba activándose
     fusionarAjustes(JSON.parse(JSON.stringify(POR_DEFECTO))); guardar();
     calibracion = null; ojosCentro = null; clicsAprendidos = []; frases = FRASES_DEFECTO.slice(); aprendidas = {}; diccionario = null;
     ["winclus.calibracion", "winclus.ojos_centro", "winclus.clics", "winclus.frases", "winclus.palabras", "winclus.consentimiento_camara"].forEach(function (k) { escribirJSON(k, null); });
     try { sessionStorage.removeItem("winclus.tab"); } catch (e) {}
-    areaFrases.value = frases.join("\n"); reiniciarPuntero(); refrescarEstadoAprendizaje(); aplicarTodo(); avisar("Todo restablecido");
+    areaFrases.value = frases.join("\n"); reiniciarPuntero(); refrescarEstadoAprendizaje(); aplicarTodo();
+    cerrarLimpia(); cerrarPictos(); aplicarBarrido(); activarLector(false); ocultarNumeros(); avisar("Todo restablecido");
   }));
   tabs.mas.appendChild(s);
   s = seccion("Acerca de");
@@ -2437,6 +2517,7 @@
     + 'html.wcl-subs video::cue{font-size:1.5em;line-height:1.4;color:#fff;background:rgba(0,0,0,.9)}';
   (document.head || raiz).appendChild(estiloCon(css2)); estilosSombra.push(css2);
   // Filtros de color (daltonización de Fidaner: M = I + E·(I − S), con la simulación de Machado 2009)
+  var ES_FIREFOX = !!(window.CSS && CSS.supports && CSS.supports("-moz-appearance", "none")), filtroCuerpo = "";   // Firefox actual ya no expone MozAppearance en style
   var FILTROS = el("svg", { "style": "position:absolute;width:0;height:0", "aria-hidden": "true" },
     '<filter id="wcl-f-protan" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0.479 0.477 0.044 0 0  0.597 -0.689 1.091 0 0  0 0 0 1 0"/></filter>'
     + '<filter id="wcl-f-deutan" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0.163 0.725 0.112 0 0  0.455 -0.645 1.191 0 0  0 0 0 1 0"/></filter>'
@@ -2455,11 +2536,13 @@
   // Como el punto bajo el puntero siempre es el contenido real, mover el puntero recorre la página
   // como una lupa de mano. Sustituye a un magnificador como MAGic dentro de la página.
   function seguirLupaPantalla(x, y) {
-    var b = document.body;
+    var b = document.body; if (!b) return;
     b.style.transformOrigin = (x - b.offsetLeft) + "px " + (y + window.scrollY - b.offsetTop) + "px";
   }
+  // En táctil no hay mousemove: la lupa sigue al dedo
+  document.addEventListener("touchmove", function (e) { if (ajustes.lupa_pantalla && !camaraActiva && e.touches && e.touches[0]) seguirLupaPantalla(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
   function aplicarLupaPantalla() {
-    var b = document.body;
+    var b = document.body; if (!b) return;
     raiz.classList.toggle("wcl-lupap", !!ajustes.lupa_pantalla);
     if (ajustes.lupa_pantalla) { if (lupa) cerrarLupa(); seguirLupaPantalla(P.x, P.y); b.style.transform = "scale(" + ajustes.lupa_pantalla_zoom + ")"; }
     else if (!lupa) { b.style.transform = ""; b.style.transformOrigin = ""; }
@@ -2484,10 +2567,12 @@
       } else if (im.dataset.wclGif) { im.src = im.dataset.wclGif; delete im.dataset.wclGif; }
     });
   }
+  var calmaPrev = false;
   function aplicarCalma(si) {
     raiz.classList.toggle("wcl-calma", si);
-    if (si) document.querySelectorAll("video,audio").forEach(function (m) { try { m.pause(); m.autoplay = false; m.removeAttribute("autoplay"); m.loop = false; } catch (x) {} });
-    congelarGifs(si);
+    // Solo al pasar de apagado a encendido: tocar otro interruptor no debe parar el vídeo que la persona está viendo
+    if (si && !calmaPrev) document.querySelectorAll("video,audio").forEach(function (m) { try { m.pause(); m.autoplay = false; m.removeAttribute("autoplay"); m.loop = false; } catch (x) {} });
+    congelarGifs(si); calmaPrev = !!si;
   }
 
   // --- lectura limpia: solo el texto de la página, grande y sin distracciones ---
@@ -2545,7 +2630,13 @@
     ["inhabilidad", "prohibición", "Algo que impide participar"], ["persona natural", "persona", "Una persona, no una empresa"], ["persona jurídica", "empresa u organización", "Una empresa, asociación o entidad"]
   ];
   function esc2(t) { return t.replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
-  function frasesDe(texto) { return texto.replace(/\s+/g, " ").split(/(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÑ¿¡"«(])/).map(function (s) { return s.trim(); }).filter(Boolean); }
+  // Sin «lookbehind» en las expresiones regulares: un literal así rompe el archivo entero en Safari e iOS anteriores a 16.4
+  function frasesDe(texto) {
+    var t = texto.replace(/\s+/g, " "), out = [], ini = 0, re = /[.!?]\s+(?=[A-ZÁÉÍÓÚÑ¿¡"«(])/g, m;
+    while ((m = re.exec(t))) { out.push(t.slice(ini, m.index + 1)); ini = m.index + m[0].length; }
+    out.push(t.slice(ini));
+    return out.map(function (s) { return s.trim(); }).filter(Boolean);
+  }
   function acortar(frase, nivel) {   // una idea por frase: se parte por «;», «:», por « y »/« pero »… y, si sigue larga, por la coma del medio
     nivel = nivel || 0;
     var palabras = frase.split(" ").length;
@@ -2565,13 +2656,14 @@
     });
     return salida;
   }
+  // Una sola pasada (términos largos primero): así una regla no vuelve a casar dentro del title que puso otra
+  var RE_GLOSARIO = new RegExp("\\b(" + GLOSARIO.map(function (g) { return g[0]; }).sort(function (a, b) { return b.length - a.length; }).map(function (t) { return t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }).join("|") + ")\\b", "gi");
   function conGlosario(frase) {
-    var h = esc2(frase);
-    GLOSARIO.forEach(function (g) {
-      var re = new RegExp("\\b" + g[0].replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "gi");
-      h = h.replace(re, function (m) { return '<abbr title="' + esc2(g[0] + ": " + g[2]) + '">' + esc2(g[1]) + "</abbr>"; });
+    return esc2(frase).replace(RE_GLOSARIO, function (m) {
+      var g = null; for (var i = 0; i < GLOSARIO.length; i++) if (GLOSARIO[i][0].toLowerCase() === m.toLowerCase()) { g = GLOSARIO[i]; break; }
+      if (!g) return m;
+      return '<abbr title="' + esc2(g[0] + ": " + g[2]).replace(/"/g, "&quot;") + '">' + esc2(g[1]) + "</abbr>";
     });
-    return h;
   }
   function explicarPorReglas(bloques) {   // bloques: [{tag, texto}]
     var titulo = bloques.filter(function (b) { return /^h[12]$/.test(b.tag); }).map(function (b) { return b.texto; })[0] || document.title || "esta página";
@@ -2596,11 +2688,13 @@
     var texto = bloquesLimpia.map(function (b) { return b.texto; }).join("\n");
     if (opciones.explicar) {
       explicando = true; refrescoLimpia("Pidiendo la explicación…"); cont2.innerHTML = '<div class="facil"><p>Preparando una explicación en lenguaje claro…</p></div>';
-      fetch(opciones.explicar, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ texto: texto.slice(0, 20000), idioma: IDIOMA_PAGINA, titulo: document.title }) })
+      var mio = limpiaEl, ac = window.AbortController ? new AbortController() : null;   // si se cierra la lectura mientras tanto, la respuesta se ignora
+      if (ac) setTimeout(function () { ac.abort(); }, 20000);   // sin respuesta en 20 s: reglas
+      fetch(opciones.explicar, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ texto: texto.slice(0, 20000), idioma: IDIOMA_PAGINA, titulo: document.title }), signal: ac ? ac.signal : undefined })
         .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-        .then(function (j) { var t = (j && (j.texto || j.text)) || ""; if (!t) throw new Error("vacío"); cont2.innerHTML = '<div class="facil">' + t.split(/\n{2,}/).map(function (p) { return /^#+\s/.test(p) ? "<h2>" + esc2(p.replace(/^#+\s/, "")) + "</h2>" : "<p>" + conGlosario(p) + "</p>"; }).join("") + '<p class="nota">Explicación generada con inteligencia artificial: puede tener errores. Confirma lo importante en el texto original.</p></div>'; })
-        .catch(function () { cont2.innerHTML = explicarPorReglas(bloquesLimpia); })
-        .then(function () { explicando = false; limpiaEl.dataset.facil = "1"; refrescoLimpia("Texto en fácil"); decirVoz("Listo. Esta es la explicación en lenguaje claro.", true, true); });
+        .then(function (j) { var t = (j && (j.texto || j.text)) || ""; if (!t) throw new Error("vacío"); if (limpiaEl === mio) cont2.innerHTML = '<div class="facil">' + t.split(/\n{2,}/).map(function (p) { return /^#+\s/.test(p) ? "<h2>" + esc2(p.replace(/^#+\s/, "")) + "</h2>" : "<p>" + conGlosario(p) + "</p>"; }).join("") + '<p class="nota">Explicación generada con inteligencia artificial: puede tener errores. Confirma lo importante en el texto original.</p></div>'; })
+        .catch(function () { if (limpiaEl === mio) cont2.innerHTML = explicarPorReglas(bloquesLimpia); })
+        .then(function () { explicando = false; if (limpiaEl !== mio) return; mio.dataset.facil = "1"; refrescoLimpia("Texto en fácil"); decirVoz("Listo. Esta es la explicación en lenguaje claro.", true, true); });
     } else {
       cont2.innerHTML = explicarPorReglas(bloquesLimpia); limpiaEl.dataset.facil = "1"; refrescoLimpia("Texto en fácil"); decirVoz("Esta es la página en lenguaje claro.", true, true);
     }
@@ -2616,7 +2710,7 @@
     }
     var palabras = Array.prototype.slice.call(cont2.querySelectorAll(".w")), texto = palabras.map(function (s) { return s.textContent; }).join(" ").slice(0, 15000);
     var inicios = [], pos = 0; palabras.forEach(function (s) { inicios.push(pos); pos += s.textContent.length + 1; });
-    if (!("speechSynthesis" in window) || !texto) return;
+    if (!(window.speechSynthesis) || !texto) return;
     window.speechSynthesis.cancel();
     var u = new SpeechSynthesisUtterance(texto); u.lang = IDIOMA_PAGINA; u.rate = Math.pow(1.18, ajustes.voz_velocidad || 0);
     var actual = null;
@@ -2644,7 +2738,7 @@
     return t;
   }
 
-  function cerrarLimpia() { if (!limpiaEl) return; callar(); limpiaEl.remove(); limpiaEl = null; refrescos.forEach(function (f) { f(); }); }
+  function cerrarLimpia() { if (!limpiaEl) return; callar(); limpiaEl.remove(); limpiaEl = null; explicando = false; refrescos.forEach(function (f) { f(); }); }
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && limpiaEl) cerrarLimpia(); });
 
   // --- lector de pantalla básico: leer la página con el teclado y voz ---------
@@ -2709,7 +2803,7 @@
     var i = lectorEl ? lista.indexOf(lectorEl) : -1;
     if (i < 0 && lectorEl) {   // el elemento actual no está en esta lista: se busca el siguiente en el orden del documento
       for (var k = 0; k < lista.length; k++) if (lectorEl.compareDocumentPosition(lista[k]) & Node.DOCUMENT_POSITION_FOLLOWING) { i = paso > 0 ? k - 1 : k; break; }
-      if (i < 0 && k === lista.length) i = paso > 0 ? -1 : lista.length;
+      if (i < 0 && k === lista.length) { if (paso > 0) { anunciar("No hay más " + (nombre || "elementos") + " después de aquí."); return; } i = lista.length; }
     }
     var j = i + paso;
     if (j < 0) { anunciar("Principio de la página. " + describir(lista[0])); irLector(lista[0]); return; }
@@ -2868,8 +2962,17 @@
     if (ajustes.contraste) f.push("contrast(1.35) saturate(1.15)");
     if (ajustes.oscuro) f.push("invert(1) hue-rotate(180deg)");
     if (ajustes.calma) f.push("saturate(.7) brightness(.93)");
-    if (ajustes.dalton && ajustes.dalton !== "no") f.push("url(#wcl-f-" + ajustes.dalton + ")");
+    var fd = ajustes.dalton && ajustes.dalton !== "no" ? "url(#wcl-f-" + ajustes.dalton + ")" : "";
+    // Firefox no aplica un filtro SVG (url(#…)) sobre <html> y, si va en la lista, descarta también los demás; ahí el
+    // de daltonismo va sobre <body> (el widget cuelga de <html>, así que no le afecta) y los otros se quedan en <html>
+    if (fd && ES_FIREFOX && ajustes.dalton === "gris") { f.push("grayscale(1)"); fd = ""; }   // exacto y sin el problema de <body>
+    if (fd && !ES_FIREFOX) f.push(fd);
     raiz.style.filter = f.join(" ");
+    if (ES_FIREFOX && document.body && (fd || filtroCuerpo)) {
+      // Con el filtro en <body>, lo que el sitio tenga en position:fixed pasa a moverse con la página; se avisa una vez
+      if (fd && !filtroCuerpo) avisar("En Firefox la corrección de color se aplica al contenido: si algo fijo de la página se descoloca, usa Chrome o Edge", true);
+      document.body.style.filter = fd; filtroCuerpo = fd;
+    }
     aplicarCalma(!!ajustes.calma); aplicarLupaPantalla();
     mascaraArriba.style.display = mascaraAbajo.style.display = ajustes.mascara ? "block" : "none";
     if (ajustes.mascara) actualizarMascara(P.y);
@@ -2881,6 +2984,7 @@
     panel.classList.toggle("abierto", si);
     boton.setAttribute("aria-expanded", si ? "true" : "false");
     if (si) { refrescos.forEach(function (f) { f(); }); if (!camaraActiva) q(".wcl-cab button").focus(); }
+    if (ajustes.barrido) { barridoLista = []; barridoI = -1; barridoMarcar(null, null); }   // lo barrible cambia al abrir o cerrar el panel
   }
   boton.addEventListener("click", function () { abrir(!panel.classList.contains("abierto")); });
   q(".wcl-cab button").addEventListener("click", function () { abrir(false); if (!camaraActiva) boton.focus(); });
@@ -2891,7 +2995,7 @@
 
   function montar() {
     estilosSombra.forEach(function (t) { caja.appendChild(estiloCon(t)); });
-    raiz.appendChild(FILTROS);   // url(#wcl-f-…) desde el filtro de <html> solo encuentra ids del documento, no del shadow root
+    (document.body || raiz).appendChild(FILTROS);   // url(#wcl-f-…) desde el filtro de <html> solo encuentra ids del documento, no del shadow root; en <body>, que Firefox no aplica un <svg> colgado de <html>
     caja.appendChild(mascaraArriba); caja.appendChild(mascaraAbajo);
     caja.appendChild(guia); caja.appendChild(boton); caja.appendChild(btnPausa); caja.appendChild(panel);
     caja.appendChild(tecEl); caja.appendChild(menuEl); caja.appendChild(cursor); caja.appendChild(aviso); caja.appendChild(vivo); caja.appendChild(calibEl);
@@ -2950,11 +3054,15 @@
       return;
     }
     if (barridoNivel !== "pagina") { barridoNivel = "pagina"; barridoI = -1; barridoMarcar(null, null); }
-    if (barridoI + 1 >= barridoLista.length) { barridoLista = barridoObjetivosPagina(); barridoI = -1; }
-    if (!barridoLista.length) return;
-    barridoI++; barridoMarcar(barridoLista[barridoI], null);
+    // Se saltan los elementos que ya no están o no se ven (panel cerrado, sitio que reemplazó el DOM): nada de barrido fantasma
+    var e, intentos = 0;
+    do {
+      if (barridoI + 1 >= barridoLista.length) { barridoLista = barridoObjetivosPagina(); barridoI = -1; if (!barridoLista.length || ++intentos > 1) return; }
+      e = barridoLista[++barridoI];
+    } while (!(e === boton || (e && e.isConnected && visibleEl(e) && !e.disabled)));
+    barridoMarcar(e, null);
   }
-  function barridoReprogramar() { clearInterval(barridoTimer); barridoTimer = setInterval(barridoPaso, Math.max(300, ajustes.barrido_ms || 1200)); }
+  function barridoReprogramar() { clearInterval(barridoTimer); var ms = +ajustes.barrido_ms; barridoTimer = setInterval(barridoPaso, isFinite(ms) ? Math.max(300, ms) : 1200); }
   function barridoActivar(e) {
     contar("barrido");
     if (e === boton) { abrir(!panel.classList.contains("abierto")); barridoLista = []; barridoI = -1; return; }
@@ -2964,7 +3072,7 @@
       barridoLista = []; barridoI = -1; return;
     }
     if (esEditable(e)) { enfocar(e); objetivoTexto = e; mostrarTeclado(); avisar("Escribir aquí"); return; }
-    if (e.tagName === "SELECT") { e.selectedIndex = (e.selectedIndex + 1) % e.options.length; e.dispatchEvent(new Event("input", { bubbles: true })); e.dispatchEvent(new Event("change", { bubbles: true })); avisar(e.options[e.selectedIndex].text); return; }
+    if (e.tagName === "SELECT") { if (!e.options.length) { avisar("Lista vacía", true); return; } e.selectedIndex = (Math.max(0, e.selectedIndex) + 1) % e.options.length; e.dispatchEvent(new Event("input", { bubbles: true })); e.dispatchEvent(new Event("change", { bubbles: true })); avisar(e.options[e.selectedIndex].text); return; }
     try { e.focus({ preventScroll: true }); } catch (x) {}
     despachar(e, ["pointerdown", "mousedown", "pointerup", "mouseup", "click"]); avisar("Clic");
   }
@@ -3005,17 +3113,21 @@
   ["mousedown", "click"].forEach(function (tipo) {
     document.addEventListener(tipo, function (e) {
       if (!ajustes.barrido || ajustes.barrido_senal !== "raton" || !e.isTrusted) return;
+      if (enWidget(e.composedPath ? e.composedPath()[0] : e.target) && panel.classList.contains("abierto")) return;   // un acompañante con ratón puede seguir usando el panel
       e.preventDefault(); e.stopPropagation(); if (tipo === "click") barridoSenal();
     }, true);
   });
   if (ajustes.barrido) setTimeout(aplicarBarrido, 800);
   // Perfil que viene en el enlace (#winclus=…): se importa y se quita del enlace
-  var perfilEnlace = perfilDeEnlace();
-  if (perfilEnlace !== null) {
+  function perfilDesdeEnlace() {
+    var perfilEnlace = perfilDeEnlace();
+    if (perfilEnlace === null) return;
     try { if (!perfilEnlace) throw new Error("roto"); importarPerfil(perfilEnlace); decirVoz("Tu configuración de Winclus se ha cargado desde el enlace.", true, true); }
     catch (e) { setTimeout(function () { avisar("El enlace no traía un perfil válido", true); }, 100); }
-    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+    try { var hq = (location.hash || "").replace(/[#&]winclus=[A-Za-z0-9_-]+/, ""); history.replaceState(null, "", location.pathname + location.search + (hq.length > 1 ? hq : "")); } catch (e) {}
   }
+  perfilDesdeEnlace();
+  window.addEventListener("hashchange", perfilDesdeEnlace);   // también si el enlace con perfil se abre estando ya en la página (SPA, enlace interno)
 
   window.Winclus = {
     version: VERSION, ajustes: ajustes,

@@ -1,7 +1,7 @@
 // Ayuda en formularios: al entrar en un campo dice «Campo N de M: etiqueta, obligatorio»; al enviar con errores
 // los explica en lenguaje claro y lleva el foco al primero; deja pegar aunque el sitio lo bloquee (onpaste y
 // preventDefault). Uso: node prueba_formularios.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 
 const PAGINA = "file:///" + path.resolve(__dirname, "pagina-formulario.html").replace(/\\/g, "/");
@@ -10,7 +10,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
 
 (async () => {
   const nav = await chromium.launch();
-  const ctx = await nav.newContext({ viewport: { width: 1280, height: 800 }, permissions: ["clipboard-read", "clipboard-write"] });
+  const ctx = await nav.newContext({ viewport: { width: 1280, height: 800 }, permissions: (process.env.NAVEGADOR && process.env.NAVEGADOR !== "chromium") ? [] : ["clipboard-read", "clipboard-write"] });
   await ctx.addInitScript(() => localStorage.setItem("winclus.ajustes", JSON.stringify({ voz_activa: false })));
   const page = await ctx.newPage();
   await page.goto(PAGINA);
@@ -49,7 +49,9 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   aviso = await page.evaluate(() => Winclus.caja.querySelector(".wcl-vivo").textContent);
   comprobar(/Revisa «Cédula»: La cédula no existe/.test(aviso), "aria-invalid del sitio se anuncia con su explicación", aviso);
 
-  // --- pegar siempre permitido ---
+  // --- pegar siempre permitido --- (WebKit de Playwright no da acceso al portapapeles: ahí no se prueba)
+  const sinPortapapeles = process.env.NAVEGADOR === "webkit";
+  if (!sinPortapapeles) {
   await page.evaluate(() => navigator.clipboard.writeText("pegado"));
   await page.fill("#correo", "");
   await page.focus("#correo");
@@ -63,6 +65,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   await page.waitForTimeout(100);
   const v2 = await page.$eval("#cedula", (e) => e.value);
   comprobar(v2 === "pegado", "se puede pegar aunque un manejador del sitio haga preventDefault", JSON.stringify(v2));
+  }
 
   // --- apagado ---
   await page.evaluate(() => { Winclus.ajustes.formularios = false; });

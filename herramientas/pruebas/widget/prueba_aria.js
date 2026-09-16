@@ -1,7 +1,7 @@
 // ARIA del panel: pestañas con el patrón Tabs (flechas, una sola tabulable, aria-controls), botones −/+
 // con etiqueta propia y valor descrito, avisos en una región live, estado de cámara sin repeticiones,
 // calibración como diálogo modal. Uso: node prueba_aria.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 
 const PAGINA = "file:///" + path.resolve(__dirname, "pagina-prueba.html").replace(/\\/g, "/");

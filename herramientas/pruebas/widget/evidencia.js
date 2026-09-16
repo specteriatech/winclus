@@ -29,6 +29,8 @@ const PRUEBAS = [
   ["prueba_idiomas.js", "Panel en inglés en páginas en inglés, data-ui, idiomas añadidos por el sitio.", ["WCAG 3.1.1", "WCAG 3.1.2"]],
   ["prueba_maximo.js", "Limitador de volumen, voz neuronal preferida, asistente «¿Qué quieres hacer?», transcribir un medio.", ["WCAG 1.4.2", "COGA"]],
   ["prueba_evidencia.js", "La demostración pública pasa axe; las cifras de uso se cuentan en local, el resumen no lleva datos personales y solo se envían al sitio si la persona lo activa.", ["Ley 1581/2012", "Evidencia de uso"]],
+  ["prueba_navegadores.js", "En Chromium, Firefox y WebKit: sin síntesis ni reconocimiento de voz, localStorage bloqueado, sin portapapeles, página sin <main>, DOM reemplazado (SPA), script cargado dos veces, móvil.", ["Robustez"]],
+  ["prueba_robustez.js", "Regresión de la revisión de código: consentimiento sin localStorage, CSS móvil, voz por trozos, glosario sin HTML anidado, barrido sin lista rancia, perfiles con tipos inválidos, contraseñas protegidas, un solo reconocedor de voz.", ["Robustez"]],
   ["prueba_rendimiento.js", "La inferencia de la cara va a la tasa de la cámara; modo ahorro a 15/s.", ["Rendimiento"]],
 ];
 

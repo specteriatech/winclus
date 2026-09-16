@@ -1,7 +1,7 @@
 // Pasa axe-core (WCAG 2.1 AA) sobre el propio widget: cada pestaña del panel, el teclado en
 // pantalla, el modo fácil y el botón de pausa. Requiere: npm i (playwright y axe-core) y
 // npx playwright install chromium. Uso: node prueba_axe.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 const fs = require("fs");
 

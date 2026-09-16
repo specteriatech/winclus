@@ -1,7 +1,7 @@
 // Privacidad honesta: la primera activación de la cámara pide consentimiento (y no toca la cámara hasta
 // aceptar), los textos de dictado y órdenes avisan de que la voz va a Google/Microsoft, y «Acerca de»
 // ya no promete que todo se procesa en el navegador. Uso: node prueba_privacidad.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 
 const PAGINA = "file:///" + path.resolve(__dirname, "pagina-prueba.html").replace(/\\/g, "/");

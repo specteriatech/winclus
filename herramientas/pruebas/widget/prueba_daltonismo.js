@@ -1,7 +1,7 @@
 // Corrección de color: los filtros SVG existen de verdad (SVGFilterElement, no HTMLUnknownElement) y cada
 // uno cambia los píxeles de la página. Nació el 16-sep-2026: el <svg> se creaba con createElement y los
 // filtros nunca habían funcionado. Uso: node prueba_daltonismo.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 
 const PAGINA = "file:///" + path.resolve(__dirname, "pagina-prueba.html").replace(/\\/g, "/");
@@ -20,9 +20,9 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   for (const [nombre, etiqueta] of [["protan", /Protan/], ["deutan", /Deuter/], ["tritan", /Tritan/], ["gris", /grises/]]) {
     await page.evaluate((re) => { Winclus.abrir(); Array.from(Winclus.caja.querySelectorAll(".wcl-opc button")).find((b) => new RegExp(re).test(b.textContent)).click(); }, etiqueta.source);
     await page.waitForTimeout(250);
-    const filtro = await page.evaluate(() => getComputedStyle(document.documentElement).filter);
+    const filtro = await page.evaluate(() => getComputedStyle(document.documentElement).filter + " " + getComputedStyle(document.body).filter);   // Firefox: url(#…) va en <body> y «gris» es grayscale(1) en <html>
     const ahora = await page.screenshot({ clip: { x: 10, y: 10, width: 4, height: 4 } });
-    comprobar(filtro.indexOf("wcl-f-" + nombre) >= 0 && !ahora.equals(base), "el filtro " + nombre + " se aplica y cambia el rojo de la página", filtro);
+    comprobar((filtro.indexOf("wcl-f-" + nombre) >= 0 || (nombre === "gris" && /grayscale/.test(filtro))) && !ahora.equals(base), "el filtro " + nombre + " se aplica y cambia el rojo de la página", filtro);
   }
   await page.evaluate(() => { Array.from(Winclus.caja.querySelectorAll(".wcl-opc button")).find((b) => /Ninguna/.test(b.textContent)).click(); });
   await page.waitForTimeout(250);

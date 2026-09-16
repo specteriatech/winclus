@@ -1,7 +1,7 @@
 // Motor multilingüe: en una página en inglés el panel sale en inglés (pestañas, secciones, interruptores, modo
 // fácil, avisos y voz), data-ui="es" lo fuerza en español, un sitio puede añadir un idioma con
 // window.WinclusIdiomas, y lo no traducido sale en español. Uso: node prueba_idiomas.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 const fs = require("fs");
 
@@ -13,6 +13,7 @@ function pagina(nombre, html) { const p = path.join(__dirname, nombre); fs.write
 (async () => {
   const nav = await chromium.launch();
   const page = await nav.newPage({ viewport: { width: 1280, height: 800 } });
+  await page.addInitScript({ path: path.join(__dirname, "voz-simulada.js") });
   const errores = [];
   page.on("pageerror", (e) => errores.push(String(e)));
   const leer = () => page.evaluate(() => ({

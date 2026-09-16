@@ -1,7 +1,7 @@
 // winclus.com: la portada, la política de privacidad y la declaración de accesibilidad pasan axe-core
 // (WCAG 2.1/2.2 AA), cargan el propio widget y se enlazan entre sí. Usa el servidor local.
 // Uso: node prueba_landing.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const { spawn } = require("child_process");
 const path = require("path");
 const fs = require("fs");

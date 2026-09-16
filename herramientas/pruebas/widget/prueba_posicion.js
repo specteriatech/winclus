@@ -2,7 +2,7 @@
 // ajuste activo (guardado en localStorage, como le pasa a una persona real), y que la
 // cabecera fija del sitio no se descoloca. Requiere: npm i playwright && npx playwright install chromium
 // Uso: node prueba_posicion.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 
 const PAGINA = "file:///" + path.resolve(__dirname, "pagina-prueba.html").replace(/\\/g, "/");
@@ -36,6 +36,7 @@ function fmt(r) { return r ? Math.round(r.left) + "," + Math.round(r.top) + " " 
   const navegador = await chromium.launch();
   let fallos = 0;
   for (const [nombre, ajustes] of CASOS) {
+    if (process.env.NAVEGADOR === "firefox" && ajustes.dalton && ajustes.dalton !== "gris") { console.log("--  " + nombre + ": no se prueba en Firefox (no aplica filtros SVG en <html>; el widget lo pone en <body> y avisa)"); continue; }
     const ctx = await navegador.newContext({ viewport: VISTA });
     await ctx.addInitScript((a) => { localStorage.setItem("winclus.ajustes", JSON.stringify(a)); }, ajustes);
     const page = await ctx.newPage();

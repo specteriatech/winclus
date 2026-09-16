@@ -2,7 +2,7 @@
 // de pantalla, y en modo ahorro a 15 por segundo como mucho. Usa el servidor local (servidor.js) y la
 // cámara simulada (camara-falsa.html, 30 cuadros por segundo) con el detector de web/mediapipe.
 // Uso: node prueba_rendimiento.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const { spawn } = require("child_process");
 const path = require("path");
 

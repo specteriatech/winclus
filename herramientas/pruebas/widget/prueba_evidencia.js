@@ -1,7 +1,7 @@
 // Página de demostración y métricas de uso: demo.html pasa axe y carga el widget; las cifras de uso se cuentan
 // en local, el resumen se copia sin datos personales, y solo se envían al sitio si hay data-metricas y la
 // persona lo activa (una vez por semana). Uso: node prueba_evidencia.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const { spawn } = require("child_process");
 const path = require("path");
 const fs = require("fs");
@@ -14,13 +14,15 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   const servidor = spawn(process.execPath, [path.join(__dirname, "servidor.js")], { stdio: "ignore" });
   await new Promise((r) => setTimeout(r, 600));
   const nav = await chromium.launch({ args: ["--autoplay-policy=no-user-gesture-required"] });
-  const ctx = await nav.newContext({ viewport: { width: 1280, height: 900 }, permissions: ["clipboard-read", "clipboard-write"] });
+  const ctx = await nav.newContext({ viewport: { width: 1280, height: 900 }, permissions: (process.env.NAVEGADOR && process.env.NAVEGADOR !== "chromium") ? [] : ["clipboard-read", "clipboard-write"] });
+  await ctx.addInitScript({ path: path.join(__dirname, "voz-simulada.js") });
+  await ctx.addInitScript(() => { if (!/AppleWebKit/.test(navigator.userAgent) || /Chrome/.test(navigator.userAgent)) return; Object.defineProperty(navigator, "clipboard", { value: { writeText: (t) => { window.__portapapeles = t; return Promise.resolve(); }, readText: () => Promise.resolve(window.__portapapeles || "") } }); });   // WebKit de Playwright no da portapapeles: uno simulado
   const page = await ctx.newPage();
   const errores = [];
   page.on("pageerror", (e) => errores.push(String(e)));
 
   // --- demo ---
-  await page.goto("http://127.0.0.1:8765/demo.html");
+  await page.goto("http://127.0.0.1:8765/demo.html", { waitUntil: "domcontentloaded" });   // WebKit no dispara load con vídeos webm que no decodifica
   await page.waitForFunction(() => window.Winclus, null, { timeout: 15000 });
   await page.addScriptTag({ content: AXE });
   const v = await page.evaluate(async () => (await axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"] } })).violations.map((x) => x.id + "×" + x.nodes.length));

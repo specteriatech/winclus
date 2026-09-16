@@ -1,7 +1,7 @@
 // Teclado físico y pulsador: las teclas del teclado en pantalla y las frases se alcanzan con Tab y se
 // pulsan con Intro sin perder el sitio; y con el lector básico activo, Espacio e Intro siguen
 // activando los botones, casillas y enlaces reales de la página. Uso: node prueba_teclado_fisico.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 
 const PAGINA = "file:///" + path.resolve(__dirname, "pagina-prueba.html").replace(/\\/g, "/");
@@ -11,6 +11,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
 (async () => {
   const nav = await chromium.launch();
   const ctx = await nav.newContext({ viewport: { width: 1280, height: 800 } });
+  await ctx.addInitScript({ path: path.join(__dirname, "voz-simulada.js") });
   await ctx.addInitScript(() => localStorage.setItem("winclus.ajustes", JSON.stringify({ voz_activa: false, teclado_sonido: false })));
   const page = await ctx.newPage();
   await page.goto(PAGINA);

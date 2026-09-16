@@ -1,7 +1,8 @@
 // Recorrido de punta a punta contra el sitio en producción (o el que se pase por parámetro): comprueba que el
 // widget carga y que las funciones de los nueve grupos de discapacidad del catálogo responden de verdad en
 // esa página. Uso: node prueba_produccion.js [https://winclus.com/]
-const { chromium } = require("playwright");
+const path = require("path");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 
 const URL = process.argv[2] || "https://winclus.com/";
 let fallos = 0;
@@ -10,7 +11,8 @@ function grupo(n) { console.log("\n== " + n); }
 
 (async () => {
   const nav = await chromium.launch({ args: ["--autoplay-policy=no-user-gesture-required"] });
-  const ctx = await nav.newContext({ viewport: { width: 1280, height: 800 }, permissions: ["clipboard-read", "clipboard-write"] });
+  const ctx = await nav.newContext({ viewport: { width: 1280, height: 800 }, permissions: (process.env.NAVEGADOR && process.env.NAVEGADOR !== "chromium") ? [] : ["clipboard-read", "clipboard-write"] });
+  await ctx.addInitScript({ path: path.join(__dirname, "voz-simulada.js") });
   await ctx.addInitScript(() => {
     localStorage.setItem("winclus.ajustes", JSON.stringify({ voz_activa: true }));
     window.__voz = []; document.addEventListener("DOMContentLoaded", () => { speechSynthesis.speak = (u) => window.__voz.push(u.text); });

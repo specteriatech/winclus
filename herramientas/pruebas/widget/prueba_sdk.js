@@ -1,7 +1,7 @@
 // SDK: el web component <winclus-widget> carga el widget del mismo origen y pasa sus atributos (posición,
 // cámara, idioma, relevo); la guía de integración existe y enlaza lo importante; el plugin de WordPress y el
 // módulo de Drupal tienen los archivos y cabeceras esperados. Uso: node prueba_sdk.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 const fs = require("fs");
 

@@ -1,7 +1,7 @@
 // Tablero de pictogramas ARASAAC: se abre desde Oír, tiene categorías, al tocar un pictograma se dice y se
 // añade a la frase, «Decir» dice la frase entera, predice el siguiente símbolo (por defecto y aprendido del uso),
 // guarda frases (que pasan a la tecla «Frases») y el barrido lo recorre. Uso: node prueba_pictogramas.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 
 const PAGINA = "file:///" + path.resolve(__dirname, "pagina-prueba.html").replace(/\\/g, "/");
@@ -11,6 +11,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
 (async () => {
   const nav = await chromium.launch();
   const ctx = await nav.newContext({ viewport: { width: 1280, height: 800 } });
+  await ctx.addInitScript({ path: path.join(__dirname, "voz-simulada.js") });
   const page = await ctx.newPage();
   const errores = [];
   page.on("pageerror", (e) => errores.push(String(e)));

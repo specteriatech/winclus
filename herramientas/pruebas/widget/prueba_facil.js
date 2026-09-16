@@ -2,7 +2,7 @@
 // glosario al pasar el cursor, parte las frases largas y pone lo importante primero; con data-explicar usa un
 // servicio de IA (simulado) y si falla vuelve a las reglas; «Leer en voz alta» resalta palabra a palabra;
 // «¿Dónde estoy?» dice título, ruta, sección y encabezados. Uso: node prueba_facil.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 const fs = require("fs");
 
@@ -13,6 +13,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
 (async () => {
   const nav = await chromium.launch();
   let ctx = await nav.newContext({ viewport: { width: 1280, height: 800 } });
+  await ctx.addInitScript({ path: path.join(__dirname, "voz-simulada.js") });
   let page = await ctx.newPage();
   const errores = [];
   page.on("pageerror", (e) => errores.push(String(e)));
@@ -47,6 +48,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   // --- con servicio de IA (simulado) ---
   await ctx.close();
   ctx = await nav.newContext({ viewport: { width: 1280, height: 800 } });
+  await ctx.addInitScript({ path: path.join(__dirname, "voz-simulada.js") });
   page = await ctx.newPage();
   const IA = path.join(__dirname, "pagina-tramite-ia.html");
   fs.writeFileSync(IA, fs.readFileSync(path.join(__dirname, "pagina-tramite.html"), "utf8").replace('<script src="../../../web/widget.js">', '<script src="../../../web/widget.js" data-explicar="https://ia.ejemplo/explicar">'));

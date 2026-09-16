@@ -2,7 +2,7 @@
 // con prefers-reduced-motion se activan solos «pausar animaciones» y «modo calma» salvo que la persona los haya
 // tocado; con prefers-contrast: more, el alto contraste; la página en inglés se lee con una voz en inglés; el
 // cursor grande pone un cursor SVG en toda la página. Uso: node prueba_sistema.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 
 const PAGINA = "file:///" + path.resolve(__dirname, "pagina-prueba.html").replace(/\\/g, "/");
@@ -14,6 +14,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
 
   // --- reducir movimiento y más contraste, sin nada guardado ---
   let ctx = await nav.newContext({ reducedMotion: "reduce", contrast: "more" });
+  await ctx.addInitScript({ path: path.join(__dirname, "voz-simulada.js") });
   let page = await ctx.newPage();
   await page.goto(PAGINA);
   await page.waitForFunction(() => window.Winclus);
@@ -24,6 +25,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
 
   // --- lo guardado manda ---
   ctx = await nav.newContext({ reducedMotion: "reduce", contrast: "more" });
+  await ctx.addInitScript({ path: path.join(__dirname, "voz-simulada.js") });
   await ctx.addInitScript(() => localStorage.setItem("winclus.ajustes", JSON.stringify({ animaciones: false, calma: false, contraste: false })));
   page = await ctx.newPage();
   await page.goto(PAGINA);
@@ -34,6 +36,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
 
   // --- sin preferencias: nada se activa solo ---
   ctx = await nav.newContext({ reducedMotion: "no-preference" });
+  await ctx.addInitScript({ path: path.join(__dirname, "voz-simulada.js") });
   page = await ctx.newPage();
   await page.goto(PAGINA);
   await page.waitForFunction(() => window.Winclus);
@@ -49,6 +52,8 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   await ctx.close();
 
   ctx = await nav.newContext();
+
+  await ctx.addInitScript({ path: path.join(__dirname, "voz-simulada.js") });
   page = await ctx.newPage();
   // el idioma se lee al cargar el widget: misma página con lang="en", generada al vuelo junto a la original
   const fs = require("fs"), EN = path.join(__dirname, "pagina-prueba-en.html");

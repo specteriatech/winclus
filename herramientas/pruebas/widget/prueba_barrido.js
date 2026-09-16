@@ -1,7 +1,7 @@
 // Barrido con un solo pulsador: recorre el botón del widget y los controles de la página, la señal (Espacio,
 // o el gesto de clic con la cara) activa lo marcado, un campo abre el teclado en pantalla, el teclado se barre
 // por filas y luego por teclas, y Escape pausa y reanuda. Uso: node prueba_barrido.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 
 const PAGINA = "file:///" + path.resolve(__dirname, "pagina-prueba.html").replace(/\\/g, "/");
@@ -12,6 +12,7 @@ const marcado = (page) => page.evaluate(() => { const e = document.querySelector
 (async () => {
   const nav = await chromium.launch();
   const ctx = await nav.newContext({ viewport: { width: 1280, height: 800 } });
+  await ctx.addInitScript({ path: path.join(__dirname, "voz-simulada.js") });
   await ctx.addInitScript(() => localStorage.setItem("winclus.ajustes", JSON.stringify({ barrido: true, barrido_ms: 300, barrido_voz: true, teclado_sonido: false, voz_activa: true })));
   const page = await ctx.newPage();
   await page.addInitScript(() => { window.__voz = []; document.addEventListener("DOMContentLoaded", () => { speechSynthesis.speak = (u) => window.__voz.push(u.text); }); });
@@ -20,8 +21,7 @@ const marcado = (page) => page.evaluate(() => { const e = document.querySelector
   await page.waitForFunction(() => window.Winclus);
 
   // recorre: botón del widget, enlace, botón, casilla, campo…
-  const vistos = [];
-  for (let i = 0; i < 6; i++) { await page.waitForTimeout(310); vistos.push((await marcado(page)).el); }
+  const vistos = await page.evaluate(async () => { const v = []; let ult = null; const t0 = Date.now(); while (Date.now() - t0 < 2800) { const e = document.querySelector(".wcl-barrido") || Winclus.caja.querySelector(".wcl-barrido"); if (e && e !== ult) { v.push((e.id || e.className || e.tagName) + ":" + (e.textContent || "").trim().slice(0, 12)); ult = e; } await new Promise((r) => setTimeout(r, 20)); } return v; });   // muestreo fino: con 310 ms desde Node se saltaban pasos
   comprobar(vistos.some((v) => /wcl-btn/.test(v || "")) && vistos.some((v) => /enlace/.test(v || "")) && vistos.some((v) => /boton-sitio/.test(v || "")), "el barrido recorre el botón del widget, el enlace y el botón de la página", vistos.join(" | "));
   const voces = await page.evaluate(() => window.__voz);
   comprobar(voces.some((t) => /Winclus/.test(t)) && voces.some((t) => /enlace/i.test(t)), "va diciendo en voz alta lo marcado", voces.slice(0, 4).join(" | "));

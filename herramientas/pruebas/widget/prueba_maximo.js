@@ -1,7 +1,7 @@
 // Últimos huecos del catálogo: limitador de volumen, voces neuronales del navegador, asistente guiado
 // «¿Qué quieres hacer?» (texto, Intro, orden por voz) y transcripción de un medio por micrófono.
 // Uso: node prueba_maximo.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 
 const PAGINA = "file:///" + path.resolve(__dirname, "pagina-medios.html").replace(/\\/g, "/");
@@ -11,6 +11,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
 (async () => {
   const nav = await chromium.launch({ args: ["--autoplay-policy=no-user-gesture-required"] });
   const ctx = await nav.newContext({ viewport: { width: 1280, height: 800 } });
+  await ctx.addInitScript({ path: path.join(__dirname, "voz-simulada.js") });
   await ctx.addInitScript(() => {
     localStorage.setItem("winclus.ajustes", JSON.stringify({ voz_activa: false, volumen_max: 40 }));
     // voces simuladas: una normal y una «Natural» de es-CO

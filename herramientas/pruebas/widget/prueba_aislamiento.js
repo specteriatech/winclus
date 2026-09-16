@@ -1,7 +1,7 @@
 // Aislamiento: en una página con estilos agresivos (button{all:unset}, fuentes gigantes) y CSP estricta con
 // nonce, el widget (en shadow root) conserva su aspecto y sus <style> llevan el nonce del <script>.
 // Uso: node prueba_aislamiento.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 
 const PAGINA = "file:///" + path.resolve(__dirname, "pagina-hostil.html").replace(/\\/g, "/");

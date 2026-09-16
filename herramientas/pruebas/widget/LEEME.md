@@ -52,6 +52,9 @@
 - `node prueba_maximo.js`: limitador de volumen, voz neuronal preferida, asistente «¿Qué quieres hacer?» (texto y orden por voz), transcribir un medio.
 - `node prueba_evidencia.js`: demo.html pasa axe; cifras de uso locales, resumen sin datos personales, envío solo con data-metricas y el interruptor activado, una vez por semana.
 - `node evidencia.js`: corre todas las pruebas y genera web/evidencia.html y web/evidencia.json (lo hace GitHub Actions en cada push).
+- `node prueba_navegadores.js`: recorrido básico en Chromium, Firefox y WebKit (`npx playwright install firefox webkit`) con entornos hostiles: sin voz, sin localStorage, sin portapapeles, SPA, script doble, móvil.
+- `node prueba_robustez.js`: regresión de los fallos de la revisión del 16-sep-2026 (ver el comentario del archivo).
+- Cualquier prueba corre en otro motor con `NAVEGADOR=firefox node prueba_x.js` (o `webkit`). El WebKit de Playwright en Windows no trae síntesis de voz ni portapapeles: `voz-simulada.js` se inyecta como sustituto y las comprobaciones de portapapeles se saltan en ese motor.
 - Todas las pruebas del widget usan `Winclus.caja` (el shadow root) para llegar a sus piezas; los selectores de
   Playwright (`page.click("#wcl-tab-ver")`) atraviesan el shadow root solos.
 - La foto tiene los ojos entrecerrados (relación 0,69 en reposo): para probar el clic poner `Winclus.ajustes.parpadeo_umbral = 0.45`.

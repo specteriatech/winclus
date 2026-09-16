@@ -1,7 +1,7 @@
 // Voz completa: «números» pone etiquetas numeradas sobre enlaces, botones y campos; «clic 2» pulsa el 2;
 // «escribe en 3» enfoca un campo; el dictado con confirmación muestra lo dicho y solo lo escribe tras «sí».
 // Reconocedor de voz simulado: window.__reconocer(texto) entrega un resultado final. Uso: node prueba_voz.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 
 const PAGINA = "file:///" + path.resolve(__dirname, "pagina-prueba.html").replace(/\\/g, "/");

@@ -1,7 +1,7 @@
 // Perfil por enlace (sin cuentas ni servidores): «Copiar enlace con mi perfil» genera una URL con #winclus=…;
 // al abrirla en otro navegador se importan ajustes, frases y palabras, y el enlace se limpia; un enlace roto
 // no rompe nada. Uso: node prueba_perfil_enlace.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 
 const PAGINA = "file:///" + path.resolve(__dirname, "pagina-prueba.html").replace(/\\/g, "/");
@@ -10,8 +10,9 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
 
 (async () => {
   const nav = await chromium.launch();
-  let ctx = await nav.newContext({ permissions: ["clipboard-read", "clipboard-write"] });
+  let ctx = await nav.newContext({ permissions: (process.env.NAVEGADOR && process.env.NAVEGADOR !== "chromium") ? [] : ["clipboard-read", "clipboard-write"] });
   await ctx.addInitScript(() => { localStorage.setItem("winclus.ajustes", JSON.stringify({ texto: 150, contraste: true, voz_activa: false })); localStorage.setItem("winclus.frases", JSON.stringify(["Hola desde el enlace", "Necesito ayuda"])); });
+  await ctx.addInitScript(() => { if (!/AppleWebKit/.test(navigator.userAgent) || /Chrome/.test(navigator.userAgent)) return; Object.defineProperty(navigator, "clipboard", { value: { writeText: (t) => { window.__portapapeles = t; return Promise.resolve(); }, readText: () => Promise.resolve(window.__portapapeles || "") } }); });   // WebKit de Playwright no da portapapeles: uno simulado
   let page = await ctx.newPage();
   await page.goto(PAGINA);
   await page.waitForFunction(() => window.Winclus);

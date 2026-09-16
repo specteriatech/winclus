@@ -1,7 +1,7 @@
 // Para personas sordas: aviso visual cuando suena un medio (en el documento o creado por código), subtítulos
 // de los vídeos mostrados y agrandados (se elige la pista del idioma de la página), subtítulos en vivo por
 // micrófono (reconocedor simulado) y botones al Centro de Relevo y al diccionario de LSC. Uso: node prueba_auditiva.js
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 
 const PAGINA = "file:///" + path.resolve(__dirname, "pagina-medios.html").replace(/\\/g, "/");

@@ -2,7 +2,7 @@
 // Resolución 1519 de 2020) que genera un informe legible y un borrador de declaración de accesibilidad.
 // Uso: node auditar.js https://sitio.gov.co [otra-url …] [--salida carpeta] [--entidad "Nombre de la entidad"]
 // Necesita: npm i (playwright, axe-core) y npx playwright install chromium.
-const { chromium } = require("playwright");
+const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 const fs = require("fs");
 
