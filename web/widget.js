@@ -26,8 +26,10 @@
   var opciones = {
     posicion: (script && script.dataset.posicion) || "derecha",
     color: (script && script.dataset.color) || "#101F3D",
-    camara: !(script && script.dataset.camara === "no")
+    camara: !(script && script.dataset.camara === "no"),
+    relevo: !(script && script.dataset.relevo === "no")   // botón al Centro de Relevo de MinTIC (intérprete de LSC por videollamada)
   };
+  var URL_RELEVO = "https://www.centroderelevo.gov.co/", URL_DICCIONARIO_LSC = "https://educativo.insor.gov.co/diccionario/";
   var ORIGEN = (script && script.src) ? script.src.replace(/\/[^\/]*$/, "") : "https://winclus.com";
   // El detector de caras (MediaPipe Tasks Vision, Apache 2.0) y el modelo se sirven
   // desde el mismo sitio que este archivo; jsDelivr y Google quedan de respaldo.
@@ -61,6 +63,7 @@
     teclado_altura: 32, teclado_posicion: "abajo", teclado_prediccion: true, teclado_sonido: true,
     camara_ver: true, dwell: false, ahorro: false, cursor_grande: false,
     barrido: false, barrido_ms: 1200, barrido_senal: "espacio", barrido_voz: true,
+    subtitulos: false, alertas_sonido: false,
     dalton: "no", calma: false, dislexia: false, sinimg: false, mascara: false, lector: false, facil: false,
     lupa_pantalla: false, lupa_pantalla_zoom: 2
   };
@@ -160,6 +163,9 @@
     + '.wcl-panel button:focus-visible,.wcl-panel select:focus-visible,.wcl-panel textarea:focus-visible,.wcl-panel input:focus-visible,.wcl-limpia button:focus-visible,.wcl-calib button:focus-visible{outline:3px solid #2F4FD8;outline-offset:2px}'
     + '.wcl-tec button:focus-visible{outline:3px solid #2F4FD8;outline-offset:-3px}'
     + '.wcl-consent{margin:8px 0;padding:12px;border-radius:12px;background:#FFF6DB;border:1px solid #C99A1E;font-size:14px;line-height:1.45}.wcl-consent p{margin:0 0 8px}'
+    // Aviso visual de sonido (arriba, centrado) y subtítulos en vivo (abajo): grandes y con fondo, legibles de lejos
+    + '.wcl-sonido{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:2147483020;display:none;max-width:min(92vw,640px);padding:12px 20px;border-radius:14px;background:#101F3D;color:#fff;border:4px solid #F2B705;font:700 18px "Segoe UI",system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.35)}'
+    + '.wcl-subvivo{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:2147483016;display:none;width:min(94vw,900px);min-height:64px;padding:12px 18px;border-radius:12px;background:rgba(0,0,0,.88);color:#fff;font:26px/1.35 "Segoe UI",system-ui,sans-serif;text-align:center}.wcl-subvivo .parcial{color:#C8D0DC}'
     + '.wcl-vivo{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}';
   // El mismo CSS va dos veces: en el documento (reglas html.wcl-* y el contenedor) y dentro del shadow root (las piezas).
   // Con CSP estricta hace falta el nonce del <script> en los <style> que inyectamos.
@@ -193,6 +199,8 @@
   var cursor = el("div", { "class": "wcl-cursor", "aria-hidden": "true" }, '<svg class="wcl-anillo" viewBox="0 0 46 46"><circle cx="23" cy="23" r="20" fill="none" stroke="rgba(52,194,107,.3)" stroke-width="5"/><circle class="prog" cx="23" cy="23" r="20" fill="none" stroke="#34C26B" stroke-width="5" stroke-dasharray="125.7" stroke-dashoffset="125.7" transform="rotate(-90 23 23)"/></svg>');
   var aviso = el("div", { "class": "wcl-aviso", "aria-hidden": "true" });
   var vivo = el("div", { "class": "wcl-vivo", "role": "status", "aria-live": "polite" });   // el mismo aviso, para lectores de pantalla
+  var sonidoEl = el("div", { "class": "wcl-sonido", "role": "status", "aria-live": "assertive" });
+  var subvivoEl = el("div", { "class": "wcl-subvivo", "role": "log", "aria-live": "polite", "aria-label": "Subtítulos en vivo" });
   var guia = el("div", { "class": "wcl-guia", "aria-hidden": "true" });
   var menuEl = el("div", { "class": "wcl-menu", "aria-hidden": "true" });
   var tecEl = el("div", { "class": "wcl-tec", "role": "group", "aria-label": "Teclado en pantalla Winclus" });
@@ -1510,6 +1518,57 @@
     refrescos.forEach(function (f) { f(); });
   }
   function pararEscucha() { if (!escuchando) return; escuchando = false; try { recOrdenes.stop(); } catch (e) {} refrescos.forEach(function (f) { f(); }); }
+
+  // --- subtítulos en vivo: lo que se habla cerca del micrófono, en una barra grande abajo --------
+  var subtitulando = false, recSub = null, subFinal = "";
+  function empezarSubvivo() {
+    if (!Reconocedor) { avisar("Este navegador no reconoce la voz (usa Chrome o Edge)", true); return; }
+    if (subtitulando) return;
+    recSub = new Reconocedor(); recSub.lang = IDIOMA_VOZ; recSub.continuous = true; recSub.interimResults = true;
+    subFinal = ""; subvivoEl.innerHTML = '<span class="final">Escuchando…</span> <span class="parcial"></span>'; subvivoEl.style.display = "block";
+    recSub.onresult = function (e) {
+      var parcial = "";
+      for (var i = e.resultIndex; i < e.results.length; i++) { if (e.results[i].isFinal) subFinal += e.results[i][0].transcript + " "; else parcial += e.results[i][0].transcript; }
+      subFinal = subFinal.slice(-220);   // solo lo último: cabe en dos líneas
+      subvivoEl.querySelector(".final").textContent = subFinal.trim(); subvivoEl.querySelector(".parcial").textContent = parcial;
+    };
+    recSub.onend = function () { if (subtitulando) { try { recSub.start(); } catch (x) {} } };
+    recSub.onerror = function (e) { if (e.error === "not-allowed") { avisar("Sin permiso para el micrófono", true); pararSubvivo(); } };
+    try { recSub.start(); subtitulando = true; } catch (e) {}
+    refrescos.forEach(function (f) { f(); });
+  }
+  function pararSubvivo() { if (!subtitulando) return; subtitulando = false; try { recSub.stop(); } catch (e) {} subvivoEl.style.display = "none"; refrescos.forEach(function (f) { f(); }); }
+
+  // --- avisos visuales de sonido y subtítulos de los vídeos de la página ------------------------
+  var sonidoTimer = 0;
+  function nombreMedio(m) {
+    var n = m.getAttribute("aria-label") || m.title || (m.closest("figure") && m.closest("figure").querySelector("figcaption") ? m.closest("figure").querySelector("figcaption").textContent : "");
+    if (!n) { var src = m.currentSrc || m.src || ""; n = src && !/^(data|blob):/.test(src) ? decodeURIComponent(src.split("/").pop().split("?")[0]).replace(/\.[a-z0-9]+$/i, "").replace(/[-_]+/g, " ") : ""; }
+    return (n || (m.tagName === "VIDEO" ? "un vídeo" : "un audio")).trim().slice(0, 60);
+  }
+  function avisoSonido(m) {
+    if (!ajustes.alertas_sonido || (m && (m.muted || m.volume === 0))) return;
+    sonidoEl.textContent = "🔊 Está sonando: " + (m ? nombreMedio(m) : "algo en la página");
+    sonidoEl.style.display = "block";
+    try { if (navigator.vibrate) navigator.vibrate([120, 60, 120]); } catch (e) {}
+    clearTimeout(sonidoTimer); sonidoTimer = setTimeout(function () { sonidoEl.style.display = "none"; }, 4000);
+  }
+  document.addEventListener("play", function (e) { if (e.target instanceof HTMLMediaElement && !enWidget(e.target)) avisoSonido(e.target); }, true);
+  // Audios creados por código (new Audio) no están en el documento y no avisan por eventos: se envuelve play()
+  try {
+    var playOriginal = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function () { if (!this.isConnected) avisoSonido(this); return playOriginal.apply(this, arguments); };
+  } catch (e) {}
+  function aplicarSubtitulos() {
+    if (!ajustes.subtitulos) return;
+    var base = IDIOMA_PAGINA.split("-")[0];
+    Array.prototype.forEach.call(document.querySelectorAll("video"), function (v) {
+      var pistas = v.textTracks, elegida = null;
+      for (var i = 0; i < pistas.length; i++) { var p = pistas[i]; if (p.kind !== "subtitles" && p.kind !== "captions") continue; if (!elegida || ((p.language || "").toLowerCase().indexOf(base) === 0 && (elegida.language || "").toLowerCase().indexOf(base) !== 0)) elegida = p; }
+      for (var j = 0; j < pistas.length; j++) if (pistas[j].kind === "subtitles" || pistas[j].kind === "captions") pistas[j].mode = pistas[j] === elegida ? "showing" : "disabled";
+    });
+  }
+  document.addEventListener("play", function (e) { if (ajustes.subtitulos && e.target && e.target.tagName === "VIDEO") aplicarSubtitulos(); }, true);
   function ejecutarOrden(texto) {
     var t = sinAcentos(texto.trim()), m;
     var ok = function (msg) { avisar(msg); decir("Orden: " + texto); };
@@ -1787,6 +1846,21 @@
   refrescos.push(function () { btnEscucha.textContent = escuchando ? "Dejar de escuchar" : "Escuchar órdenes"; btnEscucha.classList.toggle("rojo", escuchando); });
   s.appendChild(btnEscucha);
   tabs.oir.appendChild(s);
+  // --- para personas sordas o con hipoacusia ---
+  s = seccion("Sonidos y subtítulos");
+  s.appendChild(el("div", { "class": "wcl-estado" }, "Para quien no oye o oye poco: avisos en pantalla cuando algo suena, subtítulos grandes y con fondo en los vídeos que los traigan, y subtítulos en vivo de lo que se habla cerca (una videollamada, una consulta) usando el micrófono."));
+  s.appendChild(filaSw("alertas_sonido", "Avisar en pantalla cuando algo suena"));
+  s.appendChild(filaSw("subtitulos", "Subtítulos grandes en los vídeos (si los traen)", aplicarClases));
+  var btnSubvivo = botonGrande("Subtítulos en vivo (micrófono)", "azul", function () { if (subtitulando) pararSubvivo(); else empezarSubvivo(); });
+  refrescos.push(function () { btnSubvivo.textContent = subtitulando ? "Parar los subtítulos en vivo" : "Subtítulos en vivo (micrófono)"; btnSubvivo.classList.toggle("rojo", subtitulando); });
+  s.appendChild(btnSubvivo);
+  s.appendChild(el("div", { "class": "wcl-estado" }, AVISO_VOZ));
+  if (opciones.relevo) {
+    s.appendChild(el("div", { "class": "wcl-estado" }, "Si te comunicas en Lengua de Señas Colombiana: el Centro de Relevo de MinTIC te pone un intérprete por videollamada, gratis."));
+    s.appendChild(botonGrande("Centro de Relevo (intérprete de LSC)", "suave", function () { window.open(URL_RELEVO, "_blank", "noopener"); }));
+    s.appendChild(botonGrande("Diccionario de Lengua de Señas (INSOR)", "suave", function () { window.open(URL_DICCIONARIO_LSC, "_blank", "noopener"); }));
+  }
+  tabs.oir.appendChild(s);
 
   // --- Puntero (cara) ---
   s = seccion("Usar con la cara");
@@ -1993,7 +2067,9 @@
     + '.wcl-lector{outline:4px solid #F2B705!important;outline-offset:3px;box-shadow:0 0 0 8px rgba(242,183,5,.25)!important}'
     // Barrido: lo marcado ahora (en la página o dentro del widget) y la fila del teclado en curso
     + '.wcl-barrido{outline:5px solid #2F4FD8!important;outline-offset:3px;box-shadow:0 0 0 9px rgba(47,79,216,.28)!important}'
-    + '.wcl-barrido-fila{outline:4px solid #2F4FD8!important;outline-offset:1px;border-radius:12px}';
+    + '.wcl-barrido-fila{outline:4px solid #2F4FD8!important;outline-offset:1px;border-radius:12px}'
+    // Subtítulos de los vídeos de la página: grandes, con fondo y sin transparencias (solo se pueden estilar desde el documento)
+    + 'html.wcl-subs video::cue{font-size:1.5em;line-height:1.4;color:#fff;background:rgba(0,0,0,.9)}';
   (document.head || raiz).appendChild(estiloCon(css2)); estilosSombra.push(css2);
   // Filtros de color (daltonización de Fidaner: M = I + E·(I − S), con la simulación de Machado 2009)
   var FILTROS = el("svg", { "style": "position:absolute;width:0;height:0", "aria-hidden": "true" },
@@ -2248,6 +2324,7 @@
   function aplicarClases() {
     raiz.classList.toggle("wcl-oscuro", ajustes.oscuro); cont.classList.toggle("wcl-osc", ajustes.oscuro);
     raiz.classList.toggle("wcl-cursorg", ajustes.cursor_grande); cont.classList.toggle("wcl-cursorg", ajustes.cursor_grande);
+    raiz.classList.toggle("wcl-subs", ajustes.subtitulos); aplicarSubtitulos();
     raiz.classList.toggle("wcl-enlaces", ajustes.enlaces);
     raiz.classList.toggle("wcl-anim", ajustes.animaciones);
     raiz.classList.toggle("wcl-dislexia", ajustes.dislexia);
@@ -2284,6 +2361,7 @@
     caja.appendChild(mascaraArriba); caja.appendChild(mascaraAbajo);
     caja.appendChild(guia); caja.appendChild(boton); caja.appendChild(btnPausa); caja.appendChild(panel);
     caja.appendChild(tecEl); caja.appendChild(menuEl); caja.appendChild(cursor); caja.appendChild(aviso); caja.appendChild(vivo); caja.appendChild(calibEl);
+    caja.appendChild(sonidoEl); caja.appendChild(subvivoEl);
     raiz.appendChild(cont);
     var t = "ver"; try { t = sessionStorage.getItem("winclus.tab") || "ver"; } catch (e) {}
     elegirTab(tabs[t] ? t : "ver");

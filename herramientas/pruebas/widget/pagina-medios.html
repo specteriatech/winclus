@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Página con vídeo y audio</title>
+<style>body{margin:0;padding:24px;font:16px "Segoe UI",system-ui,sans-serif}</style>
+</head>
+<body>
+<h1>Medios</h1>
+<video id="video" width="320" height="180" controls muted>
+  <source src="data:video/mp4;base64," type="video/mp4">
+  <track kind="subtitles" srclang="en" label="English" src="data:text/vtt,WEBVTT%0A%0A00:00.000%20--%3E%2000:05.000%0AHello">
+  <track kind="subtitles" srclang="es" label="Español" src="data:text/vtt,WEBVTT%0A%0A00:00.000%20--%3E%2000:05.000%0AHola">
+</video>
+<audio id="audio" title="Campana de aviso" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA="></audio>
+<p>Texto con un <button type="button" id="boton-sitio">botón</button>.</p>
+<script src="../../../web/widget.js"></script>
+</body>
+</html>
