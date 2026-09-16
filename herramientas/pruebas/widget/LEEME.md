@@ -27,6 +27,10 @@
   el widget conserva su aspecto en el shadow root, sus <style> llevan el nonce y no hay violaciones de CSP.
 - `node prueba_daltonismo.js`: los filtros son SVGFilterElement de verdad y cada uno cambia los píxeles (antes del
   16-sep-2026 el <svg> nacía con createElement y nunca habían filtrado nada).
+- `node prueba_sistema.js`: prefers-reduced-motion y prefers-contrast activan calma, sin animaciones y contraste
+  (salvo que la persona los haya cambiado), la página en inglés se lee con voz en inglés, cursor grande.
+- `node prueba_barrido.js`: barrido con un solo pulsador: recorre botón del widget, enlace, botón y campo; Espacio
+  activa lo marcado; un campo abre el teclado; filas y luego teclas; Escape pausa; Winclus.clic() hace de señal.
 - Todas las pruebas del widget usan `Winclus.caja` (el shadow root) para llegar a sus piezas; los selectores de
   Playwright (`page.click("#wcl-tab-ver")`) atraviesan el shadow root solos.
 - La foto tiene los ojos entrecerrados (relación 0,69 en reposo): para probar el clic poner `Winclus.ajustes.parpadeo_umbral = 0.45`.

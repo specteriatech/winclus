@@ -4,7 +4,7 @@
   "description": "Pruebas del widget web de Winclus sin cámara (node prueba_*.js)",
   "license": "Apache-2.0",
   "scripts": {
-    "test": "node prueba_posicion.js && node prueba_teclado_fisico.js && node prueba_aria.js && node prueba_privacidad.js && node prueba_axe.js && node prueba_aislamiento.js && node prueba_daltonismo.js && node prueba_landing.js && node prueba_sistema.js && node prueba_rendimiento.js",
+    "test": "node prueba_posicion.js && node prueba_teclado_fisico.js && node prueba_aria.js && node prueba_privacidad.js && node prueba_axe.js && node prueba_aislamiento.js && node prueba_daltonismo.js && node prueba_landing.js && node prueba_sistema.js && node prueba_barrido.js && node prueba_rendimiento.js",
     "posicion": "node prueba_posicion.js",
     "parpadeo": "node prueba_parpadeo.js"
   },
