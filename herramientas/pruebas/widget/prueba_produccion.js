@@ -15,7 +15,7 @@ function grupo(n) { console.log("\n== " + n); }
   await ctx.addInitScript({ path: path.join(__dirname, "voz-simulada.js") });
   await ctx.addInitScript(() => {
     localStorage.setItem("winclus.ajustes", JSON.stringify({ voz_activa: true }));
-    window.__voz = []; document.addEventListener("DOMContentLoaded", () => { speechSynthesis.speak = (u) => window.__voz.push(u.text); });
+    window.__voz = []; document.addEventListener("DOMContentLoaded", () => { speechSynthesis.speak = (u) => { window.__voz.push(u.text); if (u.onend) setTimeout(() => u.onend(), 5); }; });   // onend: la voz va por trozos encadenados
     window.__recs = []; window.SpeechRecognition = class { constructor() { window.__recs.push(this); } start() {} stop() {} };
     window.__reconocer = (t) => { const r = window.__recs[window.__recs.length - 1]; r && r.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: t }], { isFinal: true })] }); };
   });
@@ -50,6 +50,7 @@ function grupo(n) { console.log("\n== " + n); }
   comprobar(limpia > 500, "lectura limpia con el texto de la portada", limpia + " caracteres");
   await page.keyboard.press("Escape");
   await page.evaluate(() => { Winclus.abrir(); Winclus.leer(); });
+  await page.waitForTimeout(600);
   comprobar((await page.evaluate(() => window.__voz.join(" ").length > 200 && window.__voz.every((t) => t.length <= 260))), "leer la página en voz alta (por trozos cortos, no en un solo bloque)");
 
   grupo("2. Auditiva");
