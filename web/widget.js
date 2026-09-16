@@ -63,7 +63,7 @@
     teclado_altura: 32, teclado_posicion: "abajo", teclado_prediccion: true, teclado_sonido: true,
     camara_ver: true, dwell: false, ahorro: false, cursor_grande: false,
     barrido: false, barrido_ms: 1200, barrido_senal: "espacio", barrido_voz: true,
-    subtitulos: false, alertas_sonido: false,
+    subtitulos: false, alertas_sonido: false, dictado_confirmar: false,
     dalton: "no", calma: false, dislexia: false, sinimg: false, mascara: false, lector: false, facil: false,
     lupa_pantalla: false, lupa_pantalla_zoom: 2
   };
@@ -166,6 +166,9 @@
     // Aviso visual de sonido (arriba, centrado) y subtítulos en vivo (abajo): grandes y con fondo, legibles de lejos
     + '.wcl-sonido{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:2147483020;display:none;max-width:min(92vw,640px);padding:12px 20px;border-radius:14px;background:#101F3D;color:#fff;border:4px solid #F2B705;font:700 18px "Segoe UI",system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.35)}'
     + '.wcl-subvivo{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:2147483016;display:none;width:min(94vw,900px);min-height:64px;padding:12px 18px;border-radius:12px;background:rgba(0,0,0,.88);color:#fff;font:26px/1.35 "Segoe UI",system-ui,sans-serif;text-align:center}.wcl-subvivo .parcial{color:#C8D0DC}'
+    // Números sobre enlaces y campos para las órdenes por voz («clic 12») y barra de confirmación del dictado
+    + '.wcl-nums{position:fixed;inset:0;pointer-events:none;z-index:2147483018}.wcl-num{position:absolute;min-width:22px;height:22px;padding:0 5px;border-radius:6px;background:#F2B705;color:#101F3D;font:700 13px/22px "Segoe UI",system-ui,sans-serif;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.45)}'
+    + '.wcl-dictconf{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:2147483017;display:none;width:min(94vw,720px);padding:14px 18px;border-radius:12px;background:#101F3D;color:#fff;font:18px/1.4 "Segoe UI",system-ui,sans-serif}.wcl-dictconf .t{display:block;font-size:22px;margin-bottom:10px}.wcl-dictconf button{min-height:44px;padding:0 16px;margin-right:8px;border-radius:10px;border:0;background:#34C26B;color:#101F3D;font:700 15px "Segoe UI",system-ui,sans-serif;cursor:pointer}.wcl-dictconf button.no{background:#E8ECF3}'
     + '.wcl-vivo{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}';
   // El mismo CSS va dos veces: en el documento (reglas html.wcl-* y el contenedor) y dentro del shadow root (las piezas).
   // Con CSP estricta hace falta el nonce del <script> en los <style> que inyectamos.
@@ -1498,7 +1501,7 @@
     if (!Reconocedor) { avisar("Este navegador no dicta (usa Chrome o Edge)", true); return; }
     try {
       rec = new Reconocedor(); rec.lang = IDIOMA_VOZ; rec.continuous = true; rec.interimResults = false;
-      rec.onresult = function (e) { for (var i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) { var t = e.results[i][0].transcript.trim(); if (t) { insertarTexto((frase && !/\s$/.test(frase) ? " " : "") + t); frase += t + " "; pintarTexto(); } } };
+      rec.onresult = function (e) { for (var i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) { var t = e.results[i][0].transcript.trim(); if (t) manejarDictado(t); } };
       rec.onend = function () { if (dictando) { try { rec.start(); } catch (x) {} } };
       rec.onerror = function (e) { if (e.error === "not-allowed") { avisar("Sin permiso para el micrófono", true); pararDictado(); } };
       rec.start(); dictando = true; avisar("Dictando… habla"); if (tecVisible) dibujarTeclado();
@@ -1577,6 +1580,9 @@
     else if (/^(arriba|inicio) del todo$|^al principio$/.test(t)) { window.scrollTo({ top: 0, behavior: "smooth" }); ok("Arriba del todo"); }
     else if (/^(abajo|fin) del todo$|^al final$/.test(t)) { window.scrollTo({ top: raiz.scrollHeight, behavior: "smooth" }); ok("Abajo del todo"); }
     else if (/^(clic|click|pulsa|pulsar|dale)$/.test(t)) { pulsar(); }
+    else if (/^(numeros|numera|numerar|muestra (los )?numeros|pon (los )?numeros)$/.test(t)) { mostrarNumeros(); }
+    else if (/^(quita|oculta|esconde|borra)( los)? numeros$/.test(t)) { ocultarNumeros(); ok("Sin números"); }
+    else if (numerosEl && (m = /^(?:(?:clic|click|pulsa|pulsar|dale|abre|elige|escribe en)(?: el| en| al)? )?([a-z0-9]+)$/.exec(t)) && numeroDicho(m[1])) { pulsarNumero(numeroDicho(m[1])); }
     else if (/^(clic|click) derecho$/.test(t)) { clicDerecho(); }
     else if (/^doble (clic|click)$/.test(t)) { dobleClic(); }
     else if ((m = /^(pulsa|pulsar|abre|abrir|ve a|ir a|entra en) (.+)$/.exec(t))) { pulsarPorTexto(m[2]) ? ok("Pulsar «" + m[2] + "»") : avisar("No encuentro «" + m[2] + "»", true); }
@@ -1601,6 +1607,59 @@
     else if ((m = /^(di|dice|decir) (.+)$/.exec(t))) { decirVoz(texto.trim().replace(/^\S+\s+/, ""), true, true); }
     else avisar("No entendí: " + texto, true);
   }
+  // --- números sobre lo que se puede pulsar (tipo Voice Control): «números», «clic 12», «quita los números» ---
+  var numerosEl = null, numerados = [], numerosTimer = 0;
+  var PALABRAS_NUM = { uno: 1, una: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, siete: 7, ocho: 8, nueve: 9, diez: 10, once: 11, doce: 12, trece: 13, catorce: 14, quince: 15, dieciseis: 16, diecisiete: 17, dieciocho: 18, diecinueve: 19, veinte: 20 };
+  function mostrarNumeros() {
+    ocultarNumeros(); numerosEl = el("div", { "class": "wcl-nums", "aria-hidden": "true" }); var n = 0;
+    Array.prototype.forEach.call(document.querySelectorAll(SEL_CLICABLE), function (e) {
+      if (n >= 200 || enWidget(e) || !visibleEl(e) || e.disabled) return;
+      var r = e.getBoundingClientRect(); if (r.bottom < 0 || r.top > window.innerHeight || r.right < 0 || r.left > window.innerWidth) return;
+      n++; numerados.push(e);
+      var b = el("span", { "class": "wcl-num" }, String(n)); b.style.left = Math.max(0, r.left - 4) + "px"; b.style.top = Math.max(0, r.top - 10) + "px"; numerosEl.appendChild(b);
+    });
+    caja.appendChild(numerosEl); avisar(n + " elementos numerados"); decir(n + " elementos numerados. Di «clic» y el número.");
+  }
+  function ocultarNumeros() { if (numerosEl) { numerosEl.remove(); numerosEl = null; } numerados = []; }
+  function pulsarNumero(k) {
+    var e = numerados[k - 1];
+    if (!e) { avisar("No hay número " + k, true); return false; }
+    ocultarNumeros();
+    if (esEditable(e)) { enfocar(e); objetivoTexto = e; avisar("Escribir en " + nombreDe(e)); return true; }
+    try { e.focus({ preventScroll: true }); } catch (x) {}
+    despachar(e.closest(SEL_CLICABLE) || e, ["pointerdown", "mousedown", "pointerup", "mouseup", "click"]); avisar("Clic en " + nombreDe(e));
+    return true;
+  }
+  ["scroll", "resize"].forEach(function (t) { window.addEventListener(t, function () { if (numerosEl) { clearTimeout(numerosTimer); numerosTimer = setTimeout(mostrarNumeros, 150); } }, true); });
+  function numeroDicho(s) { s = s.trim(); return /^\d+$/.test(s) ? parseInt(s, 10) : (PALABRAS_NUM[s] || 0); }
+
+  // --- dictado con confirmación: lo dicho se muestra y se escribe solo tras «sí» (o el botón) ---
+  var dictConfEl = null, dictPendiente = "";
+  function manejarDictado(t) {
+    if (!ajustes.dictado_confirmar) { escribirDictado(t); return; }
+    var s = sinAcentos(t.toLowerCase()).replace(/[.,!?¿¡]/g, "").trim();
+    if (dictPendiente && /^(si|vale|ok|acepto|correcto|escribe|escribelo)$/.test(s)) { confirmarDictado(); return; }
+    if (dictPendiente && /^(no|cancela|cancelar|borra|borralo|descarta|otra vez)$/.test(s)) { descartarDictado(); return; }
+    dictPendiente = t;
+    if (!dictConfEl) {
+      dictConfEl = el("div", { "class": "wcl-dictconf", "role": "dialog", "aria-label": "Confirmar lo dictado" }, '<span class="t"></span>');
+      var si = el("button", { "type": "button" }, "Escribir (o di «sí»)"), no = el("button", { "type": "button", "class": "no" }, "Descartar (o di «no»)");
+      si.addEventListener("click", confirmarDictado); no.addEventListener("click", descartarDictado);
+      dictConfEl.appendChild(si); dictConfEl.appendChild(no); caja.appendChild(dictConfEl);
+    }
+    dictConfEl.querySelector(".t").textContent = "¿Escribo: «" + t + "»?"; dictConfEl.style.display = "block";
+    decirVoz("¿Escribo " + t + "? Di sí o no.", true, true);
+  }
+  function escribirDictado(t) {
+    // El espacio se decide por lo que hay en el campo antes del cursor, no por lo que recuerda el teclado
+    var c = campo(), antes = "";
+    if (c) antes = c.isContentEditable ? (c.textContent || "") : (c.value || "").slice(0, c.selectionStart == null ? undefined : c.selectionStart);
+    var sep = antes && !/\s$/.test(antes) ? " " : "";
+    insertarTexto(sep + t); frase += sep + t; palabra = ""; refrescarSugerencias(); pintarTexto();
+  }
+  function confirmarDictado() { if (dictPendiente) escribirDictado(dictPendiente); dictPendiente = ""; if (dictConfEl) dictConfEl.style.display = "none"; avisar("Escrito"); }
+  function descartarDictado() { dictPendiente = ""; if (dictConfEl) dictConfEl.style.display = "none"; avisar("Descartado"); }
+
   function pulsarPorTexto(buscado) {
     buscado = sinAcentos(buscado); var lista = document.querySelectorAll(SEL_CLICABLE), mejor = null, mejorPunt = 0;
     for (var i = 0; i < lista.length; i++) {
@@ -2002,6 +2061,7 @@
   tabs.escribir.appendChild(s);
   s = seccion("Dictado");
   s.appendChild(el("div", { "class": "wcl-estado" }, "Habla y se escribe en el campo elegido (Chrome o Edge). " + AVISO_VOZ));
+  s.appendChild(filaSw("dictado_confirmar", "Confirmar antes de escribir lo dictado (di «sí» o «no»)"));
   var btnDictar = botonGrande("Dictar", "azul", alternarDictado);
   refrescos.push(function () { btnDictar.textContent = dictando ? "Parar el dictado" : "Dictar"; btnDictar.classList.toggle("rojo", dictando); });
   s.appendChild(btnDictar);
