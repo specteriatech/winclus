@@ -59,7 +59,7 @@
     gestos_umbral: 50,
     avisos_visuales: true, avisos_sonido: false,
     teclado_altura: 32, teclado_posicion: "abajo", teclado_prediccion: true, teclado_sonido: true,
-    camara_ver: true, dwell: false,
+    camara_ver: true, dwell: false, ahorro: false,
     dalton: "no", calma: false, dislexia: false, sinimg: false, mascara: false, lector: false, facil: false,
     lupa_pantalla: false, lupa_pantalla_zoom: 2
   };
@@ -642,15 +642,23 @@
     cursor.style.display = "none"; btnPausa.style.display = "none";
     cerrarMenu(); cerrarLupa(); soltarArrastre(); ocultarTeclado();   // las órdenes por voz siguen: no dependen de la cámara
     historialRasgos = []; anclaParpadeo = null; det.cara = false; det.track = null; det.rasgos = null; det.mirada = null;
+    rvfcActivo = false; cuadroNuevo = true;
     vistaCamara(false);
     if (btnActivar) { btnActivar.textContent = "Activar cámara"; btnActivar.classList.remove("rojo"); }
     decir("Cámara apagada.");
   }
+  // La inferencia va a la tasa de la cámara, no a la del refresco de pantalla: requestVideoFrameCallback avisa de cada
+  // cuadro nuevo (Chrome, Edge, Safari, Firefox ≥ 132); donde no existe se infiere en cada refresco como antes.
+  // En modo ahorro, como mucho 15 veces por segundo. El puntero (vuelta) sí se mueve en cada refresco, para que vaya suave.
+  var cuadroNuevo = true, rvfcActivo = false, ultimaInferencia = 0;
+  function marcarCuadro() { cuadroNuevo = true; if (camaraActiva && rvfcActivo) video.requestVideoFrameCallback(marcarCuadro); }
   function bucle(gen) {
     if (!camaraActiva || gen !== generacion) return;
     var t = performance.now();
-    if (video.readyState >= 2 && t !== ultimoT) {
-      ultimoT = t;
+    if (!rvfcActivo && video.requestVideoFrameCallback) { rvfcActivo = true; video.requestVideoFrameCallback(marcarCuadro); }
+    var toca = video.readyState >= 2 && t !== ultimoT && (!rvfcActivo || cuadroNuevo) && (!ajustes.ahorro || t - ultimaInferencia >= 66);
+    if (toca) {
+      ultimoT = t; cuadroNuevo = false; ultimaInferencia = t; det.inferencias = (det.inferencias || 0) + 1;
       var r = null;
       try { r = landmarker.detectForVideo(video, t); } catch (e) {}
       if (r && r.faceLandmarks && r.faceLandmarks.length) procesarCara(r, t / 1000);
@@ -1753,6 +1761,7 @@
     btnActivar = botonGrande("Activar cámara", "", activarCamara); s.appendChild(btnActivar);
     var vista = el("div", { "class": "wcl-cam-vista" }, '<canvas width="320" height="240" aria-label="Vista de la cámara"></canvas>'); s.appendChild(vista);
     s.appendChild(filaSw("camara_ver", "Ver la cámara", function (v) { vistaCamara(v && camaraActiva); }));
+    s.appendChild(filaSw("ahorro", "Modo ahorro: menos batería y calor (analiza 15 imágenes por segundo)"));
     // Lectura en vivo del detector, para diagnosticar el parpadeo sin adivinar
     var diag = el("div", { "class": "wcl-estado", "style": "font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap" }); s.appendChild(diag);
     setInterval(function () {
