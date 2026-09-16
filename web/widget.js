@@ -145,7 +145,8 @@
     + '.wcl-iman{outline:3px solid #0F7A70!important;outline-offset:2px}'
     // Foco de teclado visible en todo el widget (azul 6,5:1 sobre blanco); en las teclas hacia dentro para que no se solapen
     + '.wcl-panel button:focus-visible,.wcl-panel select:focus-visible,.wcl-panel textarea:focus-visible,.wcl-panel input:focus-visible,.wcl-limpia button:focus-visible,.wcl-calib button:focus-visible{outline:3px solid #2F4FD8;outline-offset:2px}'
-    + '.wcl-tec button:focus-visible{outline:3px solid #2F4FD8;outline-offset:-3px}';
+    + '.wcl-tec button:focus-visible{outline:3px solid #2F4FD8;outline-offset:-3px}'
+    + '.wcl-vivo{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}';
   var estilo = document.createElement("style"); estilo.textContent = css; (document.head || raiz).appendChild(estilo);
 
   // ----------------------------------------------------------------- DOM --
@@ -164,10 +165,14 @@
   var panel = el("div", { "class": "wcl-panel", "role": "dialog", "aria-label": "Accesibilidad Winclus" });
   var cursor = el("div", { "class": "wcl-cursor", "aria-hidden": "true" }, '<svg class="wcl-anillo" viewBox="0 0 46 46"><circle cx="23" cy="23" r="20" fill="none" stroke="rgba(52,194,107,.3)" stroke-width="5"/><circle class="prog" cx="23" cy="23" r="20" fill="none" stroke="#34C26B" stroke-width="5" stroke-dasharray="125.7" stroke-dashoffset="125.7" transform="rotate(-90 23 23)"/></svg>');
   var aviso = el("div", { "class": "wcl-aviso", "aria-hidden": "true" });
+  var vivo = el("div", { "class": "wcl-vivo", "role": "status", "aria-live": "polite" });   // el mismo aviso, para lectores de pantalla
   var guia = el("div", { "class": "wcl-guia", "aria-hidden": "true" });
   var menuEl = el("div", { "class": "wcl-menu", "aria-hidden": "true" });
   var tecEl = el("div", { "class": "wcl-tec", "role": "group", "aria-label": "Teclado en pantalla Winclus" });
-  var calibEl = el("div", { "class": "wcl-calib", "role": "dialog", "aria-label": "Calibración de los ojos" });
+  var calibEl = el("div", { "class": "wcl-calib", "role": "dialog", "aria-modal": "true", "aria-label": "Calibración de los ojos" }), calibFocoPrevio = null;
+  calibEl.addEventListener("keydown", function (e) {   // el foco no sale del diálogo: su único control es Cancelar
+    if (e.key === "Tab") { e.preventDefault(); var c = calibEl.querySelector(".cancelar"); if (c) c.focus(); }
+  });
   var refrescos = [];   // funciones que ponen cada control según «ajustes»
 
   // Controles del panel. Todos se manejan con botones grandes (nada de
@@ -186,7 +191,8 @@
     return f;
   }
   function filaPaso(clave, etiqueta, min, max, paso, formato, alCambiar) {
-    var f = el("div", { "class": "wcl-fila" }, '<span id="wcl-l-' + clave + '">' + etiqueta + '</span><div class="wcl-mm" role="group" aria-labelledby="wcl-l-' + clave + '"><button type="button" aria-label="Menos">−</button><span aria-live="polite"></span><button type="button" aria-label="Más">+</button></div>');
+    // Cada botón dice qué reduce o aumenta y el valor actual se lee tras él (aria-describedby); el valor también es live
+    var f = el("div", { "class": "wcl-fila" }, '<span id="wcl-l-' + clave + '">' + etiqueta + '</span><div class="wcl-mm" role="group" aria-labelledby="wcl-l-' + clave + '"><button type="button" aria-label="Reducir: ' + etiqueta + '" aria-describedby="wcl-v-' + clave + '">−</button><span id="wcl-v-' + clave + '" aria-live="polite"></span><button type="button" aria-label="Aumentar: ' + etiqueta + '" aria-describedby="wcl-v-' + clave + '">+</button></div>');
     var b = f.querySelectorAll("button"), v = f.querySelector("span[aria-live]");
     function poner(n) {
       n = Math.round(Math.min(max, Math.max(min, n)) / paso) * paso;
@@ -276,7 +282,10 @@
     } catch (e) {}
   }
   var avisoHasta = 0;
+  var vivoTimer = 0;
   function avisar(texto, ambar) {
+    // Región live oculta: se vacía y se vuelve a llenar para que el mismo aviso («Clic») se anuncie cada vez
+    clearTimeout(vivoTimer); vivo.textContent = ""; vivoTimer = setTimeout(function () { vivo.textContent = texto; }, 30);
     if (ajustes.avisos_visuales) {
       aviso.textContent = texto; aviso.classList.toggle("ambar", !!ambar); aviso.style.display = "block";
       aviso.style.transform = "translate(" + Math.min(P.x, window.innerWidth - 220) + "px," + Math.min(P.y + 24, window.innerHeight - 40) + "px)";
@@ -545,7 +554,7 @@
 
   // --- cámara y MediaPipe ---------------------------------------------------
   var estadoEl = null, btnActivar = null, ultimoAviso = 0, ultimoT = -1;
-  function decir(t) { if (estadoEl) estadoEl.textContent = t; }
+  function decir(t) { if (estadoEl && estadoEl.textContent !== t) estadoEl.textContent = t; }   // solo cambios: la región live no repite lo mismo cada 1,5 s
   function decirSuave(t) { var a = performance.now(); if (a - ultimoAviso > 1500) { ultimoAviso = a; decir(t); } }
   function cargarDetectorDe(fuente) {
     return import(fuente.base + "/vision_bundle.mjs").then(function (mp) {
@@ -1506,6 +1515,7 @@
     calibEl.innerHTML = '<div class="txt">' + (soloRecentrar ? "Mira el punto del centro sin mover la cabeza." : "Mira cada punto naranja hasta que desaparezca. No muevas la cabeza, solo los ojos.") + '</div><div class="punto"></div><button type="button" class="cancelar">Cancelar (o tecla Esc)</button>';
     calibEl.querySelector(".cancelar").addEventListener("click", cancelarCalibracion);
     calibEl.classList.add("visible"); calibrando = true; cursor.style.display = "none";
+    calibFocoPrevio = document.activeElement; try { calibEl.querySelector(".cancelar").focus({ preventScroll: true }); } catch (x) {}
     siguientePunto(performance.now() / 1000);
   }
   function siguientePunto(tS) {
@@ -1569,7 +1579,10 @@
     }
   }
   function cancelarCalibracion() { if (!calib) return; calibEl.querySelector(".txt").textContent = "Calibración cancelada."; calib.fase = "fin"; calib.tFin = performance.now() / 1000 + 0.8; if (!camaraActiva) cerrarCalibracion(); }
-  function cerrarCalibracion() { calib = null; calibrando = false; calibEl.classList.remove("visible"); if (camaraActiva) cursor.style.display = "block"; reiniciarPuntero(); refrescos.forEach(function (f) { f(); }); }
+  function cerrarCalibracion() {
+    calib = null; calibrando = false; calibEl.classList.remove("visible"); if (camaraActiva) cursor.style.display = "block"; reiniciarPuntero();
+    if (calibFocoPrevio && document.contains(calibFocoPrevio) && calibFocoPrevio !== document.body) { try { calibFocoPrevio.focus({ preventScroll: true }); } catch (x) {} }
+    calibFocoPrevio = null; refrescos.forEach(function (f) { f(); }); }
   function recentrar() { if (!calibracion) { avisar("Primero calibra los ojos", true); return; } empezarCalibracion(true); }
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && calibrando) cancelarCalibracion(); });
 
@@ -1644,14 +1657,25 @@
   var TABS = [["ver", "Ver"], ["oir", "Oír"], ["cara", "Puntero"], ["clics", "Clics"], ["escribir", "Escribir"], ["mas", "Más"]];
   var tabsEl = el("div", { "class": "wcl-tabs", "role": "tablist" }), tabs = {};
   TABS.forEach(function (t) {
-    var b = el("button", { "type": "button", "role": "tab", "aria-selected": "false", "id": "wcl-tab-" + t[0] }, t[1]);
+    var b = el("button", { "type": "button", "role": "tab", "aria-selected": "false", "tabindex": "-1", "id": "wcl-tab-" + t[0], "aria-controls": "wcl-panel-" + t[0] }, t[1]);
     b.addEventListener("click", function () { elegirTab(t[0]); });
     tabsEl.appendChild(b);
-    tabs[t[0]] = el("div", { "class": "wcl-tab", "role": "tabpanel", "aria-labelledby": "wcl-tab-" + t[0] });
+    tabs[t[0]] = el("div", { "class": "wcl-tab", "role": "tabpanel", "id": "wcl-panel-" + t[0], "aria-labelledby": "wcl-tab-" + t[0] });
   });
   panel.appendChild(tabsEl);
+  // Patrón Tabs de la APG del W3C: una sola pestaña tabulable, flechas para cambiar, Inicio y Fin a los extremos
+  tabsEl.addEventListener("keydown", function (e) {
+    var i = TABS.findIndex(function (t) { return t[0] === (e.target.id || "").replace("wcl-tab-", ""); });
+    if (i < 0) return;
+    var j = e.key === "ArrowRight" ? (i + 1) % TABS.length : e.key === "ArrowLeft" ? (i + TABS.length - 1) % TABS.length : e.key === "Home" ? 0 : e.key === "End" ? TABS.length - 1 : -1;
+    if (j < 0) return;
+    e.preventDefault(); elegirTab(TABS[j][0]); q("#wcl-tab-" + TABS[j][0]).focus();
+  });
   function elegirTab(nombre) {
-    TABS.forEach(function (t) { tabs[t[0]].classList.toggle("activa", t[0] === nombre); q("#wcl-tab-" + t[0]).setAttribute("aria-selected", t[0] === nombre ? "true" : "false"); });
+    TABS.forEach(function (t) {
+      var activa = t[0] === nombre, b = q("#wcl-tab-" + t[0]);
+      tabs[t[0]].classList.toggle("activa", activa); b.setAttribute("aria-selected", activa ? "true" : "false"); b.setAttribute("tabindex", activa ? "0" : "-1");
+    });
     try { sessionStorage.setItem("winclus.tab", nombre); } catch (e) {}
   }
   function grupo(cuando) { var g = el("div"); g.dataset.cuando = cuando; return g; }
@@ -1674,7 +1698,7 @@
   tabs.oir.appendChild(s);
   s = seccion("Voz");
   s.appendChild(filaSw("voz_activa", "Voz activada (Decir y frases)"));
-  var fVoz = el("div", { "class": "wcl-fila" }, '<span id="wcl-l-voz">Voz</span><div class="wcl-mm" role="group" aria-labelledby="wcl-l-voz"><button type="button" aria-label="Voz anterior">−</button><span style="min-width:120px;font-size:12px"></span><button type="button" aria-label="Voz siguiente">+</button></div>');
+  var fVoz = el("div", { "class": "wcl-fila" }, '<span id="wcl-l-voz">Voz</span><div class="wcl-mm" role="group" aria-labelledby="wcl-l-voz"><button type="button" aria-label="Voz anterior" aria-describedby="wcl-voz-nombre">−</button><span id="wcl-voz-nombre" aria-live="polite" style="min-width:120px;font-size:12px"></span><button type="button" aria-label="Voz siguiente" aria-describedby="wcl-voz-nombre">+</button></div>');
   var bv = fVoz.querySelectorAll("button"), vv = fVoz.querySelector("span[style]");
   function cambiarVoz(d) { var vs = vocesEs(); if (!vs.length) return; var i = vs.findIndex(function (v) { return v.name === ajustes.voz_nombre; }); i = (i + d + vs.length) % vs.length; ajustes.voz_nombre = vs[i].name; guardar(); pintarVoz(); }
   function pintarVoz() { var vs = vocesEs(); var v = vs.find(function (x) { return x.name === ajustes.voz_nombre; }) || vs[0]; vv.textContent = v ? v.name.replace(/Microsoft |Google |Desktop| - .*$/g, "") : "sin voces en español"; }
@@ -2174,7 +2198,7 @@
   function montar() {
     cont.appendChild(FILTROS); cont.appendChild(mascaraArriba); cont.appendChild(mascaraAbajo);
     cont.appendChild(guia); cont.appendChild(boton); cont.appendChild(btnPausa); cont.appendChild(panel);
-    cont.appendChild(tecEl); cont.appendChild(menuEl); cont.appendChild(cursor); cont.appendChild(aviso); cont.appendChild(calibEl);
+    cont.appendChild(tecEl); cont.appendChild(menuEl); cont.appendChild(cursor); cont.appendChild(aviso); cont.appendChild(vivo); cont.appendChild(calibEl);
     raiz.appendChild(cont);
     var t = "ver"; try { t = sessionStorage.getItem("winclus.tab") || "ver"; } catch (e) {}
     elegirTab(tabs[t] ? t : "ver");
