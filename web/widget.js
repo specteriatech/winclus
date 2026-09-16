@@ -134,7 +134,10 @@
     + '.wcl-calib{position:fixed;inset:0;z-index:2147483030;background:#1B2422;color:#F1ECE2;display:none;font:18px "Segoe UI",system-ui,sans-serif}.wcl-calib.visible{display:block}'
     + '.wcl-calib .punto{position:absolute;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;background:#F0B455;box-shadow:0 0 0 6px rgba(240,180,85,.3)}.wcl-calib .punto.grande{width:68px;height:68px;margin:-34px 0 0 -34px}'
     + '.wcl-calib .txt{position:absolute;left:0;right:0;top:12%;text-align:center;padding:0 24px;font-size:22px}.wcl-calib .cancelar{position:absolute;right:16px;top:16px;min-height:44px;padding:0 16px;border-radius:10px;border:1px solid #F1ECE2;background:transparent;color:#F1ECE2;font:700 15px "Segoe UI",system-ui,sans-serif;cursor:pointer}'
-    + 'html.wcl-oscuro img,html.wcl-oscuro video,html.wcl-oscuro .wcl-root{filter:invert(1) hue-rotate(180deg)}'
+    // Se des-invierte cada hijo del contenedor, nunca .wcl-root: un filter sobre él (0×0 en la esquina)
+    // lo convertiría en bloque contenedor de sus hijos fixed y el botón y el panel saldrían de la pantalla.
+    + 'html.wcl-oscuro img,html.wcl-oscuro video,html.wcl-oscuro .wcl-root>*{filter:invert(1) hue-rotate(180deg)}'
+    + 'html.wcl-oscuro .wcl-root>* img,html.wcl-oscuro .wcl-root>* video{filter:none}'   // ya des-invertidos por su contenedor (fotos de la lectura limpia)
     + 'html.wcl-enlaces a{outline:3px solid #F2B705!important;outline-offset:2px;text-decoration:underline!important;background:rgba(242,183,5,.18)!important}'
     + 'html.wcl-anim *{animation-play-state:paused!important;transition:none!important;scroll-behavior:auto!important}'
     + 'html.wcl-lupa body{transition:transform .25s}'

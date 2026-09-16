@@ -20,6 +20,10 @@ herramientas/pruebas/err_*.txt
 # Imágenes originales de la web (pesadas; en web/img quedan las optimizadas)
 web/img/originales/
 
+# Playwright de las pruebas del widget (npm i playwright)
+herramientas/pruebas/widget/node_modules/
+herramientas/pruebas/widget/capturas/
+
 # Registros de las pruebas
 herramientas/pruebas/log_*.txt
 herramientas/pruebas/out_*.txt

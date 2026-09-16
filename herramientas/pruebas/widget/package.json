@@ -1,0 +1,13 @@
+{
+  "name": "winclus-pruebas-widget",
+  "private": true,
+  "description": "Pruebas del widget web de Winclus sin cámara (node prueba_*.js)",
+  "license": "Apache-2.0",
+  "scripts": {
+    "posicion": "node prueba_posicion.js",
+    "parpadeo": "node prueba_parpadeo.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}

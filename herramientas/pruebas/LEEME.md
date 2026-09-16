@@ -50,6 +50,11 @@ perdería la calibración de ojos del usuario.
   plan real con el modelo local (no ejecuta nada real: el ejecutor está sustituido).
 - `recorrido_asistente.py`: captura de la página Asistente y del menú con el sector nuevo.
 
+- `recorrido_oscuro.py`: captura las siete páginas en modo claro y en modo oscuro (cambia el modo con el
+  mismo botón del menú), abre el teclado en oscuro y comprueba que se reconstruye al volver a claro; deja el
+  modo guardado como estaba. Capturas cap_claro_*.png y cap_oscuro_*.png. No mueve el ratón.
+  (16-sep-2026: todo correcto; el fallo de modo oscuro de la auditoría era solo del widget web, ver widget/LEEME.md.)
+
 Regla: los recorridos no deben mover el ratón real (el usuario suele estar usándolo) ni hacer clics.
 
 Los guiones tienen la ruta del proyecto y de salida escritas a mano (RAIZ y SALIDA):

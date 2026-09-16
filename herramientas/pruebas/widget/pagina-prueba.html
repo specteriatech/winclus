@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Página de prueba del widget</title>
+<style>
+  body { margin: 0; font: 16px/1.5 "Segoe UI", system-ui, sans-serif; color: #222; background: #fff; }
+  header.fija { position: fixed; top: 0; left: 0; right: 0; height: 56px; background: #2F4FD8; color: #fff; display: flex; align-items: center; padding: 0 16px; z-index: 10; }
+  main { padding: 80px 24px 40px; max-width: 720px; }
+  .pie { position: fixed; bottom: 0; left: 0; right: 0; height: 40px; background: #eee; }
+  img { width: 200px; height: 120px; background: #ccc; display: block; }
+</style>
+</head>
+<body>
+<header class="fija" id="cabecera">Cabecera fija del sitio</header>
+<main>
+  <h1>Título de prueba</h1>
+  <p>Texto con un <a href="#a">enlace</a> y un <button type="button" id="boton-sitio">botón</button>.</p>
+  <label><input type="checkbox" id="casilla"> Casilla</label>
+  <img alt="imagen de prueba" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
+  <p id="relleno"></p>
+</main>
+<div class="pie" id="pie"></div>
+<script>document.getElementById("relleno").textContent = "Párrafo largo. ".repeat(600);</script>
+<script src="../../../web/widget.js"></script>
+</body>
+</html>
