@@ -141,7 +141,8 @@ class MainGui():
         self.curr_page_name = None
         for name, page in self.pages.items():
             # Page home extended full window
-            page.grid(row=0,
+            # Fila 0 queda para el aviso de pausa: así no tapa el título de la página
+            page.grid(row=1,
                       column=1,
                       padx=(10, 18),
                       pady=14,
@@ -240,10 +241,10 @@ class MainGui():
     def refrescar_aviso_pausa(self):
         activo = MouseController().is_active.get()
         if activo:
-            self.aviso_pausa.place_forget()
+            self.aviso_pausa.grid_remove()
         else:
-            self.aviso_pausa.place(relx=1.0, x=-30, y=26, anchor="ne")
-            self.aviso_pausa.lift()
+            # En su propia fila, encima de la página: no tapa nada
+            self.aviso_pausa.grid(row=0, column=1, padx=(10, 18), pady=(14, 0), sticky="e")
 
     def abrir_recentrado(self):
         if self.recentrado is not None:
