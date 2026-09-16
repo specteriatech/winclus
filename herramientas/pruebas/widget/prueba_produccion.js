@@ -50,7 +50,7 @@ function grupo(n) { console.log("\n== " + n); }
   comprobar(limpia > 500, "lectura limpia con el texto de la portada", limpia + " caracteres");
   await page.keyboard.press("Escape");
   await page.evaluate(() => { Winclus.abrir(); Winclus.leer(); });
-  comprobar((await page.evaluate(() => window.__voz.some((t) => t.length > 200))), "leer la página en voz alta");
+  comprobar((await page.evaluate(() => window.__voz.join(" ").length > 200 && window.__voz.every((t) => t.length <= 260))), "leer la página en voz alta (por trozos cortos, no en un solo bloque)");
 
   grupo("2. Auditiva");
   comprobar((await sw("alertas_sonido")) === "true", "avisos visuales de sonido activados");
