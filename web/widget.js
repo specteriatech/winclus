@@ -146,6 +146,7 @@
     // Foco de teclado visible en todo el widget (azul 6,5:1 sobre blanco); en las teclas hacia dentro para que no se solapen
     + '.wcl-panel button:focus-visible,.wcl-panel select:focus-visible,.wcl-panel textarea:focus-visible,.wcl-panel input:focus-visible,.wcl-limpia button:focus-visible,.wcl-calib button:focus-visible{outline:3px solid #2F4FD8;outline-offset:2px}'
     + '.wcl-tec button:focus-visible{outline:3px solid #2F4FD8;outline-offset:-3px}'
+    + '.wcl-consent{margin:8px 0;padding:12px;border-radius:12px;background:#FFF6DB;border:1px solid #C99A1E;font-size:14px;line-height:1.45}.wcl-consent p{margin:0 0 8px}'
     + '.wcl-vivo{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}';
   var estilo = document.createElement("style"); estilo.textContent = css; (document.head || raiz).appendChild(estilo);
 
@@ -579,9 +580,25 @@
     return intentar(0);
   }
   function vistaCamara(ver) { var v = q(".wcl-cam-vista"); if (v) v.style.display = ver ? "block" : "none"; }
+  // Consentimiento explícito antes de la primera activación: los rasgos de la cara son dato biométrico sensible (Ley 1581/2012)
+  var consentEl = null;
+  function pedirConsentimientoCamara() {
+    if (consentEl) { consentEl.querySelector("button").focus(); return; }
+    consentEl = el("div", { "class": "wcl-consent", "role": "group", "aria-label": "Permiso para usar la cámara" },
+      '<p>Para mover el puntero, Winclus mira tu cara con la cámara. El vídeo se analiza en este navegador y no se guarda ni se envía a ningún sitio. Si calibras los ojos, guarda en este navegador unos números sobre tu mirada (dato biométrico), que puedes borrar en «Más → Restablecer». <a href="https://winclus.com/privacidad" target="_blank" rel="noopener">Cómo tratamos tus datos</a>.</p>');
+    var si = botonGrande("Acepto y activo la cámara", "", function () {
+      escribirJSON("winclus.consentimiento_camara", { fecha: new Date().toISOString(), version: VERSION });
+      consentEl.remove(); consentEl = null; activarCamara();
+    });
+    var no = botonGrande("Ahora no", "suave", function () { consentEl.remove(); consentEl = null; btnActivar.focus(); });
+    consentEl.appendChild(si); consentEl.appendChild(no);
+    btnActivar.parentNode.insertBefore(consentEl, btnActivar.nextSibling);
+    si.focus();
+  }
   function activarCamara() {
     if (!opciones.camara || !btnActivar) return;
     if (camaraActiva) { desactivarCamara(); return; }
+    if (!leerJSON("winclus.consentimiento_camara", null)) { pedirConsentimientoCamara(); return; }
     btnActivar.disabled = true; decir("Cargando el detector de cara (unos segundos la primera vez)…");
     cargarDetector().then(function () {
       decir("Detector listo. Pidiendo permiso para la cámara…");
@@ -1424,6 +1441,8 @@
 
   // --- dictado y órdenes por voz (Web Speech API) ---------------------------
   var Reconocedor = window.SpeechRecognition || window.webkitSpeechRecognition, dictando = false, rec = null, escuchando = false, recOrdenes = null;
+  // Honestidad sobre la voz: la Web Speech API de Chrome y Edge no reconoce en el equipo, manda el audio a Google o Microsoft
+  var AVISO_VOZ = "Aviso: mientras escuchas, el navegador envía tu voz a los servidores de Google o Microsoft para reconocerla; nada más sale de tu equipo. Más en winclus.com/privacidad.";
   function alternarDictado() { if (dictando) pararDictado(); else empezarDictado(); }
   function empezarDictado() {
     if (!Reconocedor) { avisar("Este navegador no dicta (usa Chrome o Edge)", true); return; }
@@ -1720,7 +1739,7 @@
   s.appendChild(botonGrande("Volver a las de ejemplo", "suave", function () { frases = FRASES_DEFECTO.slice(); escribirJSON("winclus.frases", null); areaFrases.value = frases.join("\n"); }));
   tabs.oir.appendChild(s);
   s = seccion("Órdenes por voz");
-  s.appendChild(el("div", { "class": "wcl-estado" }, "Di «baja», «sube», «clic», «pulsa» y el nombre de un enlace, «escribe» y el texto, «lee», «teclado», «menú», «pausa», «sigue», «ayuda»…"));
+  s.appendChild(el("div", { "class": "wcl-estado" }, "Di «baja», «sube», «clic», «pulsa» y el nombre de un enlace, «escribe» y el texto, «lee», «teclado», «menú», «pausa», «sigue», «ayuda»… " + AVISO_VOZ));
   var btnEscucha = botonGrande("Escuchar órdenes", "azul", function () { if (escuchando) pararEscucha(); else empezarEscucha(); });
   refrescos.push(function () { btnEscucha.textContent = escuchando ? "Dejar de escuchar" : "Escuchar órdenes"; btnEscucha.classList.toggle("rojo", escuchando); });
   s.appendChild(btnEscucha);
@@ -1857,7 +1876,7 @@
   s.appendChild(botonGrande("Olvidar las palabras aprendidas", "suave", function () { aprendidas = {}; escribirJSON("winclus.palabras", null); diccionario = null; cargarDiccionario(); avisar("Olvidadas"); }));
   tabs.escribir.appendChild(s);
   s = seccion("Dictado");
-  s.appendChild(el("div", { "class": "wcl-estado" }, "Habla y se escribe en el campo elegido (Chrome o Edge)."));
+  s.appendChild(el("div", { "class": "wcl-estado" }, "Habla y se escribe en el campo elegido (Chrome o Edge). " + AVISO_VOZ));
   var btnDictar = botonGrande("Dictar", "azul", alternarDictado);
   refrescos.push(function () { btnDictar.textContent = dictando ? "Parar el dictado" : "Dictar"; btnDictar.classList.toggle("rojo", dictando); });
   s.appendChild(btnDictar);
@@ -1887,12 +1906,18 @@
   });
   s.appendChild(entrada);
   s.appendChild(botonGrande("Importar perfil", "suave", function () { entrada.click(); }));
+  s.appendChild(el("div", { "class": "wcl-estado" }, "Borra de este navegador todo lo que Winclus guarda: ajustes, calibración de los ojos, clics aprendidos, frases, palabras y el permiso de la cámara."));
   s.appendChild(botonGrande("Restablecer todo", "suave", function () {
-    fusionarAjustes(JSON.parse(JSON.stringify(POR_DEFECTO))); guardar(); aplicarTodo(); avisar("Ajustes restablecidos");
+    if (camaraActiva) desactivarCamara();
+    fusionarAjustes(JSON.parse(JSON.stringify(POR_DEFECTO))); guardar();
+    calibracion = null; ojosCentro = null; clicsAprendidos = []; frases = FRASES_DEFECTO.slice(); aprendidas = {}; diccionario = null;
+    ["winclus.calibracion", "winclus.ojos_centro", "winclus.clics", "winclus.frases", "winclus.palabras", "winclus.consentimiento_camara"].forEach(function (k) { escribirJSON(k, null); });
+    try { sessionStorage.removeItem("winclus.tab"); } catch (e) {}
+    areaFrases.value = frases.join("\n"); reiniciarPuntero(); refrescarEstadoAprendizaje(); aplicarTodo(); avisar("Todo restablecido");
   }));
   tabs.mas.appendChild(s);
   s = seccion("Acerca de");
-  s.appendChild(el("div", { "class": "wcl-pie", "style": "padding:0" }, 'Winclus widget ' + VERSION + ', código abierto (Apache 2.0). Sin cuentas ni rastreo: todo se procesa en tu navegador.<br><br>¿Quieres controlar todo el ordenador con la cara? <a href="https://winclus.com/#contacto" target="_blank" rel="noopener">Comunícate con nosotros</a>.'));
+  s.appendChild(el("div", { "class": "wcl-pie", "style": "padding:0" }, 'Winclus widget ' + VERSION + ', código abierto (Apache 2.0). Sin cuentas, sin rastreo y sin servidores propios: la cámara, la calibración y tus ajustes se quedan en este navegador. Solo el dictado y las órdenes por voz usan el reconocedor del navegador (Google o Microsoft). <a href="https://winclus.com/privacidad" target="_blank" rel="noopener">Política de tratamiento de datos</a>.<br><br>¿Quieres controlar todo el ordenador con la cara? <a href="https://winclus.com/#contacto" target="_blank" rel="noopener">Comunícate con nosotros</a>.'));
   tabs.mas.appendChild(s);
 
   TABS.forEach(function (t) { panel.appendChild(tabs[t[0]]); });

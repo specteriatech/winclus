@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacidad y tratamiento de datos · Winclus</title>
+<meta name="description" content="Qué datos usa Winclus (cámara, voz, ajustes), dónde se procesan, qué sale del equipo y cómo ejercer tus derechos según la Ley 1581 de 2012.">
+<link rel="icon" href="img/icono.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="paginas.css">
+</head>
+<body>
+<a class="salto" href="#contenido">Ir al contenido</a>
+<header>
+  <div class="barra">
+    <a class="marca" href="/"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a>
+    <a class="volver" href="/">Volver a la portada</a>
+  </div>
+</header>
+
+<main id="contenido">
+  <h1>Privacidad y tratamiento de datos personales</h1>
+  <p class="meta">Política de tratamiento de datos de Winclus (widget web y aplicación de Windows). Versión 1, 16 de septiembre de 2026. Ley 1581 de 2012 y Decreto 1377 de 2013 (Colombia); también pensada para el RGPD (UE).</p>
+
+  <div class="resumen">
+    <p><strong>En corto.</strong> Winclus no tiene cuentas, no usa cookies de seguimiento ni analítica, y no tiene servidores que reciban tus datos. La cámara se analiza en tu propio equipo o navegador y no se guarda ni se envía vídeo. Lo único que sale de tu equipo es la voz cuando usas el dictado o las órdenes por voz del widget web, porque el reconocimiento lo hace el navegador (Google en Chrome, Microsoft en Edge), y el widget te lo avisa junto a esos botones.</p>
+  </div>
+
+  <h2>1. Responsable del tratamiento</h2>
+  <p>Winclus es un proyecto de software libre (licencia Apache 2.0) mantenido por sus colaboradores. Responsable: <strong>[razón social o nombre del titular], NIT [número]</strong>, [ciudad], Colombia. Contacto para todo lo relacionado con datos personales: <a href="mailto:hola@winclus.com">hola@winclus.com</a>.</p>
+  <div class="aviso">Este texto es un borrador para revisión jurídica. Los datos del responsable entre corchetes deben completarse antes de publicarlo como definitivo y, si aplica por activos o ingresos, registrar las bases de datos en el RNBD de la Superintendencia de Industria y Comercio.</div>
+
+  <h2>2. Qué datos se tratan, dónde y para qué</h2>
+  <table>
+    <thead><tr><th>Dato</th><th>Dónde se procesa</th><th>Se guarda</th><th>Sale del equipo</th><th>Para qué</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Imagen de la cámara</strong> (tu cara, en tiempo real)</td><td>En tu equipo (app de Windows) o en tu navegador (widget web), con el detector de caras de MediaPipe</td><td>No. Ningún fotograma ni vídeo se guarda</td><td>No</td><td>Mover el puntero con la cabeza o los ojos y detectar los gestos del clic</td></tr>
+      <tr><td><strong>Rasgos de la cara y de la mirada</strong> (números que describen la posición de los ojos y el iris)</td><td>En tu equipo o navegador</td><td>Solo si calibras los ojos o activas la calibración invisible: se guardan los vectores de la calibración (widget: <code>localStorage</code> del navegador; app: carpeta <code>configs</code> del perfil). Son dato biométrico sensible</td><td>No</td><td>Que el puntero vaya a donde miras</td></tr>
+      <tr><td><strong>Voz</strong> (dictado y órdenes por voz del widget web)</td><td>En los servidores del reconocedor del navegador: Google (Chrome) o Microsoft (Edge)</td><td>Winclus no la guarda; el proveedor del navegador la trata según su propia política</td><td><strong>Sí</strong>, mientras el dictado o la escucha están activos</td><td>Escribir lo que dices y ejecutar órdenes</td></tr>
+      <tr><td><strong>Voz</strong> (app de Windows)</td><td>En tu equipo, con las voces y el reconocimiento de Windows</td><td>No</td><td>No</td><td>Leer en voz alta y decir frases</td></tr>
+      <tr><td><strong>Ajustes, frases guardadas y palabras aprendidas</strong></td><td>En tu equipo o navegador</td><td>Sí, en <code>localStorage</code> (widget) o en <code>configs</code> (app)</td><td>No, salvo que exportes un perfil <code>.winclus</code> y lo lleves tú</td><td>Recordar cómo usas Winclus</td></tr>
+      <tr><td><strong>Texto del asistente</strong> (app de Windows, opcional)</td><td>Según lo que elijas: un modelo local (Ollama) no sale del equipo; la API de Claude envía tu petición y la descripción de la ventana a Anthropic</td><td>No lo guarda Winclus</td><td>Solo con la API de Claude, y solo lo que escribes al asistente</td><td>Hacer por ti lo que le pides</td></tr>
+      <tr><td><strong>Datos de navegación en winclus.com</strong></td><td>Servidor de alojamiento (Vercel)</td><td>Registros técnicos del alojamiento (dirección IP, fecha), sin cookies ni analítica de Winclus</td><td>Sí, como en cualquier sitio web</td><td>Servir la página</td></tr>
+    </tbody>
+  </table>
+  <p>Al usar el widget web, el navegador descarga una vez el detector de caras y el diccionario de palabras desde winclus.com. Esa descarga no lleva ningún dato tuyo.</p>
+
+  <h2>3. Datos sensibles y consentimiento</h2>
+  <p>Los rasgos de la cara y de la mirada son datos biométricos y, por tanto, <strong>datos sensibles</strong> (artículo 5 de la Ley 1581 de 2012). Aunque nunca salen de tu equipo, Winclus pide tu consentimiento explícito la primera vez que activas la cámara, te dice qué va a hacer con ella y te permite no activarla. No estás obligado a dar ese consentimiento: sin cámara, el widget sigue sirviendo para leer, ampliar, cambiar colores, escribir con el teclado en pantalla y hablar con frases guardadas.</p>
+  <p>Winclus no está dirigido a menores de edad como usuarios directos; si una persona menor lo usa, el consentimiento corresponde a su representante legal.</p>
+
+  <h2>4. Tus derechos</h2>
+  <p>Tienes derecho a conocer, actualizar, rectificar y suprimir tus datos, a pedir prueba del consentimiento, a revocarlo y a presentar quejas ante la Superintendencia de Industria y Comercio. Como Winclus no tiene servidores con tus datos, la mayoría de estos derechos los ejerces tú directamente:</p>
+  <dl>
+    <dt>Ver y borrar lo guardado en el widget web</dt><dd>Pestaña «Más» → «Restablecer» borra ajustes, calibración, frases, palabras aprendidas y el consentimiento de la cámara de ese navegador. También puedes borrar los datos del sitio desde el navegador.</dd>
+    <dt>Ver y borrar lo guardado en la app de Windows</dt><dd>Está en la carpeta <code>configs</code> junto al programa; borrar el perfil borra su calibración.</dd>
+    <dt>Retirar el consentimiento de la cámara</dt><dd>Desactiva la cámara en el widget o cierra la app; con «Restablecer» se vuelve a pedir la próxima vez.</dd>
+    <dt>Voz</dt><dd>Para que tu voz no salga del equipo, no uses «Dictar» ni «Escuchar órdenes». Para lo que ya se envió, aplican las políticas de Google o Microsoft.</dd>
+    <dt>Cualquier otra consulta o reclamo</dt><dd>Escribe a <a href="mailto:hola@winclus.com">hola@winclus.com</a>. Consultas: respuesta en máximo 10 días hábiles. Reclamos: máximo 15 días hábiles, prorrogables 8 más con aviso (artículos 14 y 15 de la Ley 1581).</dd>
+  </dl>
+
+  <h2>5. Seguridad y conservación</h2>
+  <p>Al no haber transmisión ni almacenamiento centralizado, el riesgo principal está en el propio equipo: los datos guardados quedan protegidos por la sesión de usuario y el navegador. Se conservan mientras no los borres. El código es público en <a href="https://github.com/specteriatech/winclus">github.com/specteriatech/winclus</a>, así que cualquiera puede comprobar qué hace con los datos.</p>
+
+  <h2>6. Terceros</h2>
+  <ul>
+    <li><strong>Google (Chrome) y Microsoft (Edge)</strong>: reconocimiento de voz del navegador en el widget web.</li>
+    <li><strong>Anthropic</strong>: solo si en la app de Windows eliges el asistente con la API de Claude.</li>
+    <li><strong>Vercel</strong>: alojamiento de winclus.com y de los archivos del widget.</li>
+    <li><strong>Google Fonts</strong>: tipografía de winclus.com (el navegador pide la fuente a Google).</li>
+  </ul>
+  <p>Winclus no vende, cede ni comparte datos con nadie más.</p>
+
+  <h2>7. Cambios</h2>
+  <p>Si esta política cambia, se publica aquí con nueva fecha y versión. Los cambios que amplíen el tratamiento se avisan dentro del widget antes de aplicarse.</p>
+</main>
+
+<footer>
+  <div class="pie">
+    <div>© 2026 Colaboradores de Winclus · Licencia Apache 2.0</div>
+    <ul>
+      <li><a href="/">Portada</a></li>
+      <li><a href="accesibilidad">Accesibilidad</a></li>
+      <li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li>
+    </ul>
+  </div>
+</footer>
+</body>
+</html>

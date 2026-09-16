@@ -34,7 +34,7 @@
   body{margin:0;font-family:var(--fuente);color:var(--texto);background:var(--fondo);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
   img{max-width:100%;display:block}
   a{color:var(--azul)}
-  :focus-visible{outline:3px solid var(--amarillo);outline-offset:3px}
+  :focus-visible{outline:3px solid var(--azul);outline-offset:3px}   /* el amarillo daba 1,8:1 sobre blanco */
   .contenedor{width:min(1120px,100% - 40px);margin-inline:auto}
   h1,h2,h3{line-height:1.15;margin:0 0 .4em;font-weight:700}
   h1{font-size:clamp(2.1rem,4.6vw,3.4rem)}
@@ -248,7 +248,7 @@
         </a>
         <a class="btn btn-borde" href="#como-funciona">Ver cómo funciona</a>
       </div>
-      <p class="hero-nota"><strong>Gratis y de código abierto.</strong> Sin registro, sin cuenta y sin enviar tu imagen a ningún servidor: todo se procesa en tu equipo.</p>
+      <p class="hero-nota"><strong>Gratis y de código abierto.</strong> Sin registro, sin cuenta y sin enviar tu imagen a ningún servidor: la cámara se procesa en tu equipo. <a href="privacidad">Cómo tratamos tus datos</a>.</p>
     </div>
 
     <div class="hero-visual" aria-hidden="true">
@@ -415,7 +415,8 @@
       <h2 id="t-faq">Preguntas frecuentes</h2>
     </div>
     <details><summary>¿Winclus es gratis de verdad?</summary><p>Sí. Es software libre con licencia Apache 2.0. Puedes usarlo, copiarlo y compartirlo sin pagar nada. Nace de Project Gameface, de Google, adaptado y ampliado en español.</p></details>
-    <details><summary>¿Mi imagen sale de mi ordenador?</summary><p>No. La cámara se procesa en tu equipo y no se guarda ni se envía ningún vídeo. Winclus funciona sin conexión a internet.</p></details>
+    <details><summary>¿Mi imagen sale de mi ordenador?</summary><p>No. La cámara se procesa en tu equipo y no se guarda ni se envía ningún vídeo. La aplicación de Windows funciona sin conexión a internet; el widget web solo descarga el detector de caras la primera vez.</p></details>
+    <details><summary>¿Y mi voz?</summary><p>El dictado y las órdenes por voz del widget web usan el reconocedor del navegador: en Chrome y Edge, el audio se envía a servidores de Google o Microsoft mientras escuchas, y el widget te lo avisa junto a esos botones. Si no los usas, nada sale de tu equipo. Los detalles están en la <a href="privacidad">política de tratamiento de datos</a>.</p></details>
     <details><summary>¿Tengo que calibrar los ojos?</summary><p>No es obligatorio. Winclus aprende de cada clic que haces y va mejorando la puntería por sí solo. Si quieres, hay una calibración guiada de un minuto para afinar más.</p></details>
     <details><summary>¿Sirve con gafas?</summary><p>Sí, en la mayoría de los casos. Ayuda que no haya reflejos fuertes en los cristales, por eso conviene luz de frente y no a la espalda.</p></details>
     <details><summary>¿Puedo llevar mi configuración a otro equipo?</summary><p>Sí. Cada perfil se exporta a un archivo .winclus con tus gestos, velocidades y lo aprendido, y se importa en otro ordenador en un clic.</p></details>
@@ -437,6 +438,8 @@
         <li><a href="#como-funciona">Cómo funciona</a></li>
         <li><a href="#contacto">Contacto</a></li>
         <li><a href="#" class="js-codigo">Código fuente</a></li>
+        <li><a href="privacidad">Privacidad y datos</a></li>
+        <li><a href="accesibilidad">Accesibilidad</a></li>
         <li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li>
       </ul>
     </div>
