@@ -7,7 +7,7 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
-body{margin:0;font-family:var(--fuente);color:var(--texto);background:var(--fondo);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+body{margin:0;font-family:var(--fuente);color:var(--texto);background:var(--fondo);font-size:1.0625rem;line-height:1.65;-webkit-font-smoothing:antialiased}
 a{color:var(--azul)}
 :focus-visible{outline:3px solid var(--azul);outline-offset:3px}
 .salto{position:absolute;left:-999px;top:0;background:var(--navy);color:#fff;padding:10px 16px;border-radius:8px;z-index:99}

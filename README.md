@@ -42,6 +42,7 @@ Requisitos: Windows 10 u 11 de 64 bits y una cámara web.
 - Atributos opcionales en el `<script>`: `data-posicion="izquierda"`, `data-color="#101F3D"`, `data-camara="no"`.
 - Pruebas del widget (Playwright + axe-core) en `herramientas/pruebas/widget`.
 - Comparación con overlays y hardware de apoyo: https://winclus.com/comparar
+- Guía de uso para personas (winclus.com/guia, PDF en winclus.com/guia-winclus.pdf) y manual para entidades (winclus.com/manual, PDF en winclus.com/manual-winclus.pdf)
 - Presentación (winclus.com/presentacion), hoja de una página (winclus.com/una-pagina) y guion con objeciones en `docs/guion-presentacion.md`
 - Guía de integración (CSP, web component, React/Vue, WordPress, Drupal, GOV.CO, IA, idiomas): https://winclus.com/integrar
 - Declaración de accesibilidad: https://winclus.com/accesibilidad · Datos personales: https://winclus.com/privacidad
