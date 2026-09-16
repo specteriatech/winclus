@@ -36,6 +36,13 @@
   al Centro de Relevo y al diccionario LSC del INSOR.
 - `node prueba_voz.js`: «números» numera enlaces, botones y campos; «clic 2», «escribe en cinco»; dictado con
   confirmación («sí», «no», botón) con reconocedor simulado (`window.__reconocer`).
+- `node prueba_formularios.js`: `pagina-formulario.html`: «Campo 2 de 4: Correo, obligatorio», errores de envío y
+  aria-invalid en lenguaje claro, pegar aunque el sitio lo bloquee.
+- `node prueba_perfil_enlace.js`: «Copiar enlace con mi perfil» (#winclus=…), importación en un navegador limpio,
+  enlace roto sin romper nada.
+- `node prueba_pictogramas.js`: tablero ARASAAC: categorías, frase con voz, predicción por defecto y aprendida,
+  guardar frase (pasa a las frases del teclado), barrido dentro del tablero. Las imágenes vienen de
+  static.arasaac.org (no se comprueba que carguen).
 - Todas las pruebas del widget usan `Winclus.caja` (el shadow root) para llegar a sus piezas; los selectores de
   Playwright (`page.click("#wcl-tab-ver")`) atraviesan el shadow root solos.
 - La foto tiene los ojos entrecerrados (relación 0,69 en reposo): para probar el clic poner `Winclus.ajustes.parpadeo_umbral = 0.45`.

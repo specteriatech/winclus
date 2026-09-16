@@ -166,6 +166,15 @@
     // Aviso visual de sonido (arriba, centrado) y subtítulos en vivo (abajo): grandes y con fondo, legibles de lejos
     + '.wcl-sonido{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:2147483020;display:none;max-width:min(92vw,640px);padding:12px 20px;border-radius:14px;background:#101F3D;color:#fff;border:4px solid #F2B705;font:700 18px "Segoe UI",system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.35)}'
     + '.wcl-sonido.error{border-color:#E57373;font-weight:600;font-size:17px;text-align:left}'
+    // Tablero de pictogramas: a pantalla completa, botones grandes, tira de frase arriba
+    + '.wcl-pictos{position:fixed;inset:0;z-index:2147483013;display:none;flex-direction:column;background:#FBF8F1;color:#101F3D;font:16px "Segoe UI",system-ui,sans-serif}'
+    + '.wcl-pictos .tira{display:flex;gap:10px;align-items:center;padding:10px 14px;background:#101F3D;color:#fff;min-height:88px;flex-wrap:wrap}.wcl-pictos .frase{flex:1;display:flex;gap:8px;align-items:center;overflow-x:auto;min-height:56px}.wcl-pictos .frase .vacia{color:#C8D0DC}.wcl-pictos .elegido{display:inline-flex;flex-direction:column;align-items:center;background:#fff;color:#101F3D;border-radius:10px;padding:4px 8px;font-size:13px}'
+    + '.wcl-pictos .acciones{display:flex;gap:6px;flex-wrap:wrap}.wcl-pictos .acciones button{min-height:44px;padding:0 14px;border-radius:10px;border:0;background:#34C26B;color:#101F3D;font:700 15px "Segoe UI",system-ui,sans-serif;cursor:pointer}.wcl-pictos .acciones button:nth-child(n+2){background:#E8F7F3}'
+    + '.wcl-pictos .sig{display:flex;gap:8px;align-items:center;padding:6px 14px;flex-wrap:wrap}.wcl-pictos .sig .et{font-weight:700;color:#5A6784}.wcl-pictos .sig .picto{min-height:64px;min-width:84px;flex-direction:row;gap:6px}.wcl-pictos .sig .picto img{width:36px;height:36px}'
+    + '.wcl-pictos .cats{display:flex;gap:6px;padding:6px 14px;flex-wrap:wrap}.wcl-pictos .cats button{min-height:44px;padding:0 14px;border-radius:999px;border:2px solid #8892A6;background:#fff;font:700 15px "Segoe UI",system-ui,sans-serif;cursor:pointer}.wcl-pictos .cats button[aria-selected="true"]{background:#2F4FD8;border-color:#2F4FD8;color:#fff}'
+    + '.wcl-pictos .rejilla{flex:1;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px;padding:10px 14px;align-content:start}'
+    + '.wcl-pictos .picto{min-height:118px;border:2px solid #8892A6;border-radius:12px;background:#fff;color:#101F3D;font:600 15px "Segoe UI",system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px;cursor:pointer;text-align:center}.wcl-pictos .picto img{width:72px;height:72px;object-fit:contain}.wcl-pictos .picto.frase-guardada{font-size:16px}'
+    + '.wcl-pictos .pie{padding:6px 14px;font-size:12px;color:#5A6784;border-top:1px solid #E3E8F0}'
     + '.wcl-subvivo{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:2147483016;display:none;width:min(94vw,900px);min-height:64px;padding:12px 18px;border-radius:12px;background:rgba(0,0,0,.88);color:#fff;font:26px/1.35 "Segoe UI",system-ui,sans-serif;text-align:center}.wcl-subvivo .parcial{color:#C8D0DC}'
     // Números sobre enlaces y campos para las órdenes por voz («clic 12») y barra de confirmación del dictado
     + '.wcl-nums{position:fixed;inset:0;pointer-events:none;z-index:2147483018}.wcl-num{position:absolute;min-width:22px;height:22px;padding:0 5px;border-radius:6px;background:#F2B705;color:#101F3D;font:700 13px/22px "Segoe UI",system-ui,sans-serif;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.45)}'
@@ -1665,6 +1674,79 @@
   // Pegar siempre permitido: los manejadores del sitio no llegan a cancelar el pegado
   document.addEventListener("paste", function (ev) { if (ajustes.formularios && !enWidget(ev.target)) ev.stopPropagation(); }, true);
 
+  // ================================ pictogramas (CAA) con ARASAAC ==
+  // Tablero de comunicación para quien no lee ni escribe bien: pictogramas de ARASAAC (Gobierno de Aragón,
+  // licencia CC BY-NC-SA) por categorías, tira de frase con voz, predicción del siguiente símbolo aprendida
+  // del uso, y frases guardadas (que pasan también a la tecla «Frases» del teclado).
+  var PICTO_IMG = "https://static.arasaac.org/pictograms/";
+  var PICTOS = {
+    "Básico": [["sí", 5584], ["no", 5526], ["hola", 6522], ["adiós", 6028], ["gracias", 8129], ["por favor", 8195], ["bien", 5397], ["mal", 5504], ["ayuda", 19524], ["esperar", 36914], ["no entiendo", 11697], ["más", 3220]],
+    "Necesito": [["agua", 2248], ["comer", 6456], ["beber", 6061], ["dormir", 6479], ["baño", 6929], ["medicinas", 8163], ["dolor", 2367], ["dolor de cabeza", 28651], ["hambre", 35559], ["sed", 7273], ["frío", 4652], ["calor", 35561], ["cansado", 35537], ["silla de ruedas", 25471], ["cama", 25900], ["ducha", 32426], ["ropa", 7233]],
+    "Siento": [["contento", 35547], ["triste", 35545], ["miedo", 10261], ["enfadado", 35539], ["aburrido", 35531], ["cansado", 35537], ["dolor", 2367], ["bien", 5397], ["mal", 5504]],
+    "Personas": [["yo", 6632], ["tú", 6625], ["mamá", 2458], ["papá", 31146], ["familia", 38351], ["amigo", 25790], ["médico", 6561], ["enfermera", 2375], ["cuidador", 14662]],
+    "Acciones": [["quiero", 11538], ["necesito", 37160], ["ir", 8142], ["venir", 32669], ["jugar", 23392], ["ver", 6564], ["leer", 7141], ["escribir", 2380], ["salir", 6606], ["pasear", 29951], ["lavar", 34826], ["llamar", 26479], ["comer", 6456], ["beber", 6061], ["dormir", 6479]],
+    "Lugares": [["casa", 6964], ["hospital", 3116], ["colegio", 3082], ["parque", 2859], ["tienda", 35695], ["trabajo", 16087], ["baño", 6929]],
+    "Comida": [["comida", 4610], ["agua", 2248], ["pan", 2494], ["fruta", 4653], ["comer", 6456], ["beber", 6061]],
+    "Tiempo y cosas": [["ahora", 32747], ["hoy", 7131], ["mañana", 38278], ["más tarde", 7268], ["teléfono", 26479], ["televisión", 25498], ["música", 24791], ["dinero", 4630], ["coche", 2339], ["autobús", 2262]]
+  };
+  var PICTO_SIGUIENTES = { "yo": ["quiero", "necesito", "siento"], "quiero": ["agua", "comer", "ir", "dormir", "ver", "salir"], "necesito": ["ayuda", "baño", "medicinas", "agua", "dormir"], "ir": ["casa", "baño", "hospital", "parque"], "ver": ["televisión", "médico", "mamá"], "dolor": ["dolor de cabeza", "medicinas", "médico"] };
+  var pictosEl = null, pictoFrase = [], pictoCat = "Básico", pictoUso = leerJSON("winclus.pictos_uso", {}), pictoFrases = leerJSON("winclus.pictos_frases", []);
+  function pictoDatos(nombre) { for (var c in PICTOS) for (var i = 0; i < PICTOS[c].length; i++) if (PICTOS[c][i][0] === nombre) return PICTOS[c][i]; return [nombre, 0]; }
+  function pictoBoton(p, alPulsar) {
+    var b = el("button", { "type": "button", "class": "picto", "aria-label": p[0] });
+    if (p[1]) { var img = el("img", { "alt": "", "loading": "lazy", "width": "72", "height": "72" }); img.src = PICTO_IMG + p[1] + "/" + p[1] + "_300.png"; img.onerror = function () { img.remove(); }; b.appendChild(img); }
+    b.appendChild(el("span", {}, p[0]));
+    b.addEventListener("click", function () { alPulsar(p); });
+    return b;
+  }
+  function abrirPictos() {
+    if (!pictosEl) {
+      pictosEl = el("div", { "class": "wcl-pictos", "role": "dialog", "aria-label": "Tablero de pictogramas" },
+        '<div class="tira"><div class="frase" aria-live="polite" aria-label="Frase"></div><div class="acciones"></div></div><div class="sig"></div><div class="cats" role="tablist"></div><div class="rejilla"></div><div class="pie">Pictogramas de <a href="https://arasaac.org" target="_blank" rel="noopener">ARASAAC</a> (Gobierno de Aragón), licencia CC BY-NC-SA.</div>');
+      var acc = pictosEl.querySelector(".acciones");
+      [["Decir", function () { pictoDecir(); }], ["Borrar último", function () { pictoFrase.pop(); pintarPictos(); }], ["Borrar todo", function () { pictoFrase = []; pintarPictos(); }], ["Guardar frase", function () { pictoGuardar(); }], ["Teclado", function () { cerrarPictos(); mostrarTeclado(); }], ["Cerrar", function () { cerrarPictos(); }]].forEach(function (a) {
+        var b = el("button", { "type": "button" }, a[0]); b.addEventListener("click", a[1]); acc.appendChild(b);
+      });
+      pictosEl.addEventListener("keydown", function (e) { if (e.key === "Escape") { e.stopPropagation(); cerrarPictos(); } });
+      caja.appendChild(pictosEl);
+    }
+    pictosEl.style.display = "flex"; pintarPictos();
+    try { pictosEl.querySelector(".cats button").focus(); } catch (e) {}
+    decirVoz("Tablero de pictogramas. Toca los dibujos para formar una frase y pulsa Decir.", true, true);
+  }
+  function cerrarPictos() { if (pictosEl) pictosEl.style.display = "none"; }
+  function pintarPictos() {
+    var fr = pictosEl.querySelector(".frase"); fr.innerHTML = "";
+    if (!pictoFrase.length) fr.appendChild(el("span", { "class": "vacia" }, "Toca los dibujos para formar tu frase"));
+    pictoFrase.forEach(function (p) { var s = el("span", { "class": "elegido" }); if (p[1]) { var i = el("img", { "alt": "", "width": "44", "height": "44" }); i.src = PICTO_IMG + p[1] + "/" + p[1] + "_300.png"; i.onerror = function () { i.remove(); }; s.appendChild(i); } s.appendChild(el("b", {}, p[0])); fr.appendChild(s); });
+    var cats = pictosEl.querySelector(".cats"); cats.innerHTML = "";
+    var nombres = Object.keys(PICTOS).concat(pictoFrases.length ? ["Mis frases"] : []);
+    nombres.forEach(function (c) { var b = el("button", { "type": "button", "role": "tab", "aria-selected": c === pictoCat ? "true" : "false" }, c); b.addEventListener("click", function () { pictoCat = c; pintarPictos(); }); cats.appendChild(b); });
+    var rej = pictosEl.querySelector(".rejilla"); rej.innerHTML = "";
+    if (pictoCat === "Mis frases") pictoFrases.forEach(function (f, k) { var b = el("button", { "type": "button", "class": "picto frase-guardada" }, ""); b.appendChild(el("span", {}, f.texto)); b.addEventListener("click", function () { decirVoz(f.texto, true, true); avisar(f.texto); }); rej.appendChild(b); });
+    else (PICTOS[pictoCat] || []).forEach(function (p) { rej.appendChild(pictoBoton(p, pictoElegir)); });
+    var sig = pictosEl.querySelector(".sig"); sig.innerHTML = "";
+    var ultimo = pictoFrase.length ? pictoFrase[pictoFrase.length - 1][0] : null, sugeridos = [];
+    if (ultimo) {
+      var apr = pictoUso[ultimo] || {}; Object.keys(apr).sort(function (a, b) { return apr[b] - apr[a]; }).forEach(function (n) { if (sugeridos.indexOf(n) < 0) sugeridos.push(n); });
+      (PICTO_SIGUIENTES[ultimo] || []).forEach(function (n) { if (sugeridos.indexOf(n) < 0) sugeridos.push(n); });
+    }
+    if (sugeridos.length) { sig.appendChild(el("span", { "class": "et" }, "Siguiente:")); sugeridos.slice(0, 6).forEach(function (n) { sig.appendChild(pictoBoton(pictoDatos(n), pictoElegir)); }); }
+  }
+  function pictoElegir(p) {
+    var ultimo = pictoFrase.length ? pictoFrase[pictoFrase.length - 1][0] : null;
+    if (ultimo) { pictoUso[ultimo] = pictoUso[ultimo] || {}; pictoUso[ultimo][p[0]] = (pictoUso[ultimo][p[0]] || 0) + 1; escribirJSON("winclus.pictos_uso", pictoUso); }
+    pictoFrase.push(p); decirVoz(p[0], true, true); pintarPictos();
+  }
+  function pictoTexto() { return pictoFrase.map(function (p) { return p[0]; }).join(" "); }
+  function pictoDecir() { var t = pictoTexto(); if (t) { decirVoz(t, true, true); avisar(t); } else decirVoz("No hay frase todavía", true, true); }
+  function pictoGuardar() {
+    var t = pictoTexto(); if (!t) return;
+    if (!pictoFrases.some(function (f) { return f.texto === t; })) { pictoFrases.push({ texto: t, pictos: pictoFrase.slice() }); escribirJSON("winclus.pictos_frases", pictoFrases); }
+    if (frases.indexOf(t) < 0 && frases.length < 64) { frases.push(t); escribirJSON("winclus.frases", frases); if (areaFrases) areaFrases.value = frases.join("\n"); }
+    avisar("Frase guardada"); decirVoz("Frase guardada", true, true); pintarPictos();
+  }
+
   // --- números sobre lo que se puede pulsar (tipo Voice Control): «números», «clic 12», «quita los números» ---
   var numerosEl = null, numerados = [], numerosTimer = 0;
   var PALABRAS_NUM = { uno: 1, una: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, siete: 7, ocho: 8, nueve: 9, diez: 10, once: 11, doce: 12, trece: 13, catorce: 14, quince: 15, dieciseis: 16, diecisiete: 17, dieciocho: 18, diecinueve: 19, veinte: 20 };
@@ -1948,6 +2030,8 @@
   s.appendChild(botonGrande("Probar la voz", "suave", function () { decirVoz("Hola, soy la voz de Winclus.", true, true); }));
   tabs.oir.appendChild(s);
   s = seccion("Frases para decir");
+  s.appendChild(el("div", { "class": "wcl-estado" }, "Para quien no lee ni escribe bien: un tablero de dibujos (pictogramas ARASAAC) para formar frases y decirlas con voz."));
+  s.appendChild(botonGrande("Tablero de pictogramas", "azul", abrirPictos));
   s.appendChild(el("div", { "class": "wcl-estado" }, "Una por línea (hasta 16). Aparecen en la tecla «Frases» del teclado."));
   var areaFrases = el("textarea", { "class": "wcl-area", "aria-label": "Frases para decir" }); areaFrases.value = frases.join("\n");
   s.appendChild(areaFrases);
@@ -2137,18 +2221,37 @@
     var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(perfil)], { type: "application/json" })); a.download = "perfil.winclus"; a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
   }));
+  // Perfil por enlace: la configuración viaja en el propio enlace (#winclus=…), sin cuentas ni servidores.
+  // Al abrir cualquier página con Winclus y ese enlace, se importa y el enlace se limpia.
+  function importarPerfil(p) {
+    if (!p || !p.ajustes || typeof p.ajustes !== "object") throw new Error("no es un perfil");
+    fusionarAjustes(p.ajustes); guardar(); if (modeloValido(p.calibracion)) { calibracion = p.calibracion; escribirJSON("winclus.calibracion", calibracion); }
+    if (p.ojos_centro) { ojosCentro = p.ojos_centro; escribirJSON("winclus.ojos_centro", ojosCentro); }
+    if (Array.isArray(p.frases) && p.frases.every(function (x) { return typeof x === "string"; })) { frases = p.frases.slice(0, 64); escribirJSON("winclus.frases", frases); areaFrases.value = frases.join("\n"); }
+    if (p.palabras && typeof p.palabras === "object") { aprendidas = p.palabras; escribirJSON("winclus.palabras", aprendidas); diccionario = null; }
+    if (Array.isArray(p.clics)) { clicsAprendidos = p.clics; escribirJSON("winclus.clics", clicsAprendidos); }
+    aplicarTodo(); avisar("Perfil importado");
+  }
+  function perfilActual() { return { winclus: VERSION, ajustes: ajustes, calibracion: calibracion, ojos_centro: ojosCentro, frases: frases, palabras: aprendidas }; }
+  function perfilAEnlace() {
+    var json = JSON.stringify(perfilActual()), b64 = btoa(unescape(encodeURIComponent(json))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    return location.href.replace(/#.*$/, "") + "#winclus=" + b64;
+  }
+  function perfilDeEnlace() {
+    var m = /[#&]winclus=([A-Za-z0-9_-]+)/.exec(location.hash || "");
+    if (!m) return null;
+    try { var b64 = m[1].replace(/-/g, "+").replace(/_/g, "/"); return JSON.parse(decodeURIComponent(escape(atob(b64 + "===".slice((b64.length + 3) % 4))))); } catch (e) { return false; }   // false: venía algo, pero roto
+  }
+  s.appendChild(botonGrande("Copiar enlace con mi perfil", "suave", function () {
+    var enlace = perfilAEnlace();
+    var listo = function () { avisar("Enlace copiado"); decirVoz("Enlace copiado. Ábrelo en otro equipo o guárdalo en favoritos: lleva tu configuración.", true, true); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(enlace).then(listo, function () { window.prompt("Copia este enlace:", enlace); });
+    else window.prompt("Copia este enlace:", enlace);
+  }));
   var entrada = el("input", { "type": "file", "accept": ".winclus,.json", "style": "display:none" });
   entrada.addEventListener("change", function () {
     var f = entrada.files[0]; if (!f) return;
-    f.text().then(function (t) {
-      var p = JSON.parse(t); if (!p || !p.ajustes) throw new Error("no es un perfil");
-      fusionarAjustes(p.ajustes); guardar(); if (modeloValido(p.calibracion)) { calibracion = p.calibracion; escribirJSON("winclus.calibracion", calibracion); }
-      if (p.ojos_centro) { ojosCentro = p.ojos_centro; escribirJSON("winclus.ojos_centro", ojosCentro); }
-      if (p.frases) { frases = p.frases; escribirJSON("winclus.frases", frases); areaFrases.value = frases.join("\n"); }
-      if (p.palabras) { aprendidas = p.palabras; escribirJSON("winclus.palabras", aprendidas); diccionario = null; }
-      if (p.clics) { clicsAprendidos = p.clics; escribirJSON("winclus.clics", clicsAprendidos); }
-      aplicarTodo(); avisar("Perfil importado");
-    }).catch(function () { avisar("No se pudo leer el perfil", true); });
+    f.text().then(function (t) { importarPerfil(JSON.parse(t)); }).catch(function () { avisar("No se pudo leer el perfil", true); });
     entrada.value = "";
   });
   s.appendChild(entrada);
@@ -2498,6 +2601,9 @@
   var barridoTimer = 0, barridoNivel = "pagina", barridoLista = [], barridoI = -1, barridoFila = null, barridoEl = null, barridoPausa = false;
   function barridoObjetivosPagina() {
     var lista = [boton];   // el botón del widget va siempre primero: abre y cierra el panel
+    if (pictosEl && pictosEl.style.display !== "none") {   // tablero de pictogramas abierto: se barre él
+      lista = []; pictosEl.querySelectorAll("button").forEach(function (e) { if (visibleEl(e)) lista.push(e); }); return lista;
+    }
     if (panel.classList.contains("abierto")) {
       panel.querySelectorAll("button,select,textarea,input,[role=switch]").forEach(function (e) { if (visibleEl(e) && !e.disabled) lista.push(e); });
     } else {
@@ -2593,6 +2699,13 @@
     }, true);
   });
   if (ajustes.barrido) setTimeout(aplicarBarrido, 800);
+  // Perfil que viene en el enlace (#winclus=…): se importa y se quita del enlace
+  var perfilEnlace = perfilDeEnlace();
+  if (perfilEnlace !== null) {
+    try { if (!perfilEnlace) throw new Error("roto"); importarPerfil(perfilEnlace); decirVoz("Tu configuración de Winclus se ha cargado desde el enlace.", true, true); }
+    catch (e) { setTimeout(function () { avisar("El enlace no traía un perfil válido", true); }, 100); }
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+  }
 
   window.Winclus = {
     version: VERSION, ajustes: ajustes,
