@@ -63,7 +63,7 @@
     teclado_altura: 32, teclado_posicion: "abajo", teclado_prediccion: true, teclado_sonido: true,
     camara_ver: true, dwell: false, ahorro: false, cursor_grande: false,
     barrido: false, barrido_ms: 1200, barrido_senal: "espacio", barrido_voz: true,
-    subtitulos: false, alertas_sonido: false, dictado_confirmar: false,
+    subtitulos: false, alertas_sonido: false, dictado_confirmar: false, formularios: true,
     dalton: "no", calma: false, dislexia: false, sinimg: false, mascara: false, lector: false, facil: false,
     lupa_pantalla: false, lupa_pantalla_zoom: 2
   };
@@ -165,6 +165,7 @@
     + '.wcl-consent{margin:8px 0;padding:12px;border-radius:12px;background:#FFF6DB;border:1px solid #C99A1E;font-size:14px;line-height:1.45}.wcl-consent p{margin:0 0 8px}'
     // Aviso visual de sonido (arriba, centrado) y subtítulos en vivo (abajo): grandes y con fondo, legibles de lejos
     + '.wcl-sonido{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:2147483020;display:none;max-width:min(92vw,640px);padding:12px 20px;border-radius:14px;background:#101F3D;color:#fff;border:4px solid #F2B705;font:700 18px "Segoe UI",system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.35)}'
+    + '.wcl-sonido.error{border-color:#E57373;font-weight:600;font-size:17px;text-align:left}'
     + '.wcl-subvivo{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:2147483016;display:none;width:min(94vw,900px);min-height:64px;padding:12px 18px;border-radius:12px;background:rgba(0,0,0,.88);color:#fff;font:26px/1.35 "Segoe UI",system-ui,sans-serif;text-align:center}.wcl-subvivo .parcial{color:#C8D0DC}'
     // Números sobre enlaces y campos para las órdenes por voz («clic 12») y barra de confirmación del dictado
     + '.wcl-nums{position:fixed;inset:0;pointer-events:none;z-index:2147483018}.wcl-num{position:absolute;min-width:22px;height:22px;padding:0 5px;border-radius:6px;background:#F2B705;color:#101F3D;font:700 13px/22px "Segoe UI",system-ui,sans-serif;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.45)}'
@@ -1607,6 +1608,63 @@
     else if ((m = /^(di|dice|decir) (.+)$/.exec(t))) { decirVoz(texto.trim().replace(/^\S+\s+/, ""), true, true); }
     else avisar("No entendí: " + texto, true);
   }
+  // --- ayuda en formularios: dónde estoy, errores en lenguaje claro, pegar siempre permitido (WCAG 3.3.1, 3.3.3, 3.3.7, 3.3.8) ---
+  var SEL_CAMPO = "input:not([type=hidden]):not([type=submit]):not([type=button]):not([type=reset]):not([type=image]),select,textarea,[contenteditable=''],[contenteditable='true']";
+  function camposDelFormulario(c) {
+    var raiz2 = c.form || c.closest("form") || document;
+    return Array.prototype.filter.call(raiz2.querySelectorAll(SEL_CAMPO), function (e) { return !enWidget(e) && !e.disabled && visibleEl(e); });
+  }
+  function nombreCampo(e) { return etiquetaCampo(e) || nombreDe(e) || "campo sin nombre"; }
+  var ultimoCampoAnunciado = null;
+  document.addEventListener("focusin", function (ev) {
+    var c = ev.target;
+    if (!ajustes.formularios || !c || enWidget(c) || !c.matches || !c.matches(SEL_CAMPO) || c === ultimoCampoAnunciado) return;
+    ultimoCampoAnunciado = c;
+    if (c.hasAttribute("onpaste")) c.removeAttribute("onpaste");   // bloqueos de pegar del sitio (WCAG 3.3.8)
+    var lista = camposDelFormulario(c), i = lista.indexOf(c);
+    var texto = (i >= 0 && lista.length > 1 ? "Campo " + (i + 1) + " de " + lista.length + ": " : "") + nombreCampo(c) + (c.required || c.getAttribute("aria-required") === "true" ? ", obligatorio" : "");
+    avisar(texto); if (ajustes.lectura || ajustes.lector) decirVoz(texto, true, false, IDIOMA_PAGINA);
+  });
+  document.addEventListener("focusout", function () { ultimoCampoAnunciado = null; });
+  function explicarError(c) {
+    var n = "«" + nombreCampo(c) + "»", v = c.validity;
+    if (!v) return "Revisa " + n + ".";
+    if (v.valueMissing) return "Falta rellenar " + n + ".";
+    if (v.typeMismatch) return c.type === "email" ? n + " tiene que ser un correo, por ejemplo nombre@ejemplo.com." : c.type === "url" ? n + " tiene que ser una dirección web, por ejemplo https://ejemplo.com." : n + " no tiene el formato correcto.";
+    if (v.tooShort) return n + " necesita al menos " + c.minLength + " caracteres; llevas " + c.value.length + ".";
+    if (v.tooLong) return n + " admite como mucho " + c.maxLength + " caracteres; llevas " + c.value.length + ".";
+    if (v.rangeUnderflow) return n + " tiene que ser " + c.min + " o más.";
+    if (v.rangeOverflow) return n + " tiene que ser " + c.max + " o menos.";
+    if (v.badInput) return n + " solo admite números.";
+    if (v.patternMismatch) return c.title ? n + ": " + c.title : n + " no tiene el formato que pide el sitio.";
+    if (v.stepMismatch) return n + " tiene que ir de " + c.step + " en " + c.step + ".";
+    return c.validationMessage ? n + ": " + c.validationMessage : "Revisa " + n + ".";
+  }
+  var errorTimer = 0, erroresPendientes = [];
+  function mostrarErrores() {
+    if (!erroresPendientes.length) return;
+    var textos = erroresPendientes.map(explicarError), primero = erroresPendientes[0]; erroresPendientes = [];
+    var msg = (textos.length > 1 ? "Hay " + textos.length + " cosas por corregir. " : "") + textos.slice(0, 3).join(" ");
+    sonidoEl.textContent = "✎ " + msg; sonidoEl.classList.add("error"); sonidoEl.style.display = "block";
+    clearTimeout(sonidoTimer); sonidoTimer = setTimeout(function () { sonidoEl.style.display = "none"; sonidoEl.classList.remove("error"); }, 9000);
+    decirVoz(msg, true, false, IDIOMA_PAGINA);
+    try { primero.focus({ preventScroll: true }); primero.scrollIntoView({ block: "center" }); } catch (x) {}
+  }
+  document.addEventListener("invalid", function (ev) {
+    if (!ajustes.formularios || !ev.target || enWidget(ev.target)) return;
+    if (erroresPendientes.indexOf(ev.target) < 0) erroresPendientes.push(ev.target);
+    clearTimeout(errorTimer); errorTimer = setTimeout(mostrarErrores, 30);   // todos los inválidos del envío llegan seguidos
+  }, true);
+  // Errores que marca el propio sitio con aria-invalid
+  try {
+    new MutationObserver(function (ms) {
+      if (!ajustes.formularios) return;
+      ms.forEach(function (m) { var e = m.target; if (e.getAttribute && e.getAttribute("aria-invalid") === "true" && !enWidget(e) && e.matches(SEL_CAMPO)) { var d = e.getAttribute("aria-describedby"), t = d && document.getElementById(d.split(" ")[0]); var msg = "Revisa «" + nombreCampo(e) + "»" + (t && t.textContent.trim() ? ": " + t.textContent.trim() : "."); avisar(msg, true); decirVoz(msg, true, false, IDIOMA_PAGINA); } });
+    }).observe(document.documentElement, { attributes: true, subtree: true, attributeFilter: ["aria-invalid"] });
+  } catch (e) {}
+  // Pegar siempre permitido: los manejadores del sitio no llegan a cancelar el pegado
+  document.addEventListener("paste", function (ev) { if (ajustes.formularios && !enWidget(ev.target)) ev.stopPropagation(); }, true);
+
   // --- números sobre lo que se puede pulsar (tipo Voice Control): «números», «clic 12», «quita los números» ---
   var numerosEl = null, numerados = [], numerosTimer = 0;
   var PALABRAS_NUM = { uno: 1, una: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, siete: 7, ocho: 8, nueve: 9, diez: 10, once: 11, doce: 12, trece: 13, catorce: 14, quince: 15, dieciseis: 16, diecisiete: 17, dieciocho: 18, diecinueve: 19, veinte: 20 };
@@ -2058,6 +2116,10 @@
   s.appendChild(filaSw("teclado_prediccion", "Sugerir palabras", function () { if (tecVisible) dibujarTeclado(); }));
   s.appendChild(filaSw("teclado_sonido", "Sonido al pulsar"));
   s.appendChild(botonGrande("Olvidar las palabras aprendidas", "suave", function () { aprendidas = {}; escribirJSON("winclus.palabras", null); diccionario = null; cargarDiccionario(); avisar("Olvidadas"); }));
+  tabs.escribir.appendChild(s);
+  s = seccion("Ayuda en formularios");
+  s.appendChild(el("div", { "class": "wcl-estado" }, "Al entrar en un campo te dice cuál es y cuántos quedan («Campo 3 de 8: Correo, obligatorio»); si el sitio marca un error, lo explica en lenguaje claro; y deja pegar aunque el sitio lo bloquee."));
+  s.appendChild(filaSw("formularios", "Ayuda en formularios"));
   tabs.escribir.appendChild(s);
   s = seccion("Dictado");
   s.appendChild(el("div", { "class": "wcl-estado" }, "Habla y se escribe en el campo elegido (Chrome o Edge). " + AVISO_VOZ));

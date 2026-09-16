@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Formulario de prueba</title>
+<style>body{margin:0;padding:24px;font:16px "Segoe UI",system-ui,sans-serif}label{display:block;margin:12px 0 4px}input,select{font-size:16px;padding:6px}</style>
+</head>
+<body>
+<h1>Solicitud</h1>
+<form id="f" novalidate="">
+  <label for="nombre">Nombre completo</label>
+  <input id="nombre" name="nombre" required minlength="3">
+  <label for="correo">Correo electrónico</label>
+  <input id="correo" name="correo" type="email" required onpaste="return false">
+  <label for="cedula">Cédula</label>
+  <input id="cedula" name="cedula" pattern="[0-9]{6,10}" title="solo números, entre 6 y 10">
+  <label for="ciudad">Ciudad</label>
+  <select id="ciudad" name="ciudad"><option>Barranquilla</option><option>Bogotá</option></select>
+  <button type="submit" id="enviar">Enviar</button>
+</form>
+<p id="resultado"></p>
+<script>
+  document.getElementById("f").addEventListener("submit", function (e) { e.preventDefault(); if (!this.checkValidity()) { document.getElementById("resultado").textContent = "inválido"; return; } document.getElementById("resultado").textContent = "enviado"; });
+  document.getElementById("cedula").addEventListener("paste", function (e) { e.preventDefault(); });   // bloqueo de pegar por código
+</script>
+<script src="../../../web/widget.js"></script>
+</body>
+</html>
