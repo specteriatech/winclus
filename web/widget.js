@@ -27,7 +27,8 @@
     posicion: (script && script.dataset.posicion) || "derecha",
     color: (script && script.dataset.color) || "#101F3D",
     camara: !(script && script.dataset.camara === "no"),
-    relevo: !(script && script.dataset.relevo === "no")   // botón al Centro de Relevo de MinTIC (intérprete de LSC por videollamada)
+    relevo: !(script && script.dataset.relevo === "no"),   // botón al Centro de Relevo de MinTIC (intérprete de LSC por videollamada)
+    explicar: (script && script.dataset.explicar) || ""     // URL opcional de un servicio de lectura fácil con IA (POST {texto, idioma} → {texto})
   };
   var URL_RELEVO = "https://www.centroderelevo.gov.co/", URL_DICCIONARIO_LSC = "https://educativo.insor.gov.co/diccionario/";
   var ORIGEN = (script && script.src) ? script.src.replace(/\/[^\/]*$/, "") : "https://winclus.com";
@@ -1614,6 +1615,8 @@
     else if (/^(mas pequeno|texto mas pequeno|reduce)$/.test(t)) { orden("zoommenos"); ok("Texto más pequeño"); }
     else if (/^(centro|centrar|recentrar)$/.test(t)) { recentrar(); }
     else if (/^(ayuda|que puedo decir)$/.test(t)) { decirVoz("Puedes decir: baja, sube, clic, pulsa y el nombre de un enlace, escribe y el texto, borra, intro, lee, lee la página, calla, teclado, menú, pausa, sigue, atrás, más grande.", true, true); }
+    else if (/^(donde estoy|en que pagina estoy|situacion)$/.test(t)) { dondeEstoy(); }
+    else if (/^(explica|explicame|explicar)( esta| la)? pagina$|^(lectura|leer) facil$/.test(t)) { if (!limpiaEl) lecturaLimpia(); explicarFacil(); }
     else if ((m = /^(di|dice|decir) (.+)$/.exec(t))) { decirVoz(texto.trim().replace(/^\S+\s+/, ""), true, true); }
     else avisar("No entendí: " + texto, true);
   }
@@ -2014,6 +2017,7 @@
   s = seccion("Escuchar");
   s.appendChild(filaSw("lectura", "Leer en voz alta lo que se pulsa"));
   s.appendChild(botonGrande("Leer la página", "suave", leerPagina));
+  s.appendChild(botonGrande("¿Dónde estoy?", "suave", dondeEstoy));
   s.appendChild(botonGrande("Callar", "suave", callar));
   tabs.oir.appendChild(s);
   s = seccion("Voz");
@@ -2285,6 +2289,8 @@
     + '.wcl-limpia-barra{position:sticky;top:0;display:flex;gap:8px;align-items:center;padding:10px 14px;background:#101F3D;color:#fff;z-index:1;flex-wrap:wrap}.wcl-limpia-barra b{flex:1;font-size:16px}'
     + '.wcl-limpia-barra button{min-height:44px;min-width:44px;padding:0 14px;border-radius:10px;border:0;background:#E8F7F3;color:#101F3D;font:700 15px "Segoe UI",system-ui,sans-serif;cursor:pointer}'
     + '.wcl-limpia-texto{max-width:36rem;margin:0 auto;padding:28px 20px 80px}.wcl-limpia-texto h1,.wcl-limpia-texto h2,.wcl-limpia-texto h3,.wcl-limpia-texto h4{line-height:1.3;margin:1.2em 0 .4em;color:#101F3D}.wcl-limpia-texto p{margin:0 0 1em}.wcl-limpia-texto figure{margin:1em 0}.wcl-limpia-texto img{max-width:100%;border-radius:10px}.wcl-limpia-texto figcaption{font-size:.8em;color:#555}'
+    + '.wcl-limpia .w.act{background:#F2B705;color:#101F3D;border-radius:3px}.wcl-limpia abbr{text-decoration:underline dotted #0F7A70;text-decoration-thickness:2px;cursor:help}'
+    + '.wcl-limpia .facil{background:#E8F7F3;border-left:6px solid #0F7A70;padding:12px 16px;border-radius:0 10px 10px 0}.wcl-limpia .facil h2{font-size:1.15em;margin:1em 0 .4em}.wcl-limpia .facil .nota{font-size:.8em;color:#5A6784}'
     + '.wcl-facil{display:none;padding:12px 16px 16px}.wcl-facil .wcl-big{min-height:64px;font-size:19px;margin:6px 0}.wcl-panel.facil .wcl-tabs,.wcl-panel.facil .wcl-tab{display:none}.wcl-panel.facil .wcl-facil{display:block}'
     + 'html.wcl-lupap{overflow-x:hidden}html.wcl-lupap body{transition:none!important}'
     // Cursor grande y de alto contraste para el ratón real (baja visión): flecha negra con borde blanco de 48 px
@@ -2356,24 +2362,27 @@
   function visibleEl(e) { var r = e.getBoundingClientRect(); if (!r.width && !r.height) return false; var cs = getComputedStyle(e); return cs.visibility !== "hidden" && cs.display !== "none"; }
   function lecturaLimpia() {
     if (limpiaEl) { cerrarLimpia(); return; }
-    var m = document.querySelector("main,article,[role=main]") || document.body, partes = [];
+    var m = document.querySelector("main,article,[role=main]") || document.body, partes = [], bloques = [];
     m.querySelectorAll("h1,h2,h3,h4,p,li,blockquote,img,figcaption").forEach(function (e) {
       if (e.closest(".wcl-root,nav,header,footer,aside,[aria-hidden=true]") || !visibleEl(e)) return;
       if (e.tagName === "IMG") { if (e.alt && (e.naturalWidth > 80)) partes.push('<figure><img src="' + esc(e.currentSrc || e.src) + '" alt="' + esc(e.alt) + '"><figcaption>' + esc(e.alt) + '</figcaption></figure>'); return; }
       if (e.querySelector("p,li,h1,h2,h3,h4,blockquote")) return;   // contenedor: sus hijos ya se listan
       var t = (e.innerText || "").replace(/\s+/g, " ").trim(); if (!t) return;
       var tag = e.tagName === "LI" ? "p" : e.tagName.toLowerCase();
+      bloques.push({ tag: e.tagName.toLowerCase(), texto: t });
       partes.push("<" + tag + ">" + (e.tagName === "LI" ? "• " : "") + esc(t) + "</" + tag + ">");
     });
+    bloquesLimpia = bloques;
     limpiaEl = el("div", { "class": "wcl-limpia", "role": "dialog", "aria-label": "Lectura limpia" },
-      '<div class="wcl-limpia-barra"><b>Lectura limpia</b><button type="button" data-a="leer">Leer en voz alta</button><button type="button" data-a="callar">Callar</button><button type="button" data-a="menos" aria-label="Texto más pequeño">A−</button><button type="button" data-a="mas" aria-label="Texto más grande">A+</button><button type="button" data-a="cerrar" aria-label="Cerrar la lectura limpia">✕ Cerrar</button></div>'
+      '<div class="wcl-limpia-barra"><b>Lectura limpia</b><button type="button" data-a="facil">Explicar en fácil</button><button type="button" data-a="leer">Leer en voz alta</button><button type="button" data-a="callar">Callar</button><button type="button" data-a="menos" aria-label="Texto más pequeño">A−</button><button type="button" data-a="mas" aria-label="Texto más grande">A+</button><button type="button" data-a="cerrar" aria-label="Cerrar la lectura limpia">✕ Cerrar</button></div>'
       + '<div class="wcl-limpia-texto">' + (partes.join("") || "<p>Esta página no tiene texto que mostrar.</p>") + "</div>");
     limpiaEl.style.fontSize = limpiaTam + "px";
     limpiaEl.addEventListener("click", function (ev) {
       var b = ev.target.closest("button"); if (!b) return;
       var a = b.dataset.a;
       if (a === "cerrar") cerrarLimpia();
-      else if (a === "leer") decirVoz((limpiaEl.querySelector(".wcl-limpia-texto").innerText || "").slice(0, 15000), true, true, IDIOMA_PAGINA);
+      else if (a === "leer") leerConResaltado();
+      else if (a === "facil") explicarFacil();
       else if (a === "callar") callar();
       else { limpiaTam = Math.max(16, Math.min(34, limpiaTam + (a === "mas" ? 2 : -2))); limpiaEl.style.fontSize = limpiaTam + "px"; }
     });
@@ -2381,6 +2390,124 @@
     try { limpiaEl.querySelector("button").focus(); } catch (x) {}
     refrescos.forEach(function (f) { f(); });
   }
+  // --- «Explícame esta página»: lectura fácil (WCAG 3.1.5) ---------------------------------------------
+  // Sin servidor: reglas (frases cortas, jerga jurídica y administrativa cambiada por palabras corrientes, glosario
+  // al pasar el cursor, lo importante primero). Con data-explicar="URL", se pide a ese servicio (IA) y se muestra.
+  var GLOSARIO = [
+    ["radicar", "entregar", "Entregar un documento oficialmente"], ["subsanar", "corregir", "Corregir lo que falta o está mal"], ["diligenciar", "rellenar", "Rellenar un formulario"],
+    ["adjuntar", "añadir", "Añadir un archivo o documento"], ["acreditar", "demostrar", "Demostrar con un documento"], ["notificar", "avisar", "Avisar oficialmente"],
+    ["requerimiento", "aviso", "Aviso oficial que pide algo"], ["trámite", "gestión", "Paso que hay que hacer ante una entidad"], ["solicitud", "petición", "Lo que se pide"],
+    ["solicitar", "pedir", "Pedir"], ["efectuar", "hacer", "Hacer"], ["realizar", "hacer", "Hacer"], ["vigencia", "tiempo que vale", "Durante cuánto tiempo vale"],
+    ["prorrogar", "alargar el plazo", "Dar más tiempo"], ["prórroga", "más tiempo", "Tiempo extra que se concede"], ["sanción", "multa o castigo", "Castigo por incumplir"],
+    ["no obstante", "pero", "Pero"], ["sin embargo", "pero", "Pero"], ["asimismo", "también", "También"], ["por consiguiente", "por eso", "Por eso"],
+    ["en virtud de", "por", "Por"], ["conforme a", "según", "Según"], ["de conformidad con", "según", "Según"], ["a la mayor brevedad", "pronto", "Lo antes posible"],
+    ["previo a", "antes de", "Antes de"], ["posterior a", "después de", "Después de"], ["con antelación", "antes", "Antes"], ["a través de", "por", "Por medio de"],
+    ["en el evento de que", "si", "Si"], ["en caso de que", "si", "Si"], ["siempre y cuando", "solo si", "Solo si"], ["deberá", "tiene que", "Es obligatorio"],
+    ["deberán", "tienen que", "Es obligatorio"], ["obligatorio", "que hay que hacer sí o sí", "No se puede saltar"], ["facultativo", "opcional", "Se puede elegir"],
+    ["subsidio", "ayuda económica", "Dinero que da el Estado"], ["beneficiario", "quien recibe la ayuda", "La persona que recibe algo"], ["expedir", "entregar", "Hacer y entregar un documento"],
+    ["certificado", "documento que demuestra algo", "Papel oficial que demuestra algo"], ["copia auténtica", "copia oficial", "Copia con validez legal"], ["sede electrónica", "página web oficial", "La web de la entidad para hacer gestiones"],
+    ["PQRSD", "quejas y peticiones", "Peticiones, quejas, reclamos, sugerencias y denuncias"], ["derecho de petición", "petición formal", "Pedir algo por escrito a una entidad, que debe responder"],
+    ["inhabilidad", "prohibición", "Algo que impide participar"], ["persona natural", "persona", "Una persona, no una empresa"], ["persona jurídica", "empresa u organización", "Una empresa, asociación o entidad"]
+  ];
+  function esc2(t) { return t.replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
+  function frasesDe(texto) { return texto.replace(/\s+/g, " ").split(/(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÑ¿¡"«(])/).map(function (s) { return s.trim(); }).filter(Boolean); }
+  function acortar(frase, nivel) {   // una idea por frase: se parte por «;», «:», por « y »/« pero »… y, si sigue larga, por la coma del medio
+    nivel = nivel || 0;
+    var palabras = frase.split(" ").length;
+    if (palabras <= 22 || nivel > 3) return [frase];
+    var trozos = frase.split(/;\s+|:\s+(?=[a-záéíóú])/);
+    if (trozos.length === 1) trozos = frase.split(/,\s+(?=(?:y|pero|aunque|porque|por lo que|lo cual|el cual|la cual|que|siempre y cuando|en el evento de que|en caso de que|adjuntando|para que)\s)/);
+    if (trozos.length === 1 && palabras > 28) {   // por la coma más cercana al medio
+      var comas = [], re = /,\s+/g, m; while ((m = re.exec(frase))) comas.push(m.index);
+      if (comas.length) { var mitad = frase.length / 2, mejor = comas.reduce(function (a, b) { return Math.abs(b - mitad) < Math.abs(a - mitad) ? b : a; }); trozos = [frase.slice(0, mejor), frase.slice(mejor + 1)]; }
+    }
+    var salida = [];
+    trozos.forEach(function (t) {
+      t = t.trim().replace(/^(y|pero|aunque|porque|que|lo cual|el cual|la cual|adjuntando|para que)\s+/i, function (m) { return m.charAt(0).toUpperCase() + m.slice(1); });
+      t = t.charAt(0).toUpperCase() + t.slice(1);
+      if (!/[.!?]$/.test(t)) t += ".";
+      (trozos.length > 1 ? acortar(t, nivel + 1) : [t]).forEach(function (x) { salida.push(x); });
+    });
+    return salida;
+  }
+  function conGlosario(frase) {
+    var h = esc2(frase);
+    GLOSARIO.forEach(function (g) {
+      var re = new RegExp("\\b" + g[0].replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "gi");
+      h = h.replace(re, function (m) { return '<abbr title="' + esc2(g[0] + ": " + g[2]) + '">' + esc2(g[1]) + "</abbr>"; });
+    });
+    return h;
+  }
+  function explicarPorReglas(bloques) {   // bloques: [{tag, texto}]
+    var titulo = bloques.filter(function (b) { return /^h[12]$/.test(b.tag); }).map(function (b) { return b.texto; })[0] || document.title || "esta página";
+    var parrafos = bloques.filter(function (b) { return b.tag === "p" && b.texto.split(" ").length > 6; });
+    var importante = [], resto = [];
+    parrafos.forEach(function (b, i) { var fs = frasesDe(b.texto); if (fs[0] && i < 6) importante.push(acortar(fs[0])[0]); fs.forEach(function (f) { acortar(f).forEach(function (c) { resto.push(c); }); }); });
+    var html = '<div class="facil"><h2>De qué va esta página</h2><p>' + conGlosario(titulo) + "</p>";
+    if (importante.length) html += "<h2>Lo más importante</h2><ul>" + importante.map(function (f) { return "<li>" + conGlosario(f) + "</li>"; }).join("") + "</ul>";
+    var pasos = bloques.filter(function (b) { return b.tag === "li"; }).map(function (b) { return b.texto; });
+    if (pasos.length) html += "<h2>Pasos o lista</h2><ol>" + pasos.slice(0, 12).map(function (p) { return "<li>" + conGlosario(p) + "</li>"; }).join("") + "</ol>";
+    if (resto.length) html += "<h2>Todo el texto, en frases cortas</h2>" + resto.slice(0, 120).map(function (f) { return "<p>" + conGlosario(f) + "</p>"; }).join("");
+    html += '<p class="nota">Versión en lenguaje claro hecha por reglas: frases cortas y palabras corrientes. Las palabras subrayadas explican el término original al pasar el cursor. Si algo importa de verdad, confírmalo en el texto original.</p></div>';
+    return html;
+  }
+  var explicando = false, bloquesLimpia = [];
+  function explicarFacil() {
+    if (!limpiaEl || explicando) return;
+    var cont2 = limpiaEl.querySelector(".wcl-limpia-texto");
+    if (limpiaEl.dataset.facil === "1") { cont2.innerHTML = limpiaEl.dataset.original; limpiaEl.dataset.facil = "0"; refrescoLimpia("Texto original"); return; }
+    limpiaEl.dataset.original = cont2.innerHTML;
+    var texto = bloquesLimpia.map(function (b) { return b.texto; }).join("\n");
+    if (opciones.explicar) {
+      explicando = true; refrescoLimpia("Pidiendo la explicación…"); cont2.innerHTML = '<div class="facil"><p>Preparando una explicación en lenguaje claro…</p></div>';
+      fetch(opciones.explicar, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ texto: texto.slice(0, 20000), idioma: IDIOMA_PAGINA, titulo: document.title }) })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (j) { var t = (j && (j.texto || j.text)) || ""; if (!t) throw new Error("vacío"); cont2.innerHTML = '<div class="facil">' + t.split(/\n{2,}/).map(function (p) { return /^#+\s/.test(p) ? "<h2>" + esc2(p.replace(/^#+\s/, "")) + "</h2>" : "<p>" + conGlosario(p) + "</p>"; }).join("") + '<p class="nota">Explicación generada con inteligencia artificial: puede tener errores. Confirma lo importante en el texto original.</p></div>'; })
+        .catch(function () { cont2.innerHTML = explicarPorReglas(bloquesLimpia); })
+        .then(function () { explicando = false; limpiaEl.dataset.facil = "1"; refrescoLimpia("Texto en fácil"); decirVoz("Listo. Esta es la explicación en lenguaje claro.", true, true); });
+    } else {
+      cont2.innerHTML = explicarPorReglas(bloquesLimpia); limpiaEl.dataset.facil = "1"; refrescoLimpia("Texto en fácil"); decirVoz("Esta es la página en lenguaje claro.", true, true);
+    }
+  }
+  function refrescoLimpia(estado) { var b = limpiaEl && limpiaEl.querySelector('[data-a="facil"]'); if (b) b.textContent = limpiaEl.dataset.facil === "1" ? "Ver el original" : "Explicar en fácil"; if (estado) avisar(estado); }
+
+  // --- leer con resaltado palabra a palabra (el navegador avisa de cada palabra con el evento boundary) ---
+  function leerConResaltado() {
+    var cont2 = limpiaEl.querySelector(".wcl-limpia-texto");
+    if (!cont2.querySelector(".w")) {   // cada palabra en un <span class="w">, una sola vez
+      var tw = document.createTreeWalker(cont2, NodeFilter.SHOW_TEXT), nodos = []; while (tw.nextNode()) nodos.push(tw.currentNode);
+      nodos.forEach(function (n) { if (!n.nodeValue.trim() || n.parentElement.closest("button")) return; var f = document.createDocumentFragment(); n.nodeValue.split(/(\s+)/).forEach(function (p) { if (!p) return; if (/^\s+$/.test(p)) f.appendChild(document.createTextNode(p)); else { var s = document.createElement("span"); s.className = "w"; s.textContent = p; f.appendChild(s); } }); n.parentNode.replaceChild(f, n); });
+    }
+    var palabras = Array.prototype.slice.call(cont2.querySelectorAll(".w")), texto = palabras.map(function (s) { return s.textContent; }).join(" ").slice(0, 15000);
+    var inicios = [], pos = 0; palabras.forEach(function (s) { inicios.push(pos); pos += s.textContent.length + 1; });
+    if (!("speechSynthesis" in window) || !texto) return;
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(texto); u.lang = IDIOMA_PAGINA; u.rate = Math.pow(1.18, ajustes.voz_velocidad || 0);
+    var actual = null;
+    u.onboundary = function (e) {
+      if (e.name && e.name !== "word") return;
+      var i = 0; while (i + 1 < inicios.length && inicios[i + 1] <= e.charIndex) i++;
+      if (actual) actual.classList.remove("act"); actual = palabras[i]; if (actual) { actual.classList.add("act"); actual.scrollIntoView({ block: "center", behavior: "auto" }); }
+    };
+    u.onend = function () { if (actual) actual.classList.remove("act"); };
+    window.speechSynthesis.speak(u);
+  }
+
+  // --- «¿Dónde estoy?» (WCAG 2.4.8): título, sección actual, ruta de migas y mapa de encabezados ---
+  function dondeEstoy() {
+    var encs = Array.prototype.filter.call(document.querySelectorAll("h1,h2,h3"), function (h) { return !enWidget(h) && visibleEl(h) && h.innerText.trim(); });
+    var actual = null; for (var i = 0; i < encs.length; i++) { if (encs[i].getBoundingClientRect().top <= window.innerHeight * 0.4) actual = encs[i]; else break; }
+    var migas = document.querySelector('[aria-label*="miga" i],[aria-label*="breadcrumb" i],.breadcrumb,.breadcrumbs,.migas');
+    var partes = ["Estás en: " + (document.title || location.hostname) + "."];
+    if (migas && migas.innerText.trim()) partes.push("Ruta: " + migas.innerText.replace(/\s+/g, " ").trim() + ".");
+    if (actual) partes.push("Sección: " + actual.innerText.trim() + ".");
+    partes.push("La página tiene " + encs.length + " encabezado" + (encs.length === 1 ? "" : "s") + (encs.length ? ": " + encs.slice(0, 8).map(function (h) { return h.innerText.trim(); }).join("; ") + (encs.length > 8 ? "…" : "") : "") + ".");
+    var pct = Math.round(100 * (window.scrollY + window.innerHeight) / Math.max(1, document.documentElement.scrollHeight));
+    partes.push("Llevas leído el " + Math.min(100, pct) + " % de la página.");
+    var t = partes.join(" "); decir(t); avisar("¿Dónde estoy?"); decirVoz(t, true, true, IDIOMA_PAGINA);
+    return t;
+  }
+
   function cerrarLimpia() { if (!limpiaEl) return; callar(); limpiaEl.remove(); limpiaEl = null; refrescos.forEach(function (f) { f(); }); }
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && limpiaEl) cerrarLimpia(); });
 
