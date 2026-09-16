@@ -37,6 +37,7 @@
     <li><strong>Contraste calculado a mano</strong> con la fórmula de luminancia relativa de las WCAG para lo que axe no mira: interruptores, bordes, anillo de foco, botón de pausa y teclas.</li>
     <li><strong>Pruebas de teclado</strong> automatizadas: Tab llega a todas las teclas y frases, Intro y Espacio las pulsan, las pestañas siguen el patrón Tabs de la APG del W3C, y con el lector básico activo los controles reales de la página conservan Espacio, Intro y las flechas.</li>
     <li><strong>Pruebas de posición</strong>: con cada ajuste guardado (modo oscuro, contraste, lupa, texto al 200 %…) el botón y el panel siguen en pantalla y la cabecera fija del sitio anfitrión no se descoloca.</li>
+    <li><strong>Aislamiento</strong>: el widget vive en un shadow root, así que los estilos del sitio no lo alteran ni los suyos alteran al sitio; funciona con una política CSP estricta (<code>style-src</code> con nonce) sin necesitar <code>'unsafe-inline'</code>.</li>
     <li><strong>Revisión manual</strong> del código y de capturas en modo claro y oscuro, a 1280 px y a 390 px de ancho.</li>
   </ul>
   <p>Todas las pruebas están en el repositorio público, en <code>herramientas/pruebas/widget</code>, y cualquiera puede repetirlas.</p>
@@ -46,7 +47,6 @@
     <li><strong>El lector básico no sustituye a un lector de pantalla.</strong> Está pensado para quien no tiene NVDA, JAWS o VoiceOver instalados. Si ya usas uno, no lo actives: se leerían las cosas dos veces. El panel lo advierte.</li>
     <li><strong>Texto al 200 % y espaciado para dislexia</strong> solo afectan a sitios que definen sus tamaños en unidades relativas (rem, em). En sitios con píxeles fijos el cambio es parcial; el zoom del navegador sigue funcionando.</li>
     <li><strong>La lupa de pantalla</strong> escala el contenido y puede descolocar cabeceras fijas del sitio anfitrión mientras está activa.</li>
-    <li><strong>Sin Shadow DOM</strong> todavía: un sitio con estilos muy agresivos puede alterar el aspecto del panel. Está en la hoja de ruta inmediata.</li>
     <li><strong>Subtítulos automáticos, barrido con un solo pulsador y pictogramas</strong> no existen aún: son las siguientes funciones previstas.</li>
   </ul>
 

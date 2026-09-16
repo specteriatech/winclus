@@ -42,15 +42,15 @@ function fmt(r) { return r ? Math.round(r.left) + "," + Math.round(r.top) + " " 
     const errores = [];
     page.on("pageerror", (e) => errores.push(String(e)));
     await page.goto(PAGINA);
-    await page.waitForFunction(() => window.Winclus && document.querySelector(".wcl-btn"));
+    await page.waitForFunction(() => window.Winclus && Winclus.caja.querySelector(".wcl-btn"));
     await page.waitForTimeout(150);
-    const rect = (sel) => page.evaluate((s) => { const e = document.querySelector(s); if (!e) return null; const r = e.getBoundingClientRect(); return { left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height }; }, sel);
+    const rect = (sel) => page.evaluate((s) => { const e = Winclus.caja.querySelector(s) || document.querySelector(s); if (!e) return null; const r = e.getBoundingClientRect(); return { left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height }; }, sel);
 
     const boton = await rect(".wcl-btn");
     await page.evaluate(() => Winclus.abrir());
     await page.waitForTimeout(150);
     const panel = await rect(".wcl-panel");
-    const panelVisible = await page.evaluate(() => { const p = document.querySelector(".wcl-panel"); const cs = getComputedStyle(p); return cs.display !== "none" && cs.visibility !== "hidden"; });
+    const panelVisible = await page.evaluate(() => { const p = Winclus.caja.querySelector(".wcl-panel"); const cs = getComputedStyle(p); return cs.display !== "none" && cs.visibility !== "hidden"; });
     await page.evaluate(() => Winclus.cerrar());
 
     // la cabecera fija del sitio debe seguir arriba tras hacer scroll
@@ -80,17 +80,17 @@ function fmt(r) { return r ? Math.round(r.left) + "," + Math.round(r.top) + " " 
     await page.waitForFunction(() => window.Winclus);
     await page.evaluate(() => Winclus.abrir());
     const clicado = await page.evaluate(() => {
-      const filas = Array.from(document.querySelectorAll(".wcl-panel [role=switch]"));
+      const filas = Array.from(Winclus.caja.querySelectorAll(".wcl-panel [role=switch]"));
       const s = filas.find((b) => /oscuro/i.test((b.getAttribute("aria-label") || "") + (b.parentElement && b.parentElement.textContent || "")));
       if (!s) return false; s.click(); return true;
     });
     await page.waitForTimeout(150);
-    const r1 = await page.evaluate(() => { const r = document.querySelector(".wcl-btn").getBoundingClientRect(); return { left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height }; });
+    const r1 = await page.evaluate(() => { const r = Winclus.caja.querySelector(".wcl-btn").getBoundingClientRect(); return { left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height }; });
     const oscuroGuardado = await page.evaluate(() => JSON.parse(localStorage.getItem("winclus.ajustes") || "{}").oscuro);
     await page.reload();
-    await page.waitForFunction(() => window.Winclus && document.querySelector(".wcl-btn"));
+    await page.waitForFunction(() => window.Winclus && Winclus.caja.querySelector(".wcl-btn"));
     await page.waitForTimeout(150);
-    const r2 = await page.evaluate(() => { const r = document.querySelector(".wcl-btn").getBoundingClientRect(); return { left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height }; });
+    const r2 = await page.evaluate(() => { const r = Winclus.caja.querySelector(".wcl-btn").getBoundingClientRect(); return { left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height }; });
     const bien = clicado && oscuroGuardado === true && dentro(r1, VISTA) && dentro(r2, VISTA);
     fallos += bien ? 0 : 1;
     console.log((bien ? "OK  " : "MAL ") + "interruptor de modo oscuro en vivo y tras recargar (botón " + fmt(r1) + " / " + fmt(r2) + ", guardado=" + oscuroGuardado + ", interruptor encontrado=" + clicado + ")");

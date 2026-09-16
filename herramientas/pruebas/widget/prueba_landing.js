@@ -27,7 +27,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
         const res = await axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"] } });
         return res.violations.map((v) => ({ id: v.id, impact: v.impact, n: v.nodes.length, sel: v.nodes.slice(0, 3).map((x) => x.target.join(" ")) }));
       });
-      const widget = await page.evaluate(() => !!(window.Winclus && document.querySelector(".wcl-btn")));
+      const widget = await page.evaluate(() => !!(window.Winclus && Winclus.caja.querySelector(".wcl-btn")));
       const enlaces = await page.evaluate(() => Array.from(document.querySelectorAll("a")).map((a) => a.getAttribute("href") || ""));
       const scrollX = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
       const nombre = ruta + " a " + ancho + " px";

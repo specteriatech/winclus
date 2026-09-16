@@ -24,32 +24,32 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   // --- consentimiento ---
   await page.evaluate(() => Winclus.activarCamara());
   await page.waitForTimeout(300);
-  const c1 = await page.evaluate(() => { const c = document.querySelector(".wcl-consent"); const a = c && c.querySelector("a"); return { hay: !!c, foco: document.activeElement && document.activeElement.textContent, texto: c ? c.textContent : "", enlace: a ? a.href : "", camara: window.__camara, guardado: localStorage.getItem("winclus.consentimiento_camara") }; });
+  const c1 = await page.evaluate(() => { const c = Winclus.caja.querySelector(".wcl-consent"); const a = c && c.querySelector("a"); return { hay: !!c, foco: (Winclus.caja.activeElement || document.activeElement) && (Winclus.caja.activeElement || document.activeElement).textContent, texto: c ? c.textContent : "", enlace: a ? a.href : "", camara: window.__camara, guardado: localStorage.getItem("winclus.consentimiento_camara") }; });
   comprobar(c1.hay && c1.camara === 0 && !c1.guardado, "la primera activación muestra el consentimiento sin tocar la cámara", "cámara pedida " + c1.camara + " veces");
   comprobar(/biométrico/.test(c1.texto) && /winclus\.com\/privacidad/.test(c1.enlace), "el consentimiento habla de dato biométrico y enlaza a la política", c1.enlace);
   comprobar(/Acepto/.test(c1.foco || ""), "el foco va al botón de aceptar", JSON.stringify(c1.foco));
-  await page.evaluate(() => { Array.from(document.querySelectorAll(".wcl-consent button")).find((b) => /Ahora no/.test(b.textContent)).click(); });
+  await page.evaluate(() => { Array.from(Winclus.caja.querySelectorAll(".wcl-consent button")).find((b) => /Ahora no/.test(b.textContent)).click(); });
   await page.waitForTimeout(100);
-  const c2 = await page.evaluate(() => ({ hay: !!document.querySelector(".wcl-consent"), guardado: localStorage.getItem("winclus.consentimiento_camara") }));
+  const c2 = await page.evaluate(() => ({ hay: !!Winclus.caja.querySelector(".wcl-consent"), guardado: localStorage.getItem("winclus.consentimiento_camara") }));
   comprobar(!c2.hay && !c2.guardado, "«Ahora no» cierra el aviso y no guarda nada");
   await page.evaluate(() => Winclus.activarCamara());
   await page.waitForTimeout(100);
-  await page.evaluate(() => { Array.from(document.querySelectorAll(".wcl-consent button")).find((b) => /Acepto/.test(b.textContent)).click(); });
+  await page.evaluate(() => { Array.from(Winclus.caja.querySelectorAll(".wcl-consent button")).find((b) => /Acepto/.test(b.textContent)).click(); });
   await page.waitForTimeout(1500);
-  const c3 = await page.evaluate(() => ({ hay: !!document.querySelector(".wcl-consent"), guardado: JSON.parse(localStorage.getItem("winclus.consentimiento_camara") || "null"), camara: window.__camara, estado: document.getElementById("wcl-estado").textContent }));
+  const c3 = await page.evaluate(() => ({ hay: !!Winclus.caja.querySelector(".wcl-consent"), guardado: JSON.parse(localStorage.getItem("winclus.consentimiento_camara") || "null"), camara: window.__camara, estado: Winclus.caja.getElementById("wcl-estado").textContent }));
   comprobar(!c3.hay && c3.guardado && c3.guardado.fecha && c3.guardado.version, "«Acepto» guarda fecha y versión del consentimiento", JSON.stringify(c3.guardado));
   comprobar(c3.camara >= 1 || /detector|descargar|cámara/i.test(c3.estado), "tras aceptar sí se intenta activar la cámara", "cámara pedida " + c3.camara + " veces; estado: " + c3.estado.slice(0, 80));
   await page.reload();
   await page.waitForFunction(() => window.Winclus);
   await page.evaluate(() => { Winclus.abrir(); Winclus.activarCamara(); });
   await page.waitForTimeout(300);
-  comprobar(!(await page.evaluate(() => !!document.querySelector(".wcl-consent"))), "con el consentimiento guardado no se vuelve a pedir");
+  comprobar(!(await page.evaluate(() => !!Winclus.caja.querySelector(".wcl-consent"))), "con el consentimiento guardado no se vuelve a pedir");
 
   // --- textos ---
   const textos = await page.evaluate(() => ({
-    dictado: document.getElementById("wcl-panel-escribir").textContent,
-    ordenes: document.getElementById("wcl-panel-oir").textContent,
-    acerca: document.getElementById("wcl-panel-mas").textContent,
+    dictado: Winclus.caja.getElementById("wcl-panel-escribir").textContent,
+    ordenes: Winclus.caja.getElementById("wcl-panel-oir").textContent,
+    acerca: Winclus.caja.getElementById("wcl-panel-mas").textContent,
   }));
   comprobar(/Google o Microsoft/.test(textos.dictado), "el dictado avisa de que la voz va a Google o Microsoft");
   comprobar(/Google o Microsoft/.test(textos.ordenes), "las órdenes por voz avisan igual");
@@ -57,7 +57,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
 
   // --- restablecer borra el consentimiento ---
   const antes = await page.evaluate(() => localStorage.getItem("winclus.consentimiento_camara"));
-  await page.evaluate(() => { const b = Array.from(document.querySelectorAll("#wcl-panel-mas button")).find((x) => /Restablecer/.test(x.textContent)); if (b) b.click(); });
+  await page.evaluate(() => { const b = Array.from(Winclus.caja.querySelectorAll("#wcl-panel-mas button")).find((x) => /Restablecer/.test(x.textContent)); if (b) b.click(); });
   await page.waitForTimeout(300);
   const despues = await page.evaluate(() => localStorage.getItem("winclus.consentimiento_camara"));
   comprobar(!!antes && !despues, "«Restablecer» borra el consentimiento guardado", "antes=" + !!antes + " después=" + !!despues);

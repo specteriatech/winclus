@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- CSP estricta como la de muchas sedes públicas: sin estilos ni scripts en línea salvo con nonce -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'nonce-prueba123'; style-src 'nonce-prueba123'; img-src * data: blob:; media-src * blob:; connect-src *">
+<title>Página hostil</title>
+<style nonce="prueba123">
+  /* estilos agresivos del sitio: deben quedarse fuera del widget */
+  button { all: unset !important; }
+  div, span, p { font-size: 40px !important; color: red !important; line-height: 3 !important; }
+  * { border-radius: 0 !important; }
+  header.fija { position: fixed; top: 0; left: 0; right: 0; height: 56px; background: #2F4FD8; }
+  main.cuerpo { padding-top: 80px; }
+</style>
+</head>
+<body>
+<header class="fija" id="cabecera">Cabecera</header>
+<main class="cuerpo">
+  <h1>Página con estilos agresivos y CSP estricta</h1>
+  <p>Texto con un <button type="button" id="boton-sitio">botón</button>.</p>
+</main>
+<script nonce="prueba123" src="../../../web/widget.js"></script>
+</body>
+</html>

@@ -28,13 +28,13 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   try {
     await page.waitForFunction(() => Winclus.deteccion && Winclus.deteccion.inferencias > 5, null, { timeout: 60000 });
   } catch (e) {
-    console.log("no arrancó la cámara simulada: " + (await page.evaluate(() => document.getElementById("wcl-estado").textContent)));
+    console.log("no arrancó la cámara simulada: " + (await page.evaluate(() => Winclus.caja.getElementById("wcl-estado").textContent)));
     await nav.close(); servidor.kill(); process.exit(1);
   }
 
   async function medir(ms) {
     return page.evaluate(async (ms) => {
-      const v = document.querySelector(".wcl-video");
+      const v = Winclus.caja.querySelector(".wcl-video");
       const q0 = v.getVideoPlaybackQuality ? v.getVideoPlaybackQuality().totalVideoFrames : -1;
       const i0 = Winclus.deteccion.inferencias, t0 = performance.now();
       let raf = 0; const cuenta = () => { raf++; if (performance.now() - t0 < ms) requestAnimationFrame(cuenta); }; requestAnimationFrame(cuenta);
@@ -56,7 +56,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   console.log("ahorro: " + ahorro.inferencias.toFixed(1) + " inferencias/s");
   comprobar(ahorro.inferencias <= 16 && ahorro.inferencias >= 5, "en modo ahorro se infiere unas 15 veces por segundo", ahorro.inferencias.toFixed(1) + "/s");
   await page.evaluate(() => { Winclus.ajustes.ahorro = false; });
-  const sw = await page.evaluate(() => !!document.getElementById("wcl-ahorro"));
+  const sw = await page.evaluate(() => !!Winclus.caja.getElementById("wcl-ahorro"));
   comprobar(sw, "hay interruptor «Modo ahorro» en el panel");
 
   await nav.close();

@@ -16,4 +16,17 @@
   el foco se queda en la tecla (también tras Mayús, que redibuja el teclado); con el lector básico activo,
   Espacio e Intro siguen activando botones y casillas reales, las flechas siguen siendo del desplegable
   enfocado, y sin control enfocado mueven el lector.
+- `node prueba_aria.js`: pestañas con el patrón Tabs (flechas, una tabulable, aria-controls), −/+ con etiqueta y
+  valor descrito, región live oculta para los avisos, estado de cámara sin repeticiones, calibración modal.
+- `node prueba_privacidad.js`: consentimiento antes de la primera cámara (sin tocarla hasta aceptar), avisos de
+  que la voz va a Google/Microsoft, «Acerca de» honesto, «Restablecer todo» borra el consentimiento.
+- `node prueba_rendimiento.js`: con servidor.js y la cámara simulada, la inferencia va a la tasa de la cámara
+  (no del refresco de pantalla) y en modo ahorro a ~15/s. Tarda medio minuto: carga MediaPipe de web/mediapipe.
+- `node prueba_landing.js`: axe sobre la portada, privacidad y accesibilidad a 1280 y 390 px; cargan el widget.
+- `node prueba_aislamiento.js`: `pagina-hostil.html` (button{all:unset}, fuentes gigantes, CSP estricta con nonce):
+  el widget conserva su aspecto en el shadow root, sus <style> llevan el nonce y no hay violaciones de CSP.
+- `node prueba_daltonismo.js`: los filtros son SVGFilterElement de verdad y cada uno cambia los píxeles (antes del
+  16-sep-2026 el <svg> nacía con createElement y nunca habían filtrado nada).
+- Todas las pruebas del widget usan `Winclus.caja` (el shadow root) para llegar a sus piezas; los selectores de
+  Playwright (`page.click("#wcl-tab-ver")`) atraviesan el shadow root solos.
 - La foto tiene los ojos entrecerrados (relación 0,69 en reposo): para probar el clic poner `Winclus.ajustes.parpadeo_umbral = 0.45`.

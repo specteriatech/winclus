@@ -136,8 +136,9 @@
     + '.wcl-calib .txt{position:absolute;left:0;right:0;top:12%;text-align:center;padding:0 24px;font-size:22px}.wcl-calib .cancelar{position:absolute;right:16px;top:16px;min-height:44px;padding:0 16px;border-radius:10px;border:1px solid #F1ECE2;background:transparent;color:#F1ECE2;font:700 15px "Segoe UI",system-ui,sans-serif;cursor:pointer}'
     // Se des-invierte cada hijo del contenedor, nunca .wcl-root: un filter sobre él (0×0 en la esquina)
     // lo convertiría en bloque contenedor de sus hijos fixed y el botón y el panel saldrían de la pantalla.
-    + 'html.wcl-oscuro img,html.wcl-oscuro video,html.wcl-oscuro .wcl-root>*{filter:invert(1) hue-rotate(180deg)}'
-    + 'html.wcl-oscuro .wcl-root>* img,html.wcl-oscuro .wcl-root>* video{filter:none}'   // ya des-invertidos por su contenedor (fotos de la lectura limpia)
+    // (dentro del shadow root :host es el contenedor, que lleva la clase wcl-osc cuando el modo oscuro está activo)
+    + 'html.wcl-oscuro img,html.wcl-oscuro video,:host(.wcl-osc)>*{filter:invert(1) hue-rotate(180deg)}'
+    + ':host(.wcl-osc)>* img,:host(.wcl-osc)>* video{filter:none}'   // ya des-invertidos por su contenedor (fotos de la lectura limpia)
     + 'html.wcl-enlaces a{outline:3px solid #F2B705!important;outline-offset:2px;text-decoration:underline!important;background:rgba(242,183,5,.18)!important}'
     + 'html.wcl-anim *{animation-play-state:paused!important;transition:none!important;scroll-behavior:auto!important}'
     + 'html.wcl-lupa body{transition:transform .25s}'
@@ -148,12 +149,19 @@
     + '.wcl-tec button:focus-visible{outline:3px solid #2F4FD8;outline-offset:-3px}'
     + '.wcl-consent{margin:8px 0;padding:12px;border-radius:12px;background:#FFF6DB;border:1px solid #C99A1E;font-size:14px;line-height:1.45}.wcl-consent p{margin:0 0 8px}'
     + '.wcl-vivo{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}';
-  var estilo = document.createElement("style"); estilo.textContent = css; (document.head || raiz).appendChild(estilo);
+  // El mismo CSS va dos veces: en el documento (reglas html.wcl-* y el contenedor) y dentro del shadow root (las piezas).
+  // Con CSP estricta hace falta el nonce del <script> en los <style> que inyectamos.
+  var NONCE = (script && script.nonce) || "";
+  function estiloCon(texto) { var s = document.createElement("style"); if (NONCE) s.nonce = NONCE; s.textContent = texto; return s; }
+  (document.head || raiz).appendChild(estiloCon(css));
+  var estilosSombra = [css];   // se montan dentro del shadow root en montar()
 
   // ----------------------------------------------------------------- DOM --
   function el(tag, attrs, html) {
-    var e = document.createElement(tag);
-    if (attrs) for (var a in attrs) e.setAttribute(a, attrs[a]);
+    // <svg> tiene que nacer en su espacio de nombres: con createElement sería un HTMLUnknownElement y sus <filter> no filtrarían nada
+    var e = tag === "svg" ? document.createElementNS("http://www.w3.org/2000/svg", "svg") : document.createElement(tag);
+    // El atributo style va por CSSOM: con CSP estricta (style-src con nonce) setAttribute("style") está prohibido
+    if (attrs) for (var a in attrs) { if (a === "style") e.style.cssText = attrs[a]; else e.setAttribute(a, attrs[a]); }
     if (html != null) e.innerHTML = html;
     return e;
   }
@@ -161,6 +169,12 @@
   // Todo lo del widget cuelga de un contenedor fuera de <body>: así la lupa
   // puede agrandar el <body> sin que el panel, el puntero y el teclado se muevan.
   var cont = el("div", { "class": "wcl-root", "lang": "es" });
+  // Las piezas viven en un shadow root: los estilos del sitio no entran y los del widget no salen.
+  // Lo que se aplica a la página (html.wcl-oscuro, .wcl-lector, el <svg> de filtros) sigue en el documento.
+  var sombra = cont.attachShadow ? cont.attachShadow({ mode: "open" }) : null, caja = sombra || cont;
+  function enWidget(e) { return !!(e && (e === cont || (sombra && e.getRootNode && e.getRootNode() === sombra) || (e.closest && e.closest(".wcl-root")))); }
+  function focoActual() { return (sombra && sombra.activeElement) || document.activeElement; }
+  function elementoBajo(x, y) { var e = document.elementFromPoint(x, y); if (sombra && e === cont) e = sombra.elementFromPoint(x, y) || e; return e; }
   var boton = el("button", { "class": "wcl-btn", "aria-label": "Abrir accesibilidad Winclus", "aria-expanded": "false", "type": "button" }, LOGO);
   var btnPausa = el("button", { "class": "wcl-pausa", "type": "button", "aria-label": "Pausar el puntero" }, "Pausar");
   var panel = el("div", { "class": "wcl-panel", "role": "dialog", "aria-label": "Accesibilidad Winclus" });
@@ -256,7 +270,7 @@
   }
   function callar() { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); if (leyendo) { leyendo.classList.remove("wcl-leyendo"); leyendo = null; } }
   function leerElemento(elm) {
-    if (!elm || (elm.closest && elm.closest(".wcl-root") && !elm.closest(".wcl-limpia-texto"))) return;
+    if (!elm || (enWidget(elm) && !(elm.closest && elm.closest(".wcl-limpia-texto")))) return;
     var bloque = elm.closest("p,h1,h2,h3,h4,h5,h6,li,td,th,a,button,label,figcaption,blockquote,summary,dd,dt,input,textarea") || elm;
     if (leyendo) leyendo.classList.remove("wcl-leyendo");
     leyendo = bloque; bloque.classList.add("wcl-leyendo");
@@ -610,7 +624,7 @@
       });
     }).then(function (f) {
       flujo = f;
-      if (!video) { video = el("video", { "class": "wcl-video", "playsinline": "", "muted": "", "autoplay": "" }); cont.appendChild(video); }
+      if (!video) { video = el("video", { "class": "wcl-video", "playsinline": "", "muted": "", "autoplay": "" }); caja.appendChild(video); }
       video.muted = true; video.playsInline = true;   // sin esto play() puede fallar si no hubo un clic real antes
       video.srcObject = f;
       return video.play();
@@ -735,7 +749,7 @@
   function congelar(s) { congeladoHasta = performance.now() / 1000 + s; fijacion = null; fijador.reiniciar(); }
   function bajoPuntero(x, y) {
     var e = document.elementFromPoint(x == null ? P.x : x, y == null ? P.y : y);
-    return e && e.closest && e.closest(".wcl-root") ? null : e;
+    return enWidget(e) ? null : e;
   }
   function avisarHover() {   // que la página vea pasar el puntero (menús que se abren al pasar, etc.)
     if (Math.abs(P.x - ultimoMovX) < 1 && Math.abs(P.y - ultimoMovY) < 1) return;
@@ -969,8 +983,8 @@
   function pulsar() {
     ultimoClic = performance.now();
     cursor.classList.add("clic"); setTimeout(function () { cursor.classList.remove("clic"); }, 220);
-    var e = document.elementFromPoint(P.x, P.y); if (!e) return;
-    if (e.closest(".wcl-root")) {   // controles del propio widget
+    var e = elementoBajo(P.x, P.y); if (!e) return;
+    if (enWidget(e)) {   // controles del propio widget
       if (e.closest(".wcl-limpia-texto")) { leerElemento(e); avisar("Leyendo"); return; }
       var b = e.closest("button,a,textarea");
       if (b && b.tagName === "TEXTAREA") { try { b.focus({ preventScroll: true }); } catch (x) {} objetivoTexto = b; avisar("Escribir aquí"); }
@@ -1378,9 +1392,9 @@
       var b = e.target.closest("button"), t = b && teclaDe(b); if (!t) return;
       // Pulsada con Intro o Espacio desde el teclado físico: el foco vuelve a la tecla (escribir lo lleva al campo),
       // y si el teclado se redibujó (Mayús, otra capa) a la tecla que ocupa el mismo sitio
-      var conFoco = document.activeElement === b, i = teclas.indexOf(t);
+      var conFoco = focoActual() === b, i = teclas.indexOf(t);
       pulsarTecla(t);
-      if (conFoco) { var nb = document.contains(b) ? b : (teclas[i] && teclas[i].el); if (nb) { try { nb.focus({ preventScroll: true }); } catch (x) {} } }
+      if (conFoco) { var nb = b.isConnected ? b : (teclas[i] && teclas[i].el); if (nb) { try { nb.focus({ preventScroll: true }); } catch (x) {} } }
     };
     refrescarSugerencias(); pintarTexto();
   }
@@ -1395,7 +1409,7 @@
   function alternarTeclado() { if (tecVisible) ocultarTeclado(); else mostrarTeclado(); }
   function tecladoContiene(x, y) { if (!tecVisible) return false; var r = tecEl.getBoundingClientRect(); return x >= r.left && x < r.right && y >= r.top && y < r.bottom; }
   function teclaEn(x, y) {
-    var e = document.elementFromPoint(x, y), b = e && e.closest && e.closest(".wcl-tec button");
+    var e = elementoBajo(x, y), b = e && e.closest && e.closest(".wcl-tec button");
     var t = b ? teclaDe(b) : null; return t && !(t.tipo === "pred" && !t.valor) ? t : null;
   }
   function tickTeclado() {
@@ -1542,7 +1556,7 @@
     calibEl.innerHTML = '<div class="txt">' + (soloRecentrar ? "Mira el punto del centro sin mover la cabeza." : "Mira cada punto naranja hasta que desaparezca. No muevas la cabeza, solo los ojos.") + '</div><div class="punto"></div><button type="button" class="cancelar">Cancelar (o tecla Esc)</button>';
     calibEl.querySelector(".cancelar").addEventListener("click", cancelarCalibracion);
     calibEl.classList.add("visible"); calibrando = true; cursor.style.display = "none";
-    calibFocoPrevio = document.activeElement; try { calibEl.querySelector(".cancelar").focus({ preventScroll: true }); } catch (x) {}
+    calibFocoPrevio = focoActual(); try { calibEl.querySelector(".cancelar").focus({ preventScroll: true }); } catch (x) {}
     siguientePunto(performance.now() / 1000);
   }
   function siguientePunto(tS) {
@@ -1608,7 +1622,7 @@
   function cancelarCalibracion() { if (!calib) return; calibEl.querySelector(".txt").textContent = "Calibración cancelada."; calib.fase = "fin"; calib.tFin = performance.now() / 1000 + 0.8; if (!camaraActiva) cerrarCalibracion(); }
   function cerrarCalibracion() {
     calib = null; calibrando = false; calibEl.classList.remove("visible"); if (camaraActiva) cursor.style.display = "block"; reiniciarPuntero();
-    if (calibFocoPrevio && document.contains(calibFocoPrevio) && calibFocoPrevio !== document.body) { try { calibFocoPrevio.focus({ preventScroll: true }); } catch (x) {} }
+    if (calibFocoPrevio && calibFocoPrevio.isConnected && calibFocoPrevio !== document.body) { try { calibFocoPrevio.focus({ preventScroll: true }); } catch (x) {} }
     calibFocoPrevio = null; refrescos.forEach(function (f) { f(); }); }
   function recentrar() { if (!calibracion) { avisar("Primero calibra los ojos", true); return; } empezarCalibracion(true); }
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && calibrando) cancelarCalibracion(); });
@@ -1725,8 +1739,8 @@
   tabs.oir.appendChild(s);
   s = seccion("Voz");
   s.appendChild(filaSw("voz_activa", "Voz activada (Decir y frases)"));
-  var fVoz = el("div", { "class": "wcl-fila" }, '<span id="wcl-l-voz">Voz</span><div class="wcl-mm" role="group" aria-labelledby="wcl-l-voz"><button type="button" aria-label="Voz anterior" aria-describedby="wcl-voz-nombre">−</button><span id="wcl-voz-nombre" aria-live="polite" style="min-width:120px;font-size:12px"></span><button type="button" aria-label="Voz siguiente" aria-describedby="wcl-voz-nombre">+</button></div>');
-  var bv = fVoz.querySelectorAll("button"), vv = fVoz.querySelector("span[style]");
+  var fVoz = el("div", { "class": "wcl-fila" }, '<span id="wcl-l-voz">Voz</span><div class="wcl-mm" role="group" aria-labelledby="wcl-l-voz"><button type="button" aria-label="Voz anterior" aria-describedby="wcl-voz-nombre">−</button><span id="wcl-voz-nombre" aria-live="polite"></span><button type="button" aria-label="Voz siguiente" aria-describedby="wcl-voz-nombre">+</button></div>');
+  var bv = fVoz.querySelectorAll("button"), vv = fVoz.querySelector("#wcl-voz-nombre"); vv.style.minWidth = "120px"; vv.style.fontSize = "12px";
   function cambiarVoz(d) { var vs = vocesEs(); if (!vs.length) return; var i = vs.findIndex(function (v) { return v.name === ajustes.voz_nombre; }); i = (i + d + vs.length) % vs.length; ajustes.voz_nombre = vs[i].name; guardar(); pintarVoz(); }
   function pintarVoz() { var vs = vocesEs(); var v = vs.find(function (x) { return x.name === ajustes.voz_nombre; }) || vs[0]; vv.textContent = v ? v.name.replace(/Microsoft |Google |Desktop| - .*$/g, "") : "sin voces en español"; }
   bv[0].addEventListener("click", function () { cambiarVoz(-1); }); bv[1].addEventListener("click", function () { cambiarVoz(1); });
@@ -1947,7 +1961,7 @@
     + '.wcl-facil{display:none;padding:12px 16px 16px}.wcl-facil .wcl-big{min-height:64px;font-size:19px;margin:6px 0}.wcl-panel.facil .wcl-tabs,.wcl-panel.facil .wcl-tab{display:none}.wcl-panel.facil .wcl-facil{display:block}'
     + 'html.wcl-lupap{overflow-x:hidden}html.wcl-lupap body{transition:none!important}'
     + '.wcl-lector{outline:4px solid #F2B705!important;outline-offset:3px;box-shadow:0 0 0 8px rgba(242,183,5,.25)!important}';
-  var estilo2 = document.createElement("style"); estilo2.textContent = css2; (document.head || raiz).appendChild(estilo2);
+  (document.head || raiz).appendChild(estiloCon(css2)); estilosSombra.push(css2);
   // Filtros de color (daltonización de Fidaner: M = I + E·(I − S), con la simulación de Machado 2009)
   var FILTROS = el("svg", { "style": "position:absolute;width:0;height:0", "aria-hidden": "true" },
     '<filter id="wcl-f-protan" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0.479 0.477 0.044 0 0  0.597 -0.689 1.091 0 0  0 0 0 1 0"/></filter>'
@@ -2029,7 +2043,7 @@
       else if (a === "callar") callar();
       else { limpiaTam = Math.max(16, Math.min(34, limpiaTam + (a === "mas" ? 2 : -2))); limpiaEl.style.fontSize = limpiaTam + "px"; }
     });
-    cont.appendChild(limpiaEl); abrir(false);
+    caja.appendChild(limpiaEl); abrir(false);
     try { limpiaEl.querySelector("button").focus(); } catch (x) {}
     refrescos.forEach(function (f) { f(); });
   }
@@ -2126,6 +2140,7 @@
   document.addEventListener("keydown", function (e) {
     if (!ajustes.lector || e.ctrlKey || e.altKey || e.metaKey) return;
     var act = document.activeElement, k = e.key, paso = e.shiftKey ? -1 : 1, hecho = true;
+    if (act === cont) return;   // el foco está dentro del widget: sus controles se manejan solos
     if (esEditable(act) && k !== "Escape" && k !== "F1") return;   // escribiendo: el teclado es para el campo
     // Sobre un control real de la página el lector no se queda con las teclas que el control necesita:
     // Espacio e Intro los ejecuta el navegador (botón, casilla, enlace, desplegable) y luego se lee el resultado;
@@ -2198,7 +2213,7 @@
 
   // ------------------------------------------------------- aplicar --
   function aplicarClases() {
-    raiz.classList.toggle("wcl-oscuro", ajustes.oscuro);
+    raiz.classList.toggle("wcl-oscuro", ajustes.oscuro); cont.classList.toggle("wcl-osc", ajustes.oscuro);
     raiz.classList.toggle("wcl-enlaces", ajustes.enlaces);
     raiz.classList.toggle("wcl-anim", ajustes.animaciones);
     raiz.classList.toggle("wcl-dislexia", ajustes.dislexia);
@@ -2230,9 +2245,11 @@
   window.addEventListener("resize", function () { if (tecVisible) dibujarTeclado(); });
 
   function montar() {
-    cont.appendChild(FILTROS); cont.appendChild(mascaraArriba); cont.appendChild(mascaraAbajo);
-    cont.appendChild(guia); cont.appendChild(boton); cont.appendChild(btnPausa); cont.appendChild(panel);
-    cont.appendChild(tecEl); cont.appendChild(menuEl); cont.appendChild(cursor); cont.appendChild(aviso); cont.appendChild(vivo); cont.appendChild(calibEl);
+    estilosSombra.forEach(function (t) { caja.appendChild(estiloCon(t)); });
+    raiz.appendChild(FILTROS);   // url(#wcl-f-…) desde el filtro de <html> solo encuentra ids del documento, no del shadow root
+    caja.appendChild(mascaraArriba); caja.appendChild(mascaraAbajo);
+    caja.appendChild(guia); caja.appendChild(boton); caja.appendChild(btnPausa); caja.appendChild(panel);
+    caja.appendChild(tecEl); caja.appendChild(menuEl); caja.appendChild(cursor); caja.appendChild(aviso); caja.appendChild(vivo); caja.appendChild(calibEl);
     raiz.appendChild(cont);
     var t = "ver"; try { t = sessionStorage.getItem("winclus.tab") || "ver"; } catch (e) {}
     elegirTab(tabs[t] ? t : "ver");
@@ -2248,6 +2265,7 @@
     pausar: pausar, teclado: alternarTeclado, menu: function () { if (camaraActiva) abrirMenu(); }, leer: leerPagina, decir: function (t) { decirVoz(t, true, true); }, orden: ejecutarOrden,
     // Para pruebas e integraciones: llevar el puntero virtual a un punto y hacer el gesto de clic
     mover: function (x, y) { cursor.style.display = "block"; mover(x, y); }, clic: clic, puntero: P,
-    cargarDetector: cargarDetector, deteccion: det, parpadeo: parpadeo
+    cargarDetector: cargarDetector, deteccion: det, parpadeo: parpadeo,
+    caja: caja   // el shadow root con las piezas del widget (para pruebas e integraciones)
   };
 })();
