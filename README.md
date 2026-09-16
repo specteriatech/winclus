@@ -2,6 +2,8 @@
 
 **Tecnología que incluye, un mundo que avanza.** · [winclus.com](https://winclus.com)
 
+[![Pruebas del widget](https://github.com/specteriatech/winclus/actions/workflows/pruebas.yml/badge.svg)](https://github.com/specteriatech/winclus/actions/workflows/pruebas.yml) · [Evidencia](https://winclus.com/evidencia) · [Demostración de cinco minutos](https://winclus.com/demo) · [Comparación](https://winclus.com/comparar)
+
 Winclus es un programa gratuito para Windows que mueve el puntero del ratón con la cabeza o con los ojos y hace clic con un parpadeo o un gesto de la cara. Solo necesita una cámara web. Está pensado para personas con discapacidades o dificultades motoras que no pueden usar un ratón o un teclado convencional.
 
 Todo se procesa en el equipo: no hace falta cuenta, no necesita internet y no envía la imagen de la cámara a ningún sitio.

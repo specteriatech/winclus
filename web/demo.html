@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demostración de cinco minutos · Winclus</title>
+<meta name="description" content="Una sede electrónica de ejemplo con Winclus para comprobar en cinco minutos lo que decimos: usarla con la cara, con un solo pulsador, con la voz, con pictogramas y en lenguaje claro.">
+<link rel="icon" href="img/icono.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="paginas.css">
+<style>
+  .pasos{counter-reset:p}.paso{background:#F3F6FA;border-radius:12px;padding:12px 16px 12px 56px;margin:10px 0;position:relative}.paso::before{counter-increment:p;content:counter(p);position:absolute;left:14px;top:12px;width:30px;height:30px;border-radius:50%;background:#2F4FD8;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .paso b{display:block}.paso .que{color:#4A5670;font-size:.95rem}
+  .sede{border:2px solid #DCE3EC;border-radius:14px;padding:18px;margin:20px 0}.sede h2{border:0;margin-top:0}.sede label{display:block;margin:10px 0 4px;font-weight:600}.sede input,.sede select{width:100%;max-width:420px;font:inherit;padding:8px;border:1px solid #8892A6;border-radius:8px}.sede button{font:inherit;font-weight:700;background:#34C26B;color:#101F3D;border:0;border-radius:999px;padding:12px 22px;margin-top:12px;cursor:pointer}
+  video{width:100%;max-width:560px;border-radius:10px;background:#000}
+  .ok{color:#0F7A70;font-weight:700}
+</style>
+</head>
+<body>
+<a class="salto" href="#contenido">Ir al contenido</a>
+<header>
+  <div class="barra">
+    <a class="marca" href="/"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a>
+    <a class="volver" href="/">Volver a la portada</a>
+  </div>
+</header>
+
+<main id="contenido">
+  <h1>Compruébalo tú en cinco minutos</h1>
+  <p class="meta">Esta página imita una sede electrónica con un trámite. Lleva Winclus instalado (el botón redondo abajo a la derecha). Sigue los pasos: cada uno demuestra algo que ningún widget de accesibilidad hace. No hace falta instalar nada ni crear cuenta.</p>
+
+  <div class="pasos">
+    <div class="paso"><b>Solo con un pulsador.</b><span class="que">Abre Winclus → pestaña Clics → «Barrido activado». A partir de ahí no toques el ratón: cuando el marco azul llegue al botón «Enviar» de abajo, pulsa Espacio. Para escribir, deja que el marco llegue al campo «Nombre», pulsa Espacio, y el teclado se barre por filas y por teclas.</span></div>
+    <div class="paso"><b>Solo con la cara.</b><span class="que">Pestaña Puntero → «Activar cámara» (te pedirá permiso; la imagen no sale de tu navegador). Mueve la cabeza y el puntero te sigue; cierra los ojos medio segundo sobre el enlace «Ver requisitos» para hacer clic. Abre las herramientas del navegador, pestaña Red: no verás ninguna imagen ni vídeo saliendo hacia ningún servidor.</span></div>
+    <div class="paso"><b>Solo con la voz.</b><span class="que">Pestaña Oír → «Escuchar órdenes». Di «números», luego «clic» y el número del botón «Enviar». Di «explícame esta página».</span></div>
+    <div class="paso"><b>Sin poder hablar.</b><span class="que">Pestaña Oír → «Tablero de pictogramas». Toca «yo», «necesito», «ayuda» y pulsa «Decir».</span></div>
+    <div class="paso"><b>Sin entender el texto.</b><span class="que">Botón redondo → pestaña Ver → «Lectura limpia» → «Explicar en fácil». Compara el texto de «Requisitos» con la versión en lenguaje claro; pasa el cursor por las palabras subrayadas.</span></div>
+    <div class="paso"><b>Sin oír.</b><span class="que">Pestaña Oír → «Avisar en pantalla cuando algo suena» y pulsa «Reproducir aviso» abajo: verás el aviso. Activa «Subtítulos grandes» y reproduce el vídeo.</span></div>
+    <div class="paso"><b>Perdido en el formulario.</b><span class="que">Escribe un correo sin arroba y pulsa «Enviar»: el error se explica en lenguaje claro y el foco va al campo. Pulsa en un campo: «Campo 2 de 4: Correo, obligatorio».</span></div>
+  </div>
+
+  <section class="sede" aria-labelledby="t-sede">
+    <nav aria-label="Migas de pan">Inicio › Trámites › Vivienda</nav>
+    <h2 id="t-sede">Solicitud de subsidio de vivienda</h2>
+    <p>El ciudadano interesado deberá radicar la solicitud a través de la sede electrónica de la entidad, adjuntando los documentos que acrediten los requisitos establecidos en la presente convocatoria; en el evento de que la documentación se encuentre incompleta, la entidad notificará al solicitante para que proceda a subsanar en un plazo de diez días hábiles.</p>
+    <p><a href="#requisitos" id="ver-requisitos">Ver requisitos</a> · <a href="#contacto">Contacto y Centro de Relevo</a></p>
+    <h3 id="requisitos">Requisitos</h3>
+    <ul>
+      <li>Ser persona natural mayor de edad.</li>
+      <li>Diligenciar el formulario y adjuntar copia auténtica de la cédula.</li>
+    </ul>
+    <form id="formulario" novalidate="">
+      <label for="nombre">Nombre completo</label>
+      <input id="nombre" name="nombre" required minlength="3" autocomplete="name">
+      <label for="correo">Correo electrónico</label>
+      <input id="correo" name="correo" type="email" required autocomplete="email">
+      <label for="cedula">Cédula</label>
+      <input id="cedula" name="cedula" pattern="[0-9]{6,10}" title="solo números, entre 6 y 10">
+      <label for="ciudad">Ciudad</label>
+      <select id="ciudad" name="ciudad"><option>Barranquilla</option><option>Bogotá</option><option>Medellín</option></select>
+      <br><button type="submit" id="enviar">Enviar</button>
+      <p id="resultado" aria-live="polite"></p>
+    </form>
+    <h3>Sonido y vídeo</h3>
+    <p><button type="button" id="sonar">Reproducir aviso</button></p>
+    <video id="video" controls preload="none" poster="img/paso_1.jpg">
+      <track kind="subtitles" srclang="es" label="Español" src="demo.vtt" default>
+    </video>
+    <p class="meta">El vídeo es una animación silenciosa con pista de subtítulos, para probar «Subtítulos grandes».</p>
+    <h3 id="contacto">Contacto</h3>
+    <p>hola@winclus.com · Si te comunicas en Lengua de Señas Colombiana, el botón «Centro de Relevo» del widget (pestaña Oír) te pone un intérprete gratis.</p>
+  </section>
+
+  <h2>En vídeo, grabado automáticamente por las pruebas</h2>
+  <p class="meta">Tres grabaciones de Chromium sin ventana, sin retoques, generadas por <code>videos.js</code> en el repositorio. Sin audio; lo que se oiría lo dice el subtítulo.</p>
+  <h3>Barrido con un solo pulsador</h3>
+  <video controls preload="metadata" src="video/barrido.webm"><track kind="descriptions" srclang="es" label="Descripción" src="video/barrido.vtt" default>Tu navegador no reproduce webm.</video>
+  <h3>Tablero de pictogramas</h3>
+  <video controls preload="metadata" src="video/pictogramas.webm"><track kind="descriptions" srclang="es" label="Descripción" src="video/pictogramas.vtt" default>Tu navegador no reproduce webm.</video>
+  <h3>Explicar en fácil</h3>
+  <video controls preload="metadata" src="video/lenguaje-claro.webm"><track kind="descriptions" srclang="es" label="Descripción" src="video/lenguaje-claro.vtt" default>Tu navegador no reproduce webm.</video>
+
+  <h2>Qué acabas de comprobar</h2>
+  <ul>
+    <li><span class="ok">✓</span> Se puede usar una sede electrónica con un solo pulsador, con la cara, con la voz y con dibujos. Ningún overlay lo permite; el hardware que lo permite cuesta cientos o miles de dólares.</li>
+    <li><span class="ok">✓</span> La cámara no sale del navegador. Lo viste en la pestaña Red.</li>
+    <li><span class="ok">✓</span> Los errores y el texto jurídico se explican en lenguaje claro.</li>
+  </ul>
+  <p>Lo que no puedes comprobar aquí, y por eso lo decimos: cómo les va a personas con discapacidad reales. Eso sale de las <a href="accesibilidad">pruebas con personas usuarias</a>, cuyo protocolo es público, y de la <a href="evidencia">evidencia automática</a> que se regenera con cada cambio.</p>
+</main>
+
+<footer>
+  <div class="pie">
+    <div>© 2026 Colaboradores de Winclus · Licencia Apache 2.0</div>
+    <ul><li><a href="/">Portada</a></li><li><a href="comparar">Frente a otras soluciones</a></li><li><a href="evidencia">Evidencia</a></li><li><a href="accesibilidad">Accesibilidad</a></li><li><a href="privacidad">Privacidad y datos</a></li><li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li></ul>
+  </div>
+</footer>
+<script>
+  document.getElementById("formulario").addEventListener("submit", function (e) { e.preventDefault(); var r = document.getElementById("resultado"); if (!this.checkValidity()) { r.textContent = ""; return; } r.textContent = "Enviado (de mentira: es una demostración). Gracias, " + document.getElementById("nombre").value + "."; });
+  document.getElementById("sonar").addEventListener("click", function () {
+    try { var c = new (window.AudioContext || window.webkitAudioContext)(), o = c.createOscillator(), g = c.createGain(); o.frequency.value = 880; g.gain.value = 0.2; o.connect(g); g.connect(c.destination); o.start(); setTimeout(function () { o.stop(); }, 400); } catch (e) {}
+    var a = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA="); a.title = "Aviso de la demostración"; a.play().catch(function () {});
+  });
+  // vídeo de demostración: un lienzo animado y silencioso como fuente
+  (function () {
+    var v = document.getElementById("video"), cv = document.createElement("canvas"); cv.width = 640; cv.height = 360; var ctx = cv.getContext("2d"), t = 0;
+    function marco() { t++; ctx.fillStyle = "#101F3D"; ctx.fillRect(0, 0, 640, 360); ctx.fillStyle = "#34C26B"; ctx.beginPath(); ctx.arc(320 + 200 * Math.sin(t / 30), 180, 40, 0, 6.3); ctx.fill(); ctx.fillStyle = "#fff"; ctx.font = "28px sans-serif"; ctx.fillText("Vídeo de demostración", 180, 320); if (!v.paused) requestAnimationFrame(marco); }
+    v.addEventListener("play", function () { if (!v.srcObject && cv.captureStream) { v.srcObject = cv.captureStream(30); } marco(); });
+  })();
+</script>
+<script src="widget.js" async></script>
+</body>
+</html>

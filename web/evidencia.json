@@ -1,0 +1,615 @@
+{
+  "fecha": "2026-09-16T17:01:21.950Z",
+  "commit": "dc949eb",
+  "version": "0.5.0",
+  "pruebas": 22,
+  "comprobaciones": 292,
+  "fallan": 0,
+  "resultados": [
+    {
+      "archivo": "prueba_posicion.js",
+      "que": "Con cada ajuste guardado (modo oscuro, contraste, lupa, texto 200 %…) el botón y el panel siguen en pantalla y la cabecera fija del sitio no se mueve.",
+      "criterios": [
+        "WCAG 1.4.10",
+        "WCAG 1.4.4"
+      ],
+      "ok": 18,
+      "mal": 0,
+      "bien": true,
+      "segundos": 10,
+      "lineas": [
+        "OK  sin ajustes",
+        "OK  oscuro",
+        "OK  contraste",
+        "OK  oscuro + contraste",
+        "OK  calma",
+        "OK  daltonismo protan",
+        "OK  oscuro + daltonismo",
+        "OK  texto 200 %",
+        "OK  enlaces",
+        "OK  animaciones",
+        "OK  dislexia",
+        "OK  sin imágenes",
+        "OK  máscara",
+        "OK  guía",
+        "OK  modo fácil",
+        "OK  lupa de pantalla ×2",
+        "OK  todo a la vez",
+        "OK  interruptor de modo oscuro en vivo y tras recargar"
+      ]
+    },
+    {
+      "archivo": "prueba_teclado_fisico.js",
+      "que": "Tab llega a todas las teclas y frases; Intro y Espacio las pulsan; el lector básico no captura las teclas de los controles del sitio.",
+      "criterios": [
+        "WCAG 2.1.1",
+        "WCAG 2.1.2",
+        "EN 301 549 11.5"
+      ],
+      "ok": 14,
+      "mal": 0,
+      "bien": true,
+      "segundos": 2,
+      "lineas": [
+        "OK  ninguna tecla con tabindex=-1",
+        "OK  con Tab se llega al teclado en pantalla",
+        "OK  se llega a la tecla q",
+        "OK  Intro sobre q escribe en el campo",
+        "OK  el foco se queda en la tecla",
+        "OK  Espacio también pulsa la tecla",
+        "OK  tras Mayús el teclado se redibuja y el foco sigue en Mayús",
+        "OK  las frases están en el teclado y son tabulables",
+        "OK  Intro sobre una frase la dice",
+        "OK  lector básico activado",
+        "OK  Espacio e Intro activan un botón real de la página",
+        "OK  Espacio marca una casilla real",
+        "OK  flecha abajo en un desplegable cambia la opción, no mueve el lector",
+        "OK  flecha abajo sin control enfocado mueve el lector"
+      ]
+    },
+    {
+      "archivo": "prueba_aria.js",
+      "que": "Pestañas con el patrón Tabs, −/+ con etiqueta y valor, avisos en región live, calibración modal.",
+      "criterios": [
+        "WCAG 4.1.2",
+        "WCAG 4.1.3",
+        "WCAG 1.3.1"
+      ],
+      "ok": 11,
+      "mal": 0,
+      "bien": true,
+      "segundos": 1,
+      "lineas": [
+        "OK  una sola pestaña tabulable y todas con aria-controls válido",
+        "OK  la tabulable es la seleccionada",
+        "OK  flecha derecha cambia de pestaña, la selecciona y muestra su panel",
+        "OK  Fin e Inicio van a los extremos",
+        "OK  flecha izquierda da la vuelta",
+        "OK  −/+ dicen qué cambian y describen el valor",
+        "OK  el nombre de la voz es una región live",
+        "OK  hay una región live oculta visualmente para los avisos",
+        "OK  el aviso del clic llega a la región live",
+        "OK  la región de estado no se toca si el texto no cambia",
+        "OK  la calibración es un diálogo modal con nombre"
+      ]
+    },
+    {
+      "archivo": "prueba_privacidad.js",
+      "que": "Consentimiento antes de la primera cámara, avisos de la voz, «Acerca de» honesto, «Restablecer todo» borra todo.",
+      "criterios": [
+        "Ley 1581/2012 art. 5",
+        "Ley 1480/2011"
+      ],
+      "ok": 11,
+      "mal": 0,
+      "bien": true,
+      "segundos": 3,
+      "lineas": [
+        "OK  la primera activación muestra el consentimiento sin tocar la cámara",
+        "OK  el consentimiento habla de dato biométrico y enlaza a la política",
+        "OK  el foco va al botón de aceptar",
+        "OK  «Ahora no» cierra el aviso y no guarda nada",
+        "OK  «Acepto» guarda fecha y versión del consentimiento",
+        "OK  tras aceptar sí se intenta activar la cámara",
+        "OK  con el consentimiento guardado no se vuelve a pedir",
+        "OK  el dictado avisa de que la voz va a Google o Microsoft",
+        "OK  las órdenes por voz avisan igual",
+        "OK  «Acerca de» ya no promete «todo en tu navegador» y enlaza la política",
+        "OK  «Restablecer» borra el consentimiento guardado"
+      ]
+    },
+    {
+      "archivo": "prueba_axe.js",
+      "que": "axe-core WCAG 2.1/2.2 AA sobre cada pestaña, el teclado, las frases y el modo fácil, más contraste calculado a mano.",
+      "criterios": [
+        "WCAG 1.4.3",
+        "WCAG 1.4.11",
+        "Res. 1519 CC5"
+      ],
+      "ok": 18,
+      "mal": 0,
+      "bien": true,
+      "segundos": 3,
+      "lineas": [
+        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 578 revisados",
+        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 533 revisados",
+        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 527 revisados",
+        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1276 revisados",
+        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 434 revisados",
+        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 361 revisados",
+        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 400 revisados",
+        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 400 revisados",
+        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 276 revisados",
+        "OK  Pausar: texto sobre fondo: 5.20:1",
+        "OK  interruptor apagado sobre el panel: 3.13:1",
+        "OK  interruptor encendido sobre el panel: 5.20:1",
+        "OK  borde de los botones − / +: 3.13:1",
+        "OK  borde de las opciones: 6.50:1",
+        "OK  foco del botón flotante",
+        "OK  texto del aviso de estado: 5.66:1",
+        "OK  borde de las teclas sobre el teclado: 3.20:1",
+        "OK  texto de las teclas: 16.34:1"
+      ]
+    },
+    {
+      "archivo": "prueba_aislamiento.js",
+      "que": "Estilos agresivos del sitio no alteran el widget (shadow root) y funciona con CSP estricta con nonce.",
+      "criterios": [
+        "EN 301 549 11.5",
+        "Res. 1519 CC13"
+      ],
+      "ok": 12,
+      "mal": 0,
+      "bien": true,
+      "segundos": 1,
+      "lineas": [
+        "OK  el widget carga con CSP estricta",
+        "OK  sin errores JS",
+        "OK  sin violaciones de CSP al cargar",
+        "OK  las piezas del widget están en un shadow root",
+        "OK  los <style> del documento llevan el nonce",
+        "OK  los <style> del shadow root llevan el nonce",
+        "OK  el botón flotante conserva tamaño y forma pese a button{all:unset}",
+        "OK  el interruptor conserva su color y tamaño",
+        "OK  los textos del panel no heredan los 40 px rojos del sitio",
+        "OK  el botón del sitio sigue con sus estilos",
+        "OK  modo oscuro: la página se invierte y el panel se des-invierte dentro del shadow root",
+        "OK  sin violaciones de CSP al abrir panel, modo oscuro y teclado"
+      ]
+    },
+    {
+      "archivo": "prueba_daltonismo.js",
+      "que": "Los filtros de daltonismo son SVG reales y cambian los píxeles de la página.",
+      "criterios": [
+        "WCAG 1.4.1"
+      ],
+      "ok": 6,
+      "mal": 0,
+      "bien": true,
+      "segundos": 2,
+      "lineas": [
+        "OK  los cuatro filtros son SVGFilterElement",
+        "OK  el filtro protan se aplica y cambia el rojo de la página",
+        "OK  el filtro deutan se aplica y cambia el rojo de la página",
+        "OK  el filtro tritan se aplica y cambia el rojo de la página",
+        "OK  el filtro gris se aplica y cambia el rojo de la página",
+        "OK  «Ninguna» devuelve los colores originales"
+      ]
+    },
+    {
+      "archivo": "prueba_landing.js",
+      "que": "winclus.com (portada, privacidad, accesibilidad, integrar, comparar) pasa axe a 1280 y 390 px y carga su propio widget.",
+      "criterios": [
+        "Res. 1519 Anexo 1",
+        "WCAG 2.1 AA"
+      ],
+      "ok": 70,
+      "mal": 0,
+      "bien": true,
+      "segundos": 11,
+      "lineas": [
+        "OK  / a 1280 px: axe sin incumplimientos",
+        "OK  / a 1280 px: carga el widget",
+        "OK  / a 1280 px: enlaza las otras páginas legales",
+        "OK  / a 1280 px: sin scroll horizontal",
+        "OK  / a 1280 px: sin errores JS",
+        "OK  /privacidad.html a 1280 px: axe sin incumplimientos",
+        "OK  /privacidad.html a 1280 px: carga el widget",
+        "OK  /privacidad.html a 1280 px: enlaza las otras páginas legales",
+        "OK  /privacidad.html a 1280 px: sin scroll horizontal",
+        "OK  /privacidad.html a 1280 px: sin errores JS",
+        "OK  /accesibilidad.html a 1280 px: axe sin incumplimientos",
+        "OK  /accesibilidad.html a 1280 px: carga el widget",
+        "OK  /accesibilidad.html a 1280 px: enlaza las otras páginas legales",
+        "OK  /accesibilidad.html a 1280 px: sin scroll horizontal",
+        "OK  /accesibilidad.html a 1280 px: sin errores JS",
+        "OK  /integrar.html a 1280 px: axe sin incumplimientos",
+        "OK  /integrar.html a 1280 px: carga el widget",
+        "OK  /integrar.html a 1280 px: enlaza las otras páginas legales",
+        "OK  /integrar.html a 1280 px: sin scroll horizontal",
+        "OK  /integrar.html a 1280 px: sin errores JS",
+        "OK  /comparar.html a 1280 px: axe sin incumplimientos",
+        "OK  /comparar.html a 1280 px: carga el widget",
+        "OK  /comparar.html a 1280 px: enlaza las otras páginas legales",
+        "OK  /comparar.html a 1280 px: sin scroll horizontal",
+        "OK  /comparar.html a 1280 px: sin errores JS",
+        "OK  /demo.html a 1280 px: axe sin incumplimientos",
+        "OK  /demo.html a 1280 px: carga el widget",
+        "OK  /demo.html a 1280 px: enlaza las otras páginas legales",
+        "OK  /demo.html a 1280 px: sin scroll horizontal",
+        "OK  /demo.html a 1280 px: sin errores JS",
+        "OK  /evidencia.html a 1280 px: axe sin incumplimientos",
+        "OK  /evidencia.html a 1280 px: carga el widget",
+        "OK  /evidencia.html a 1280 px: enlaza las otras páginas legales",
+        "OK  /evidencia.html a 1280 px: sin scroll horizontal",
+        "OK  /evidencia.html a 1280 px: sin errores JS",
+        "OK  / a 390 px: axe sin incumplimientos",
+        "OK  / a 390 px: carga el widget",
+        "OK  / a 390 px: enlaza las otras páginas legales",
+        "OK  / a 390 px: sin scroll horizontal",
+        "OK  / a 390 px: sin errores JS",
+        "OK  /privacidad.html a 390 px: axe sin incumplimientos",
+        "OK  /privacidad.html a 390 px: carga el widget",
+        "OK  /privacidad.html a 390 px: enlaza las otras páginas legales",
+        "OK  /privacidad.html a 390 px: sin scroll horizontal",
+        "OK  /privacidad.html a 390 px: sin errores JS",
+        "OK  /accesibilidad.html a 390 px: axe sin incumplimientos",
+        "OK  /accesibilidad.html a 390 px: carga el widget",
+        "OK  /accesibilidad.html a 390 px: enlaza las otras páginas legales",
+        "OK  /accesibilidad.html a 390 px: sin scroll horizontal",
+        "OK  /accesibilidad.html a 390 px: sin errores JS",
+        "OK  /integrar.html a 390 px: axe sin incumplimientos",
+        "OK  /integrar.html a 390 px: carga el widget",
+        "OK  /integrar.html a 390 px: enlaza las otras páginas legales",
+        "OK  /integrar.html a 390 px: sin scroll horizontal",
+        "OK  /integrar.html a 390 px: sin errores JS",
+        "OK  /comparar.html a 390 px: axe sin incumplimientos",
+        "OK  /comparar.html a 390 px: carga el widget",
+        "OK  /comparar.html a 390 px: enlaza las otras páginas legales",
+        "OK  /comparar.html a 390 px: sin scroll horizontal",
+        "OK  /comparar.html a 390 px: sin errores JS",
+        "OK  /demo.html a 390 px: axe sin incumplimientos",
+        "OK  /demo.html a 390 px: carga el widget",
+        "OK  /demo.html a 390 px: enlaza las otras páginas legales",
+        "OK  /demo.html a 390 px: sin scroll horizontal",
+        "OK  /demo.html a 390 px: sin errores JS",
+        "OK  /evidencia.html a 390 px: axe sin incumplimientos",
+        "OK  /evidencia.html a 390 px: carga el widget",
+        "OK  /evidencia.html a 390 px: enlaza las otras páginas legales",
+        "OK  /evidencia.html a 390 px: sin scroll horizontal",
+        "OK  /evidencia.html a 390 px: sin errores JS"
+      ]
+    },
+    {
+      "archivo": "prueba_sistema.js",
+      "que": "Respeta prefers-reduced-motion y prefers-contrast, lee la página en su idioma, cursor grande.",
+      "criterios": [
+        "EN 301 549 11.7",
+        "WCAG 3.1.1",
+        "WCAG 2.4.7"
+      ],
+      "ok": 8,
+      "mal": 0,
+      "bien": true,
+      "segundos": 1,
+      "lineas": [
+        "OK  prefers-reduced-motion activa pausar animaciones y modo calma",
+        "OK  prefers-contrast: more activa el alto contraste",
+        "OK  si la persona los apagó en el widget, el sistema no los vuelve a encender",
+        "OK  sin preferencias del sistema no se activa nada",
+        "OK  página en español: se lee en español",
+        "OK  página en inglés: el contenido y el panel se leen en inglés",
+        "OK  cursor grande: cursor SVG en la página, los enlaces y el widget, y queda guardado",
+        "OK  al apagarlo vuelve el cursor normal"
+      ]
+    },
+    {
+      "archivo": "prueba_barrido.js",
+      "que": "Barrido con un solo pulsador: página, teclado por filas y teclas, Escape pausa, el gesto de la cara es la señal.",
+      "criterios": [
+        "EN 301 549 11.5",
+        "ISO 9241-171 §9"
+      ],
+      "ok": 13,
+      "mal": 0,
+      "bien": true,
+      "segundos": 7,
+      "lineas": [
+        "OK  el barrido recorre el botón del widget, el enlace y el botón de la página",
+        "OK  va diciendo en voz alta lo marcado",
+        "OK  la señal (Espacio) activa el botón marcado",
+        "OK  la señal sobre un campo abre el teclado en pantalla",
+        "OK  con el teclado abierto se marcan filas",
+        "OK  la señal sobre la fila pasa a barrer sus teclas desde la primera",
+        "OK  y avanza tecla a tecla",
+        "OK  la señal sobre una tecla la escribe en el campo",
+        "OK  tras escribir vuelve al barrido por filas",
+        "OK  Escape pausa el barrido",
+        "OK  otro Escape lo reanuda",
+        "OK  Winclus.clic()",
+        "OK  apagar el barrido quita las marcas"
+      ]
+    },
+    {
+      "archivo": "prueba_auditiva.js",
+      "que": "Aviso visual de sonido, subtítulos mostrados y agrandados, subtítulos en vivo, Centro de Relevo y diccionario LSC.",
+      "criterios": [
+        "WCAG 1.2.2",
+        "WCAG 1.3.3",
+        "WCAG 1.4.2",
+        "Res. 1519 CC2"
+      ],
+      "ok": 10,
+      "mal": 0,
+      "bien": true,
+      "segundos": 2,
+      "lineas": [
+        "OK  un audio de la página muestra el aviso con su nombre",
+        "OK  un audio creado por código",
+        "OK  con el aviso apagado no aparece nada",
+        "OK  se muestra la pista de subtítulos del idioma de la página y se apaga la otra",
+        "OK  hay regla ::cue en el documento (subtítulos grandes con fondo) y la clase está puesta",
+        "OK  la barra de subtítulos en vivo muestra lo reconocido en letra grande",
+        "OK  al parar, la barra desaparece",
+        "OK  la sección avisa de que la voz va a Google o Microsoft",
+        "OK  hay botones al Centro de Relevo y al diccionario de LSC",
+        "OK  el diccionario abre educativo.insor.gov.co en otra pestaña"
+      ]
+    },
+    {
+      "archivo": "prueba_voz.js",
+      "que": "«Números» y «clic 12», dictado con confirmación.",
+      "criterios": [
+        "EN 301 549 11.5",
+        "WCAG 2.5.1"
+      ],
+      "ok": 12,
+      "mal": 0,
+      "bien": true,
+      "segundos": 7,
+      "lineas": [
+        "OK  «números» pone etiquetas 1, 2, 3… sobre lo que se puede pulsar",
+        "OK  «clic 2» pulsa el botón que lleva el 2",
+        "OK  tras pulsar, los números se quitan",
+        "OK  «escribe en cinco»",
+        "OK  «quita los números» los quita",
+        "OK  lo dictado se muestra para confirmar y aún no se escribe",
+        "OK  otra frase sustituye a la pendiente",
+        "OK  «sí» escribe la frase pendiente en el campo",
+        "OK  «no» descarta la frase pendiente",
+        "OK  el botón «Escribir» también confirma",
+        "OK  sin confirmación se escribe directamente",
+        "OK  sin errores JS"
+      ]
+    },
+    {
+      "archivo": "prueba_formularios.js",
+      "que": "«Campo N de M», errores en lenguaje claro con foco, pegar siempre permitido.",
+      "criterios": [
+        "WCAG 3.3.1",
+        "WCAG 3.3.3",
+        "WCAG 3.3.7",
+        "WCAG 3.3.8",
+        "Res. 1519 CC25"
+      ],
+      "ok": 12,
+      "mal": 0,
+      "bien": true,
+      "segundos": 2,
+      "lineas": [
+        "OK  al entrar en un campo dice cuál es, cuántos hay y si es obligatorio",
+        "OK  los desplegables también cuentan",
+        "OK  al enviar con errores los cuenta",
+        "OK  explica el mínimo de caracteres con lo que llevas",
+        "OK  explica el campo vacío obligatorio",
+        "OK  usa el title del sitio para el patrón",
+        "OK  el foco va al primer campo con error",
+        "OK  explica un correo mal escrito",
+        "OK  aria-invalid del sitio se anuncia con su explicación",
+        "OK  se puede pegar en un campo con onpaste=\"return false\"",
+        "OK  se puede pegar aunque un manejador del sitio haga preventDefault",
+        "OK  con la ayuda apagada el sitio vuelve a mandar"
+      ]
+    },
+    {
+      "archivo": "prueba_perfil_enlace.js",
+      "que": "El perfil viaja en un enlace sin cuentas ni servidores y un enlace roto no rompe nada.",
+      "criterios": [
+        "EN 301 549 11.7"
+      ],
+      "ok": 5,
+      "mal": 0,
+      "bien": true,
+      "segundos": 1,
+      "lineas": [
+        "OK  el botón copia un enlace con #winclus=…",
+        "OK  en un navegador limpio se importan los ajustes y quedan guardados",
+        "OK  las frases también viajan",
+        "OK  el enlace se limpia y los ajustes se aplican",
+        "OK  un enlace roto avisa y no rompe nada"
+      ]
+    },
+    {
+      "archivo": "prueba_pictogramas.js",
+      "que": "Tablero ARASAAC: frase con voz, predicción aprendida, frases guardadas, barrido dentro.",
+      "criterios": [
+        "ISO 24751",
+        "CAA"
+      ],
+      "ok": 9,
+      "mal": 0,
+      "bien": true,
+      "segundos": 1,
+      "lineas": [
+        "OK  el tablero se abre con categorías y pictogramas",
+        "OK  las imágenes vienen de ARASAAC y se atribuye la licencia",
+        "OK  tras «quiero» sugiere agua, comer…",
+        "OK  cada pictograma se dice al tocarlo y forma la frase",
+        "OK  «Decir» dice la frase entera",
+        "OK  la predicción aprende del uso: «agua» pasa a ser la primera",
+        "OK  «Guardar frase» la pone en «Mis frases» y en las frases del teclado",
+        "OK  con el tablero abierto, el barrido recorre sus botones",
+        "OK  sin errores JS"
+      ]
+    },
+    {
+      "archivo": "prueba_facil.js",
+      "que": "«Explicar en fácil» por reglas y con IA, resaltado palabra a palabra, «¿Dónde estoy?».",
+      "criterios": [
+        "WCAG 3.1.5",
+        "WCAG 2.4.8",
+        "COGA"
+      ],
+      "ok": 13,
+      "mal": 0,
+      "bien": true,
+      "segundos": 7,
+      "lineas": [
+        "OK  «¿Dónde estoy?» dice título, ruta, encabezados y avance",
+        "OK  hay resumen: de qué va y lo más importante",
+        "OK  la jerga se cambia por palabras corrientes",
+        "OK  las palabras cambiadas llevan el término original y su explicación",
+        "OK  no quedan frases de más de 30 palabras",
+        "OK  las listas de requisitos se mantienen como pasos y con palabras claras",
+        "OK  el botón pasa a «Ver el original»",
+        "OK  «Ver el original» devuelve el texto tal cual",
+        "OK  al leer, la palabra que suena se resalta",
+        "OK  se envía el texto de la página al servicio configurado",
+        "OK  se muestra la explicación del servicio con aviso de IA  (Resumen",
+        "OK  si el servicio falla, se usan las reglas",
+        "OK  sin errores JS"
+      ]
+    },
+    {
+      "archivo": "prueba_auditar.js",
+      "que": "Winclus Audit: informe por criterio de la Res. 1519 y borrador de declaración.",
+      "criterios": [
+        "Res. 1519 Anexo 1"
+      ],
+      "ok": 7,
+      "mal": 0,
+      "bien": true,
+      "segundos": 9,
+      "lineas": [
+        "OK  el escáner termina bien",
+        "OK  genera informe.html, declaracion.html y resultados.json",
+        "OK  la portada de winclus.com sale limpia",
+        "OK  la página mala cae en alt, título, idioma, etiqueta y contraste",
+        "OK  las comprobaciones de la Res. 1519 detectan vídeo sin subtítulos, sin declaración y sin «ir al contenido»",
+        "OK  el informe agrupa por criterio de la Res. 1519 y avisa de sus límites",
+        "OK  el borrador de declaración lleva la entidad, la norma, el estado y los huecos por rellenar"
+      ]
+    },
+    {
+      "archivo": "prueba_sdk.js",
+      "que": "Web component, guía de integración, plugin de WordPress y módulo de Drupal.",
+      "criterios": [
+        "Integración"
+      ],
+      "ok": 8,
+      "mal": 0,
+      "bien": true,
+      "segundos": 0,
+      "lineas": [
+        "OK  <winclus-widget> carga widget.js del mismo origen",
+        "OK  los atributos pasan como data-*",
+        "OK  posicion=\"izquierda\" pone el botón a la izquierda",
+        "OK  camara=\"no\" y relevo=\"no\" se aplican",
+        "OK  sin errores JS",
+        "OK  la guía de integración cubre versión fija, CSP, web component, WordPress, Drupal, GOV.CO, IA y Winclus Audit",
+        "OK  el plugin de WordPress tiene cabecera, encola el script con data-* y ajustes",
+        "OK  el módulo de Drupal declara la librería externa y la adjunta a todas las páginas"
+      ]
+    },
+    {
+      "archivo": "prueba_idiomas.js",
+      "que": "Panel en inglés en páginas en inglés, data-ui, idiomas añadidos por el sitio.",
+      "criterios": [
+        "WCAG 3.1.1",
+        "WCAG 3.1.2"
+      ],
+      "ok": 8,
+      "mal": 0,
+      "bien": true,
+      "segundos": 1,
+      "lineas": [
+        "OK  en una página en inglés el panel sale en inglés",
+        "OK  el modo fácil también",
+        "OK  los avisos se traducen",
+        "OK  la voz del panel habla en inglés con voz en inglés",
+        "OK  data-ui=\"es\" fuerza el español",
+        "OK  un idioma añadido con WinclusIdiomas se usa, y lo no traducido queda en español",
+        "OK  sin diccionario para el idioma de la página, el panel sale en español",
+        "OK  sin errores JS"
+      ]
+    },
+    {
+      "archivo": "prueba_maximo.js",
+      "que": "Limitador de volumen, voz neuronal preferida, asistente «¿Qué quieres hacer?», transcribir un medio.",
+      "criterios": [
+        "WCAG 1.4.2",
+        "COGA"
+      ],
+      "ok": 13,
+      "mal": 0,
+      "bien": true,
+      "segundos": 1,
+      "lineas": [
+        "OK  ningún medio pasa del volumen máximo",
+        "OK  sin voz elegida, usa la neuronal de es-CO",
+        "OK  el panel muestra la voz neuronal como actual",
+        "OK  la caja «¿Qué quieres hacer?» está en el modo fácil y en la pestaña Ver",
+        "OK  «no veo bien» agranda el texto y sube el contraste",
+        "OK  «no oigo» activa avisos y subtítulos",
+        "OK  «solo puedo pulsar un botón» activa el barrido",
+        "OK  «no puedo hablar» abre los pictogramas",
+        "OK  «quiero contactarlos» pulsa el enlace de contacto de la página",
+        "OK  lo que no sabe, lo dice y da ejemplos",
+        "OK  una orden por voz que no es orden va al asistente",
+        "OK  «Transcribir» abre los subtítulos en vivo, arranca el reconocedor y quita el silencio al medio",
+        "OK  sin errores JS"
+      ]
+    },
+    {
+      "archivo": "prueba_evidencia.js",
+      "que": "La demostración pública pasa axe; las cifras de uso se cuentan en local, el resumen no lleva datos personales y solo se envían al sitio si la persona lo activa.",
+      "criterios": [
+        "Ley 1581/2012",
+        "Evidencia de uso"
+      ],
+      "ok": 10,
+      "mal": 0,
+      "bien": true,
+      "segundos": 11,
+      "lineas": [
+        "OK  demo.html pasa axe",
+        "OK  la demo tiene los siete pasos",
+        "OK  en la demo el error del formulario se explica en lenguaje claro",
+        "OK  las cifras de uso se cuentan en local",
+        "OK  el resumen copiado solo lleva cifras, sin datos personales  (· 1 errores de formulario explicados\r)",
+        "OK  sin data-metricas no existe siquiera el interruptor de compartir",
+        "OK  sin activar el interruptor no se envía nada aunque pasen los 5 s iniciales",
+        "OK  al activarlo se envían solo sitio, versión, fecha de inicio y cifras",
+        "OK  no se vuelve a enviar hasta pasada una semana",
+        "OK  sin errores JS"
+      ]
+    },
+    {
+      "archivo": "prueba_rendimiento.js",
+      "que": "La inferencia de la cara va a la tasa de la cámara; modo ahorro a 15/s.",
+      "criterios": [
+        "Rendimiento"
+      ],
+      "ok": 4,
+      "mal": 0,
+      "bien": true,
+      "segundos": 9,
+      "lineas": [
+        "OK  el navegador avisa de cada cuadro nuevo",
+        "OK  no se infiere más veces que cuadros entrega la cámara",
+        "OK  en modo ahorro se infiere unas 15 veces por segundo",
+        "OK  hay interruptor «Modo ahorro» en el panel"
+      ]
+    }
+  ]
+}

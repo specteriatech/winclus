@@ -28,8 +28,25 @@
     color: (script && script.dataset.color) || "#101F3D",
     camara: !(script && script.dataset.camara === "no"),
     relevo: !(script && script.dataset.relevo === "no"),   // botón al Centro de Relevo de MinTIC (intérprete de LSC por videollamada)
-    explicar: (script && script.dataset.explicar) || ""     // URL opcional de un servicio de lectura fácil con IA (POST {texto, idioma} → {texto})
+    explicar: (script && script.dataset.explicar) || "",    // URL opcional de un servicio de lectura fácil con IA (POST {texto, idioma} → {texto})
+    metricas: (script && script.dataset.metricas) || ""     // URL opcional a la que el sitio recibe cifras de uso anónimas (solo si la persona lo activa)
   };
+  // Cifras de uso: cuántas veces se hizo clic con la cara, se dijo una frase, se explicó un error… Solo números,
+  // en este navegador. Sirven a la persona para ver lo que consigue y a una entidad para reportar tareas
+  // completadas (ITA) si la persona decide compartirlas. Nunca se envían solas.
+  var uso = null;
+  function contar(clave) {
+    try {
+      if (!uso) { uso = JSON.parse(localStorage.getItem("winclus.uso") || "null") || { desde: new Date().toISOString().slice(0, 10), n: {} }; }
+      uso.n[clave] = (uso.n[clave] || 0) + 1; localStorage.setItem("winclus.uso", JSON.stringify(uso));
+    } catch (e) {}
+  }
+  var NOMBRES_USO = { clics_cara: "clics hechos con la cara", barrido: "acciones con el barrido", frases: "frases dichas con voz", pictos: "frases dichas con pictogramas", teclado: "veces que se abrió el teclado", dictado: "dictados escritos", errores: "errores de formulario explicados", facil: "páginas explicadas en fácil", limpia: "lecturas limpias", camara: "sesiones con la cámara", ordenes: "órdenes por voz ejecutadas", asistente: "peticiones al asistente" };
+  function resumenUso() {
+    try { uso = uso || JSON.parse(localStorage.getItem("winclus.uso") || "null"); } catch (e) {}
+    if (!uso || !Object.keys(uso.n).length) return "Todavía no hay cifras de uso en este navegador.";
+    return "Uso de Winclus en este navegador desde el " + uso.desde + " (sitio: " + location.hostname + "):\n" + Object.keys(uso.n).map(function (k) { return "· " + uso.n[k] + " " + (NOMBRES_USO[k] || k); }).join("\n");
+  }
   var URL_RELEVO = "https://www.centroderelevo.gov.co/", URL_DICCIONARIO_LSC = "https://educativo.insor.gov.co/diccionario/";
   var ORIGEN = (script && script.src) ? script.src.replace(/\/[^\/]*$/, "") : "https://winclus.com";
   // El detector de caras (MediaPipe Tasks Vision, Apache 2.0) y el modelo se sirven
@@ -64,7 +81,7 @@
     teclado_altura: 32, teclado_posicion: "abajo", teclado_prediccion: true, teclado_sonido: true,
     camara_ver: true, dwell: false, ahorro: false, cursor_grande: false,
     barrido: false, barrido_ms: 1200, barrido_senal: "espacio", barrido_voz: true,
-    subtitulos: false, alertas_sonido: false, dictado_confirmar: false, formularios: true, volumen_max: 100,
+    subtitulos: false, alertas_sonido: false, dictado_confirmar: false, formularios: true, volumen_max: 100, metricas_compartir: false,
     dalton: "no", calma: false, dislexia: false, sinimg: false, mascara: false, lector: false, facil: false,
     lupa_pantalla: false, lupa_pantalla_zoom: 2
   };
@@ -143,6 +160,8 @@
       "Toca los dibujos para formar tu frase": "Tap the pictures to build your sentence", "Siguiente:": "Next:", "Decir": "Say", "Borrar último": "Delete last", "Borrar todo": "Delete all", "Guardar frase": "Save sentence", "Básico": "Basics", "Necesito": "I need", "Siento": "I feel", "Personas": "People", "Acciones": "Actions", "Lugares": "Places", "Comida": "Food", "Tiempo y cosas": "Time and things", "Mis frases": "My sentences",
       "Calibración de los ojos": "Eye calibration", "Cancelar (o tecla Esc)": "Cancel (or Esc key)", "Explicar en fácil": "Explain simply", "Ver el original": "See the original", "Leer en voz alta": "Read aloud", "Texto más pequeño": "Smaller text", "Texto más grande": "Larger text",
       "Sí": "Yes", "No": "No", "Gracias": "Thank you", "Necesito ayuda": "I need help", "Tengo sed": "I am thirsty", "Tengo hambre": "I am hungry", "Tengo dolor": "I am in pain", "Quiero ir al baño": "I need the bathroom", "Tengo frío": "I am cold", "Tengo calor": "I am hot", "Estoy cansado": "I am tired", "Quiero descansar": "I want to rest", "Llama a mi familia": "Call my family", "Espera un momento": "Wait a moment", "No entiendo": "I don't understand", "Hasta luego": "See you later",
+      "¿Qué quieres hacer? Dímelo con tus palabras": "What do you want to do? Tell me in your own words", "Por ejemplo: no veo bien, quiero escribir, contacto…": "For example: I can't see well, I want to type, contact…", "Ir": "Go", "Hacerlo": "Do it", "Decirlo con la voz": "Say it out loud",
+      "Lo que consigo con Winclus": "What I get done with Winclus", "Copiar el resumen de uso": "Copy the usage summary", "Compartir mis cifras de uso con este sitio": "Share my usage figures with this site", "Volumen máximo de vídeos y audios": "Maximum volume for videos and audio", "Transcribir el vídeo o audio de la página (micrófono)": "Transcribe the page's video or audio (microphone)",
       "Escrito": "Typed", "Descartado": "Discarded", "Barrido activado": "Scanning on", "Barrido en pausa": "Scanning paused", "Barrido en marcha": "Scanning running", "Enlace copiado": "Link copied", "Perfil importado": "Profile imported", "Todo restablecido": "Everything reset", "Frases guardadas": "Phrases saved", "Frase guardada": "Sentence saved", "Cámara apagada.": "Camera off.", "Escribir aquí": "Type here", "Leyendo": "Reading", "Ahí no hay tecla": "No key there", "En pausa": "Paused", "Activado": "On", "Centrado": "Centered", "Sin números": "No numbers"
     }
   };
@@ -736,7 +755,7 @@
       video.srcObject = f;
       return video.play();
     }).then(function () {
-      camaraActiva = true; pausado = false;
+      camaraActiva = true; pausado = false; contar("camara");
       parpadeo.reiniciar(); reiniciarPuntero();
       btnActivar.textContent = "Desactivar cámara"; btnActivar.classList.add("rojo"); btnActivar.disabled = false;
       btnPausa.style.display = "block"; pintarPausa();
@@ -1089,7 +1108,7 @@
     });
   }
   function pulsar() {
-    ultimoClic = performance.now();
+    ultimoClic = performance.now(); if (camaraActiva) contar("clics_cara");
     cursor.classList.add("clic"); setTimeout(function () { cursor.classList.remove("clic"); }, 220);
     var e = elementoBajo(P.x, P.y); if (!e) return;
     if (enWidget(e)) {   // controles del propio widget
@@ -1513,7 +1532,7 @@
     sugerencias = ajustes.teclado_prediccion ? sugerir(palabra, 5) : [];
     teclas.forEach(function (t) { if (t.tipo === "pred") { t.valor = sugerencias[t.indice] || ""; t.el.textContent = t.valor; } });
   }
-  function mostrarTeclado() { tecVisible = true; dibujarTeclado(); tecEl.classList.add("visible"); avisar("Teclado"); }
+  function mostrarTeclado() { tecVisible = true; dibujarTeclado(); tecEl.classList.add("visible"); avisar("Teclado"); contar("teclado"); }
   function ocultarTeclado() { if (!tecVisible) return; tecVisible = false; tecEl.classList.remove("visible"); pararDictado(); }
   function alternarTeclado() { if (tecVisible) ocultarTeclado(); else mostrarTeclado(); }
   function tecladoContiene(x, y) { if (!tecVisible) return false; var r = tecEl.getBoundingClientRect(); return x >= r.left && x < r.right && y >= r.top && y < r.bottom; }
@@ -1545,8 +1564,8 @@
     else if (tipo === "mayus") { if (capa === "ABC") { if (bloqMayus) { bloqMayus = false; capa = "abc"; } else bloqMayus = true; } else { capa = "ABC"; bloqMayus = false; } dibujarTeclado(); }
     else if (tipo === "capa") { capa = valor; bloqMayus = false; dibujarTeclado(); }
     else if (tipo === "cerrar") ocultarTeclado();
-    else if (tipo === "decir") { if (frase.trim()) { decirVoz(frase, true, true); frase = ""; pintarTexto(); } else decirVoz("No hay nada escrito", true, true); }
-    else if (tipo === "frase") { if (valor) decirVoz(valor, true, true); }
+    else if (tipo === "decir") { if (frase.trim()) { decirVoz(frase, true, true); contar("frases"); frase = ""; pintarTexto(); } else decirVoz("No hay nada escrito", true, true); }
+    else if (tipo === "frase") { if (valor) { decirVoz(valor, true, true); contar("frases"); } }
     else if (tipo === "callar") callar();
     else if (tipo === "dictar") alternarDictado();
   }
@@ -1672,7 +1691,7 @@
   }
   function ejecutarOrden(texto) {
     var t = sinAcentos(texto.trim()), m;
-    var ok = function (msg) { avisar(msg); decir("Orden: " + texto); };
+    var ok = function (msg) { avisar(msg); decir("Orden: " + texto); contar("ordenes"); };
     if (/^(baja|abajo|bajar)( un poco| mas)?$/.test(t)) { rueda(300, true); ok("Bajar"); }
     else if (/^(sube|arriba|subir)( un poco| mas)?$/.test(t)) { rueda(-300, true); ok("Subir"); }
     else if (/^(arriba|inicio) del todo$|^al principio$/.test(t)) { window.scrollTo({ top: 0, behavior: "smooth" }); ok("Arriba del todo"); }
@@ -1742,7 +1761,7 @@
   var errorTimer = 0, erroresPendientes = [];
   function mostrarErrores() {
     if (!erroresPendientes.length) return;
-    var textos = erroresPendientes.map(explicarError), primero = erroresPendientes[0]; erroresPendientes = [];
+    var textos = erroresPendientes.map(explicarError), primero = erroresPendientes[0]; erroresPendientes = []; contar("errores");
     var msg = (textos.length > 1 ? "Hay " + textos.length + " cosas por corregir. " : "") + textos.slice(0, 3).join(" ");
     sonidoEl.textContent = "✎ " + msg; sonidoEl.classList.add("error"); sonidoEl.style.display = "block";
     clearTimeout(sonidoTimer); sonidoTimer = setTimeout(function () { sonidoEl.style.display = "none"; sonidoEl.classList.remove("error"); }, 9000);
@@ -1829,7 +1848,7 @@
     pictoFrase.push(p); decirVoz(p[0], true, true); pintarPictos();
   }
   function pictoTexto() { return pictoFrase.map(function (p) { return p[0]; }).join(" "); }
-  function pictoDecir() { var t = pictoTexto(); if (t) { decirVoz(t, true, true); avisar(t); } else decirVoz("No hay frase todavía", true, true); }
+  function pictoDecir() { var t = pictoTexto(); if (t) { decirVoz(t, true, true); avisar(t); contar("pictos"); } else decirVoz("No hay frase todavía", true, true); }
   function pictoGuardar() {
     var t = pictoTexto(); if (!t) return;
     if (!pictoFrases.some(function (f) { return f.texto === t; })) { pictoFrases.push({ texto: t, pictos: pictoFrase.slice() }); escribirJSON("winclus.pictos_frases", pictoFrases); }
@@ -1885,7 +1904,7 @@
     var c = campo(), antes = "";
     if (c) antes = c.isContentEditable ? (c.textContent || "") : (c.value || "").slice(0, c.selectionStart == null ? undefined : c.selectionStart);
     var sep = antes && !/\s$/.test(antes) ? " " : "";
-    insertarTexto(sep + t); frase += sep + t; palabra = ""; refrescarSugerencias(); pintarTexto();
+    insertarTexto(sep + t); frase += sep + t; palabra = ""; refrescarSugerencias(); pintarTexto(); contar("dictado");
   }
   function confirmarDictado() { if (dictPendiente) escribirDictado(dictPendiente); dictPendiente = ""; if (dictConfEl) dictConfEl.style.display = "none"; avisar("Escrito"); }
   function descartarDictado() { dictPendiente = ""; if (dictConfEl) dictConfEl.style.display = "none"; avisar("Descartado"); }
@@ -2308,6 +2327,30 @@
   tabs.escribir.appendChild(s);
 
   // --- Más ---
+  s = seccion("Lo que consigo con Winclus");
+  var usoEl = el("div", { "class": "wcl-estado", "style": "white-space:pre-line" }, "");
+  refrescos.push(function () { usoEl.textContent = resumenUso(); });
+  s.appendChild(usoEl);
+  s.appendChild(botonGrande("Copiar el resumen de uso", "suave", function () {
+    var t = resumenUso() + "\nSolo cifras, sin datos personales. Winclus " + VERSION + ".";
+    var listo = function () { avisar("Resumen copiado"); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(listo, function () { window.prompt("Copia este resumen:", t); }); else window.prompt("Copia este resumen:", t);
+  }));
+  if (opciones.metricas) {
+    s.appendChild(el("div", { "class": "wcl-estado" }, "Este sitio puede recibir estas cifras (solo números, sin nada personal) para saber cuántas personas consiguen hacer sus gestiones con Winclus y reportarlo. Se envían una vez por semana, solo si lo activas."));
+    s.appendChild(filaSw("metricas_compartir", "Compartir mis cifras de uso con este sitio", enviarMetricasSiToca));
+  }
+  tabs.mas.appendChild(s);
+  function enviarMetricasSiToca() {
+    if (!opciones.metricas || !ajustes.metricas_compartir || !uso) return;
+    var ultimo = leerJSON("winclus.uso_enviado", 0), ahora = Date.now();
+    if (ahora - ultimo < 7 * 86400000) return;
+    try {
+      fetch(opciones.metricas, { method: "POST", headers: { "Content-Type": "application/json" }, keepalive: true, body: JSON.stringify({ sitio: location.hostname, version: VERSION, desde: uso.desde, cifras: uso.n }) })
+        .then(function () { escribirJSON("winclus.uso_enviado", ahora); });
+    } catch (e) {}
+  }
+  setTimeout(enviarMetricasSiToca, 5000);
   s = seccion("Perfil");
   s.appendChild(el("div", { "class": "wcl-estado" }, "Llévate tus ajustes, calibración, frases y palabras a otro navegador o página."));
   s.appendChild(botonGrande("Exportar perfil (.winclus)", "suave", function () {
@@ -2453,6 +2496,7 @@
   function visibleEl(e) { var r = e.getBoundingClientRect(); if (!r.width && !r.height) return false; var cs = getComputedStyle(e); return cs.visibility !== "hidden" && cs.display !== "none"; }
   function lecturaLimpia() {
     if (limpiaEl) { cerrarLimpia(); return; }
+    contar("limpia");
     var m = document.querySelector("main,article,[role=main]") || document.body, partes = [], bloques = [];
     m.querySelectorAll("h1,h2,h3,h4,p,li,blockquote,img,figcaption").forEach(function (e) {
       if (e.closest(".wcl-root,nav,header,footer,aside,[aria-hidden=true]") || !visibleEl(e)) return;
@@ -2545,6 +2589,7 @@
   var explicando = false, bloquesLimpia = [];
   function explicarFacil() {
     if (!limpiaEl || explicando) return;
+    if (limpiaEl.dataset.facil !== "1") contar("facil");
     var cont2 = limpiaEl.querySelector(".wcl-limpia-texto");
     if (limpiaEl.dataset.facil === "1") { cont2.innerHTML = limpiaEl.dataset.original; limpiaEl.dataset.facil = "0"; refrescoLimpia("Texto original"); return; }
     limpiaEl.dataset.original = cont2.innerHTML;
@@ -2761,6 +2806,7 @@
     var t = sinAcentos((texto || "").trim().replace(/[¿?¡!.]/g, "")), respuesta = "";
     if (!t) return false;
     for (var i = 0; i < GUIA.length && !respuesta; i++) { var m = GUIA[i][0].exec(t); if (m) { try { respuesta = GUIA[i][1](m); } catch (e) { respuesta = ""; } if (respuesta === "" && i < GUIA.length - 1) break; } }
+    contar("asistente");
     if (!respuesta) respuesta = "No sé hacer eso todavía. Puedes decirme: no veo bien, no oigo, no puedo usar el ratón, escribir, leer, explica esta página, dónde estoy, calma, contacto, o el nombre de un enlace.";
     avisar(respuesta.slice(0, 60)); decir(respuesta); decirVoz(respuesta, true, true);
     return true;
@@ -2910,6 +2956,7 @@
   }
   function barridoReprogramar() { clearInterval(barridoTimer); barridoTimer = setInterval(barridoPaso, Math.max(300, ajustes.barrido_ms || 1200)); }
   function barridoActivar(e) {
+    contar("barrido");
     if (e === boton) { abrir(!panel.classList.contains("abierto")); barridoLista = []; barridoI = -1; return; }
     if (enWidget(e)) {
       if (e.tagName === "TEXTAREA") { enfocar(e); objetivoTexto = e; mostrarTeclado(); }

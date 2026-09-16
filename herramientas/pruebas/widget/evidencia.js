@@ -1,0 +1,100 @@
+// Corre todas las pruebas del widget y genera web/evidencia.html y web/evidencia.json: fecha, commit, cada
+// prueba con lo que demuestra, sus comprobaciones y los criterios WCAG / Res. 1519 que respalda. Es la página
+// «Evidencia» de winclus.com: se regenera en cada push (GitHub Actions) y antes de cada despliegue.
+// Uso: node evidencia.js   (sale 1 si alguna prueba falla)
+const { spawnSync, execSync } = require("child_process");
+const path = require("path");
+const fs = require("fs");
+
+const RAIZ = path.resolve(__dirname, "../../..");
+const PRUEBAS = [
+  ["prueba_posicion.js", "Con cada ajuste guardado (modo oscuro, contraste, lupa, texto 200 %…) el botón y el panel siguen en pantalla y la cabecera fija del sitio no se mueve.", ["WCAG 1.4.10", "WCAG 1.4.4"]],
+  ["prueba_teclado_fisico.js", "Tab llega a todas las teclas y frases; Intro y Espacio las pulsan; el lector básico no captura las teclas de los controles del sitio.", ["WCAG 2.1.1", "WCAG 2.1.2", "EN 301 549 11.5"]],
+  ["prueba_aria.js", "Pestañas con el patrón Tabs, −/+ con etiqueta y valor, avisos en región live, calibración modal.", ["WCAG 4.1.2", "WCAG 4.1.3", "WCAG 1.3.1"]],
+  ["prueba_privacidad.js", "Consentimiento antes de la primera cámara, avisos de la voz, «Acerca de» honesto, «Restablecer todo» borra todo.", ["Ley 1581/2012 art. 5", "Ley 1480/2011"]],
+  ["prueba_axe.js", "axe-core WCAG 2.1/2.2 AA sobre cada pestaña, el teclado, las frases y el modo fácil, más contraste calculado a mano.", ["WCAG 1.4.3", "WCAG 1.4.11", "Res. 1519 CC5"]],
+  ["prueba_aislamiento.js", "Estilos agresivos del sitio no alteran el widget (shadow root) y funciona con CSP estricta con nonce.", ["EN 301 549 11.5", "Res. 1519 CC13"]],
+  ["prueba_daltonismo.js", "Los filtros de daltonismo son SVG reales y cambian los píxeles de la página.", ["WCAG 1.4.1"]],
+  ["prueba_landing.js", "winclus.com (portada, privacidad, accesibilidad, integrar, comparar) pasa axe a 1280 y 390 px y carga su propio widget.", ["Res. 1519 Anexo 1", "WCAG 2.1 AA"]],
+  ["prueba_sistema.js", "Respeta prefers-reduced-motion y prefers-contrast, lee la página en su idioma, cursor grande.", ["EN 301 549 11.7", "WCAG 3.1.1", "WCAG 2.4.7"]],
+  ["prueba_barrido.js", "Barrido con un solo pulsador: página, teclado por filas y teclas, Escape pausa, el gesto de la cara es la señal.", ["EN 301 549 11.5", "ISO 9241-171 §9"]],
+  ["prueba_auditiva.js", "Aviso visual de sonido, subtítulos mostrados y agrandados, subtítulos en vivo, Centro de Relevo y diccionario LSC.", ["WCAG 1.2.2", "WCAG 1.3.3", "WCAG 1.4.2", "Res. 1519 CC2"]],
+  ["prueba_voz.js", "«Números» y «clic 12», dictado con confirmación.", ["EN 301 549 11.5", "WCAG 2.5.1"]],
+  ["prueba_formularios.js", "«Campo N de M», errores en lenguaje claro con foco, pegar siempre permitido.", ["WCAG 3.3.1", "WCAG 3.3.3", "WCAG 3.3.7", "WCAG 3.3.8", "Res. 1519 CC25"]],
+  ["prueba_perfil_enlace.js", "El perfil viaja en un enlace sin cuentas ni servidores y un enlace roto no rompe nada.", ["EN 301 549 11.7"]],
+  ["prueba_pictogramas.js", "Tablero ARASAAC: frase con voz, predicción aprendida, frases guardadas, barrido dentro.", ["ISO 24751", "CAA"]],
+  ["prueba_facil.js", "«Explicar en fácil» por reglas y con IA, resaltado palabra a palabra, «¿Dónde estoy?».", ["WCAG 3.1.5", "WCAG 2.4.8", "COGA"]],
+  ["prueba_auditar.js", "Winclus Audit: informe por criterio de la Res. 1519 y borrador de declaración.", ["Res. 1519 Anexo 1"]],
+  ["prueba_sdk.js", "Web component, guía de integración, plugin de WordPress y módulo de Drupal.", ["Integración"]],
+  ["prueba_idiomas.js", "Panel en inglés en páginas en inglés, data-ui, idiomas añadidos por el sitio.", ["WCAG 3.1.1", "WCAG 3.1.2"]],
+  ["prueba_maximo.js", "Limitador de volumen, voz neuronal preferida, asistente «¿Qué quieres hacer?», transcribir un medio.", ["WCAG 1.4.2", "COGA"]],
+  ["prueba_evidencia.js", "La demostración pública pasa axe; las cifras de uso se cuentan en local, el resumen no lleva datos personales y solo se envían al sitio si la persona lo activa.", ["Ley 1581/2012", "Evidencia de uso"]],
+  ["prueba_rendimiento.js", "La inferencia de la cara va a la tasa de la cámara; modo ahorro a 15/s.", ["Rendimiento"]],
+];
+
+function commit() { try { return execSync("git rev-parse --short HEAD", { cwd: RAIZ }).toString().trim(); } catch (e) { return "?"; } }
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+const resultados = [];
+let fallan = 0;
+for (const [archivo, que, criterios] of PRUEBAS) {
+  const t0 = Date.now();
+  const r = spawnSync(process.execPath, [path.join(__dirname, archivo)], { encoding: "utf8", timeout: 600000 });
+  const lineas = (r.stdout || "").split(/\r?\n/).filter((l) => /^(OK|MAL) /.test(l));
+  const ok = lineas.filter((l) => l.startsWith("OK")).length, mal = lineas.filter((l) => l.startsWith("MAL")).length;
+  const bien = r.status === 0 && mal === 0;
+  if (!bien) fallan++;
+  resultados.push({ archivo, que, criterios, ok, mal, bien, segundos: Math.round((Date.now() - t0) / 1000), lineas: lineas.map((l) => l.replace(/\s+\(.*\)$/, "").slice(0, 160)) });
+  console.log((bien ? "OK  " : "MAL ") + archivo + " (" + ok + " ok, " + mal + " mal)");
+}
+
+const fecha = new Date();
+const json = { fecha: fecha.toISOString(), commit: commit(), version: (fs.readFileSync(path.join(RAIZ, "web/widget.js"), "utf8").match(/var VERSION = "([^"]+)"/) || [])[1], pruebas: resultados.length, comprobaciones: resultados.reduce((s, r) => s + r.ok + r.mal, 0), fallan, resultados };
+fs.writeFileSync(path.join(RAIZ, "web/evidencia.json"), JSON.stringify(json, null, 2));
+
+const fechaTxt = fecha.toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" }) + ", " + fecha.toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
+const porCriterio = {};
+resultados.forEach((r) => r.criterios.forEach((c) => { porCriterio[c] = porCriterio[c] || []; porCriterio[c].push(r); }));
+let h = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evidencia · Winclus</title>
+<meta name="description" content="Resultado de las pruebas automáticas públicas del widget Winclus: qué demuestra cada una, cuándo se corrió y con qué versión.">
+<link rel="icon" href="img/icono.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="paginas.css">
+<style>.ok{color:#0F7A70;font-weight:700}.mal{color:#A6402F;font-weight:700}details{margin:6px 0 14px}summary{cursor:pointer;font-weight:600}.lineas{font-size:.88rem;margin:6px 0 0 8px;padding-left:16px}.lineas li{margin:2px 0}.tag{display:inline-block;font-size:.78rem;background:#F3F6FA;border:1px solid #DCE3EC;border-radius:999px;padding:1px 8px;margin:2px 4px 2px 0}.kpi{display:flex;gap:14px;flex-wrap:wrap;margin:16px 0}.kpi div{background:#F3F6FA;border-radius:12px;padding:12px 18px;min-width:120px}.kpi b{display:block;font-size:1.7rem}pre{overflow-x:auto;background:#101F3D;color:#EEF1EA;padding:12px 14px;border-radius:10px;font-size:14px}main{overflow-wrap:anywhere}</style>
+</head>
+<body>
+<a class="salto" href="#contenido">Ir al contenido</a>
+<header><div class="barra"><a class="marca" href="/"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a><a class="volver" href="/">Volver a la portada</a></div></header>
+<main id="contenido">
+  <h1>Evidencia: lo que las pruebas demuestran</h1>
+  <p class="meta">Generado automáticamente el ${esc(fechaTxt)} · widget ${esc(json.version)} · commit <code>${esc(json.commit)}</code>. Las pruebas corren en GitHub en cada cambio del código y cualquiera puede repetirlas: <code>npm test</code> en <a href="https://github.com/specteriatech/winclus/tree/main/herramientas/pruebas/widget">herramientas/pruebas/widget</a>.</p>
+  <div class="kpi"><div><b>${json.pruebas}</b>pruebas</div><div><b>${json.comprobaciones}</b>comprobaciones</div><div><b class="${fallan ? "mal" : "ok"}">${fallan ? fallan + " fallan" : "0 fallan"}</b>estado</div></div>
+  <div class="${fallan ? "aviso" : "resumen"}"><p>${fallan ? "<strong>Hay pruebas que fallan.</strong> Esta versión no debería desplegarse hasta corregirlas; el detalle está abajo." : "<strong>Todas las pruebas pasan.</strong> Esto demuestra lo que el widget hace por sí mismo; no sustituye a las pruebas con personas usuarias ni a una auditoría de tercero, que están en curso."}</p></div>
+  <h2>Por criterio</h2>
+  <div class="tabla" tabindex="0" role="region" aria-label="Criterios y pruebas"><table><thead><tr><th>Criterio o norma</th><th>Lo respaldan</th></tr></thead><tbody>`;
+Object.keys(porCriterio).sort().forEach((c) => { h += `<tr><td>${esc(c)}</td><td>${porCriterio[c].map((r) => `<span class="${r.bien ? "ok" : "mal"}">${r.bien ? "✓" : "✗"}</span> ${esc(r.archivo)}`).join("<br>")}</td></tr>`; });
+h += `</tbody></table></div>
+  <h2>Por prueba</h2>`;
+resultados.forEach((r) => {
+  h += `<details><summary><span class="${r.bien ? "ok" : "mal"}">${r.bien ? "✓" : "✗"}</span> ${esc(r.archivo)} · ${r.ok} comprobaciones${r.mal ? ", " + r.mal + " fallan" : ""} · ${r.segundos} s</summary><p>${esc(r.que)}</p><p>${r.criterios.map((c) => `<span class="tag">${esc(c)}</span>`).join("")}</p><ul class="lineas">${r.lineas.map((l) => `<li class="${l.startsWith("OK") ? "" : "mal"}">${esc(l.replace(/^(OK|MAL)\s+/, ""))}</li>`).join("")}</ul></details>`;
+});
+h += `<h2>Cómo repetirlo</h2><pre tabindex="0"><code>git clone https://github.com/specteriatech/winclus
+cd winclus/herramientas/pruebas/widget
+npm install &amp;&amp; npx playwright install chromium
+npm test            # las ${json.pruebas} pruebas
+node evidencia.js   # regenera esta página</code></pre>
+</main>
+<footer><div class="pie"><div>© 2026 Colaboradores de Winclus · Licencia Apache 2.0</div><ul><li><a href="/">Portada</a></li><li><a href="accesibilidad">Accesibilidad</a></li><li><a href="comparar">Frente a otras soluciones</a></li><li><a href="privacidad">Privacidad y datos</a></li><li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li></ul></div></footer>
+<script src="widget.js" async></script>
+</body>
+</html>`;
+fs.writeFileSync(path.join(RAIZ, "web/evidencia.html"), h);
+console.log((fallan ? fallan + " prueba(s) MAL · " : "todo bien · ") + "web/evidencia.html y web/evidencia.json");
+process.exit(fallan ? 1 : 0);

@@ -21,7 +21,7 @@ function pagina(nombre, html) { const p = path.join(__dirname, nombre); fs.write
     sw: Winclus.caja.querySelector('label[for="wcl-oscuro"]').textContent,
     boton: Winclus.caja.querySelector(".wcl-btn").getAttribute("aria-label"),
     lang: Winclus.caja.host.getAttribute("lang"),
-    facil: Array.from(Winclus.caja.querySelectorAll(".wcl-facil button")).map((b) => b.textContent)[0] || "",
+    facil: Array.from(Winclus.caja.querySelectorAll(".wcl-facil button")).map((b) => b.textContent).filter((t) => /🔊/.test(t))[0] || "",
   }));
 
   // --- página en inglés ---

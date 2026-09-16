@@ -1,0 +1,34 @@
+name: Pruebas del widget
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: herramientas/pruebas/widget
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: herramientas/pruebas/widget/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Todas las pruebas y página de evidencia
+        run: node evidencia.js
+      - name: Publicar evidencia como artefacto
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencia
+          path: |
+            ../../../web/evidencia.html
+            ../../../web/evidencia.json

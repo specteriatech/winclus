@@ -2,7 +2,7 @@
 const http = require("http"), fs = require("fs"), path = require("path");
 const WEB = path.resolve(__dirname, "../../../web"), PRUEBAS = __dirname;
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8", ".wasm": "application/wasm",
-  ".task": "application/octet-stream", ".txt": "text/plain; charset=utf-8", ".json": "application/json", ".jpg": "image/jpeg", ".png": "image/png", ".css": "text/css" };
+  ".task": "application/octet-stream", ".txt": "text/plain; charset=utf-8", ".json": "application/json", ".jpg": "image/jpeg", ".png": "image/png", ".css": "text/css", ".webm": "video/webm", ".vtt": "text/vtt" };
 http.createServer((req, res) => {
   let u = decodeURIComponent(req.url.split("?")[0]);
   let f = u.startsWith("/pruebas/") ? path.join(PRUEBAS, u.slice(9)) : path.join(WEB, u === "/" ? "index.html" : u);
