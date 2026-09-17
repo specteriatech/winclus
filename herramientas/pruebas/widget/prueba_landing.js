@@ -17,7 +17,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   for (const ancho of [1280, 390]) {
     const ctx = await nav.newContext({ viewport: { width: ancho, height: 900 } });
     const page = await ctx.newPage();
-    for (const ruta of ["/", "/privacidad.html", "/accesibilidad.html", "/integrar.html", "/comparar.html", "/demo.html", "/evidencia.html", "/presentacion.html", "/una-pagina.html", "/guia.html", "/guion-prueba.html","/manual.html"]) {
+    for (const ruta of ["/", "/privacidad.html", "/accesibilidad.html", "/integrar.html", "/comparar.html", "/demo.html", "/evidencia.html", "/presentacion.html", "/una-pagina.html", "/guia.html", "/guion-prueba.html", "/manual.html", "/cumplimiento.html", "/mapa-del-sitio.html"]) {
       const errores = [];
       page.on("pageerror", (e) => errores.push(String(e)));
       await page.goto("http://127.0.0.1:8765" + ruta);

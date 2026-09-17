@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-17T21:46:35.521Z",
-  "commit": "1e9c650",
+  "fecha": "2026-09-17T22:34:04.643Z",
+  "commit": "49caad1",
   "version": "0.6.1",
   "pruebas": 25,
-  "comprobaciones": 408,
+  "comprobaciones": 428,
   "fallan": 0,
   "resultados": [
     {
@@ -16,7 +16,7 @@
       "ok": 18,
       "mal": 0,
       "bien": true,
-      "segundos": 10,
+      "segundos": 15,
       "lineas": [
         "OK  sin ajustes",
         "OK  oscuro",
@@ -78,7 +78,7 @@
       "ok": 11,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 6,
       "lineas": [
         "OK  una sola pestaña tabulable y todas con aria-controls válido",
         "OK  la tabulable es la seleccionada",
@@ -204,10 +204,10 @@
         "Res. 1519 Anexo 1",
         "WCAG 2.1 AA"
       ],
-      "ok": 120,
+      "ok": 140,
       "mal": 0,
       "bien": true,
-      "segundos": 11,
+      "segundos": 13,
       "lineas": [
         "OK  / a 1280 px: axe sin incumplimientos",
         "OK  / a 1280 px: carga el widget",
@@ -269,6 +269,16 @@
         "OK  /manual.html a 1280 px: enlaza las otras páginas legales",
         "OK  /manual.html a 1280 px: sin scroll horizontal",
         "OK  /manual.html a 1280 px: sin errores JS",
+        "OK  /cumplimiento.html a 1280 px: axe sin incumplimientos",
+        "OK  /cumplimiento.html a 1280 px: carga el widget",
+        "OK  /cumplimiento.html a 1280 px: enlaza las otras páginas legales",
+        "OK  /cumplimiento.html a 1280 px: sin scroll horizontal",
+        "OK  /cumplimiento.html a 1280 px: sin errores JS",
+        "OK  /mapa-del-sitio.html a 1280 px: axe sin incumplimientos",
+        "OK  /mapa-del-sitio.html a 1280 px: carga el widget",
+        "OK  /mapa-del-sitio.html a 1280 px: enlaza las otras páginas legales",
+        "OK  /mapa-del-sitio.html a 1280 px: sin scroll horizontal",
+        "OK  /mapa-del-sitio.html a 1280 px: sin errores JS",
         "OK  / a 390 px: axe sin incumplimientos",
         "OK  / a 390 px: carga el widget",
         "OK  / a 390 px: enlaza las otras páginas legales",
@@ -328,7 +338,17 @@
         "OK  /manual.html a 390 px: carga el widget",
         "OK  /manual.html a 390 px: enlaza las otras páginas legales",
         "OK  /manual.html a 390 px: sin scroll horizontal",
-        "OK  /manual.html a 390 px: sin errores JS"
+        "OK  /manual.html a 390 px: sin errores JS",
+        "OK  /cumplimiento.html a 390 px: axe sin incumplimientos",
+        "OK  /cumplimiento.html a 390 px: carga el widget",
+        "OK  /cumplimiento.html a 390 px: enlaza las otras páginas legales",
+        "OK  /cumplimiento.html a 390 px: sin scroll horizontal",
+        "OK  /cumplimiento.html a 390 px: sin errores JS",
+        "OK  /mapa-del-sitio.html a 390 px: axe sin incumplimientos",
+        "OK  /mapa-del-sitio.html a 390 px: carga el widget",
+        "OK  /mapa-del-sitio.html a 390 px: enlaza las otras páginas legales",
+        "OK  /mapa-del-sitio.html a 390 px: sin scroll horizontal",
+        "OK  /mapa-del-sitio.html a 390 px: sin errores JS"
       ]
     },
     {
@@ -393,7 +413,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 8,
+      "segundos": 7,
       "lineas": [
         "OK  un audio de la página muestra el aviso con su nombre",
         "OK  un audio creado por código",
@@ -417,7 +437,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 7,
       "lineas": [
         "OK  «números» pone etiquetas 1, 2, 3… sobre lo que se puede pulsar",
         "OK  «clic 2» pulsa el botón que lleva el 2",
@@ -514,7 +534,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 7,
+      "segundos": 2,
       "lineas": [
         "OK  «¿Dónde estoy?» dice título, ruta, encabezados y avance",
         "OK  hay resumen: de qué va y lo más importante",
@@ -654,7 +674,7 @@
       "ok": 21,
       "mal": 0,
       "bien": true,
-      "segundos": 14,
+      "segundos": 12,
       "lineas": [
         "OK  chromium: recorrido básico",
         "OK  chromium: sin speechSynthesis ni SpeechRecognition",

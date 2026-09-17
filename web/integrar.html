@@ -27,7 +27,10 @@
 
   <h2>1. Una línea</h2>
   <p>Antes de <code>&lt;/body&gt;</code>. La versión fija no cambia sin que tú lo decidas; <code>widget.js</code> es siempre la última.</p>
-  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.6.1.js" async&gt;&lt;/script&gt;</code></pre>
+  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.6.1.js" async
+        integrity="sha384-kDzImdE32v6i9ycSqwWivkM3zIxvhAkVHDJEXiOJpegp4jDvKDj61Rfxm4fOHsas"
+        crossorigin="anonymous"&gt;&lt;/script&gt;</code></pre>
+  <p>El atributo <code>integrity</code> es el hash SHA-384 del archivo: el navegador comprueba que lo que llega es exactamente la versión 0.6.1 y, si no coincide, no lo ejecuta (integridad de subrecursos, exigible como control de seguridad digital para scripts de terceros). Cada versión fija publica su hash aquí; <code>widget.js</code> (la última) no lo lleva porque cambia.</p>
   <p>Atributos opcionales en el mismo <code>&lt;script&gt;</code>:</p>
   <div class="tabla" tabindex="0" role="region" aria-label="Atributos del script"><table>
     <thead><tr><th>Atributo</th><th>Valores</th><th>Qué hace</th></tr></thead>
@@ -109,7 +112,7 @@ media-src  blob:;                                  /* la cámara, si se permite 
     <ul>
       <li><a href="/">Portada</a></li>
       <li><a href="accesibilidad">Accesibilidad</a></li>
-      <li><a href="privacidad">Privacidad y datos</a></li>
+      <li><a href="privacidad">Privacidad y datos</a></li><li><a href="mapa-del-sitio">Mapa del sitio</a></li>
       <li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li>
     </ul>
   </div>

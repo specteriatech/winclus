@@ -3,7 +3,12 @@
   "headers": [
     { "source": "/(.*)", "headers": [
       { "key": "X-Content-Type-Options", "value": "nosniff" },
-      { "key": "Access-Control-Allow-Origin", "value": "*" }
+      { "key": "Access-Control-Allow-Origin", "value": "*" },
+      { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
+      { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+      { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+      { "key": "Permissions-Policy", "value": "camera=(self), microphone=(self), geolocation=(), payment=()" },
+      { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://static.arasaac.org; media-src 'self' blob: data:; connect-src 'self' https://static.arasaac.org https://api.arasaac.org; worker-src 'self' blob:; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests" }
     ] },
     { "source": "/instalar.ps1", "headers": [ { "key": "Content-Type", "value": "text/plain; charset=utf-8" }, { "key": "Cache-Control", "value": "public, max-age=300" } ] },
     { "source": "/widget.js", "headers": [ { "key": "Cache-Control", "value": "public, max-age=300" } ] },

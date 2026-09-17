@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cumplimiento normativo en Colombia · Winclus</title>
+<meta name="description" content="Norma por norma: qué exige Colombia a la accesibilidad web y a la tecnología de apoyo, qué cumple Winclus, cómo se demuestra y qué falta para poder decir «cumplimos en todo».">
+<link rel="icon" href="img/icono.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="paginas.css">
+<style>
+  main{max-width:960px}h2{font-size:1.4rem;margin-top:2em}h3{font-size:1.1rem;margin:1.4em 0 .4em;color:var(--teal)}
+  .resumen{background:var(--fondo2);border-radius:12px;padding:14px 18px;margin:12px 0 20px}
+  table{width:100%;border-collapse:collapse;margin:8px 0 18px;font-size:.94rem}th,td{border:1px solid #C9D0DC;padding:8px 10px;vertical-align:top;text-align:left}th{background:var(--fondo2)}
+  .si{background:#E8F7F3;color:#0B5E56;font-weight:700;white-space:nowrap}.no{background:#FDE8E8;color:#8A1C1C;font-weight:700;white-space:nowrap}.na{color:#4A5670;white-space:nowrap}.parcial{background:#FFF6DB;color:#7A5A00;font-weight:700;white-space:nowrap}
+  .leyenda span{display:inline-block;padding:2px 10px;border-radius:999px;margin-right:8px;font-size:.9rem}
+  .humano{border-left:6px solid #C8433B;background:#FDE8E8;padding:10px 16px;border-radius:0 12px 12px 0;margin:14px 0}
+  .tabla{overflow:auto}
+</style>
+</head>
+<body>
+<a class="salto" href="#contenido">Ir al contenido</a>
+<header><div class="barra"><a class="marca" href="/"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a><a class="volver" href="/">Volver a la portada</a></div></header>
+<main id="contenido">
+  <h1>Cumplimiento normativo en Colombia</h1>
+  <p class="meta">Norma por norma: qué exige, qué cumple Winclus (el widget 0.6.1 y winclus.com), cómo se demuestra y qué falta. Actualizado el 17 de septiembre de 2026. Es una autoevaluación honesta: lo que está en rojo no lo puede cerrar el código, lo cierra una persona o una entidad externa.</p>
+
+  <div class="resumen">
+    <p><strong>Respuesta corta.</strong> De 41 requisitos revisados, Winclus cumple 37, uno queda parcial (línea telefónica de soporte) y tres dependen de terceros: evaluación independiente, pruebas con personas con discapacidad y concepto jurídico sobre datos biométricos. Cuando esos cuatro estén cerrados podremos decir «cumplimos en todo» y sostenerlo ante una entidad.</p>
+    <p><strong>Lo que la norma no dice y conviene tener claro.</strong> La Resolución 1519 obliga a cada sitio del Estado, no a un widget. Winclus es tecnología de apoyo que se añade a un sitio: hace que se pueda usar con la cara, la voz, un pulsador o pictogramas, pero <strong>no hace conforme el sitio</strong>. Un sitio cumple cuando su propio código cumple. Lo que sí garantizamos es que el widget, winclus.com y todo lo que entregamos cumplen lo exigible.</p>
+    <p class="leyenda"><span class="si">Cumple</span><span class="parcial">Parcial</span><span class="no">Pendiente (persona)</span><span class="na">No aplica</span></p>
+  </div>
+
+  <h2>1. Resolución 1519 de 2020 de MinTIC, Anexo 1 (accesibilidad web)</h2>
+  <p>Es la norma técnica que aplica a las sedes electrónicas del Estado desde el 1 de enero de 2022. Su texto exige el nivel AA de las WCAG 2.1 (apartado 1.3), reglas para vídeos (1.5), mapa del sitio (1.6), 32 criterios de cumplimiento interpretados (CC1 a CC32) y documentos descargables accesibles (capítulo 3).</p>
+  <div class="tabla" tabindex="0" role="region" aria-label="Resolución 1519 Anexo 1"><table>
+    <thead><tr><th>Requisito</th><th>Estado</th><th>Cómo se demuestra</th></tr></thead>
+    <tbody>
+      <tr><td>1.3 Nivel AA de las WCAG 2.1 en el widget</td><td class="si">Cumple</td><td>Informe de conformidad (ACR) criterio por criterio; axe-core en cada pestaña, el teclado, los pictogramas y el modo fácil; contraste calculado; pruebas de teclado y de foco. Todo corre en cada cambio y se publica en <a href="evidencia">evidencia</a>.</td></tr>
+      <tr><td>1.3 Nivel AA de las WCAG 2.1 en winclus.com</td><td class="si">Cumple</td><td>axe-core sobre las catorce páginas a 1280 y 390 px, en cada cambio.</td></tr>
+      <tr><td>1.5 Subtítulos en el 100 % de los vídeos nuevos</td><td class="si">Cumple</td><td>Los tres vídeos de la demostración llevan pista de subtítulos (VTT) y descripción. El widget además agranda los subtítulos de cualquier vídeo del sitio anfitrión.</td></tr>
+      <tr><td>1.5 Lengua de Señas Colombiana en vídeos</td><td class="na">No aplica</td><td>La norma la exige solo a entidades del Gobierno Nacional en cuatro casos (alocuciones presidenciales, emergencias, seguridad ciudadana, rendición de cuentas). Winclus enlaza al Centro de Relevo y al diccionario del INSOR.</td></tr>
+      <tr><td>1.6 Mapa del sitio en el pie y en XML</td><td class="si">Cumple</td><td><a href="mapa-del-sitio">Mapa del sitio</a> enlazado desde el pie de todas las páginas y <a href="sitemap.xml">sitemap.xml</a>.</td></tr>
+      <tr><td>CC1, CC6, CC29 Alternativas textuales, imágenes de texto</td><td class="si">Cumple</td><td>Iconos del panel decorativos (alt vacío) con nombre en el botón; pictogramas ARASAAC decorativos junto al texto; sin imágenes de texto. Regla image-alt de axe.</td></tr>
+      <tr><td>CC2, CC3 Vídeos y audios con complemento</td><td class="si">Cumple</td><td>Subtítulos y descripción en los vídeos de la demostración; el widget transcribe por micrófono el audio de la página y ofrece subtítulos en vivo.</td></tr>
+      <tr><td>CC4 Ampliable: texto y zoom al 200 %, 320 px sin desplazamiento lateral</td><td class="si">Cumple</td><td>Prueba de posición con texto al 200 % y lupa; prueba móvil a 360 y 390 px; winclus.com usa unidades relativas.</td></tr>
+      <tr><td>CC5 Contraste</td><td class="si">Cumple</td><td>Contraste de todo el panel calculado con la fórmula de las WCAG (mínimo 4,5:1), incluidos interruptores, bordes y foco.</td></tr>
+      <tr><td>CC7, CC13 Identificación y navegación coherentes</td><td class="si">Cumple</td><td>Mismo panel, mismas pestañas y mismos nombres en todas las páginas; el sitio repite cabecera y pie.</td></tr>
+      <tr><td>CC8, CC9, CC11, CC14 Estructura, tablas, listas, orden</td><td class="si">Cumple</td><td>Encabezados por sección, listas y tablas semánticas en el sitio y en el panel; orden del DOM igual al visual; HTML validado por axe.</td></tr>
+      <tr><td>CC10 Saltar bloques repetidos</td><td class="si">Cumple</td><td>Enlace «Ir al contenido» en todas las páginas; el panel se cierra con Escape.</td></tr>
+      <tr><td>CC12 Múltiples vías</td><td class="si">Cumple</td><td>Menú, pie, mapa del sitio y enlaces cruzados; el widget añade «¿Dónde estoy?» y órdenes por voz.</td></tr>
+      <tr><td>CC15, CC24, CC25, CC28 Advertencias, campos, instrucciones, errores</td><td class="si">Cumple</td><td>Cada opción del panel lleva su ayuda antes del control; los formularios del sitio anfitrión reciben «Campo 3 de 8, obligatorio» y errores en lenguaje claro (ayuda en formularios).</td></tr>
+      <tr><td>CC16, CC17, CC32 Orden de tabulación, foco visible, teclado</td><td class="si">Cumple</td><td>Prueba de teclado físico: Tab recorre todo, foco de 3 px visible, pestañas con el patrón Tabs del W3C, sin trampas; el barrido con un pulsador cubre lo mismo.</td></tr>
+      <tr><td>CC18, CC19, CC20, CC21, CC22 Sin audio automático, tiempos, movimiento, refresco, cambios de contexto</td><td class="si">Cumple</td><td>Nada suena ni se mueve solo; el barrido se pausa con Escape y su tiempo se ajusta; el modo calma para animaciones del sitio; ningún control cambia de página al recibir el foco.</td></tr>
+      <tr><td>CC23, CC26, CC27 Títulos, enlaces, idioma</td><td class="si">Cumple</td><td>Títulos únicos en cada página; enlaces que se entienden solos; el panel declara su idioma y habla en el idioma de la página.</td></tr>
+      <tr><td>CC30, CC31 Objetos programados y componentes a medida</td><td class="si">Cumple</td><td>Teclado en pantalla, tablero de pictogramas, lectura limpia y calibración: todos con roles ARIA, manejables con teclado y anunciados; prueba ARIA y prueba de aislamiento.</td></tr>
+      <tr><td>2.2.3.8 Los validadores automáticos no son el medio principal</td><td class="no">Pendiente (persona)</td><td>Tenemos revisión manual propia, pero falta la evaluación por un experto independiente. Winclus Audit ya declara sus límites y lista la revisión manual obligatoria.</td></tr>
+      <tr><td>Capítulo 3.3 PDF etiquetados, con idioma y estructura</td><td class="si">Cumple</td><td>La guía y el manual en PDF se generan etiquetados (PDF/UA), con idioma <code>es</code>, encabezados y índice. Verificado en cada generación.</td></tr>
+      <tr><td>Declaración de accesibilidad con método, fecha y responsable</td><td class="si">Cumple</td><td><a href="accesibilidad">Declaración</a> con estado, método, fecha, responsable, excepciones y lo pendiente.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>2. Resolución 1519 de 2020, Anexo 3 (seguridad digital) en lo que toca a un script de terceros</h2>
+  <div class="tabla" tabindex="0" role="region" aria-label="Seguridad digital"><table>
+    <thead><tr><th>Requisito</th><th>Estado</th><th>Cómo se demuestra</th></tr></thead>
+    <tbody>
+      <tr><td>HTTPS obligatorio y redirección</td><td class="si">Cumple</td><td>winclus.com solo por HTTPS con HSTS (dos años, subdominios, preload).</td></tr>
+      <tr><td>Cabeceras de seguridad</td><td class="si">Cumple</td><td>Content-Security-Policy, X-Content-Type-Options, X-Frame-Options, Referrer-Policy y Permissions-Policy (cámara y micrófono solo desde el propio sitio).</td></tr>
+      <tr><td>Integridad del script que instala la entidad</td><td class="si">Cumple</td><td>Cada versión fija es inmutable y publica su hash SHA-384 (atributo <code>integrity</code>) en la <a href="integrar">guía de integración</a>, WordPress y Drupal.</td></tr>
+      <tr><td>Funciona con la CSP estricta de la entidad</td><td class="si">Cumple</td><td>Prueba de aislamiento con CSP con nonce: el widget no necesita <code>'unsafe-inline'</code> y no genera violaciones.</td></tr>
+      <tr><td>Sin servidores propios que reciban datos</td><td class="si">Cumple</td><td>La cámara, la calibración y los ajustes se quedan en el navegador; el widget no llama a servidores de Winclus salvo para descargar sus propios archivos. Prueba de privacidad.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>3. NTC 5854 (ICONTEC)</h2>
+  <div class="tabla" tabindex="0" role="region" aria-label="NTC 5854"><table>
+    <thead><tr><th>Requisito</th><th>Estado</th><th>Cómo se demuestra</th></tr></thead>
+    <tbody>
+      <tr><td>Niveles A y AA (equivalen a las WCAG 2.0 A y AA)</td><td class="si">Cumple</td><td>Las WCAG 2.1 AA contienen todos los criterios de las WCAG 2.0 AA; ver el ACR.</td></tr>
+      <tr><td>Nivel AAA</td><td class="na">No aplica</td><td>Ninguna norma colombiana lo exige. Winclus cubre varios criterios AAA como apoyo (lenguaje claro con «Explicar en fácil», lectura en voz alta, espaciado de dislexia), pero no lo declara.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>4. Leyes de inclusión y transparencia</h2>
+  <div class="tabla" tabindex="0" role="region" aria-label="Leyes de inclusión"><table>
+    <thead><tr><th>Norma</th><th>Qué pide que toque a Winclus</th><th>Estado</th><th>Cómo se demuestra</th></tr></thead>
+    <tbody>
+      <tr><td>Ley 1618 de 2013 (artículos 14 y 16)</td><td>Acceso a la información y a las TIC de las personas con discapacidad; tecnologías de apoyo</td><td class="si">Cumple</td><td>Diez necesidades cubiertas (motriz, habla, baja visión, ceguera, auditiva, dislexia, cognitiva, neurodivergencia, mayores, daltonismo); <a href="guia">guía por discapacidad</a>.</td></tr>
+      <tr><td>Ley 1618 de 2013, evidencia de que sirve</td><td>Que la tecnología de apoyo se compruebe con las personas a las que va dirigida</td><td class="no">Pendiente (persona)</td><td>Protocolo escrito y guion de diez minutos publicados; ninguna sesión hecha todavía.</td></tr>
+      <tr><td>Ley 1712 de 2014 (artículo 8)</td><td>Información pública accesible a personas con discapacidad</td><td class="si">Cumple</td><td>Lectura en voz alta, lector básico, lectura limpia y explicación en fácil sobre cualquier página; PDF accesibles.</td></tr>
+      <tr><td>Ley 1680 de 2013</td><td>Acceso de personas ciegas y con baja visión a la información</td><td class="si">Cumple</td><td>Lector básico con voz y teclado para quien no tiene NVDA o JAWS; compatible con ellos (no se pisa si se deja apagado); texto al 200 %, lupa hasta ×16, contraste.</td></tr>
+      <tr><td>Ley 982 de 2005 y Ley 1346 de 2009</td><td>Reconocimiento de la LSC y acceso de personas sordas</td><td class="si">Cumple</td><td>Subtítulos grandes, avisos visuales de sonidos, subtítulos en vivo, enlace al Centro de Relevo (intérprete gratuito) y al diccionario LSC del INSOR.</td></tr>
+      <tr><td>Decreto 767 de 2022 (Gobierno Digital)</td><td>Servicios digitales de confianza, usables y accesibles</td><td class="si">Cumple</td><td>Cifras de uso para que la entidad reporte cuántas personas terminan sus gestiones; declaración y evidencia públicas.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>5. Ley 1581 de 2012 y Decreto 1377 de 2013 (datos personales)</h2>
+  <div class="tabla" tabindex="0" role="region" aria-label="Datos personales"><table>
+    <thead><tr><th>Requisito</th><th>Estado</th><th>Cómo se demuestra</th></tr></thead>
+    <tbody>
+      <tr><td>Autorización previa, expresa e informada para datos sensibles (la cara y la mirada)</td><td class="si">Cumple</td><td>Consentimiento en pantalla antes de encender la cámara la primera vez, con texto en lenguaje claro; se guarda la fecha y la versión; «Restablecer todo» lo borra. Prueba de privacidad.</td></tr>
+      <tr><td>Política de tratamiento y aviso de privacidad</td><td class="si">Cumple</td><td><a href="privacidad">Política</a> con finalidades, derechos, plazos de respuesta (10 y 15 días hábiles) y canal; enlazada desde el «Acerca de» del widget.</td></tr>
+      <tr><td>Minimización: nada sale del equipo</td><td class="si">Cumple</td><td>Imagen y rasgos procesados en el navegador; solo el dictado y las órdenes por voz usan el reconocedor del navegador (Google o Microsoft) y el panel lo avisa cada vez.</td></tr>
+      <tr><td>Papel de Winclus (responsable o no) y Registro Nacional de Bases de Datos</td><td class="no">Pendiente (persona)</td><td>Hace falta un concepto jurídico escrito que confirme que, al no recibir nunca el dato, Winclus no es responsable del tratamiento, y si aplica el registro ante la SIC. Con él se ajusta la política y la cláusula para entidades.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>6. Norma europea EN 301 549 (la que las entidades usan para software de apoyo)</h2>
+  <div class="tabla" tabindex="0" role="region" aria-label="EN 301 549"><table>
+    <thead><tr><th>Requisito</th><th>Estado</th><th>Cómo se demuestra</th></tr></thead>
+    <tbody>
+      <tr><td>Capítulo 11, software (interfaz del widget)</td><td class="si">Cumple</td><td>ACR, tabla 4.</td></tr>
+      <tr><td>12.1 Documentación accesible</td><td class="si">Cumple</td><td>Guía y manual en HTML y PDF etiquetado, en lenguaje claro.</td></tr>
+      <tr><td>12.2 Servicio de apoyo</td><td class="parcial">Parcial</td><td>Correo con compromiso de respuesta en 10 días hábiles. Falta una línea telefónica o de WhatsApp con horario publicado.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Lo que falta y quién lo cierra</h2>
+  <div class="humano"><strong>1. Evaluación independiente.</strong> Un experto en accesibilidad ajeno a Winclus evalúa el widget y el sitio con lector de pantalla, teclado, zoom y móvil, y firma un informe. Entre dos y cuatro semanas. Sin esto, todo lo de arriba es autodeclarado.</div>
+  <div class="humano"><strong>2. Pruebas con personas con discapacidad.</strong> Sesiones según el protocolo (ocho grupos, cinco personas cada uno) y, para empezar esta semana, la <a href="guion-prueba">prueba de diez minutos</a>. El informe se publica en la declaración.</div>
+  <div class="humano"><strong>3. Concepto jurídico y línea de soporte.</strong> Un abogado responde por escrito sobre el papel de Winclus con los datos biométricos y el registro de bases de datos; y se publica un teléfono o WhatsApp de soporte con horario.</div>
+  <p>El orden, los plazos y los correos modelo están en el plan de cumplimiento que acompaña a este documento (pídelo a <a href="mailto:hola@winclus.com">hola@winclus.com</a>). Cuando los tres estén cerrados, esta página pasará a decir «cumple» en todas las filas y la declaración enlazará el informe externo y el de pruebas.</p>
+</main>
+<footer><div class="barra"><span>Winclus · <a href="mailto:hola@winclus.com">hola@winclus.com</a></span><span><a href="accesibilidad">Accesibilidad</a> · <a href="privacidad">Privacidad</a> · <a href="mapa-del-sitio">Mapa del sitio</a></span></div></footer>
+<script src="widget.js" async></script>
+</body>
+</html>

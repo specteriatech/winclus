@@ -89,7 +89,7 @@ resultados.forEach((r) => {
   h += `<details><summary><span class="${r.bien ? "ok" : "mal"}">${r.bien ? "✓" : "✗"}</span> ${esc(r.archivo)} · ${r.ok} comprobaciones${r.mal ? ", " + r.mal + " fallan" : ""} · ${r.segundos} s</summary><p>${esc(r.que)}</p><p>${r.criterios.map((c) => `<span class="tag">${esc(c)}</span>`).join("")}</p><ul class="lineas">${r.lineas.map((l) => `<li class="${l.startsWith("OK") ? "" : "mal"}">${esc(l.replace(/^(OK|MAL)\s+/, ""))}</li>`).join("")}</ul></details>`;
 });
 h += `</main>
-<footer><div class="pie"><div>© 2026 Winclus</div><ul><li><a href="/">Portada</a></li><li><a href="accesibilidad">Accesibilidad</a></li><li><a href="comparar">Frente a otras soluciones</a></li><li><a href="privacidad">Privacidad y datos</a></li><li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li></ul></div></footer>
+<footer><div class="pie"><div>© 2026 Winclus</div><ul><li><a href="/">Portada</a></li><li><a href="accesibilidad">Accesibilidad</a></li><li><a href="comparar">Frente a otras soluciones</a></li><li><a href="privacidad">Privacidad y datos</a></li><li><a href="mapa-del-sitio">Mapa del sitio</a></li><li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li></ul></div></footer>
 <script src="widget.js" async></script>
 </body>
 </html>`;

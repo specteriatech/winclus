@@ -12,6 +12,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 define( 'WINCLUS_VERSION_WIDGET', '0.6.1' );
+define( 'WINCLUS_SRI_WIDGET', 'sha384-kDzImdE32v6i9ycSqwWivkM3zIxvhAkVHDJEXiOJpegp4jDvKDj61Rfxm4fOHsas' );   // hash de integridad de la versión fija (winclus.com/integrar)
 
 function winclus_opciones() {
 	return wp_parse_args( get_option( 'winclus_opciones', array() ), array(
@@ -31,6 +32,15 @@ function winclus_encolar() {
 	wp_script_add_data( 'winclus', 'async', true );
 }
 add_action( 'wp_enqueue_scripts', 'winclus_encolar' );
+
+// Versión fija: el navegador comprueba el hash del archivo (integridad de subrecursos) antes de ejecutarlo.
+function winclus_integridad( $tag, $handle ) {
+	if ( 'winclus' !== $handle ) { return $tag; }
+	$o = winclus_opciones();
+	if ( 'ultima' === $o['version'] ) { return $tag; }
+	return str_replace( ' src=', ' integrity="' . esc_attr( WINCLUS_SRI_WIDGET ) . '" crossorigin="anonymous" src=', $tag );
+}
+add_filter( 'script_loader_tag', 'winclus_integridad', 10, 2 );
 
 // Los atributos data-* del <script> (posición, cámara, idioma…) y async
 function winclus_atributos( $tag, $handle ) {

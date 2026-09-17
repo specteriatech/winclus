@@ -99,7 +99,23 @@ function informeHtml(resultados) {
     });
     if (r.extra.length) { h += `<h3>Comprobaciones de la Resolución 1519</h3><table><thead><tr><th>Criterio</th><th>Problema</th><th>Qué hacer</th></tr></thead><tbody>`; r.extra.forEach((x) => { h += `<tr><td>${esc(x.criterio)}</td><td><span class="${x.impact}">${esc(x.impact)}</span><br>${esc(x.help)}</td><td>${esc(x.detalle)}</td></tr>`; }); h += "</tbody></table>"; }
   });
-  h += `<h2>Cómo seguir</h2><ol><li>Corregir primero lo marcado como <span class="critical">critical</span> y <span class="serious">serious</span>: son las barreras que impiden usar la página.</li><li>Repetir el escáner tras cada corrección.</li><li>Completar con revisión manual (teclado, lector de pantalla, zoom 200 %, lectura fácil) y pruebas con personas con discapacidad.</li><li>Publicar la declaración de accesibilidad (borrador adjunto: <code>declaracion.html</code>) y mantenerla al día.</li></ol></body></html>`;
+  h += `<h2>Lo que este escáner no puede comprobar (revisión manual obligatoria)</h2>
+<p>El propio Anexo 1 de la Resolución 1519 (apartado 2.2.3.8) dice que los validadores automáticos «no pueden convertirse en el medio principal de revisión». Este informe cubre lo automatizable (entre el 30 y el 50 % de las barreras). Antes de declarar conformidad, una persona debe comprobar a mano, como mínimo:</p>
+<table><thead><tr><th>Criterio del Anexo 1</th><th>Qué comprobar a mano</th></tr></thead><tbody>
+<tr><td>CC1 · CC6 · CC29 (alternativas textuales, imágenes de texto)</td><td>Que cada texto alternativo describa de verdad la imagen y su función, no solo que exista.</td></tr>
+<tr><td>CC2 · CC3 (vídeos y audios)</td><td>Que los subtítulos sean fieles y sincronizados en el 100 % de los vídeos nuevos (§1.5); guion o transcripción de lo que es solo audio o solo vídeo.</td></tr>
+<tr><td>CC4 (ampliable)</td><td>Zoom del navegador al 200 % y texto al 200 %: nada se corta ni se solapa; a 320 px de ancho no hay desplazamiento horizontal.</td></tr>
+<tr><td>CC8 · CC9 · CC11 · CC14 (estructura, tablas, listas, orden)</td><td>Que los encabezados reflejen la estructura real, que las tablas de datos tengan cabeceras y que el orden de lectura con lector de pantalla tenga sentido.</td></tr>
+<tr><td>CC12 · CC13 · §1.6 (múltiples vías, navegación coherente, mapa del sitio)</td><td>Buscador, menú y mapa del sitio enlazado desde el pie; mapa XML para buscadores; menús iguales en todas las páginas.</td></tr>
+<tr><td>CC15 · CC24 · CC25 · CC28 (advertencias, campos, instrucciones, errores)</td><td>Rellenar cada formulario con lector de pantalla: instrucciones antes del campo, errores que dicen qué corregir y dónde, sin depender del color.</td></tr>
+<tr><td>CC16 · CC17 · CC32 (tabulación, foco, teclado)</td><td>Recorrer todo el sitio solo con teclado: orden lógico, foco siempre visible, ninguna trampa, menús y ventanas emergentes manejables.</td></tr>
+<tr><td>CC18 · CC19 · CC20 · CC21 · CC22 (audio, tiempo, movimiento, refresco, cambios de contexto)</td><td>Nada arranca solo, todo lo que se mueve o parpadea se puede parar, los tiempos se pueden ampliar y nada cambia de página al recibir el foco.</td></tr>
+<tr><td>CC23 · CC26 · CC27 (títulos, enlaces, idioma)</td><td>Títulos de página únicos y descriptivos, enlaces que se entienden fuera de contexto, cambios de idioma marcados.</td></tr>
+<tr><td>CC30 · CC31 (objetos programados, componentes)</td><td>Carruseles, mapas, calendarios, visores de PDF y componentes a medida: usables con teclado y anunciados por el lector.</td></tr>
+<tr><td>Capítulo 3 (documentos)</td><td>Cada PDF, Word, Excel y presentación descargable: etiquetado, idioma, encabezados, orden de lectura, texto alternativo, sin información solo por color.</td></tr>
+<tr><td>Lenguaje claro (§1.4, principio comprensible)</td><td>Que los textos de trámites se entiendan sin jerga; una persona ajena a la entidad debe poder decir de qué va la página.</td></tr>
+</tbody></table>
+<h2>Cómo seguir</h2><ol><li>Corregir primero lo marcado como <span class="critical">critical</span> y <span class="serious">serious</span>: son las barreras que impiden usar la página.</li><li>Repetir el escáner tras cada corrección.</li><li>Completar con revisión manual (teclado, lector de pantalla, zoom 200 %, lectura fácil) y pruebas con personas con discapacidad.</li><li>Publicar la declaración de accesibilidad (borrador adjunto: <code>declaracion.html</code>) y mantenerla al día.</li></ol></body></html>`;
   return h;
 }
 

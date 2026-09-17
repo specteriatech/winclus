@@ -27,6 +27,20 @@ function grupo(n) { console.log("\n== " + n); }
   const info = await page.evaluate(() => ({ version: Winclus.version, src: (document.querySelector("script[src*='widget']") || {}).src, sombra: !!Winclus.caja.host }));
   grupo("Instalación en " + URL);
   comprobar(info.sombra && !!info.version, "el widget está instalado y cargado en un shadow root", "versión " + info.version + " desde " + info.src);
+  // Seguridad digital (Res. 1519 Anexo 3): HTTPS con HSTS, CSP y cabeceras; el hash de integridad publicado coincide con el archivo servido
+  if (/^https:\/\/winclus\.com/.test(URL)) {
+    const resp = await page.request.get(URL); const h = resp.headers();
+    comprobar(/max-age=\d{7,}/.test(h["strict-transport-security"] || "") && /default-src/.test(h["content-security-policy"] || "") && h["x-content-type-options"] === "nosniff" && !!h["x-frame-options"] && !!h["referrer-policy"] && /camera=/.test(h["permissions-policy"] || ""), "winclus.com envía HSTS, CSP, nosniff, X-Frame-Options, Referrer-Policy y Permissions-Policy", Object.keys(h).filter((k) => /security|policy|options/.test(k)).join(", "));
+    const integrar = await (await page.request.get("https://winclus.com/integrar")).text();
+    const m = /widget-([\d.]+)\.js"[^>]*\n?\s*integrity="sha384-([A-Za-z0-9+/=]+)"/.exec(integrar) || /integrity="sha384-([A-Za-z0-9+/=]+)"/.exec(integrar);
+    const version = m && m.length === 3 ? m[1] : (/widget-([\d.]+)\.js/.exec(integrar) || [])[1], hash = m ? m[m.length - 1] : "";
+    const cuerpo = version ? await (await page.request.get("https://winclus.com/widget-" + version + ".js")).body() : null;
+    const real = cuerpo ? require("crypto").createHash("sha384").update(cuerpo).digest("base64") : "";
+    comprobar(!!hash && real === hash, "el hash de integridad publicado en integrar coincide con widget-" + version + ".js servido", (hash || "sin hash").slice(0, 16) + "… frente a " + real.slice(0, 16) + "…");
+    const csp = []; page.on("console", (msg) => { if (/Content Security Policy/i.test(msg.text())) csp.push(msg.text().slice(0, 160)); });
+    await page.waitForTimeout(500);
+    comprobar(csp.length === 0, "la CSP de winclus.com no bloquea nada de la propia página ni del widget", csp.join(" | "));
+  }
   await page.evaluate(() => Winclus.abrir());
   const cs = (s) => page.evaluate((x) => getComputedStyle(document.documentElement)[x], s);
   const sw = (id) => page.evaluate((i) => { Winclus.caja.getElementById(i).click(); return Winclus.caja.getElementById(i).getAttribute("aria-checked"); }, "wcl-" + id);

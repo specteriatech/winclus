@@ -16,7 +16,8 @@ const RAIZ = path.resolve(__dirname, "../../..");
     await page.evaluate(() => { const w = document.querySelector(".wcl-root"); if (w) w.remove(); });   // el widget no va en el PDF
     await page.emulateMedia({ media: "print" });
     const destino = path.join(RAIZ, "web", salida);
-    await page.pdf({ path: destino, format: "A4", printBackground: true, margin: { top: "16mm", bottom: "16mm", left: "14mm", right: "14mm" }, displayHeaderFooter: true, headerTemplate: "<span></span>", footerTemplate: `<div style="font-size:9px;color:#4A5670;width:100%;text-align:center;font-family:Segoe UI,sans-serif">${titulo} · winclus.com · página <span class="pageNumber"></span> de <span class="totalPages"></span></div>` });
+    // tagged: PDF etiquetado (estructura para lectores de pantalla, PDF/UA); outline: índice navegable. Lo exige la Resolución 1519 para documentos.
+    await page.pdf({ path: destino, format: "A4", printBackground: true, tagged: true, outline: true, margin: { top: "16mm", bottom: "16mm", left: "14mm", right: "14mm" }, displayHeaderFooter: true, headerTemplate: "<span></span>", footerTemplate: `<div style="font-size:9px;color:#4A5670;width:100%;text-align:center;font-family:Segoe UI,sans-serif">${titulo} · winclus.com · página <span class="pageNumber"></span> de <span class="totalPages"></span></div>` });
     console.log(salida + " " + Math.round(fs.statSync(destino).size / 1024) + " KB");
   }
   await nav.close();

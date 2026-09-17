@@ -56,7 +56,7 @@ Niveles: **Cumple** · **Cumple parcialmente** · **No cumple** · **No aplica**
 | 1.2.4 Subtítulos (en directo) | No aplica | Como apoyo, ofrece subtítulos en vivo por micrófono. |
 | 1.2.5 Audiodescripción (grabado) | No aplica | |
 | 1.3.4 Orientación | Cumple | Funciona en vertical y horizontal. |
-| 1.3.5 Identificar el propósito de los campos | Cumple parcialmente | El único campo de texto (frases) no admite `autocomplete` estándar. |
+| 1.3.5 Identificar el propósito de los campos | No aplica | El criterio cubre campos que recogen datos de la persona (nombre, correo, dirección…). Los únicos campos del widget (frases para decir y «¿Qué quieres hacer?») no recogen ninguno de esos datos. |
 | 1.4.3 Contraste mínimo | Cumple | Texto ≥ 4,5:1 en el panel (verificado a mano y con axe). |
 | 1.4.4 Cambio de tamaño del texto | Cumple | El panel usa `rem`/`em`; con zoom 200 % no pierde contenido. |
 | 1.4.5 Imágenes de texto | Cumple | Sin imágenes de texto. |
