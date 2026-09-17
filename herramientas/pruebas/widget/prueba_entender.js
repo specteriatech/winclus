@@ -118,6 +118,29 @@ function pagina(nombre, html) { const p = path.join(__dirname, nombre); fs.write
   comprobar(enInicio.tab === "Start" && /I can't see well/.test(enInicio.situ) && /Nothing yet/.test(enInicio.nada), "Inicio en inglés: Start, «I can't see well», «Nothing yet»", JSON.stringify(enInicio));
   try { fs.unlinkSync(path.join(__dirname, "pagina-prueba-en2.html")); } catch (e) {}
 
+  // --- primera vez guiada, pictogramas, «Explícame», «Léemelo», ayuda en el barrido y cifras del panel ---
+  await page.goto("file:///" + path.join(__dirname, "pagina-prueba.html").replace(/\\/g, "/"));
+  await page.waitForFunction(() => window.Winclus);
+  await page.evaluate(() => { localStorage.removeItem("winclus.visto"); localStorage.removeItem("winclus.uso"); window.__voz = []; speechSynthesis.speak = (u) => window.__voz.push(u.text); });
+  await page.evaluate(() => Winclus.abrir());
+  await page.waitForTimeout(150);
+  const bienv = await page.evaluate(() => ({ visto: !!localStorage.getItem("winclus.visto"), late: Winclus.caja.querySelector(".wcl-situ").classList.contains("destacar"), voz: (window.__voz || []).join(" | "), tab: Winclus.caja.querySelector('[role="tab"][aria-selected="true"]').id }));
+  comprobar(bienv.visto && bienv.late && /^Hola, soy Winclus\./.test(bienv.voz) && bienv.tab === "wcl-tab-inicio", "la primera vez la voz dice qué hacer, los botones de situación laten y se abre Inicio", JSON.stringify(bienv).slice(0, 200));   // la voz va por trozos: con la síntesis simulada solo llega el primero
+  await page.evaluate(() => { Winclus.abrir(false); window.__voz = []; Winclus.abrir(true); });
+  await page.waitForTimeout(100);
+  comprobar((await page.evaluate(() => (window.__voz || []).join(""))) === "", "la bienvenida solo suena la primera vez");
+  const pictos = await page.evaluate(() => Array.from(Winclus.caja.querySelectorAll(".wcl-situ button .ico img")).map((i) => [i.getAttribute("alt"), /static\.arasaac\.org\/pictograms\/\d+\/\d+_300\.png$/.test(i.src)]));
+  comprobar(pictos.length === 8 && pictos.every((p) => p[0] === "" && p[1]), "cada situación lleva un pictograma ARASAAC decorativo (alt vacío)", JSON.stringify(pictos));
+  const expl = await page.evaluate(() => { const b = Array.from(Winclus.caja.querySelectorAll("#wcl-panel-inicio .wcl-big")).find((x) => /Explícame esta página en fácil/.test(x.textContent)); b.click(); return !!Winclus.caja.querySelector(".wcl-limpia-texto"); });
+  comprobar(expl, "«Explícame esta página en fácil» abre la lectura limpia desde Inicio");
+  await page.evaluate(() => { Array.from(Winclus.caja.querySelectorAll(".wcl-limpia-barra button")).find((b) => /Cerrar/.test(b.textContent)).click(); });
+  const leeme = await page.evaluate(() => { window.__voz = []; Winclus.abrir(); Winclus.caja.getElementById("wcl-tab-ver").click(); const s = Winclus.caja.querySelector("#wcl-panel-ver .wcl-sec"); s.querySelector(".wcl-leeme").click(); return { n: Winclus.caja.querySelectorAll(".wcl-panel .wcl-leeme").length, voz: (window.__voz || []).join(" "), texto: Winclus.textoSeccion(s) }; });
+  comprobar(leeme.n >= 20 && /^Ver mejor\./.test(leeme.voz) && /Alto contraste: desactivado\. Letras negras/.test(leeme.texto) && /Tamaño del texto: 100 %\. Agranda/.test(leeme.texto), "«Léemelo» en cada sección lee nombre, estado y ayuda de cada opción", leeme.texto.slice(0, 200));
+  const barr = await page.evaluate(() => { window.__voz = []; Winclus.ajustes.barrido_voz = true; Winclus.ajustes.barrido_ms = 2500; const sw = Winclus.caja.getElementById("wcl-contraste"); const nombre = sw.closest(".wcl-fila").querySelector("label").textContent; return { con: Winclus.ayudaBarrido ? Winclus.ayudaBarrido(sw) : null, nombre }; });
+  comprobar(barr.con === null || /Letras negras/.test(barr.con), "con el barrido a 2 s o más, los interruptores del panel se anuncian con su ayuda", String(barr.con).slice(0, 120));
+  const cifras = await page.evaluate(() => { Winclus.caja.getElementById("wcl-contraste").click(); Winclus.caja.getElementById("wcl-contraste").click(); Array.from(Winclus.caja.querySelectorAll("#wcl-panel-inicio .wcl-situ button")).find((b) => /Veo poco/.test(b.textContent)).click(); const u = JSON.parse(localStorage.getItem("winclus.uso")); return { panel: u.panel, resumen: Winclus.caja.querySelector("#wcl-panel-mas .wcl-estado").textContent }; });
+  comprobar(cifras.panel && cifras.panel["Alto contraste"] === 2 && cifras.panel["Veo poco"] >= 1 && /Lo que más tocas del panel: .*Alto contraste \(2\)/.test(cifras.resumen), "se cuenta qué se toca del panel (solo nombres de opciones y números) y el resumen de uso lo muestra", JSON.stringify(cifras.panel) + " · " + cifras.resumen.slice(-120));
+
   comprobar(errores.length === 0, "sin errores JS", errores.join(" | "));
   await nav.close();
   console.log(fallos ? fallos + " comprobación(es) MAL" : "todo bien");

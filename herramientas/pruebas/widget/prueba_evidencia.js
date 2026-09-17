@@ -61,7 +61,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   comprobar(recibido === null, "sin activar el interruptor no se envía nada aunque pasen los 5 s iniciales");
   await page2.evaluate(() => Winclus.caja.getElementById("wcl-metricas_compartir").click());
   await page2.waitForTimeout(400);
-  comprobar(recibido && recibido.sitio === "127.0.0.1" && recibido.cifras.teclado === 1 && !("nombre" in recibido) && Object.keys(recibido).join(",") === "sitio,version,desde,cifras", "al activarlo se envían solo sitio, versión, fecha de inicio y cifras", JSON.stringify(recibido));
+  comprobar(recibido && recibido.sitio === "127.0.0.1" && recibido.cifras.teclado === 1 && !("nombre" in recibido) && Object.keys(recibido).join(",") === "sitio,version,desde,cifras,panel" && Object.keys(recibido.panel).every((k) => /^[A-Za-zÁ-ú0-9 ¿?¡!«»:()\-+\/🔊−]+$/.test(k)) && Object.values(recibido.panel).every((v) => typeof v === "number"), "al activarlo se envían solo sitio, versión, fecha de inicio, cifras y qué opciones del panel se tocan (nombres de opciones y números, nada personal)", JSON.stringify(recibido));
   const enviado = await page2.evaluate(() => JSON.parse(localStorage.getItem("winclus.uso_enviado") || "0"));
   recibido = null;
   await page2.evaluate(() => { Winclus.caja.getElementById("wcl-metricas_compartir").click(); Winclus.caja.getElementById("wcl-metricas_compartir").click(); });

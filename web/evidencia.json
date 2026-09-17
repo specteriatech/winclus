@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-17T16:45:12.179Z",
-  "commit": "ebba551",
-  "version": "0.6.0",
+  "fecha": "2026-09-17T21:46:35.521Z",
+  "commit": "1e9c650",
+  "version": "0.6.1",
   "pruebas": 25,
-  "comprobaciones": 391,
+  "comprobaciones": 408,
   "fallan": 0,
   "resultados": [
     {
@@ -131,13 +131,13 @@
       "bien": true,
       "segundos": 3,
       "lineas": [
-        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 452 revisados",
-        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 620 revisados",
-        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 594 revisados",
-        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 503 revisados",
-        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1252 revisados",
-        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 496 revisados",
-        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 410 revisados",
+        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 483 revisados",
+        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 644 revisados",
+        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 642 revisados",
+        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 535 revisados",
+        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1284 revisados",
+        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 520 revisados",
+        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 442 revisados",
         "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 449 revisados",
         "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 449 revisados",
         "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 325 revisados",
@@ -162,7 +162,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 6,
       "lineas": [
         "OK  el widget carga con CSP estricta",
         "OK  sin errores JS",
@@ -187,7 +187,7 @@
       "ok": 6,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 8,
       "lineas": [
         "OK  los cuatro filtros son SVGFilterElement",
         "OK  el filtro protan se aplica y cambia el rojo de la página",
@@ -204,7 +204,7 @@
         "Res. 1519 Anexo 1",
         "WCAG 2.1 AA"
       ],
-      "ok": 110,
+      "ok": 120,
       "mal": 0,
       "bien": true,
       "segundos": 11,
@@ -259,6 +259,11 @@
         "OK  /guia.html a 1280 px: enlaza las otras páginas legales",
         "OK  /guia.html a 1280 px: sin scroll horizontal",
         "OK  /guia.html a 1280 px: sin errores JS",
+        "OK  /guion-prueba.html a 1280 px: axe sin incumplimientos",
+        "OK  /guion-prueba.html a 1280 px: carga el widget",
+        "OK  /guion-prueba.html a 1280 px: enlaza las otras páginas legales",
+        "OK  /guion-prueba.html a 1280 px: sin scroll horizontal",
+        "OK  /guion-prueba.html a 1280 px: sin errores JS",
         "OK  /manual.html a 1280 px: axe sin incumplimientos",
         "OK  /manual.html a 1280 px: carga el widget",
         "OK  /manual.html a 1280 px: enlaza las otras páginas legales",
@@ -314,6 +319,11 @@
         "OK  /guia.html a 390 px: enlaza las otras páginas legales",
         "OK  /guia.html a 390 px: sin scroll horizontal",
         "OK  /guia.html a 390 px: sin errores JS",
+        "OK  /guion-prueba.html a 390 px: axe sin incumplimientos",
+        "OK  /guion-prueba.html a 390 px: carga el widget",
+        "OK  /guion-prueba.html a 390 px: enlaza las otras páginas legales",
+        "OK  /guion-prueba.html a 390 px: sin scroll horizontal",
+        "OK  /guion-prueba.html a 390 px: sin errores JS",
         "OK  /manual.html a 390 px: axe sin incumplimientos",
         "OK  /manual.html a 390 px: carga el widget",
         "OK  /manual.html a 390 px: enlaza las otras páginas legales",
@@ -383,7 +393,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 8,
       "lineas": [
         "OK  un audio de la página muestra el aviso con su nombre",
         "OK  un audio creado por código",
@@ -504,7 +514,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 7,
       "lineas": [
         "OK  «¿Dónde estoy?» dice título, ruta, encabezados y avance",
         "OK  hay resumen: de qué va y lo más importante",
@@ -630,7 +640,7 @@
         "OK  el resumen copiado solo lleva cifras, sin datos personales  (· 1 errores de formulario explicados\r)",
         "OK  sin data-metricas no existe siquiera el interruptor de compartir",
         "OK  sin activar el interruptor no se envía nada aunque pasen los 5 s iniciales",
-        "OK  al activarlo se envían solo sitio, versión, fecha de inicio y cifras",
+        "OK  al activarlo se envían solo sitio, versión, fecha de inicio, cifras y qué opciones del panel se tocan",
         "OK  no se vuelve a enviar hasta pasada una semana",
         "OK  sin errores JS"
       ]
@@ -644,7 +654,7 @@
       "ok": 21,
       "mal": 0,
       "bien": true,
-      "segundos": 12,
+      "segundos": 14,
       "lineas": [
         "OK  chromium: recorrido básico",
         "OK  chromium: sin speechSynthesis ni SpeechRecognition",
@@ -724,10 +734,10 @@
         "COGA",
         "ISO 24495-1"
       ],
-      "ok": 21,
+      "ok": 28,
       "mal": 0,
       "bien": true,
-      "segundos": 6,
+      "segundos": 1,
       "lineas": [
         "OK  al abrir por primera vez se ve la pestaña Inicio",
         "OK  hay ocho botones por situación, dichos como lo diría la persona",
@@ -749,6 +759,13 @@
         "OK  siete pestañas",
         "OK  en una página en inglés todo el panel (nombres, ayudas, intros, situaciones) sale en inglés",
         "OK  Inicio en inglés: Start, «I can't see well», «Nothing yet»",
+        "OK  la primera vez la voz dice qué hacer, los botones de situación laten y se abre Inicio",
+        "OK  la bienvenida solo suena la primera vez",
+        "OK  cada situación lleva un pictograma ARASAAC decorativo",
+        "OK  «Explícame esta página en fácil» abre la lectura limpia desde Inicio",
+        "OK  «Léemelo» en cada sección lee nombre, estado y ayuda de cada opción",
+        "OK  con el barrido a 2 s o más, los interruptores del panel se anuncian con su ayuda",
+        "OK  se cuenta qué se toca del panel",
         "OK  sin errores JS"
       ]
     }

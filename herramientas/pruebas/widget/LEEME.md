@@ -56,7 +56,10 @@
 - `node prueba_entender.js`: el panel se entiende sin manual (17-sep-2026): Inicio con «¿Qué te cuesta?» (ocho situaciones que
   encienden lo adecuado y explican qué han hecho), «Lo que tienes activado» y «Apagar todo lo activado», ayuda en palabras
   corrientes bajo cada interruptor y cada −/+ (aria-describedby), «Ajustes finos» plegados y cerrados, sin jerga en los nombres
-  visibles, y en inglés no se cuela español (también los −/+, que antes no se traducían).
+  visibles, y en inglés no se cuela español (también los −/+, que antes no se traducían). Además: bienvenida de la
+  primera vez (voz + botones que laten, `winclus.visto`), pictogramas ARASAAC en las situaciones, «Explícame esta página
+  en fácil» desde Inicio, «Léemelo» por sección (`Winclus.textoSeccion`), ayuda en el barrido a ≥ 2 s (`Winclus.ayudaBarrido`)
+  y cifras de qué se toca del panel (`uso.panel`, sin datos personales).
 - `node prueba_robustez.js`: regresión de los fallos de la revisión del 16-sep-2026 (ver el comentario del archivo).
 - Cualquier prueba corre en otro motor con `NAVEGADOR=firefox node prueba_x.js` (o `webkit`). El WebKit de Playwright en Windows no trae síntesis de voz ni portapapeles: `voz-simulada.js` se inyecta como sustituto y las comprobaciones de portapapeles se saltan en ese motor.
 - Todas las pruebas del widget usan `Winclus.caja` (el shadow root) para llegar a sus piezas; los selectores de

@@ -5,6 +5,9 @@ terminar tareas reales en una sede electrónica. Cinco personas por grupo bastan
 de los problemas (Nielsen); el informe resultante se publica en winclus.com/accesibilidad y sirve como
 evidencia en licitaciones.
 
+Versión corta: para una primera comprobación informal de que el panel se entiende (una persona, diez minutos,
+cinco tareas, hoja para apuntar) está winclus.com/guion-prueba, imprimible. No sustituye a este protocolo.
+
 ## Grupos y con quién contactar
 
 | Grupo | Personas | Tecnología que ya usan | Entidades para convocar |

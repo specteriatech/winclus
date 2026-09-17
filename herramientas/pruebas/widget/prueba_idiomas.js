@@ -18,7 +18,7 @@ function pagina(nombre, html) { const p = path.join(__dirname, nombre); fs.write
   page.on("pageerror", (e) => errores.push(String(e)));
   const leer = () => page.evaluate(() => ({
     tabs: Array.from(Winclus.caja.querySelectorAll('[role="tab"]')).map((b) => b.textContent),
-    seccion: Winclus.caja.querySelector("#wcl-panel-ver h2").textContent,
+    seccion: Winclus.caja.querySelector("#wcl-panel-ver h2").firstChild.textContent,
     sw: Winclus.caja.querySelector('label[for="wcl-oscuro"]').textContent,
     boton: Winclus.caja.querySelector(".wcl-btn").getAttribute("aria-label"),
     lang: Winclus.caja.host.getAttribute("lang"),
