@@ -31,7 +31,7 @@ function pagina(nombre, html) { const p = path.join(__dirname, nombre); fs.write
   await page.waitForFunction(() => window.Winclus);
   await page.evaluate(() => { window.__voz = []; speechSynthesis.speak = (u) => window.__voz.push(u.lang + ":" + u.text); Winclus.abrir(); });
   let r = await leer();
-  comprobar(r.tabs.join(",") === "See,Hear,Pointer,Clicks,Type,More" && r.seccion === "See better" && r.sw === "Dark mode" && r.boton === "Open Winclus accessibility" && r.lang === "en", "en una página en inglés el panel sale en inglés", JSON.stringify(r));
+  comprobar(r.tabs.join(",") === "Start,See,Hear,Face,Clicks,Type,More" && r.seccion === "See better" && r.sw === "Dark mode" && r.boton === "Open Winclus accessibility" && r.lang === "en", "en una página en inglés el panel sale en inglés", JSON.stringify(r));
   await page.evaluate(() => { Winclus.caja.getElementById("wcl-facil").click(); });
   r = await leer();
   comprobar(/Read the page/.test(r.facil), "el modo fácil también", r.facil);
@@ -49,7 +49,7 @@ function pagina(nombre, html) { const p = path.join(__dirname, nombre); fs.write
   await page.waitForFunction(() => window.Winclus);
   await page.evaluate(() => Winclus.abrir());
   r = await leer();
-  comprobar(r.tabs[0] === "Ver" && r.lang === "es", "data-ui=\"es\" fuerza el español", r.tabs.join(","));
+  comprobar(r.tabs[0] === "Inicio" && r.lang === "es", "data-ui=\"es\" fuerza el español", r.tabs.join(","));
 
   // --- idioma añadido por el sitio ---
   const PT = pagina("pagina-prueba-pt.html", BASE.replace('<html lang="es">', '<html lang="pt-BR">').replace('<script src="../../../web/widget.js">', '<script>window.WinclusIdiomas = { pt: { "Ver": "Ver", "Oír": "Ouvir", "Puntero": "Ponteiro", "Ver mejor": "Ver melhor" } };</script><script src="../../../web/widget.js">'));
@@ -57,7 +57,7 @@ function pagina(nombre, html) { const p = path.join(__dirname, nombre); fs.write
   await page.waitForFunction(() => window.Winclus);
   await page.evaluate(() => Winclus.abrir());
   r = await leer();
-  comprobar(r.tabs[1] === "Ouvir" && r.seccion === "Ver melhor" && r.sw === "Modo oscuro" && r.lang === "pt", "un idioma añadido con WinclusIdiomas se usa, y lo no traducido queda en español", JSON.stringify(r));
+  comprobar(r.tabs[2] === "Ouvir" && r.seccion === "Ver melhor" && r.sw === "Modo oscuro" && r.lang === "pt", "un idioma añadido con WinclusIdiomas se usa, y lo no traducido queda en español", JSON.stringify(r));
 
   // --- idioma sin diccionario: español ---
   const FR = pagina("pagina-prueba-fr.html", BASE.replace('<html lang="es">', '<html lang="fr">'));
@@ -65,7 +65,7 @@ function pagina(nombre, html) { const p = path.join(__dirname, nombre); fs.write
   await page.waitForFunction(() => window.Winclus);
   await page.evaluate(() => Winclus.abrir());
   r = await leer();
-  comprobar(r.tabs[0] === "Ver" && r.lang === "es", "sin diccionario para el idioma de la página, el panel sale en español");
+  comprobar(r.tabs[0] === "Inicio" && r.lang === "es", "sin diccionario para el idioma de la página, el panel sale en español");
 
   ["pagina-prueba-en.html", "pagina-prueba-en-es.html", "pagina-prueba-pt.html", "pagina-prueba-fr.html"].forEach((f) => { try { fs.unlinkSync(path.join(__dirname, f)); } catch (e) {} });
   comprobar(errores.length === 0, "sin errores JS", errores.join(" | "));

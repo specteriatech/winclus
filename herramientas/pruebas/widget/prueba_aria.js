@@ -20,7 +20,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
 
   // --- pestañas ---
   const tabs = await page.evaluate(() => Array.from(Winclus.caja.querySelectorAll('[role="tab"]')).map((b) => ({ id: b.id, sel: b.getAttribute("aria-selected"), tab: b.tabIndex, ctrl: b.getAttribute("aria-controls"), panelOk: !!Winclus.caja.getElementById(b.getAttribute("aria-controls") || "") })));
-  comprobar(tabs.length === 6 && tabs.filter((t) => t.tab === 0).length === 1 && tabs.every((t) => t.panelOk), "una sola pestaña tabulable y todas con aria-controls válido", JSON.stringify(tabs.map((t) => t.tab)));
+  comprobar(tabs.length === 7 && tabs.filter((t) => t.tab === 0).length === 1 && tabs.every((t) => t.panelOk), "una sola pestaña tabulable y todas con aria-controls válido", JSON.stringify(tabs.map((t) => t.tab)));
   comprobar(tabs.find((t) => t.sel === "true").tab === 0, "la tabulable es la seleccionada");
   await page.focus('[role="tab"][aria-selected="true"]');
   const antes = await page.evaluate(() => (Winclus.caja.activeElement || document.activeElement).id);
@@ -32,7 +32,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   const fin = await page.evaluate(() => (Winclus.caja.activeElement || document.activeElement).id);
   await page.keyboard.press("Home");
   const inicio = await page.evaluate(() => (Winclus.caja.activeElement || document.activeElement).id);
-  comprobar(fin === "wcl-tab-mas" && inicio === "wcl-tab-ver", "Fin e Inicio van a los extremos", fin + " / " + inicio);
+  comprobar(fin === "wcl-tab-mas" && inicio === "wcl-tab-inicio", "Fin e Inicio van a los extremos", fin + " / " + inicio);
   await page.keyboard.press("ArrowLeft");
   comprobar((await page.evaluate(() => (Winclus.caja.activeElement || document.activeElement).id)) === "wcl-tab-mas", "flecha izquierda da la vuelta");
 

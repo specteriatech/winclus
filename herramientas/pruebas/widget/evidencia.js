@@ -32,6 +32,7 @@ const PRUEBAS = [
   ["prueba_navegadores.js", "En Chromium, Firefox y WebKit: sin síntesis ni reconocimiento de voz, localStorage bloqueado, sin portapapeles, página sin <main>, DOM reemplazado (SPA), script cargado dos veces, móvil.", ["Robustez"]],
   ["prueba_robustez.js", "Regresión de la revisión de código: consentimiento sin localStorage, CSS móvil, voz por trozos, glosario sin HTML anidado, barrido sin lista rancia, perfiles con tipos inválidos, contraseñas protegidas, un solo reconocedor de voz.", ["Robustez"]],
   ["prueba_rendimiento.js", "La inferencia de la cara va a la tasa de la cámara; modo ahorro a 15/s.", ["Rendimiento"]],
+  ["prueba_entender.js", "El panel se entiende sin manual: Inicio con «¿Qué te cuesta?», «Lo que tienes activado» y «Apagar todo», ayuda en palabras corrientes bajo cada opción, ajustes finos plegados, sin jerga, todo traducido.", ["WCAG 3.1.5", "WCAG 3.3.2", "COGA", "ISO 24495-1"]],
 ];
 
 function commit() { try { return execSync("git rev-parse --short HEAD", { cwd: RAIZ }).toString().trim(); } catch (e) { return "?"; } }

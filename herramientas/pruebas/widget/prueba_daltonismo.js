@@ -17,7 +17,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   const tipos = await page.evaluate(() => ["protan", "deutan", "tritan", "gris"].map((n) => { const f = document.getElementById("wcl-f-" + n); return n + ":" + (f ? f.constructor.name : "no existe"); }));
   comprobar(tipos.every((t) => /SVGFilterElement/.test(t)), "los cuatro filtros son SVGFilterElement", tipos.join(", "));
   const base = await page.screenshot({ clip: { x: 10, y: 10, width: 4, height: 4 } });
-  for (const [nombre, etiqueta] of [["protan", /Protan/], ["deutan", /Deuter/], ["tritan", /Tritan/], ["gris", /grises/]]) {
+  for (const [nombre, etiqueta] of [["protan", /el rojo/], ["deutan", /el verde/], ["tritan", /el azul/], ["gris", /Todo en gris/]]) {
     await page.evaluate((re) => { Winclus.abrir(); Array.from(Winclus.caja.querySelectorAll(".wcl-opc button")).find((b) => new RegExp(re).test(b.textContent)).click(); }, etiqueta.source);
     await page.waitForTimeout(250);
     const filtro = await page.evaluate(() => getComputedStyle(document.documentElement).filter + " " + getComputedStyle(document.body).filter);   // Firefox: url(#…) va en <body> y «gris» es grayscale(1) en <html>

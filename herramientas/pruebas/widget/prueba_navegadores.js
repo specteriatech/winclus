@@ -29,7 +29,7 @@ async function basico(nav, nombre, init) {
       paso("contraste", () => Winclus.caja.getElementById("wcl-contraste").click());
       paso("oscuro", () => Winclus.caja.getElementById("wcl-oscuro").click());
       paso("texto+", () => Winclus.caja.querySelector("#wcl-panel-ver .wcl-mm button:last-child").click());
-      paso("dalton", () => Array.from(Winclus.caja.querySelectorAll(".wcl-opc button")).find((b) => /Protan/.test(b.textContent)).click());
+      paso("dalton", () => Array.from(Winclus.caja.querySelectorAll(".wcl-opc button")).find((b) => /el rojo/.test(b.textContent)).click());
       paso("teclado", () => { Winclus.teclado(); Winclus.teclado(); });
       paso("leer", () => Winclus.leer());
       paso("decir", () => Winclus.decir("hola"));

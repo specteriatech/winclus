@@ -57,7 +57,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   comprobar(ahorro.inferencias <= 16 && ahorro.inferencias >= 5, "en modo ahorro se infiere unas 15 veces por segundo", ahorro.inferencias.toFixed(1) + "/s");
   await page.evaluate(() => { Winclus.ajustes.ahorro = false; });
   const sw = await page.evaluate(() => !!Winclus.caja.getElementById("wcl-ahorro"));
-  comprobar(sw, "hay interruptor «Modo ahorro» en el panel");
+  comprobar(sw, "hay interruptor «Gastar menos batería» (modo ahorro) en el panel");
 
   await nav.close();
   servidor.kill();

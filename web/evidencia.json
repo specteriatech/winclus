@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-16T23:59:21.147Z",
-  "commit": "a99bc01",
-  "version": "0.5.1",
-  "pruebas": 24,
-  "comprobaciones": 369,
+  "fecha": "2026-09-17T16:45:12.179Z",
+  "commit": "ebba551",
+  "version": "0.6.0",
+  "pruebas": 25,
+  "comprobaciones": 391,
   "fallan": 0,
   "resultados": [
     {
@@ -126,20 +126,21 @@
         "WCAG 1.4.11",
         "Res. 1519 CC5"
       ],
-      "ok": 18,
+      "ok": 19,
       "mal": 0,
       "bien": true,
       "segundos": 3,
       "lineas": [
-        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 578 revisados",
-        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 533 revisados",
-        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 527 revisados",
-        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1276 revisados",
-        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 434 revisados",
-        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 362 revisados",
-        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 400 revisados",
-        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 400 revisados",
-        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 276 revisados",
+        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 452 revisados",
+        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 620 revisados",
+        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 594 revisados",
+        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 503 revisados",
+        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1252 revisados",
+        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 496 revisados",
+        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 410 revisados",
+        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 449 revisados",
+        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 449 revisados",
+        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 325 revisados",
         "OK  Pausar: texto sobre fondo: 5.20:1",
         "OK  interruptor apagado sobre el panel: 3.13:1",
         "OK  interruptor encendido sobre el panel: 5.20:1",
@@ -206,7 +207,7 @@
       "ok": 110,
       "mal": 0,
       "bien": true,
-      "segundos": 10,
+      "segundos": 11,
       "lineas": [
         "OK  / a 1280 px: axe sin incumplimientos",
         "OK  / a 1280 px: carga el widget",
@@ -503,7 +504,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 7,
+      "segundos": 2,
       "lineas": [
         "OK  «¿Dónde estoy?» dice título, ruta, encabezados y avance",
         "OK  hay resumen: de qué va y lo más importante",
@@ -598,7 +599,7 @@
         "OK  ningún medio pasa del volumen máximo",
         "OK  sin voz elegida, usa la neuronal de es-CO",
         "OK  el panel muestra la voz neuronal como actual",
-        "OK  la caja «¿Qué quieres hacer?» está en el modo fácil y en la pestaña Ver",
+        "OK  la caja «¿Qué quieres hacer?» está en el modo fácil y en la pestaña Inicio",
         "OK  «no veo bien» agranda el texto y sube el contraste",
         "OK  «no oigo» activa avisos y subtítulos",
         "OK  «solo puedo pulsar un botón» activa el barrido",
@@ -620,7 +621,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 10,
+      "segundos": 11,
       "lineas": [
         "OK  demo.html pasa axe",
         "OK  la demo tiene los siete pasos",
@@ -643,7 +644,7 @@
       "ok": 21,
       "mal": 0,
       "bien": true,
-      "segundos": 18,
+      "segundos": 12,
       "lineas": [
         "OK  chromium: recorrido básico",
         "OK  chromium: sin speechSynthesis ni SpeechRecognition",
@@ -711,7 +712,44 @@
         "OK  el navegador avisa de cada cuadro nuevo",
         "OK  no se infiere más veces que cuadros entrega la cámara",
         "OK  en modo ahorro se infiere unas 15 veces por segundo",
-        "OK  hay interruptor «Modo ahorro» en el panel"
+        "OK  hay interruptor «Gastar menos batería» (modo ahorro) en el panel"
+      ]
+    },
+    {
+      "archivo": "prueba_entender.js",
+      "que": "El panel se entiende sin manual: Inicio con «¿Qué te cuesta?», «Lo que tienes activado» y «Apagar todo», ayuda en palabras corrientes bajo cada opción, ajustes finos plegados, sin jerga, todo traducido.",
+      "criterios": [
+        "WCAG 3.1.5",
+        "WCAG 3.3.2",
+        "COGA",
+        "ISO 24495-1"
+      ],
+      "ok": 21,
+      "mal": 0,
+      "bien": true,
+      "segundos": 6,
+      "lineas": [
+        "OK  al abrir por primera vez se ve la pestaña Inicio",
+        "OK  hay ocho botones por situación, dichos como lo diría la persona",
+        "OK  la caja «¿Qué quieres hacer?» está en Inicio",
+        "OK  sin nada activado lo dice y no ofrece «Apagar todo»",
+        "OK  «Veo poco» agranda el texto y pone contraste",
+        "OK  en Inicio queda escrito qué se ha hecho",
+        "OK  «Lo que tienes activado» lo lista en palabras corrientes y aparece «Apagar todo»",
+        "OK  se pueden sumar situaciones",
+        "OK  «Apagar todo lo activado» deja la página como siempre",
+        "OK  todos los interruptores",
+        "OK  todos los −/+",
+        "OK  cada sección dice para quién es",
+        "OK  hay bloques «Ajustes finos» y todos empiezan cerrados",
+        "OK  los ajustes técnicos",
+        "OK  lo esencial",
+        "OK  ningún nombre visible usa jerga",
+        "OK  los colores y los modos de ojos se nombran como lo diría la persona",
+        "OK  siete pestañas",
+        "OK  en una página en inglés todo el panel (nombres, ayudas, intros, situaciones) sale en inglés",
+        "OK  Inicio en inglés: Start, «I can't see well», «Nothing yet»",
+        "OK  sin errores JS"
       ]
     }
   ]

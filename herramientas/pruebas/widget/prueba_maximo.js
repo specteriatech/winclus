@@ -42,7 +42,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
 
   // --- asistente guiado ---
   const pregunta = async (t) => { await page.evaluate((x) => { const i = Winclus.caja.getElementById("wcl-que"); i.value = x; i.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true })); }, t); await page.waitForTimeout(80); return page.evaluate(() => Winclus.caja.getElementById("wcl-estado").textContent); };
-  comprobar(!!(await page.evaluate(() => Winclus.caja.querySelector(".wcl-facil #wcl-que, .wcl-facil .wcl-guia-caja"))) && !!(await page.evaluate(() => Winclus.caja.querySelector("#wcl-panel-ver .wcl-guia-caja"))), "la caja «¿Qué quieres hacer?» está en el modo fácil y en la pestaña Ver");
+  comprobar(!!(await page.evaluate(() => Winclus.caja.querySelector(".wcl-facil #wcl-que, .wcl-facil .wcl-guia-caja"))) && !!(await page.evaluate(() => Winclus.caja.querySelector("#wcl-panel-inicio .wcl-guia-caja"))), "la caja «¿Qué quieres hacer?» está en el modo fácil y en la pestaña Inicio");
   let r = await pregunta("no veo bien");
   const ver = await page.evaluate(() => ({ texto: Winclus.ajustes.texto, contraste: Winclus.ajustes.contraste }));
   comprobar(/Texto más grande/.test(r) && ver.texto >= 150 && ver.contraste, "«no veo bien» agranda el texto y sube el contraste", r);

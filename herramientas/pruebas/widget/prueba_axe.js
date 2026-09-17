@@ -34,7 +34,7 @@ async function correr(page, nombre) {
   await page.addScriptTag({ content: AXE });
   const todo = [];
   await page.evaluate(() => Winclus.abrir());
-  for (const tab of ["ver", "oir", "cara", "clics", "escribir", "mas"]) {
+  for (const tab of ["inicio", "ver", "oir", "cara", "clics", "escribir", "mas"]) {
     await page.click("#wcl-tab-" + tab);
     await page.waitForTimeout(100);
     todo.push(...await correr(page, "pestaña " + tab));
