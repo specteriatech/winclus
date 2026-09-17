@@ -57,7 +57,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
 
   // --- restablecer borra el consentimiento ---
   const antes = await page.evaluate(() => localStorage.getItem("winclus.consentimiento_camara"));
-  await page.evaluate(() => { const b = Array.from(Winclus.caja.querySelectorAll("#wcl-panel-mas button")).find((x) => /Restablecer/.test(x.textContent)); if (b) b.click(); });
+  await page.evaluate(() => { const b = Array.from(Winclus.caja.querySelectorAll("#wcl-panel-mas button")).find((x) => /Restablecer/.test(x.textContent)); if (b) b.click(); const si = Array.from(Winclus.caja.querySelectorAll("#wcl-panel-mas .wcl-confirma button")).find((x) => /^Sí/.test(x.textContent)); if (si) si.click(); });   // desde 0.6.2 pregunta antes de borrar
   await page.waitForTimeout(300);
   const despues = await page.evaluate(() => localStorage.getItem("winclus.consentimiento_camara"));
   comprobar(!!antes && !despues, "«Restablecer» borra el consentimiento guardado", "antes=" + !!antes + " después=" + !!despues);

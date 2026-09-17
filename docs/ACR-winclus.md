@@ -1,4 +1,4 @@
-# Informe de conformidad de accesibilidad (ACR) · Winclus widget 0.6.1
+# Informe de conformidad de accesibilidad (ACR) · Winclus widget 0.6.2
 
 Formato basado en la plantilla ITI VPAT® 2.5 (edición internacional: WCAG 2.1, EN 301 549, Sección 508),
 traducido y adaptado. Lo elaboran los propios colaboradores de Winclus; una auditoría de tercero puede
@@ -6,7 +6,7 @@ firmarlo después.
 
 | | |
 |---|---|
-| Producto | Winclus, widget web de tecnología de apoyo (`widget-0.6.1.js`) |
+| Producto | Winclus, widget web de tecnología de apoyo (`widget-0.6.2.js`) |
 | Fecha | 16 de septiembre de 2026 |
 | Contacto | hola@winclus.com |
 | Notas | El widget se añade a un sitio anfitrión. Este informe cubre el widget (panel, teclado en pantalla, tablero de pictogramas, menú de clics, calibración, avisos). No cubre el sitio anfitrión: Winclus no lo hace conforme. |
@@ -84,6 +84,42 @@ Niveles: **Cumple** · **Cumple parcialmente** · **No cumple** · **No aplica**
 | 3.2.6 Ayuda coherente | Cumple | «Acerca de» y el contacto están siempre en la pestaña Más. |
 | 3.3.7 Entrada redundante | Cumple | Los ajustes se recuerdan. |
 | 3.3.8 Autenticación accesible | No aplica | Sin autenticación. Además, desbloquea el pegado en los campos del sitio. |
+
+## Tabla 3b: WCAG 2.1 y 2.2 nivel AAA (no exigido por ninguna norma colombiana; se declara como alcanzado salvo 1.2.6)
+
+| Criterio | Nivel de conformidad | Observaciones |
+|---|---|---|
+| 1.2.6 Lengua de señas (grabado) | No cumple | Los tres vídeos de la demostración de winclus.com no tienen interpretación en Lengua de Señas Colombiana. Único criterio AAA pendiente; requiere intérprete certificado. El widget no publica medios. |
+| 1.2.7 Audiodescripción ampliada | No aplica | Los vídeos son animaciones silenciosas con pista de descripción; no hay pausas insuficientes. |
+| 1.2.8 Alternativa para medios (grabado) | Cumple | Transcripción completa en texto bajo cada vídeo (0.6.2). |
+| 1.2.9 Solo audio (en directo) | No aplica | |
+| 1.3.6 Identificar el propósito | Cumple | Roles ARIA en todos los componentes (tabs, switch, dialog, group); iconos decorativos con nombre en el botón. |
+| 1.4.6 Contraste mejorado (7:1) | Cumple | Paleta ajustada en 0.6.2 (#3F4B66, #2743B4, #0A5C54); medido en cada pestaña del panel y en las 15 páginas del sitio (prueba_aaa.js). |
+| 1.4.7 Audio de fondo bajo | No aplica | El widget no reproduce audio con voz superpuesta; los vídeos son silenciosos. |
+| 1.4.8 Presentación visual | Cumple | Colores de texto y fondo elegibles (preajustes y libres); modo dislexia con renglón ≤ 80 caracteres, sin justificar, interlineado 1,8 y párrafos a 1,5 veces el interlineado; texto al 200 % sin desplazamiento horizontal. |
+| 1.4.9 Imágenes de texto (sin excepción) | Cumple | Solo el logotipo, exento. |
+| 2.1.3 Teclado (sin excepción) | Cumple | Toda función del widget se maneja con teclado o con el barrido; la calibración ocular es un método de entrada alternativo, no una función de contenido. |
+| 2.2.3 Sin tiempo | Cumple | Los únicos tiempos (barrido, clic por quietud, menú de clics) son esenciales al método de entrada y ajustables. |
+| 2.2.4 Interrupciones | Cumple | Los avisos visuales y sonoros se pueden apagar; la bienvenida suena una sola vez. |
+| 2.2.5 Re-autenticación | No aplica | |
+| 2.2.6 Límites de tiempo | No aplica | Nada caduca ni se pierde. |
+| 2.3.2 Tres destellos | Cumple | Nada destella. |
+| 2.3.3 Animación por interacción | Cumple | Modo calma y prefers-reduced-motion anulan las animaciones del widget. |
+| 2.4.8 Ubicación | Cumple | Migas de pan con aria-current en las páginas interiores (0.6.2); mapa del sitio; «¿Dónde estoy?» en el widget. |
+| 2.4.9 Propósito de los enlaces (solo enlace) | Cumple | Todos los enlaces se entienden fuera de contexto. |
+| 2.4.10 Encabezados de sección | Cumple | h2 por sección en el panel y en el sitio. |
+| 2.4.12 Foco no oculto (mejorado) | Cumple | El panel desplaza el control enfocado a la vista; la cabecera fija no lo tapa. |
+| 2.4.13 Apariencia del foco | Cumple | Contorno de 3 px de color #2743B4 (8,3:1 sobre blanco) en todos los controles. |
+| 2.5.5 Tamaño del objetivo (mejorado) | Cumple | Todos los controles del panel miden al menos 44×44 px (0.6.2), incluidos interruptores (zona de pulsación ampliada), pestañas, −/+, «Léemelo» y cerrar. Excepción: las teclas del teclado en pantalla en móviles estrechos, cuyo tamaño lo fija la persona con el ajuste de altura. |
+| 2.5.6 Mecanismos de entrada concurrentes | Cumple | Ratón, teclado, tacto, cara y voz a la vez. |
+| 3.1.3 Palabras inusuales | Cumple | Glosario enlazado desde el pie de todas las páginas; el panel evita la jerga; «Explicar en fácil» explica la del sitio anfitrión. |
+| 3.1.4 Abreviaturas | Cumple | Glosario con todas las siglas usadas (WCAG, CSP, SRI, ARIA, LSC, NVDA, JAWS, PDF/UA, MinTIC, NTC 5854, ARASAAC…). |
+| 3.1.5 Nivel de lectura | Cumple | Bloque «En pocas palabras» en lectura fácil al principio de las páginas técnicas y legales; el panel está escrito en palabras corrientes. |
+| 3.1.6 Pronunciación | No aplica | No hay palabras cuyo significado dependa de la pronunciación. |
+| 3.2.5 Cambio a petición | Cumple | Ningún cambio de contexto automático. |
+| 3.3.5 Ayuda | Cumple | Ayuda en cada control, «Léemelo», asistente «¿Qué quieres hacer?». |
+| 3.3.6 Prevención de errores (todo) | Cumple | Los cuatro botones que borran datos piden confirmación en dos pasos, con el foco en «No» (0.6.2). |
+| 3.3.9 Autenticación accesible (mejorado) | No aplica | Sin autenticación. |
 
 ## Tabla 4: EN 301 549 v3.2.1, capítulos que aplican a un software de apoyo
 

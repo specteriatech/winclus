@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-17T22:34:04.643Z",
-  "commit": "49caad1",
-  "version": "0.6.1",
-  "pruebas": 25,
-  "comprobaciones": 428,
+  "fecha": "2026-09-17T23:15:31.629Z",
+  "commit": "81f9223",
+  "version": "0.6.2",
+  "pruebas": 26,
+  "comprobaciones": 446,
   "fallan": 0,
   "resultados": [
     {
@@ -78,7 +78,7 @@
       "ok": 11,
       "mal": 0,
       "bien": true,
-      "segundos": 6,
+      "segundos": 1,
       "lineas": [
         "OK  una sola pestaña tabulable y todas con aria-controls válido",
         "OK  la tabulable es la seleccionada",
@@ -131,23 +131,23 @@
       "bien": true,
       "segundos": 3,
       "lineas": [
-        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 483 revisados",
-        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 644 revisados",
-        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 642 revisados",
-        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 535 revisados",
-        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1284 revisados",
-        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 520 revisados",
-        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 442 revisados",
-        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 449 revisados",
-        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 449 revisados",
-        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 325 revisados",
-        "OK  Pausar: texto sobre fondo: 5.20:1",
+        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 487 revisados",
+        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 696 revisados",
+        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 646 revisados",
+        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 539 revisados",
+        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1288 revisados",
+        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 524 revisados",
+        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 446 revisados",
+        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 453 revisados",
+        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 453 revisados",
+        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 329 revisados",
+        "OK  Pausar: texto sobre fondo: 7.86:1",
         "OK  interruptor apagado sobre el panel: 3.13:1",
-        "OK  interruptor encendido sobre el panel: 5.20:1",
+        "OK  interruptor encendido sobre el panel: 7.86:1",
         "OK  borde de los botones − / +: 3.13:1",
-        "OK  borde de las opciones: 6.50:1",
+        "OK  borde de las opciones: 8.24:1",
         "OK  foco del botón flotante",
-        "OK  texto del aviso de estado: 5.66:1",
+        "OK  texto del aviso de estado: 8.71:1",
         "OK  borde de las teclas sobre el teclado: 3.20:1",
         "OK  texto de las teclas: 16.34:1"
       ]
@@ -162,7 +162,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 6,
+      "segundos": 1,
       "lineas": [
         "OK  el widget carga con CSP estricta",
         "OK  sin errores JS",
@@ -413,7 +413,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 7,
+      "segundos": 8,
       "lineas": [
         "OK  un audio de la página muestra el aviso con su nombre",
         "OK  un audio creado por código",
@@ -437,7 +437,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 7,
+      "segundos": 2,
       "lineas": [
         "OK  «números» pone etiquetas 1, 2, 3… sobre lo que se puede pulsar",
         "OK  «clic 2» pulsa el botón que lleva el 2",
@@ -534,7 +534,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 7,
       "lineas": [
         "OK  «¿Dónde estoy?» dice título, ruta, encabezados y avance",
         "OK  hay resumen: de qué va y lo más importante",
@@ -651,7 +651,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 11,
+      "segundos": 16,
       "lineas": [
         "OK  demo.html pasa axe",
         "OK  la demo tiene los siete pasos",
@@ -737,12 +737,50 @@
       "ok": 4,
       "mal": 0,
       "bien": true,
-      "segundos": 9,
+      "segundos": 14,
       "lineas": [
         "OK  el navegador avisa de cada cuadro nuevo",
         "OK  no se infiere más veces que cuadros entrega la cámara",
         "OK  en modo ahorro se infiere unas 15 veces por segundo",
         "OK  hay interruptor «Gastar menos batería» (modo ahorro) en el panel"
+      ]
+    },
+    {
+      "archivo": "prueba_aaa.js",
+      "que": "Nivel AAA: reglas AAA de axe en el panel y en las 15 páginas, contraste 7:1, objetivos de 44×44, confirmación antes de borrar, colores propios y modo dislexia, glosario, migas de pan, lectura fácil y transcripciones.",
+      "criterios": [
+        "WCAG 1.4.6",
+        "WCAG 1.4.8",
+        "WCAG 2.5.5",
+        "WCAG 3.3.6",
+        "WCAG 3.1.4",
+        "WCAG 3.1.5",
+        "WCAG 2.4.8",
+        "WCAG 1.2.8"
+      ],
+      "ok": 18,
+      "mal": 0,
+      "bien": true,
+      "segundos": 4,
+      "lineas": [
+        "OK  reglas AAA de axe sobre el panel: sin violaciones",
+        "OK  1.4.6: todo el texto del panel tiene contraste 7:1",
+        "OK  2.5.5: todos los controles del panel miden al menos 44×44",
+        "OK  «Restablecer todo» no borra a la primera: pregunta, con el foco en «No»",
+        "OK  «No» deja todo como estaba y devuelve el foco al botón",
+        "OK  «Sí, borrar» sí restablece",
+        "OK  los otros tres botones que borran también preguntan",
+        "OK  «Amarillo sobre negro» cambia texto y fondo de toda la página",
+        "OK  «Los que yo elija» muestra los selectores y aplica y guarda el color",
+        "OK  modo dislexia: interlineado 1,5, párrafos a 1,5 veces el interlineado, sin justificar, renglón ≤ 80 caracteres",
+        "OK  reglas AAA de axe sobre las 15 páginas del sitio (contraste 7:1 incluido): sin violaciones",
+        "OK  2.5.5: enlaces y botones del sitio que no van en línea miden al menos 44 px",
+        "OK  3.1.4: el glosario está enlazado desde el pie de todas las páginas",
+        "OK  2.4.8: las páginas interiores llevan migas de pan con aria-current",
+        "OK  3.1.4: el glosario explica las siglas usadas en el sitio",
+        "OK  3.1.5: las páginas técnicas y legales empiezan con «En pocas palabras»",
+        "OK  1.2.8: los cuatro vídeos de la demostración llevan transcripción en texto",
+        "OK  sin errores JS"
       ]
     },
     {

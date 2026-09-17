@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--navy:#101F3D;--azul:#2F4FD8;--teal:#0F7A70;--verde:#34C26B;--amarillo:#F2B705;--fondo:#FFFFFF;--fondo2:#F3F6FA;--texto:#101F3D;--texto2:#4A5670}
+  :root{--navy:#101F3D;--azul:#2743B4;--teal:#0A5C54;--verde:#34C26B;--amarillo:#F2B705;--fondo:#FFFFFF;--fondo2:#F3F6FA;--texto:#101F3D;--texto2:#3F4B66}
   *{box-sizing:border-box}html,body{margin:0;background:#101F3D;font-family:"Poppins","Segoe UI",system-ui,sans-serif;color:var(--texto)}
   .diapo{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:6vh 8vw;background:var(--fondo);border-bottom:8px solid var(--navy);scroll-snap-align:start}
   .diapo.oscura{background:var(--navy);color:#fff}.diapo.oscura .sub,.diapo.oscura p{color:#DCE3EC}
@@ -23,13 +23,13 @@
   .caja b{display:block;font-size:1.15em;margin-bottom:.3em}
   .kpi{font-size:clamp(2.4rem,6vw,4.5rem);font-weight:700;line-height:1;color:var(--teal)}.oscura .kpi{color:var(--verde)}
   .nota{font-size:.95rem;color:var(--texto2)}.verde{color:var(--teal)}.oscura .verde{color:var(--verde)}
-  .num{position:absolute;right:20px;bottom:14px;font-size:.85rem;color:#4A5670}.oscura .num{color:#C8D0DC}.diapo{position:relative}
+  .num{position:absolute;right:20px;bottom:14px;font-size:.85rem;color:#3F4B66}.oscura .num{color:#C8D0DC}.diapo{position:relative}
   a{color:var(--azul)}.oscura a{color:#8FD9C4}
   table{border-collapse:collapse;width:100%;font-size:clamp(.95rem,1.4vw,1.15rem)}th,td{text-align:left;padding:8px 10px;border-bottom:1px solid #DCE3EC}th{background:var(--fondo2)}
   .si{color:#0A4A3C;font-weight:700}.no{color:#8A2E20;font-weight:700}
   .tabla{overflow-x:auto}.tabla table{min-width:640px}code{overflow-wrap:anywhere;font-size:.9em}.caja{min-width:0;overflow-wrap:anywhere}
   .grid{grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr))}
-  .ayuda{position:fixed;left:12px;bottom:10px;font-size:.8rem;color:#8892A6;background:rgba(255,255,255,.85);padding:4px 10px;border-radius:999px}
+  .ayuda{position:fixed;left:12px;bottom:10px;font-size:.8rem;color:#C8D0DC;background:rgba(255,255,255,.85);padding:4px 10px;border-radius:999px}
   @media print{.diapo{min-height:auto;page-break-after:always;border:0;padding:24px}.ayuda{display:none}html,body{background:#fff}}
 </style>
 </head>
@@ -40,7 +40,7 @@
   <p class="sub" style="color:#8FD9C4;font-weight:600;letter-spacing:.08em;text-transform:uppercase">Winclus</p>
   <h1>Tecnología que incluye,<br>un mundo que avanza.</h1>
   <p class="sub">Tecnología de apoyo dentro de cualquier página web: cara, ojos, voz, un solo pulsador, teclado en pantalla, pictogramas y lenguaje claro. Gratis para la persona. Procesado en su propio navegador.</p>
-  <p class="nota" style="color:#8892A6">winclus.com · hola@winclus.com · versión 0.6.1 · septiembre de 2026</p>
+  <p class="nota" style="color:#C8D0DC">winclus.com · hola@winclus.com · versión 0.6.2 · septiembre de 2026</p>
   <span class="num">1</span>
 </section>
 
@@ -123,7 +123,7 @@
 <section class="diapo" id="d8">
   <h2>Cómo se integra</h2>
   <div class="grid">
-    <div class="caja"><b>Una línea</b><code>&lt;script src="https://winclus.com/widget-0.6.1.js" async&gt;&lt;/script&gt;</code><br>Versión fija que no cambia sin que la entidad lo decida. Funciona con CSP estricta.</div>
+    <div class="caja"><b>Una línea</b><code>&lt;script src="https://winclus.com/widget-0.6.2.js" async&gt;&lt;/script&gt;</code><br>Versión fija que no cambia sin que la entidad lo decida. Funciona con CSP estricta.</div>
     <div class="caja"><b>Plantillas del Estado</b>GOV.CO y MiColombiaDigital (código en el pie), WordPress (plugin con ajustes), Drupal (módulo), React y Vue (web component).</div>
     <div class="caja"><b>Sin cambiar el sitio</b>Vive en un shadow root: ni el sitio rompe el widget ni el widget rompe el sitio.</div>
     <div class="caja"><b>Cifras para reportar</b>Cuántas gestiones se completan con la cara, con pulsador, con pictogramas. Solo números, y solo si la persona lo activa.</div>
@@ -167,7 +167,7 @@
   <h1>Compruébalo, no nos creas.</h1>
   <p class="sub">winclus.com/demo · winclus.com/evidencia · winclus.com/comparar</p>
   <p class="sub">hola@winclus.com</p>
-  <p class="nota" style="color:#C8D0DC"><a href="demo">Demostración</a> · <a href="evidencia">Evidencia</a> · <a href="comparar">Comparación</a> · <a href="una-pagina">Hoja de una página</a> · <a href="mapa-del-sitio">Mapa del sitio</a> · <a href="accesibilidad">Accesibilidad</a> · <a href="privacidad">Privacidad y datos</a></p>
+  <p class="nota" style="color:#C8D0DC"><a href="demo">Demostración</a> · <a href="evidencia">Evidencia</a> · <a href="comparar">Comparación</a> · <a href="una-pagina">Hoja de una página</a> · <a href="mapa-del-sitio">Mapa del sitio</a> · <a href="glosario">Glosario</a> · <a href="accesibilidad">Accesibilidad</a> · <a href="privacidad">Privacidad y datos</a></p>
   <span class="num">12</span>
 </section>
 

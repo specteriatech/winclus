@@ -53,6 +53,12 @@
 - `node prueba_evidencia.js`: demo.html pasa axe; cifras de uso locales, resumen sin datos personales, envío solo con data-metricas y el interruptor activado, una vez por semana.
 - `node evidencia.js`: corre todas las pruebas y genera web/evidencia.html y web/evidencia.json (lo hace GitHub Actions en cada push).
 - `node prueba_navegadores.js`: recorrido básico en Chromium, Firefox y WebKit (`npx playwright install firefox webkit`) con entornos hostiles: sin voz, sin localStorage, sin portapapeles, SPA, script doble, móvil.
+- `node prueba_aaa.js`: nivel AAA (docs/hoja-ruta-aaa.md, 17-sep-2026): reglas AAA de axe sobre cada pestaña del panel (ajustes
+  finos abiertos, todos los grupos a la vista) y sobre todas las páginas del sitio; contraste 7:1 de todo texto del panel;
+  objetivos de 44×44 en el panel (salvo las teclas del teclado en pantalla) y en enlaces y botones del sitio que no van en
+  línea; «Restablecer todo» y los tres «Olvidar…» preguntan en dos pasos con el foco en «No»; colores propios (preajustes y
+  libres) y modo dislexia (interlineado, párrafos, sin justificar, ≤ 80 caracteres); glosario en todos los pies; migas de
+  pan con aria-current; «En pocas palabras» en las páginas técnicas; transcripciones de los cuatro vídeos.
 - `node prueba_entender.js`: el panel se entiende sin manual (17-sep-2026): Inicio con «¿Qué te cuesta?» (ocho situaciones que
   encienden lo adecuado y explican qué han hecho), «Lo que tienes activado» y «Apagar todo lo activado», ayuda en palabras
   corrientes bajo cada interruptor y cada −/+ (aria-describedby), «Ajustes finos» plegados y cerrados, sin jerga en los nombres

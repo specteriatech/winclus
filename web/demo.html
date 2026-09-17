@@ -11,11 +11,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="paginas.css">
 <style>
-  .pasos{counter-reset:p}.paso{background:#F3F6FA;border-radius:12px;padding:12px 16px 12px 56px;margin:10px 0;position:relative}.paso::before{counter-increment:p;content:counter(p);position:absolute;left:14px;top:12px;width:30px;height:30px;border-radius:50%;background:#2F4FD8;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
-  .paso b{display:block}.paso .que{color:#4A5670;font-size:.95rem}
+  .pasos{counter-reset:p}.paso{background:#F3F6FA;border-radius:12px;padding:12px 16px 12px 56px;margin:10px 0;position:relative}.paso::before{counter-increment:p;content:counter(p);position:absolute;left:14px;top:12px;width:30px;height:30px;border-radius:50%;background:#2743B4;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .paso b{display:block}.paso .que{color:#3F4B66;font-size:.95rem}
   .sede{border:2px solid #DCE3EC;border-radius:14px;padding:18px;margin:20px 0}.sede h2{border:0;margin-top:0}.sede label{display:block;margin:10px 0 4px;font-weight:600}.sede input,.sede select{width:100%;max-width:420px;font:inherit;padding:8px;border:1px solid #8892A6;border-radius:8px}.sede button{font:inherit;font-weight:700;background:#34C26B;color:#101F3D;border:0;border-radius:999px;padding:12px 22px;margin-top:12px;cursor:pointer}
   video{width:100%;max-width:560px;border-radius:10px;background:#000}
-  .ok{color:#0F7A70;font-weight:700}
+  .ok{color:#0A5C54;font-weight:700}
 </style>
 </head>
 <body>
@@ -28,6 +28,7 @@
 </header>
 
 <main id="contenido">
+<nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><span aria-current="page">Demostración</span></nav>
   <h1>Compruébalo tú en cinco minutos</h1>
   <p class="meta">Esta página imita una sede electrónica con un trámite. Lleva Winclus instalado (el botón redondo abajo a la derecha). Sigue los pasos: cada uno demuestra algo que ningún widget de accesibilidad hace. No hace falta instalar nada ni crear cuenta.</p>
 
@@ -68,6 +69,7 @@
     <video id="video" controls preload="none" poster="img/paso_1.jpg">
       <track kind="subtitles" srclang="es" label="Español" src="demo.vtt" default>
     </video>
+    <details class="transcripcion"><summary>Transcripción en texto</summary><ol><li>Esto es un vídeo de demostración con subtítulos.</li><li>Con «Subtítulos grandes» activado se ven más grandes y con fondo.</li><li>Winclus elige la pista del idioma de la página.</li></ol></details>
     <p class="meta">El vídeo es una animación silenciosa con pista de subtítulos, para probar «Subtítulos grandes».</p>
     <h3 id="contacto">Contacto</h3>
     <p>hola@winclus.com · Si te comunicas en Lengua de Señas Colombiana, el botón «Centro de Relevo» del widget (pestaña Oír) te pone un intérprete gratis.</p>
@@ -77,10 +79,13 @@
   <p class="meta">Tres grabaciones de Chromium sin ventana, sin retoques, generadas automáticamente por las pruebas. Sin audio; lo que se oiría lo dice el subtítulo.</p>
   <h3>Barrido con un solo pulsador</h3>
   <video controls preload="metadata" src="video/barrido.webm"><track kind="descriptions" srclang="es" label="Descripción" src="video/barrido.vtt" default>Tu navegador no reproduce webm.</video>
+  <details class="transcripcion"><summary>Transcripción en texto</summary><ol><li>El marco azul recorre los enlaces, botones y campos de la página.</li><li>Al pulsar Espacio sobre el campo se abre el teclado en pantalla.</li><li>El barrido pasa por las filas y luego por las teclas; Espacio escribe la tecla marcada.</li></ol></details>
   <h3>Tablero de pictogramas</h3>
   <video controls preload="metadata" src="video/pictogramas.webm"><track kind="descriptions" srclang="es" label="Descripción" src="video/pictogramas.vtt" default>Tu navegador no reproduce webm.</video>
+  <details class="transcripcion"><summary>Transcripción en texto</summary><ol><li>Se abre el tablero de pictogramas de ARASAAC desde la pestaña Oír.</li><li>Se tocan «yo», «necesito» y «ayuda»; cada uno se dice en voz alta y se añade a la frase.</li><li>«Decir» pronuncia la frase completa: «yo necesito ayuda».</li></ol></details>
   <h3>Explicar en fácil</h3>
   <video controls preload="metadata" src="video/lenguaje-claro.webm"><track kind="descriptions" srclang="es" label="Descripción" src="video/lenguaje-claro.vtt" default>Tu navegador no reproduce webm.</video>
+  <details class="transcripcion"><summary>Transcripción en texto</summary><ol><li>La lectura limpia muestra solo el texto del trámite, grande.</li><li>«Explicar en fácil» reescribe el texto: frases cortas y palabras corrientes.</li><li>Las palabras subrayadas muestran el término original al pasar el cursor.</li></ol></details>
 
   <h2>Qué acabas de comprobar</h2>
   <ul>
@@ -94,7 +99,7 @@
 <footer>
   <div class="pie">
     <div>© 2026 Winclus</div>
-    <ul><li><a href="/">Portada</a></li><li><a href="comparar">Frente a otras soluciones</a></li><li><a href="evidencia">Evidencia</a></li><li><a href="accesibilidad">Accesibilidad</a></li><li><a href="privacidad">Privacidad y datos</a></li><li><a href="mapa-del-sitio">Mapa del sitio</a></li><li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li></ul>
+    <ul><li><a href="/">Portada</a></li><li><a href="comparar">Frente a otras soluciones</a></li><li><a href="evidencia">Evidencia</a></li><li><a href="accesibilidad">Accesibilidad</a></li><li><a href="privacidad">Privacidad y datos</a></li><li><a href="mapa-del-sitio">Mapa del sitio</a></li><li><a href="glosario">Glosario</a></li><li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li></ul>
   </div>
 </footer>
 <script>

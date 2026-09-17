@@ -20,10 +20,10 @@
 <link rel="preload" as="image" href="img/fondo_portada.jpg">
 <style>
   :root{
-    --navy:#101F3D; --azul:#2F4FD8; --teal:#0F7A70; --menta:#8FD9C4;
+    --navy:#101F3D; --azul:#2743B4; --teal:#0A5C54; --menta:#8FD9C4;
     --morado:#6B4FC2; --amarillo:#F2B705; --verde:#34C26B;
     --fondo:#FFFFFF; --fondo2:#F3F6FA; --linea:#DCE3EC;
-    --texto:#101F3D; --texto2:#4A5670;
+    --texto:#101F3D; --texto2:#3F4B66;
     --radio:14px;
     --fuente:"Poppins", "Segoe UI", system-ui, sans-serif;
   }
@@ -58,11 +58,11 @@
   /* ---------- cabecera ---------- */
   header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);border-bottom:1px solid var(--linea)}
   .barra{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:72px;position:relative}
-  .marca{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--navy);font-weight:700;font-size:1.35rem;letter-spacing:-.01em}
+  .marca{display:flex;align-items:center;gap:10px;min-height:44px;text-decoration:none;color:var(--navy);font-weight:700;font-size:1.35rem;letter-spacing:-.01em}
   .marca img{width:40px;height:40px}
   .marca span{color:var(--teal);font-weight:600}
   nav ul{display:flex;gap:6px;list-style:none;margin:0;padding:0}
-  nav a{display:inline-block;padding:10px 10px;border-radius:8px;text-decoration:none;color:var(--texto2);font-weight:500;font-size:.95rem;white-space:nowrap}
+  nav a{display:inline-flex;align-items:center;min-height:44px;padding:10px 10px;border-radius:8px;text-decoration:none;color:var(--texto2);font-weight:500;font-size:.95rem;white-space:nowrap}
   nav a:hover{background:var(--fondo2);color:var(--navy)}
   .menu-btn{display:none;background:none;border:2px solid var(--linea);border-radius:10px;width:46px;height:46px;cursor:pointer;color:var(--navy)}
   @media (max-width:820px){
@@ -204,7 +204,9 @@
   .pie{display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:flex-start}
   .pie .marca{font-size:1.15rem}
   .pie ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px}
-  .pie a{color:var(--texto2)}
+  .pie a{color:var(--texto2);display:inline-flex;align-items:center;min-height:44px}
+  .pie ul{gap:0 14px}
+  abbr[title]{text-decoration:underline dotted;text-underline-offset:3px;cursor:help}
   .legal{margin-top:24px;padding-top:18px;border-top:1px solid var(--linea);font-size:.85rem}
 </style>
 </head>
@@ -252,7 +254,7 @@
     </div>
 
     <div class="hero-visual" aria-hidden="true">
-      <div class="globo g2"><svg viewBox="0 0 24 24" fill="none" stroke="#2F4FD8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-7 1-4 7z"/></svg>Clic hecho</div>
+      <div class="globo g2"><svg viewBox="0 0 24 24" fill="none" stroke="#2743B4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-7 1-4 7z"/></svg>Clic hecho</div>
       <div class="globo g3"><img src="img/icono.png" alt="">Puntero: ojos + cabeza</div>
       <div class="globo g1"><svg viewBox="0 0 24 24" fill="none" stroke="#34C26B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 7"/></svg>Winclus está activo</div>
     </div>
@@ -437,7 +439,7 @@
         <li><a href="#que-hace">Qué hace</a></li>
         <li><a href="#como-funciona">Cómo funciona</a></li>
         <li><a href="#contacto">Contacto</a></li>
-        <li><a href="privacidad">Privacidad y datos</a></li><li><a href="mapa-del-sitio">Mapa del sitio</a></li>
+        <li><a href="privacidad">Privacidad y datos</a></li><li><a href="mapa-del-sitio">Mapa del sitio</a></li><li><a href="glosario">Glosario</a></li>
         <li><a href="accesibilidad">Accesibilidad</a></li>
         <li><a href="integrar">Integrar en tu sitio</a></li>
         <li><a href="comparar">Frente a otras soluciones</a></li>

@@ -20,16 +20,16 @@ Leyenda: `[ ]` pendiente · `[x]` hecho (con fecha y versión) · `[~]` parcial.
 - [x] 1.4.9 Sin imágenes de texto (el logotipo está exento).
 - [x] Reglas AAA automáticas de axe sobre el panel: 0 violaciones.
 
-## Pendiente que cierra el código (un día de trabajo)
+## Cerrado por el código el 17-sep-2026 (widget 0.6.2, prueba_aaa.js lo vigila)
 
-- [ ] **1.4.6 Contraste 7:1.** Panel: pestañas inactivas #5A6784 sobre #E8ECF3 (4,8:1), títulos de sección y pie #5A6784 sobre blanco (5,7:1), azul #2F4FD8 de botones y enlaces sobre blanco (6,5:1). Sitio: mismo azul y gris secundario (entre 3 y 53 elementos por página). Acción: oscurecer esos colores en widget.js y paginas.css y subir el umbral de la prueba de contraste a 7:1.
-- [ ] **2.5.5 Objetivos 44×44.** Panel: pestañas 51×42, botón cerrar 40×40, «Léemelo» 88×32 (12 controles). Sitio: enlaces de menú y de pie (10 a 19 por página). Acción: min-height 44 en esos controles y padding en los enlaces; añadir la medida a prueba_axe.js.
-- [ ] **3.3.6 Prevención de errores (roza el AA).** «Restablecer todo», «Olvidar la calibración», «Olvidar los clics» y «Olvidar las palabras aprendidas» borran sin confirmar. Acción: confirmación en dos pasos dentro del panel (no window.confirm), con prueba.
-- [ ] **1.4.8 Presentación visual.** Sitio: espacio entre párrafos ≥ 1,5 veces el interlineado. Widget: elegir colores propios de texto y fondo (además de contraste y modo oscuro), ancho de línea ≤ 80 caracteres en lectura limpia.
-- [ ] **3.1.4 Abreviaturas.** WCAG, CSP, SRI, ARIA, LSC, PDF, NVDA, JAWS, INSOR, MinTIC… sin expansión en el sitio. Acción: `<abbr>` en la primera aparición de cada página y una página de glosario enlazada desde el pie.
-- [ ] **3.1.5 Nivel de lectura.** integrar, manual y cumplimiento exigen más que secundaria. Acción: bloque «En pocas palabras» en lectura fácil al principio de cada una (o página paralela).
-- [ ] **2.4.8 Ubicación.** El sitio no marca dónde estás. Acción: migas de pan bajo la cabecera y enlace resaltado en el menú.
-- [ ] **1.2.8 Alternativa textual de los vídeos.** Transcripción completa en texto de los tres vídeos de la demostración (a partir de sus VTT de subtítulos y descripciones), publicada bajo cada vídeo.
+- [x] (17-sep-2026, 0.6.2) **1.4.6 Contraste 7:1.** Panel: pestañas inactivas #5A6784 sobre #E8ECF3 (4,8:1), títulos de sección y pie #5A6784 sobre blanco (5,7:1), azul #2F4FD8 de botones y enlaces sobre blanco (6,5:1). Sitio: mismo azul y gris secundario (entre 3 y 53 elementos por página). Acción: oscurecer esos colores en widget.js y paginas.css y subir el umbral de la prueba de contraste a 7:1.
+- [x] (17-sep-2026, 0.6.2) **2.5.5 Objetivos 44×44.** Panel: pestañas 51×42, botón cerrar 40×40, «Léemelo» 88×32 (12 controles). Sitio: enlaces de menú y de pie (10 a 19 por página). Acción: min-height 44 en esos controles y padding en los enlaces; añadir la medida a prueba_axe.js.
+- [x] (17-sep-2026, 0.6.2) **3.3.6 Prevención de errores (roza el AA).** «Restablecer todo», «Olvidar la calibración», «Olvidar los clics» y «Olvidar las palabras aprendidas» borran sin confirmar. Acción: confirmación en dos pasos dentro del panel (no window.confirm), con prueba.
+- [x] (17-sep-2026, 0.6.2) **1.4.8 Presentación visual.** Sitio: espacio entre párrafos ≥ 1,5 veces el interlineado. Widget: elegir colores propios de texto y fondo (además de contraste y modo oscuro), ancho de línea ≤ 80 caracteres en lectura limpia.
+- [x] (17-sep-2026, 0.6.2) **3.1.4 Abreviaturas.** WCAG, CSP, SRI, ARIA, LSC, PDF, NVDA, JAWS, INSOR, MinTIC… sin expansión en el sitio. Acción: `<abbr>` en la primera aparición de cada página y una página de glosario enlazada desde el pie.
+- [x] (17-sep-2026, 0.6.2) **3.1.5 Nivel de lectura.** integrar, manual y cumplimiento exigen más que secundaria. Acción: bloque «En pocas palabras» en lectura fácil al principio de cada una (o página paralela).
+- [x] (17-sep-2026, 0.6.2) **2.4.8 Ubicación.** El sitio no marca dónde estás. Acción: migas de pan bajo la cabecera y enlace resaltado en el menú.
+- [x] (17-sep-2026, 0.6.2) **1.2.8 Alternativa textual de los vídeos.** Transcripción completa en texto de los tres vídeos de la demostración (a partir de sus VTT de subtítulos y descripciones), publicada bajo cada vídeo.
 
 ## Pendiente que cierra una persona
 

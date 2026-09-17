@@ -32,7 +32,8 @@ const PRUEBAS = [
   ["prueba_navegadores.js", "En Chromium, Firefox y WebKit: sin síntesis ni reconocimiento de voz, localStorage bloqueado, sin portapapeles, página sin <main>, DOM reemplazado (SPA), script cargado dos veces, móvil.", ["Robustez"]],
   ["prueba_robustez.js", "Regresión de la revisión de código: consentimiento sin localStorage, CSS móvil, voz por trozos, glosario sin HTML anidado, barrido sin lista rancia, perfiles con tipos inválidos, contraseñas protegidas, un solo reconocedor de voz.", ["Robustez"]],
   ["prueba_rendimiento.js", "La inferencia de la cara va a la tasa de la cámara; modo ahorro a 15/s.", ["Rendimiento"]],
-  ["prueba_entender.js", "El panel se entiende sin manual: Inicio con «¿Qué te cuesta?», «Lo que tienes activado» y «Apagar todo», ayuda en palabras corrientes bajo cada opción, ajustes finos plegados, sin jerga, todo traducido.", ["WCAG 3.1.5", "WCAG 3.3.2", "COGA", "ISO 24495-1"]],
+  ["prueba_aaa.js", "Nivel AAA: reglas AAA de axe en el panel y en las 15 páginas, contraste 7:1, objetivos de 44×44, confirmación antes de borrar, colores propios y modo dislexia, glosario, migas de pan, lectura fácil y transcripciones.", ["WCAG 1.4.6", "WCAG 1.4.8", "WCAG 2.5.5", "WCAG 3.3.6", "WCAG 3.1.4", "WCAG 3.1.5", "WCAG 2.4.8", "WCAG 1.2.8"]],
+  ["prueba_entender.js","El panel se entiende sin manual: Inicio con «¿Qué te cuesta?», «Lo que tienes activado» y «Apagar todo», ayuda en palabras corrientes bajo cada opción, ajustes finos plegados, sin jerga, todo traducido.", ["WCAG 3.1.5", "WCAG 3.3.2", "COGA", "ISO 24495-1"]],
 ];
 
 function commit() { try { return execSync("git rev-parse --short HEAD", { cwd: RAIZ }).toString().trim(); } catch (e) { return "?"; } }
@@ -70,12 +71,12 @@ let h = `<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="paginas.css">
-<style>.ok{color:#0F7A70;font-weight:700}.mal{color:#A6402F;font-weight:700}details{margin:6px 0 14px}summary{cursor:pointer;font-weight:600}.lineas{font-size:.88rem;margin:6px 0 0 8px;padding-left:16px}.lineas li{margin:2px 0}.tag{display:inline-block;font-size:.78rem;background:#F3F6FA;border:1px solid #DCE3EC;border-radius:999px;padding:1px 8px;margin:2px 4px 2px 0}.kpi{display:flex;gap:14px;flex-wrap:wrap;margin:16px 0}.kpi div{background:#F3F6FA;border-radius:12px;padding:12px 18px;min-width:120px}.kpi b{display:block;font-size:1.7rem}pre{overflow-x:auto;background:#101F3D;color:#EEF1EA;padding:12px 14px;border-radius:10px;font-size:14px}main{overflow-wrap:anywhere}</style>
+<style>.ok{color:#0A5C54;font-weight:700}.mal{color:#A6402F;font-weight:700}details{margin:6px 0 14px}summary{cursor:pointer;font-weight:600}.lineas{font-size:.88rem;margin:6px 0 0 8px;padding-left:16px}.lineas li{margin:2px 0}.tag{display:inline-block;font-size:.78rem;background:#F3F6FA;border:1px solid #DCE3EC;border-radius:999px;padding:1px 8px;margin:2px 4px 2px 0}.kpi{display:flex;gap:14px;flex-wrap:wrap;margin:16px 0}.kpi div{background:#F3F6FA;border-radius:12px;padding:12px 18px;min-width:120px}.kpi b{display:block;font-size:1.7rem}pre{overflow-x:auto;background:#101F3D;color:#EEF1EA;padding:12px 14px;border-radius:10px;font-size:14px}main{overflow-wrap:anywhere}</style>
 </head>
 <body>
 <a class="salto" href="#contenido">Ir al contenido</a>
 <header><div class="barra"><a class="marca" href="/"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a><a class="volver" href="/">Volver a la portada</a></div></header>
-<main id="contenido">
+<main id="contenido"><nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><span aria-current="page">Evidencia</span></nav>
   <h1>Evidencia: lo que las pruebas demuestran</h1>
   <p class="meta">Generado automáticamente el ${esc(fechaTxt)} · widget ${esc(json.version)} · commit <code>${esc(json.commit)}</code>. Las pruebas corren automáticamente con cada cambio del código.</p>
   <div class="kpi"><div><b>${json.pruebas}</b>pruebas</div><div><b>${json.comprobaciones}</b>comprobaciones</div><div><b class="${fallan ? "mal" : "ok"}">${fallan ? fallan + " fallan" : "0 fallan"}</b>estado</div></div>
@@ -89,7 +90,7 @@ resultados.forEach((r) => {
   h += `<details><summary><span class="${r.bien ? "ok" : "mal"}">${r.bien ? "✓" : "✗"}</span> ${esc(r.archivo)} · ${r.ok} comprobaciones${r.mal ? ", " + r.mal + " fallan" : ""} · ${r.segundos} s</summary><p>${esc(r.que)}</p><p>${r.criterios.map((c) => `<span class="tag">${esc(c)}</span>`).join("")}</p><ul class="lineas">${r.lineas.map((l) => `<li class="${l.startsWith("OK") ? "" : "mal"}">${esc(l.replace(/^(OK|MAL)\s+/, ""))}</li>`).join("")}</ul></details>`;
 });
 h += `</main>
-<footer><div class="pie"><div>© 2026 Winclus</div><ul><li><a href="/">Portada</a></li><li><a href="accesibilidad">Accesibilidad</a></li><li><a href="comparar">Frente a otras soluciones</a></li><li><a href="privacidad">Privacidad y datos</a></li><li><a href="mapa-del-sitio">Mapa del sitio</a></li><li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li></ul></div></footer>
+<footer><div class="pie"><div>© 2026 Winclus</div><ul><li><a href="/">Portada</a></li><li><a href="accesibilidad">Accesibilidad</a></li><li><a href="comparar">Frente a otras soluciones</a></li><li><a href="privacidad">Privacidad y datos</a></li><li><a href="mapa-del-sitio">Mapa del sitio</a></li><li><a href="glosario">Glosario</a></li><li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li></ul></div></footer>
 <script src="widget.js" async></script>
 </body>
 </html>`;

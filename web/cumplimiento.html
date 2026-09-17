@@ -14,7 +14,7 @@
   main{max-width:960px}h2{font-size:1.4rem;margin-top:2em}h3{font-size:1.1rem;margin:1.4em 0 .4em;color:var(--teal)}
   .resumen{background:var(--fondo2);border-radius:12px;padding:14px 18px;margin:12px 0 20px}
   table{width:100%;border-collapse:collapse;margin:8px 0 18px;font-size:.94rem}th,td{border:1px solid #C9D0DC;padding:8px 10px;vertical-align:top;text-align:left}th{background:var(--fondo2)}
-  .si{background:#E8F7F3;color:#0B5E56;font-weight:700;white-space:nowrap}.no{background:#FDE8E8;color:#8A1C1C;font-weight:700;white-space:nowrap}.na{color:#4A5670;white-space:nowrap}.parcial{background:#FFF6DB;color:#7A5A00;font-weight:700;white-space:nowrap}
+  .si{background:#E8F7F3;color:#084A44;font-weight:700;white-space:nowrap}.no{background:#FDE8E8;color:#8A1C1C;font-weight:700;white-space:nowrap}.na{color:#3F4B66;white-space:nowrap}.parcial{background:#FFF6DB;color:#5C4400;font-weight:700;white-space:nowrap}
   .leyenda span{display:inline-block;padding:2px 10px;border-radius:999px;margin-right:8px;font-size:.9rem}
   .humano{border-left:6px solid #C8433B;background:#FDE8E8;padding:10px 16px;border-radius:0 12px 12px 0;margin:14px 0}
   .tabla{overflow:auto}
@@ -24,8 +24,10 @@
 <a class="salto" href="#contenido">Ir al contenido</a>
 <header><div class="barra"><a class="marca" href="/"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a><a class="volver" href="/">Volver a la portada</a></div></header>
 <main id="contenido">
+<nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><span aria-current="page">Cumplimiento normativo</span></nav>
   <h1>Cumplimiento normativo en Colombia</h1>
-  <p class="meta">Norma por norma: qué exige, qué cumple Winclus (el widget 0.6.1 y winclus.com), cómo se demuestra y qué falta. Actualizado el 17 de septiembre de 2026. Es una autoevaluación honesta: lo que está en rojo no lo puede cerrar el código, lo cierra una persona o una entidad externa.</p>
+  <p class="meta">Norma por norma: qué exige, qué cumple Winclus (el widget 0.6.2 y winclus.com), cómo se demuestra y qué falta. Actualizado el 17 de septiembre de 2026. Es una autoevaluación honesta: lo que está en rojo no lo puede cerrar el código, lo cierra una persona o una entidad externa.</p>
+  <div class="facil"><h2>En pocas palabras</h2><ul><li>En Colombia, los sitios del Estado deben cumplir unas reglas de accesibilidad (Resolución 1519 de 2020).</li><li>Winclus cumple casi todas las que le tocan: 37 de 41.</li><li>Faltan tres cosas que solo puede hacer una persona: una evaluación externa, pruebas con personas con discapacidad y una opinión de un abogado sobre los datos.</li><li>Cuando estén hechas, diremos «cumplimos en todo».</li><li>Winclus ayuda a usar un sitio; el sitio también tiene que cumplir por su cuenta.</li></ul></div>
 
   <div class="resumen">
     <p><strong>Respuesta corta.</strong> De 41 requisitos revisados, Winclus cumple 37, uno queda parcial (línea telefónica de soporte) y tres dependen de terceros: evaluación independiente, pruebas con personas con discapacidad y concepto jurídico sobre datos biométricos. Cuando esos cuatro estén cerrados podremos decir «cumplimos en todo» y sostenerlo ante una entidad.</p>
@@ -117,13 +119,22 @@
     </tbody>
   </table></div>
 
+  <h2>7. Nivel AAA de las WCAG (no lo exige ninguna norma; se alcanza como ventaja)</h2>
+  <div class="tabla" tabindex="0" role="region" aria-label="Nivel AAA"><table>
+    <thead><tr><th>Requisito</th><th>Estado</th><th>Cómo se demuestra</th></tr></thead>
+    <tbody>
+      <tr><td>Todos los criterios AAA que aplican al widget y a winclus.com (contraste 7:1, objetivos de 44 px, confirmación antes de borrar, colores propios y presentación visual, glosario y abreviaturas, lectura fácil, migas de pan, transcripciones, teclado sin excepción, sin tiempos, sin destellos, ayuda)</td><td class="si">Cumple</td><td>Tabla 3b del informe de conformidad; prueba_aaa.js mide contraste, tamaños, confirmaciones, colores, glosario, migas y transcripciones en cada cambio.</td></tr>
+      <tr><td>1.2.6 Lengua de señas en los vídeos de la demostración</td><td class="no">Pendiente (persona)</td><td>Hace falta un intérprete certificado de Lengua de Señas Colombiana para unos cinco minutos de vídeo. Hasta entonces: «AAA salvo Lengua de Señas».</td></tr>
+    </tbody>
+  </table></div>
+
   <h2>Lo que falta y quién lo cierra</h2>
   <div class="humano"><strong>1. Evaluación independiente.</strong> Un experto en accesibilidad ajeno a Winclus evalúa el widget y el sitio con lector de pantalla, teclado, zoom y móvil, y firma un informe. Entre dos y cuatro semanas. Sin esto, todo lo de arriba es autodeclarado.</div>
   <div class="humano"><strong>2. Pruebas con personas con discapacidad.</strong> Sesiones según el protocolo (ocho grupos, cinco personas cada uno) y, para empezar esta semana, la <a href="guion-prueba">prueba de diez minutos</a>. El informe se publica en la declaración.</div>
   <div class="humano"><strong>3. Concepto jurídico y línea de soporte.</strong> Un abogado responde por escrito sobre el papel de Winclus con los datos biométricos y el registro de bases de datos; y se publica un teléfono o WhatsApp de soporte con horario.</div>
   <p>El orden, los plazos y los correos modelo están en el plan de cumplimiento que acompaña a este documento (pídelo a <a href="mailto:hola@winclus.com">hola@winclus.com</a>). Cuando los tres estén cerrados, esta página pasará a decir «cumple» en todas las filas y la declaración enlazará el informe externo y el de pruebas.</p>
 </main>
-<footer><div class="barra"><span>Winclus · <a href="mailto:hola@winclus.com">hola@winclus.com</a></span><span><a href="accesibilidad">Accesibilidad</a> · <a href="privacidad">Privacidad</a> · <a href="mapa-del-sitio">Mapa del sitio</a></span></div></footer>
+<footer><div class="barra"><span>Winclus · <a href="mailto:hola@winclus.com">hola@winclus.com</a></span><span><a href="accesibilidad">Accesibilidad</a> · <a href="privacidad">Privacidad</a> · <a href="mapa-del-sitio">Mapa del sitio</a> · <a href="glosario">Glosario</a></span></div></footer>
 <script src="widget.js" async></script>
 </body>
 </html>
