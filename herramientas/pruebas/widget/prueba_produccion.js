@@ -37,7 +37,7 @@ function grupo(n) { console.log("\n== " + n); }
   await page.evaluate(() => { for (let i = 0; i < 10; i++) Winclus.caja.querySelector("#wcl-panel-ver .wcl-mm button:first-child").click(); });
   comprobar((await sw("contraste")) === "true" && /contrast/.test(await cs("filter")), "alto contraste"); await sw("contraste");
   comprobar((await sw("oscuro")) === "true" && /invert/.test(await cs("filter")) && (await page.evaluate(() => Winclus.caja.querySelector(".wcl-btn").getBoundingClientRect().left > 0)), "modo oscuro con el botón dentro de pantalla"); await sw("oscuro");
-  await page.evaluate(() => { Array.from(Winclus.caja.querySelectorAll(".wcl-opc button")).find((b) => /Protan/.test(b.textContent)).click(); });
+  await page.evaluate(() => { Array.from(Winclus.caja.querySelectorAll(".wcl-opc button")).find((b) => /el rojo/.test(b.textContent)).click(); });
   comprobar(/wcl-f-protan/.test(await cs("filter")), "corrección de daltonismo aplicada");
   await page.evaluate(() => { Array.from(Winclus.caja.querySelectorAll(".wcl-opc button")).find((b) => /Ninguna/.test(b.textContent)).click(); });
   comprobar((await sw("cursor_grande")) === "true" && /url\(/.test(await page.evaluate(() => getComputedStyle(document.body).cursor)), "cursor grande"); await sw("cursor_grande");
