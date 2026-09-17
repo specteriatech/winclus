@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-17T23:15:31.629Z",
-  "commit": "81f9223",
-  "version": "0.6.2",
-  "pruebas": 26,
-  "comprobaciones": 446,
+  "fecha": "2026-09-17T23:40:43.232Z",
+  "commit": "ac4a225",
+  "version": "0.6.3",
+  "pruebas": 27,
+  "comprobaciones": 456,
   "fallan": 0,
   "resultados": [
     {
@@ -78,7 +78,7 @@
       "ok": 11,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 6,
       "lineas": [
         "OK  una sola pestaña tabulable y todas con aria-controls válido",
         "OK  la tabulable es la seleccionada",
@@ -131,16 +131,16 @@
       "bien": true,
       "segundos": 3,
       "lineas": [
-        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 487 revisados",
-        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 696 revisados",
-        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 646 revisados",
-        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 539 revisados",
-        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1288 revisados",
-        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 524 revisados",
-        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 446 revisados",
-        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 453 revisados",
-        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 453 revisados",
-        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 329 revisados",
+        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 498 revisados",
+        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 808 revisados",
+        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 657 revisados",
+        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 550 revisados",
+        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1299 revisados",
+        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 535 revisados",
+        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 457 revisados",
+        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 464 revisados",
+        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 464 revisados",
+        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 340 revisados",
         "OK  Pausar: texto sobre fondo: 7.86:1",
         "OK  interruptor apagado sobre el panel: 3.13:1",
         "OK  interruptor encendido sobre el panel: 7.86:1",
@@ -187,7 +187,7 @@
       "ok": 6,
       "mal": 0,
       "bien": true,
-      "segundos": 8,
+      "segundos": 3,
       "lineas": [
         "OK  los cuatro filtros son SVGFilterElement",
         "OK  el filtro protan se aplica y cambia el rojo de la página",
@@ -674,7 +674,7 @@
       "ok": 21,
       "mal": 0,
       "bien": true,
-      "segundos": 12,
+      "segundos": 17,
       "lineas": [
         "OK  chromium: recorrido básico",
         "OK  chromium: sin speechSynthesis ni SpeechRecognition",
@@ -743,6 +743,31 @@
         "OK  no se infiere más veces que cuadros entrega la cámara",
         "OK  en modo ahorro se infiere unas 15 veces por segundo",
         "OK  hay interruptor «Gastar menos batería» (modo ahorro) en el panel"
+      ]
+    },
+    {
+      "archivo": "prueba_familias.js",
+      "que": "Paridad con los overlays (familia 1): tipo de letra legible y para dislexia, espacio entre renglones, texto a la izquierda y zoom de toda la página, aplicados a la página, guardados y reversibles.",
+      "criterios": [
+        "WCAG 1.4.8",
+        "WCAG 1.4.12",
+        "WCAG 1.4.4"
+      ],
+      "ok": 10,
+      "mal": 0,
+      "bien": true,
+      "segundos": 1,
+      "lineas": [
+        "OK  «Legible» pone Verdana en la página, no en el panel, y se guarda",
+        "OK  «Para dislexia» pide OpenDyslexic desde winclus.com/fuentes",
+        "OK  las fuentes OpenDyslexic (regular y negrita) están en web/fuentes con su licencia OFL",
+        "OK  «Espacio entre renglones» al 150 % da interlineado 1,5 en la página",
+        "OK  «Texto alineado a la izquierda» quita el justificado",
+        "OK  «Zoom de toda la página» al 150 % escala el <body> y el widget sigue dentro de la pantalla",
+        "OK  «Lo que tienes activado» lista los tres ajustes nuevos",
+        "OK  «Apagar todo lo activado» los quita",
+        "OK  al recargar se aplican los ajustes guardados",
+        "OK  sin errores JS"
       ]
     },
     {

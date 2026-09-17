@@ -1,0 +1,3 @@
+OpenDyslexic, de Abbie Gonzalez (https://opendyslexic.org), bajo la SIL Open Font License 1.1.
+Se sirve desde winclus.com/fuentes/ para la opción «Tipo de letra: para dislexia» del widget.
+Copia de los archivos compilados del repositorio antijingoist/opendyslexic (rama master), 17 de septiembre de 2026.

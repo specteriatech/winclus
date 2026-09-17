@@ -53,6 +53,9 @@
 - `node prueba_evidencia.js`: demo.html pasa axe; cifras de uso locales, resumen sin datos personales, envío solo con data-metricas y el interruptor activado, una vez por semana.
 - `node evidencia.js`: corre todas las pruebas y genera web/evidencia.html y web/evidencia.json (lo hace GitHub Actions en cada push).
 - `node prueba_navegadores.js`: recorrido básico en Chromium, Firefox y WebKit (`npx playwright install firefox webkit`) con entornos hostiles: sin voz, sin localStorage, sin portapapeles, SPA, script doble, móvil.
+- `node prueba_familias.js`: hoja de ruta por familias (docs/hoja-ruta-familias.md), bloque 1 (0.6.3): tipo de letra («Legible»
+  Verdana y «Para dislexia» OpenDyslexic desde winclus.com/fuentes), espacio entre renglones, texto a la izquierda y zoom de toda la
+  página; se aplican a la página y no al panel, se guardan, salen en «Lo que tienes activado» y se apagan con «Apagar todo».
 - `node prueba_aaa.js`: nivel AAA (docs/hoja-ruta-aaa.md, 17-sep-2026): reglas AAA de axe sobre cada pestaña del panel (ajustes
   finos abiertos, todos los grupos a la vista) y sobre todas las páginas del sitio; contraste 7:1 de todo texto del panel;
   objetivos de 44×44 en el panel (salvo las teclas del teclado en pantalla) y en enlaces y botones del sitio que no van en
