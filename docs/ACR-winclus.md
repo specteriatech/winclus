@@ -1,4 +1,4 @@
-# Informe de conformidad de accesibilidad (ACR) · Winclus widget 0.6.6
+# Informe de conformidad de accesibilidad (ACR) · Winclus widget 0.6.7
 
 Formato basado en la plantilla ITI VPAT® 2.5 (edición internacional: WCAG 2.1, EN 301 549, Sección 508),
 traducido y adaptado. Lo elaboran los propios colaboradores de Winclus; una auditoría de tercero puede
@@ -6,7 +6,7 @@ firmarlo después.
 
 | | |
 |---|---|
-| Producto | Winclus, widget web de tecnología de apoyo (`widget-0.6.6.js`) |
+| Producto | Winclus, widget web de tecnología de apoyo (`widget-0.6.7.js`) |
 | Fecha | 16 de septiembre de 2026 |
 | Contacto | hola@winclus.com |
 | Notas | El widget se añade a un sitio anfitrión. Este informe cubre el widget (panel, teclado en pantalla, tablero de pictogramas, menú de clics, calibración, avisos). No cubre el sitio anfitrión: Winclus no lo hace conforme. |
@@ -29,7 +29,7 @@ Niveles: **Cumple** · **Cumple parcialmente** · **No cumple** · **No aplica**
 | 1.4.2 Control del audio | Cumple | Toda voz se puede parar («Callar», Escape) y no arranca sola. |
 | 2.1.1 Teclado | Cumple | Todo el panel, el teclado en pantalla, las frases y el tablero son operables con teclado; el lector básico no captura teclas sobre controles del sitio. |
 | 2.1.2 Sin trampas de teclado | Cumple | La calibración (modal) se cierra con Escape y devuelve el foco. |
-| 2.1.4 Atajos de teclado de un carácter | Cumple | Las letras del lector básico (h, l, b, f, i) solo actúan con el lector activado por la persona y nunca sobre campos editables. |
+| 2.1.4 Atajos de teclado de un carácter | Cumple | Las letras del lector (h, l, b, f, c, i, g, d, t, a, r, s y 1 a 6) solo actúan con el lector activado por la persona y nunca sobre campos editables. |
 | 2.2.1 Tiempo ajustable | Cumple | Barrido: tiempo ajustable de 0,4 a 4 s y pausa con Escape; clic por permanencia: tiempo ajustable. |
 | 2.2.2 Pausar, detener, ocultar | Cumple | Nada del widget se mueve o parpadea solo; el modo calma congela lo del sitio. |
 | 2.3.1 Umbral de tres destellos | Cumple | Sin destellos. |

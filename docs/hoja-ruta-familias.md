@@ -40,14 +40,16 @@ ajustar verbosidad, funcionar en todo el sistema operativo, no solo en el navega
 
 - [x] Ya en Winclus: lector básico dentro de la página (flechas leen, h, l, b, f, Intro, F1), lectura de lo que se
       pulsa, «¿Dónde estoy?», «Léeme esta página», voz por idioma.
-- [ ] **Navegación completa dentro de la página**: regiones (d), listas (i), tablas celda a celda (Ctrl+Alt+flechas)
-      con cabecera anunciada, imágenes (g), campos con modo formulario, leer por palabra y por carácter, deletrear,
-      buscar (Ctrl+F propio), lectura continua con resaltado, anuncio de roles y estados (marcado, expandido,
-      obligatorio, inválido), regiones vivas.
-- [ ] **Verbosidad** (principiante, normal, experto) y **velocidad y tono** de la voz.
-- [ ] **En el escritorio (aplicación de Windows)**: instalar y configurar NVDA (gratuito, código abierto) desde el
-      instalador de Winclus, con un perfil que no choque con el puntero facial. Es más honesto y más útil que
-      escribir otro lector: NVDA lleva quince años de trabajo.
+- [x] (18-sep-2026, 0.6.7) **Navegación completa dentro de la página**: zonas (d), listas (a), tablas celda a celda
+      (t y Ctrl+Alt+flechas, con fila, columna y cabeceras), imágenes (i o g), casillas y opciones (c), encabezados por
+      nivel (1 a 6), modo formulario (Escape sale), leer por palabra (Ctrl+flechas) y por carácter (flechas, con el
+      nombre de los signos), deletrear (s), buscar (Ctrl+F propio), lectura continua con resaltado (r), roles y estados
+      (expandido, pulsado, seleccionado, actual, obligatorio, no válido, no disponible, descripción) y regiones vivas
+      (aria-live, alertas). Intro también marca casillas.
+- [x] (18-sep-2026, 0.6.7) **Verbosidad** («Cuánto explica el lector»: mucho, normal, poco) y **velocidad y tono** de la voz.
+- [~] (18-sep-2026) **En el escritorio (aplicación de Windows)**: el instalador (instalar.ps1) ofrece instalar NVDA con
+      winget (o abre su descarga) y explica qué apagar en Winclus para que no hablen los dos. Queda por probar en vivo
+      NVDA y el puntero facial juntos y, si hace falta, un perfil de NVDA.
 - [-] **Braille** y **lector para todo el sistema propio**: no. Es el terreno de JAWS y NVDA; Winclus se integra con ellos.
 
 ## Familia 3. Control con la cara, los ojos o la voz (Tobii Dynavox, Windows Eye Control, Gameface, Dragon)
@@ -139,7 +141,8 @@ traducción, letra para dislexia, espaciado, lectura fácil.
    Familia cerrada.
 3. ~~Familia 4: vocabulario nuclear, búsqueda en ARASAAC, tableros propios.~~ Hecho el 18-sep-2026 (0.6.6). Familia
    cerrada (salvo igualar a Grid 3 en amplitud, descartado).
-4. Familia 2: lector completo dentro de la página. Cambios grandes en el widget. En Windows, integrar NVDA.
+4. ~~Familia 2: lector completo dentro de la página.~~ Hecho el 18-sep-2026 (0.6.7). En Windows, el instalador ofrece
+   NVDA; falta la prueba en vivo con el puntero facial.
 5. Familia 3: precisión ocular, más gestos, voz completa en Windows. Investigación más desarrollo.
 
 Cada bloque se publica como versión propia, con su prueba automática, y se marca aquí. Lo que se marque `[-]` se

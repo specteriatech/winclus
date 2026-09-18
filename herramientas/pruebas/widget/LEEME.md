@@ -52,6 +52,11 @@
   búsqueda en ARASAAC simulada con `page.route`; tableros propios (crear, palabra, dibujo desde el buscador, foto reducida con
   `setInputFiles`, quitar, archivo .tablero.json descargado, enlace #winclus-tablero=…, perfil .winclus); el tablero con dos pulsadores
   y con `Winclus.mover` + `Winclus.clic()`. Pasa en Chromium, Firefox y WebKit.
+- `node prueba_lector.js`: familia 2 (0.6.7): lector completo dentro de la página: d zonas (el menú dentro del contenido es su zona), t tablas y
+  Ctrl+Alt+flechas con fila, columna y cabeceras, a listas, c casillas (Intro las marca), 1-6 encabezados por nivel, estados (expandido,
+  obligatorio, no válido, no disponible, descripción), modo formulario y Escape, ← → letra a letra con nombres de signos, Ctrl+← →
+  palabra a palabra, s deletrea, r lectura continua con resaltado, Ctrl+F buscador, regiones vivas y alertas, tres verbosidades
+  (`Winclus.describir`), tono de la voz (pitch). La voz habla por trozos: la prueba junta lo dicho. Pasa en Chromium, Firefox y WebKit.
 - `node prueba_facil.js`: `pagina-tramite.html`: «Explicar en fácil» por reglas (jerga → palabras corrientes con glosario,
   frases cortas, lo importante primero), con servicio de IA simulado y su caída, resaltado palabra a palabra, «¿Dónde estoy?».
 - `node prueba_auditar.js`: Winclus Audit sobre la portada local y una página mala: informe, declaración y JSON.
