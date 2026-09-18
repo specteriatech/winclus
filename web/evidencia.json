@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-18T16:05:06.595Z",
-  "commit": "ca06e97",
-  "version": "0.6.8",
-  "pruebas": 31,
-  "comprobaciones": 562,
+  "fecha": "2026-09-18T17:26:18.010Z",
+  "commit": "9b1b039",
+  "version": "0.6.9",
+  "pruebas": 32,
+  "comprobaciones": 573,
   "fallan": 0,
   "resultados": [
     {
@@ -131,16 +131,16 @@
       "bien": true,
       "segundos": 3,
       "lineas": [
-        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 543 revisados",
-        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 886 revisados",
-        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 817 revisados",
-        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 595 revisados",
-        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1796 revisados",
-        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 580 revisados",
-        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 502 revisados",
-        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 509 revisados",
-        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 509 revisados",
-        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 385 revisados",
+        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 557 revisados",
+        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 900 revisados",
+        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 834 revisados",
+        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 620 revisados",
+        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1810 revisados",
+        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 594 revisados",
+        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 516 revisados",
+        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 523 revisados",
+        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 523 revisados",
+        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 399 revisados",
         "OK  Pausar: texto sobre fondo: 7.86:1",
         "OK  interruptor apagado sobre el panel: 3.13:1",
         "OK  interruptor encendido sobre el panel: 7.86:1",
@@ -187,7 +187,7 @@
       "ok": 6,
       "mal": 0,
       "bien": true,
-      "segundos": 3,
+      "segundos": 8,
       "lineas": [
         "OK  los cuatro filtros son SVGFilterElement",
         "OK  el filtro protan se aplica y cambia el rojo de la página",
@@ -207,7 +207,7 @@
       "ok": 140,
       "mal": 0,
       "bien": true,
-      "segundos": 15,
+      "segundos": 13,
       "lineas": [
         "OK  / a 1280 px: axe sin incumplimientos",
         "OK  / a 1280 px: carga el widget",
@@ -454,7 +454,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 3,
+      "segundos": 8,
       "lineas": [
         "OK  un audio de la página muestra el aviso con su nombre",
         "OK  un audio creado por código",
@@ -677,6 +677,31 @@
       ]
     },
     {
+      "archivo": "prueba_familia3_widget.js",
+      "que": "Calibración ocular de 9, 13 o 25 puntos con compensación de cabeza medida, puntero de otro rastreador con clics por cámara y enlace a NVDA (familia 3 en el widget).",
+      "criterios": [
+        "EN 301 549 11.5",
+        "ISO 9241-171 §9"
+      ],
+      "ok": 11,
+      "mal": 0,
+      "bien": true,
+      "segundos": 1,
+      "lineas": [
+        "OK  la calibración tiene 9, 13 o 25 puntos distintos según «Rápida», «Normal» o «Completa»",
+        "OK  el panel tiene las opciones de calibración y «Otro aparato mueve el puntero»",
+        "OK  el botón de calibrar dice cuánto tarda según el modo",
+        "OK  el modelo ocular se ajusta a los 13 puntos",
+        "OK  la compensación de cabeza se aprende mirando al centro y mide su mejora",
+        "OK  con la cabeza desplazada, sin compensar el puntero se va y con ella vuelve al centro",
+        "OK  si mover la cabeza no explica el error, la compensación no se guarda",
+        "OK  sin cámara activa, el ratón no toca el puntero virtual",
+        "OK  «Otro aparato mueve el puntero» se enciende, se guarda y se apaga desde el panel",
+        "OK  en Windows, el lector ofrece descargar NVDA",
+        "OK  sin errores JS"
+      ]
+    },
+    {
       "archivo": "prueba_facil.js",
       "que": "«Explicar en fácil» por reglas y con IA, resaltado palabra a palabra, «¿Dónde estoy?».",
       "criterios": [
@@ -687,7 +712,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 7,
       "lineas": [
         "OK  «¿Dónde estoy?» dice título, ruta, encabezados y avance",
         "OK  hay resumen: de qué va y lo más importante",
@@ -777,7 +802,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 1,
       "lineas": [
         "OK  ningún medio pasa del volumen máximo",
         "OK  sin voz elegida, usa la neuronal de es-CO",
@@ -804,7 +829,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 11,
+      "segundos": 15,
       "lineas": [
         "OK  demo.html pasa axe",
         "OK  la demo tiene los siete pasos",
@@ -827,7 +852,7 @@
       "ok": 21,
       "mal": 0,
       "bien": true,
-      "segundos": 13,
+      "segundos": 12,
       "lineas": [
         "OK  chromium: recorrido básico",
         "OK  chromium: sin speechSynthesis ni SpeechRecognition",
@@ -912,7 +937,7 @@
       "ok": 26,
       "mal": 0,
       "bien": true,
-      "segundos": 6,
+      "segundos": 1,
       "lineas": [
         "OK  «Legible» pone Verdana en la página, no en el panel, y se guarda",
         "OK  «Para dislexia» pide OpenDyslexic desde winclus.com/fuentes",

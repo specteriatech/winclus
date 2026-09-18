@@ -60,6 +60,10 @@
 - `node prueba_familias36.js`: familias 3 y 6 (0.6.8): guiños e inclinación de la cabeza como gestos (`Winclus.valorGesto` con `deteccion.bs` y
   `deteccion.lm` simulados; un parpadeo de los dos ojos da 0; en la pestaña Clics), «Tipos de palabra» en la lectura limpia (`Winclus.tipoPalabra`,
   leyenda, sin cambiar el texto), «En tres frases» (`Winclus.resumen`) y «Compruebo que lo entendí» con «Ver respuesta» en «Explicar en fácil».
+- `node prueba_familia3_widget.js`: familia 3 en el widget (0.6.9): rejilla de 9/13/25 puntos (`Winclus.rejilla`), opciones de calibración en
+  el panel, modelo ocular con rasgos sintéticos (`Winclus.ajustarModelo`, `predecir`), compensación de cabeza (`Winclus.ajustarCabeza`:
+  aprende, mide la mejora, corrige con `deteccion.pose` y no se guarda si no ayuda), «Otro aparato mueve el puntero» (el ratón no toca el
+  puntero virtual sin cámara; con cámara real, prueba en vivo pendiente) y el enlace a NVDA. Pasa en Chromium, Firefox y WebKit.
 - `node prueba_facil.js`: `pagina-tramite.html`: «Explicar en fácil» por reglas (jerga → palabras corrientes con glosario,
   frases cortas, lo importante primero), con servicio de IA simulado y su caída, resaltado palabra a palabra, «¿Dónde estoy?».
 - `node prueba_auditar.js`: Winclus Audit sobre la portada local y una página mala: informe, declaración y JSON.

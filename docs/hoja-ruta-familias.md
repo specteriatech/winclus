@@ -47,7 +47,8 @@ ajustar verbosidad, funcionar en todo el sistema operativo, no solo en el navega
       (expandido, pulsado, seleccionado, actual, obligatorio, no válido, no disponible, descripción) y regiones vivas
       (aria-live, alertas). Intro también marca casillas.
 - [x] (18-sep-2026, 0.6.7) **Verbosidad** («Cuánto explica el lector»: mucho, normal, poco) y **velocidad y tono** de la voz.
-- [~] (18-sep-2026) **En el escritorio (aplicación de Windows)**: el instalador (instalar.ps1) ofrece instalar NVDA con
+- [~] (18-sep-2026) **En el escritorio (aplicación de Windows)**: el widget (0.6.9) enlaza la descarga de NVDA desde
+      «Lector de pantalla» en Windows; el instalador (instalar.ps1) ofrece instalar NVDA con
       winget (o abre su descarga) y explica qué apagar en Winclus para que no hablen los dos. Queda por probar en vivo
       NVDA y el puntero facial juntos y, si hace falta, un perfil de NVDA.
 - [-] **Braille** y **lector para todo el sistema propio**: no. Es el terreno de JAWS y NVDA; Winclus se integra con ellos.
@@ -61,11 +62,14 @@ aplicación.
 - [x] Ya en Winclus: puntero con cabeza y con ojos (cámara normal), híbrido, calibración de 40 s, aprendizaje de
       clics, imán, lupa para afinar, clic por parpadeo, boca, cejas o quietud, menú de clics, órdenes por voz,
       dictado con confirmación, «números» para enlaces y campos.
-- [x] (18-sep-2026) **Precisión ocular**: la aplicación de Windows ya calibra con 9, 13 o 25 puntos («Duración»), con los
+- [x] (18-sep-2026; widget 0.6.9 también) **Precisión ocular**: el widget calibra con 9, 13 o 25 puntos, con más tiempo
+      por punto y punto grande, mide el error real con cuatro puntos aparte y tiene el paso final de compensación de cabeza
+      (se guarda solo si mejora y dice cuánto). La aplicación de Windows ya calibra con 9, 13 o 25 puntos («Duración»), con los
       dos ojos o uno solo, con seguimiento de un punto móvil y con el paso de compensación de cabeza; mide el error real con
       cuatro puntos que no entran en el ajuste. Error real medido el 12-sep-2026 con cámara normal y 13 puntos: 75 px
       (unos 2 cm en un monitor corriente). Publicado en winclus.com/comparar frente a los 0,5° de Tobii.
-- [x] (18-sep-2026, app) **Rastreadores externos**: «Otro aparato mueve el puntero; Winclus solo hace los clics y los
+- [x] (18-sep-2026, app y widget 0.6.9) **Rastreadores externos**: en el widget, «Otro aparato mueve el puntero» en la
+      pestaña Cara (el puntero del sistema manda y la cámara hace los clics y gestos); en la aplicación, «Otro aparato mueve el puntero; Winclus solo hace los clics y los
       gestos» (puntero_externo) en la página Puntero: Winclus no toca el puntero del sistema y deja el clic por parpadeo,
       los gestos, el menú, el teclado y la voz encima de Tobii, Windows Eye Control o cualquier rastreador. Sin SDK.
 - [ ] **Voz completa en Windows**: dictado con corrección («borra eso», «mayúscula», puntuación) y comandos para lo que
