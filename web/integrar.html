@@ -24,15 +24,15 @@
 <main id="contenido">
 <nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><span aria-current="page">Integrar Winclus</span></nav>
   <h1>Integrar Winclus en tu sitio</h1>
-  <p class="meta">Guía técnica para el widget 0.6.5. Winclus es tecnología de apoyo que se añade a un sitio: no lo hace conforme con la norma por sí solo. Para saber cómo está tu sitio, usa <a href="#audit">Winclus Audit</a>.</p>
+  <p class="meta">Guía técnica para el widget 0.6.6. Winclus es tecnología de apoyo que se añade a un sitio: no lo hace conforme con la norma por sí solo. Para saber cómo está tu sitio, usa <a href="#audit">Winclus Audit</a>.</p>
   <div class="facil"><h2>En pocas palabras</h2><ul><li>Winclus se pone en tu sitio con una sola línea de código, al final de cada página.</li><li>Elige la versión fija: no cambia hasta que tú quieras.</li><li>Puedes decirle el idioma y en qué lado sale el botón.</li><li>Si tu sitio tiene reglas de seguridad estrictas, Winclus las respeta.</li><li>Winclus ayuda a las personas a usar tu sitio; no arregla tu sitio por ti.</li></ul></div>
 
   <h2>1. Una línea</h2>
   <p>Antes de <code>&lt;/body&gt;</code>. La versión fija no cambia sin que tú lo decidas; <code>widget.js</code> es siempre la última.</p>
-  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.6.5.js" async
-        integrity="sha384-5PMKt/ugENTetSOENiqjJNXttp+98YD3WXDrIJvZGiD5GIPW5xW6I8qsdwAsubb3"
+  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.6.6.js" async
+        integrity="sha384-xUhuJ5WBsO3g9k5AuKiRFXv59Si8sSdcp3yc590lJVPCucMVHKf2ByrtUNpSpKuG"
         crossorigin="anonymous"&gt;&lt;/script&gt;</code></pre>
-  <p>El atributo <code>integrity</code> es el hash SHA-384 del archivo: el navegador comprueba que lo que llega es exactamente la versión 0.6.5 y, si no coincide, no lo ejecuta (integridad de subrecursos, exigible como control de seguridad digital para scripts de terceros). Cada versión fija publica su hash aquí; <code>widget.js</code> (la última) no lo lleva porque cambia.</p>
+  <p>El atributo <code>integrity</code> es el hash SHA-384 del archivo: el navegador comprueba que lo que llega es exactamente la versión 0.6.6 y, si no coincide, no lo ejecuta (integridad de subrecursos, exigible como control de seguridad digital para scripts de terceros). Cada versión fija publica su hash aquí; <code>widget.js</code> (la última) no lo lleva porque cambia.</p>
   <p>Atributos opcionales en el mismo <code>&lt;script&gt;</code>:</p>
   <div class="tabla" tabindex="0" role="region" aria-label="Atributos del script"><table>
     <thead><tr><th>Atributo</th><th>Valores</th><th>Qué hace</th></tr></thead>
@@ -58,7 +58,7 @@ connect-src https://winclus.com https://api.arasaac.org https://es.wiktionary.or
               solo para «Diccionario al tocar una palabra»; sin ellos responde el glosario del sitio (data-glosario) */
 font-src   https://winclus.com;                    /* opcional: la letra para dislexia (OpenDyslexic); sin esto, usa Verdana */
 media-src  blob:;                                  /* la cámara, si se permite */</code></pre>
-  <pre tabindex="0"><code>&lt;script nonce="XYZ" src="https://winclus.com/widget-0.6.5.js" async&gt;&lt;/script&gt;</code></pre>
+  <pre tabindex="0"><code>&lt;script nonce="XYZ" src="https://winclus.com/widget-0.6.6.js" async&gt;&lt;/script&gt;</code></pre>
 
   <h2>3. Web component, React, Vue, Angular, Svelte</h2>
   <p>Con <code>winclus-elemento.js</code> el widget es un elemento HTML. Sirve en cualquier framework y evita manipular el <code>&lt;head&gt;</code> a mano.</p>
@@ -67,7 +67,7 @@ media-src  blob:;                                  /* la cámara, si se permite 
   <p>React (en el componente raíz, una sola vez):</p>
   <pre tabindex="0"><code>useEffect(() =&gt; {
   const s = document.createElement("script");
-  s.src = "https://winclus.com/widget-0.6.5.js"; s.async = true; s.dataset.idioma = "es-CO";
+  s.src = "https://winclus.com/widget-0.6.6.js"; s.async = true; s.dataset.idioma = "es-CO";
   document.body.appendChild(s);
 }, []);</code></pre>
   <p>Vue (en <code>App.vue</code>, <code>onMounted</code>) es idéntico. Angular: en <code>ngOnInit</code> del componente raíz. Svelte: en <code>onMount</code>. En todos los casos, el widget se inicializa una vez y sobrevive a la navegación interna (SPA); si el contenido cambia, no hace falta avisarle.</p>
@@ -80,7 +80,7 @@ media-src  blob:;                                  /* la cámara, si se permite 
   <h2>5. Sedes electrónicas en Colombia: GOV.CO y MiColombiaDigital</h2>
   <p>Las plantillas de GOV.CO y de MiColombiaDigital permiten incluir scripts en el pie de todas las páginas desde la administración del sitio (bloque de «código en el pie» o el pie de la plantilla). Pega ahí la línea del punto 1 con <code>data-idioma="es-CO"</code>. Recomendaciones para sujetos obligados por la Resolución 1519:</p>
   <ul>
-    <li>Usa <strong>versión fija</strong> (<code>widget-0.6.5.js</code>) y anótala en tu declaración de accesibilidad.</li>
+    <li>Usa <strong>versión fija</strong> (<code>widget-0.6.6.js</code>) y anótala en tu declaración de accesibilidad.</li>
     <li>Publica tu <strong>declaración de accesibilidad</strong> y enlázala desde el pie. <a href="#audit">Winclus Audit</a> te genera el borrador.</li>
     <li>Añade a tu política de tratamiento de datos que el widget procesa la cámara en el navegador del usuario y que el dictado usa el reconocedor del navegador (texto de referencia en <a href="privacidad">winclus.com/privacidad</a>).</li>
     <li>No describas Winclus como «cumplimiento» ni «certificación»: descríbelo como tecnología de apoyo para usar el sitio con la cara, la voz, un solo pulsador y pictogramas.</li>
@@ -105,7 +105,7 @@ media-src  blob:;                                  /* la cámara, si se permite 
   <pre tabindex="0"><code>&lt;script nonce="XYZ"&gt;
   window.WinclusIdiomas = { pt: { "Ver mejor": "Ver melhor", "Tamaño del texto": "Tamanho do texto", /* … */ } };
 &lt;/script&gt;
-&lt;script nonce="XYZ" src="https://winclus.com/widget-0.6.5.js" data-ui="pt" async&gt;&lt;/script&gt;</code></pre>
+&lt;script nonce="XYZ" src="https://winclus.com/widget-0.6.6.js" data-ui="pt" async&gt;&lt;/script&gt;</code></pre>
   <p>Lo que no esté traducido sale en español. Las voces, el reconocimiento y la lectura de la página siguen el idioma de la página (<code>lang</code>) y <code>data-idioma</code>.</p>
 
   <h2>Componentes de terceros</h2>

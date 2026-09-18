@@ -24,6 +24,7 @@ const PRUEBAS = [
   ["prueba_formularios.js", "«Campo N de M», errores en lenguaje claro con foco, pegar siempre permitido.", ["WCAG 3.3.1", "WCAG 3.3.3", "WCAG 3.3.7", "WCAG 3.3.8", "Res. 1519 CC25"]],
   ["prueba_perfil_enlace.js", "El perfil viaja en un enlace sin cuentas ni servidores y un enlace roto no rompe nada.", ["EN 301 549 11.7"]],
   ["prueba_pictogramas.js", "Tablero ARASAAC: frase con voz, predicción aprendida, frases guardadas, barrido dentro.", ["ISO 24751", "CAA"]],
+  ["prueba_pictogramas2.js", "CAA (familia 4): vocabulario nuclear por colores, frases con el verbo conjugado y género, historial, búsqueda en ARASAAC, tableros propios con fotos compartibles por archivo y enlace, tablero con dos pulsadores y con el puntero facial.", ["ISO 24751", "CAA", "EN 301 549 11.5"]],
   ["prueba_facil.js", "«Explicar en fácil» por reglas y con IA, resaltado palabra a palabra, «¿Dónde estoy?».", ["WCAG 3.1.5", "WCAG 2.4.8", "COGA"]],
   ["prueba_auditar.js", "Winclus Audit: informe por criterio de la Res. 1519 y borrador de declaración.", ["Res. 1519 Anexo 1"]],
   ["prueba_sdk.js", "Web component, guía de integración, plugin de WordPress y módulo de Drupal.", ["Integración"]],

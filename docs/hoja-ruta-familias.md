@@ -76,14 +76,22 @@ frases guardadas, teclado con símbolos.
 
 - [x] Ya en Winclus: tablero con 9 categorías de pictogramas ARASAAC, predicción de siguiente palabra, frases
       guardadas, barrido dentro del tablero, voz.
-- [ ] **Vocabulario nuclear** de unas 300 palabras (las que cubren el 80 % de lo que se dice) organizado por
-      colores gramaticales (personas, acciones, descripciones, lugares, tiempo).
-- [ ] **Buscar cualquier pictograma** de ARASAAC (más de 12 000) desde el tablero, con la API de ARASAAC.
-- [ ] **Tableros propios**: crear carpetas y añadir pictogramas o fotos, guardarlos en el perfil y compartirlos por
-      enlace o archivo. Para que un terapeuta o la familia adapte el tablero.
-- [ ] **Conjugación y género** («yo quiero», «ella quiere») y frases completas gramaticalmente.
-- [ ] **Historial** de lo dicho y frases más usadas primero.
-- [ ] **Tablero por mirada y por barrido con dos pulsadores** (ver familia 5).
+- [x] (18-sep-2026, 0.6.6) **Vocabulario nuclear**: vista «Palabras» con 338 palabras en ocho grupos con los colores de
+      la clave de Fitzgerald (personas, acciones, cómo es, cosas, lugares, tiempo, preguntas y enlaces, sociales); los
+      pictogramas los eligió la API de ARASAAC (herramientas/vocabulario_nuclear.js) y 19 palabras van solo con texto.
+- [x] (18-sep-2026, 0.6.6) **Buscar cualquier pictograma** de ARASAAC desde la vista «Buscar»; el resultado va a la frase
+      o a un tablero propio. La palabra se envía a arasaac.org solo al buscar.
+- [x] (18-sep-2026, 0.6.6) **Tableros propios** («Míos»): hasta 12 tableros de 60 dibujos con pictogramas de ARASAAC,
+      fotos (reducidas a 160 px y guardadas dentro) o solo palabras; quitar, borrar, compartir por archivo .tablero.json y
+      por enlace (#winclus-tablero=…, sin fotos), cargar de archivo; van en el perfil .winclus.
+- [x] (18-sep-2026, 0.6.6) **Conjugación y género**: «Frases bien dichas» conjuga el primer verbo según el sujeto (36
+      irregulares y los regulares por terminación), «me gusta» y «me duele», y concuerda los adjetivos en género y número;
+      «Cuando hablo de mí» elige masculino o femenino. La tira enseña cómo se dirá y Decir lo dice así.
+- [x] (18-sep-2026, 0.6.6) **Historial**: «Lo que más dices» aparece cuando no hay frase, con las seis más dichas primero
+      (hasta 40 guardadas en el navegador).
+- [x] (18-sep-2026, 0.6.6) **Tablero por mirada y por barrido con dos pulsadores**: el puntero con los ojos o la cabeza
+      y el clic por quietud o gesto tocan los dibujos, y el barrido de la familia 5 (uno o dos pulsadores) recorre el
+      tablero; probado en prueba_pictogramas2.js.
 - [-] **Igualar Grid 3 en amplitud**: no en 2026; sí un tablero que sirva para lo cotidiano y un trámite.
 
 ## Familia 5. Acceso por pulsador y barrido (Switch Control de Apple, Android, Grid 3)
@@ -129,7 +137,8 @@ traducción, letra para dislexia, espaciado, lectura fácil.
    dibujos.~~ Hecho el 18-sep-2026 (0.6.4).
 2. ~~Familia 5 completa (dos pulsadores, grupos, punto de barrido, menú de acciones).~~ Hecho el 18-sep-2026 (0.6.5).
    Familia cerrada.
-3. Familia 4: vocabulario nuclear, búsqueda en ARASAAC, tableros propios. Cambios grandes en el widget.
+3. ~~Familia 4: vocabulario nuclear, búsqueda en ARASAAC, tableros propios.~~ Hecho el 18-sep-2026 (0.6.6). Familia
+   cerrada (salvo igualar a Grid 3 en amplitud, descartado).
 4. Familia 2: lector completo dentro de la página. Cambios grandes en el widget. En Windows, integrar NVDA.
 5. Familia 3: precisión ocular, más gestos, voz completa en Windows. Investigación más desarrollo.
 

@@ -47,6 +47,11 @@
 - `node prueba_pictogramas.js`: tablero ARASAAC: categorías, frase con voz, predicción por defecto y aprendida,
   guardar frase (pasa a las frases del teclado), barrido dentro del tablero. Las imágenes vienen de
   static.arasaac.org (no se comprueba que carguen).
+- `node prueba_pictogramas2.js`: familia 4 (0.6.6): vistas Temas, Palabras, Míos y Buscar; vocabulario nuclear por colores (338 palabras);
+  `Winclus.pulir` (10 frases con conjugación, «me gusta», género y número, «Cuando hablo de mí»); historial «Lo que más dices»;
+  búsqueda en ARASAAC simulada con `page.route`; tableros propios (crear, palabra, dibujo desde el buscador, foto reducida con
+  `setInputFiles`, quitar, archivo .tablero.json descargado, enlace #winclus-tablero=…, perfil .winclus); el tablero con dos pulsadores
+  y con `Winclus.mover` + `Winclus.clic()`. Pasa en Chromium, Firefox y WebKit.
 - `node prueba_facil.js`: `pagina-tramite.html`: «Explicar en fácil» por reglas (jerga → palabras corrientes con glosario,
   frases cortas, lo importante primero), con servicio de IA simulado y su caída, resaltado palabra a palabra, «¿Dónde estoy?».
 - `node prueba_auditar.js`: Winclus Audit sobre la portada local y una página mala: informe, declaración y JSON.
