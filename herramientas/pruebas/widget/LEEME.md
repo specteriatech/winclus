@@ -64,6 +64,10 @@
   el panel, modelo ocular con rasgos sintéticos (`Winclus.ajustarModelo`, `predecir`), compensación de cabeza (`Winclus.ajustarCabeza`:
   aprende, mide la mejora, corrige con `deteccion.pose` y no se guarda si no ayuda), «Otro aparato mueve el puntero» (el ratón no toca el
   puntero virtual sin cámara; con cámara real, prueba en vivo pendiente) y el enlace a NVDA. Pasa en Chromium, Firefox y WebKit.
+- `node prueba_gestos.js`: los gestos de la cara y la página que se mueve sola (0.6.12): con `Winclus.tickGestos` y los valores de la
+  cara puestos a mano, abrir la boca menos de 0,6 s no mueve nada (hablar, bostezar), después baja despacio y va cogiendo velocidad,
+  la primera vez se explica por voz y en la etiqueta del puntero, y «Usar los gestos de la cara» los apaga todos menos el gesto con
+  el que se hace clic.
 - `node prueba_bordes.js`: bajar y subir por los bordes (0.6.11: franja del 12 % de la altura, que es lo que alcanza la mirada calibrada, y señales «▼ Bajar» y «▲ Subir» con la cámara en marcha): `Winclus.tickBordes` con el puntero virtual en la franja de abajo (baja tras
   0,35 s, más deprisa cuanto más pegado, banda «Bajando» y aviso de voz), en la de arriba (sube), fuera (para) y con el interruptor apagado.
 - `node prueba_facil.js`: `pagina-tramite.html`: «Explicar en fácil» por reglas (jerga → palabras corrientes con glosario,
