@@ -31,6 +31,10 @@
   (salvo que la persona los haya cambiado), la página en inglés se lee con voz en inglés, cursor grande.
 - `node prueba_barrido.js`: barrido con un solo pulsador: recorre botón del widget, enlace, botón y campo; Espacio
   activa lo marcado; un campo abre el teclado; filas y luego teclas; Escape pausa; Winclus.clic() hace de señal.
+- `node prueba_barrido2.js`: familia 5 (0.6.5): dos pulsadores (Espacio mueve, Intro elige, sin tiempos), zonas (menú, contenido, pie; dos
+  vueltas sin elegir vuelven a las zonas), punto de barrido (`Winclus.barridoEstado().punto` da la fase y la posición de la línea; clic en un
+  lienzo sin botones), menú de acciones (leer, clic largo de 0,7 s, escribir en campos, Escape, arrastrar y soltar con el punto) y aceleración
+  (baja con cada acierto, sube con una vuelta en vano, nunca bajo la mitad). Pasa en Chromium, Firefox y WebKit.
 - `node prueba_auditiva.js`: `pagina-medios.html`: aviso visual cuando suena un audio (también `new Audio`), pista de
   subtítulos del idioma de la página mostrada y regla ::cue, subtítulos en vivo con reconocedor simulado, botones
   al Centro de Relevo y al diccionario LSC del INSOR.

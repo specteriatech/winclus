@@ -35,7 +35,7 @@ Requisitos: Windows 10 u 11 de 64 bits y una cámara web.
 `web/widget.js` lleva lo mismo a cualquier página: se añade con una línea y funciona sin cuentas ni servidores propios.
 
 ```html
-<script src="https://winclus.com/widget-0.6.4.js" async integrity="sha384-RCTjJXKtaYqPauMYailMtO4ArpEiagm8X98p3MrBoK/sDWYtV4EQ42lPmnqhpNVg" crossorigin="anonymous"></script>
+<script src="https://winclus.com/widget-0.6.5.js" async integrity="sha384-5PMKt/ugENTetSOENiqjJNXttp+98YD3WXDrIJvZGiD5GIPW5xW6I8qsdwAsubb3" crossorigin="anonymous"></script>
 ```
 
 - `widget.js` es siempre la última versión (caché de 5 minutos); `widget-X.Y.Z.js` es una copia inmutable de cada versión, para que un sitio no cambie sin querer. Al publicar una versión nueva: subir `VERSION` en `widget.js`, copiarlo a `widget-X.Y.Z.js` y actualizar la declaración de accesibilidad.

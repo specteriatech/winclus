@@ -93,12 +93,18 @@ cualquier sitio, aceleración, sonido en cada paso, menú de acciones al selecci
 
 - [x] Ya en Winclus: barrido automático de botones, enlaces y campos, filas y teclas del teclado, señal por Espacio,
       Intro, cualquier tecla, clic o gesto, tiempo ajustable, voz, Escape para pausar.
-- [ ] **Dos pulsadores**: uno avanza, otro selecciona (barrido por pasos, sin tiempo).
-- [ ] **Barrido por grupos** en la página (cabecera, contenido, pie, luego elementos), no solo lineal.
-- [ ] **Punto de barrido**: barrer una línea horizontal y luego vertical para clicar en cualquier punto (para mapas y
-      cosas sin botones).
-- [ ] **Menú de acciones al seleccionar**: clic, clic largo, arrastrar, leer, escribir.
-- [ ] **Aceleración**: el tiempo baja solo según los aciertos.
+- [x] (18-sep-2026, 0.6.5) **Dos pulsadores**: «Cómo avanza el marco: con dos pulsadores»; la señal de siempre mueve el
+      marco y la «Señal para elegir» (Intro, Espacio, flecha o clic) elige; sin tiempos. El clic con la cara siempre elige.
+- [x] (18-sep-2026, 0.6.5) **Barrido por zonas**: menú, formulario, cabecera, lateral, pie, contenido y «resto», por las
+      regiones de la página (las zonas de más de 12 elementos se parten en trozos de 8); al elegir una se barren sus
+      elementos y, tras dos vueltas sin elegir, vuelve a las zonas. Cada zona se dice con su nombre y cuántos elementos tiene.
+- [x] (18-sep-2026, 0.6.5) **Punto de barrido**: «Poder tocar cualquier punto» añade el botón «Cualquier punto» al
+      barrido; una línea baja (va y vuelve) y la señal la fija, otra cruza y la señal la fija; ahí se hace clic (o se
+      abre el teclado si es un campo). También sirve para soltar un arrastre.
+- [x] (18-sep-2026, 0.6.5) **Menú de acciones al elegir**: clic, clic largo (0,7 s), arrastrar (se suelta con el punto
+      de barrido), leer, escribir (si es un campo) y cancelar; el menú se barre como lo demás y Escape lo cierra.
+- [x] (18-sep-2026, 0.6.5) **Aceleración**: «Acelerar solo»: cada acierto baja el tiempo un 8 %, una vuelta entera sin
+      elegir lo sube un 15 %; nunca por debajo de la mitad del ajuste ni de 0,3 s. Se avisa en pantalla cada cambio.
 
 ## Familia 6. Lectura y comprensión (Lector inmersivo de Microsoft, Read&Write, Helperbird)
 
@@ -121,7 +127,8 @@ traducción, letra para dislexia, espaciado, lectura fácil.
 
 1. ~~Familia 1 completa (resaltar títulos y foco, silenciar, diccionario). Familia 6: sílabas y diccionario con
    dibujos.~~ Hecho el 18-sep-2026 (0.6.4).
-2. Familia 5 completa (dos pulsadores, grupos, punto de barrido, menú de acciones). Cambios medianos en el widget.
+2. ~~Familia 5 completa (dos pulsadores, grupos, punto de barrido, menú de acciones).~~ Hecho el 18-sep-2026 (0.6.5).
+   Familia cerrada.
 3. Familia 4: vocabulario nuclear, búsqueda en ARASAAC, tableros propios. Cambios grandes en el widget.
 4. Familia 2: lector completo dentro de la página. Cambios grandes en el widget. En Windows, integrar NVDA.
 5. Familia 3: precisión ocular, más gestos, voz completa en Windows. Investigación más desarrollo.

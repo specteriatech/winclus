@@ -18,6 +18,7 @@ const PRUEBAS = [
   ["prueba_landing.js", "winclus.com (portada, privacidad, accesibilidad, integrar, comparar) pasa axe a 1280 y 390 px y carga su propio widget.", ["Res. 1519 Anexo 1", "WCAG 2.1 AA"]],
   ["prueba_sistema.js", "Respeta prefers-reduced-motion y prefers-contrast, lee la página en su idioma, cursor grande.", ["EN 301 549 11.7", "WCAG 3.1.1", "WCAG 2.4.7"]],
   ["prueba_barrido.js", "Barrido con un solo pulsador: página, teclado por filas y teclas, Escape pausa, el gesto de la cara es la señal.", ["EN 301 549 11.5", "ISO 9241-171 §9"]],
+  ["prueba_barrido2.js", "Barrido con dos pulsadores, por zonas, punto de barrido para tocar cualquier sitio, menú de acciones (clic largo, arrastrar, leer, escribir) y aceleración (familia 5).", ["EN 301 549 11.5", "WCAG 2.2.1", "WCAG 2.5.1", "ISO 9241-171 §9"]],
   ["prueba_auditiva.js", "Aviso visual de sonido, subtítulos mostrados y agrandados, subtítulos en vivo, Centro de Relevo y diccionario LSC.", ["WCAG 1.2.2", "WCAG 1.3.3", "WCAG 1.4.2", "Res. 1519 CC2"]],
   ["prueba_voz.js", "«Números» y «clic 12», dictado con confirmación.", ["EN 301 549 11.5", "WCAG 2.5.1"]],
   ["prueba_formularios.js", "«Campo N de M», errores en lenguaje claro con foco, pegar siempre permitido.", ["WCAG 3.3.1", "WCAG 3.3.3", "WCAG 3.3.7", "WCAG 3.3.8", "Res. 1519 CC25"]],
