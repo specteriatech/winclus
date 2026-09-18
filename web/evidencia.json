@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-18T19:38:07.223Z",
-  "commit": "2ca25ab",
-  "version": "0.6.10",
+  "fecha": "2026-09-18T20:16:17.854Z",
+  "commit": "e0c41b5",
+  "version": "0.6.11",
   "pruebas": 33,
-  "comprobaciones": 582,
+  "comprobaciones": 586,
   "fallan": 0,
   "resultados": [
     {
@@ -16,7 +16,7 @@
       "ok": 18,
       "mal": 0,
       "bien": true,
-      "segundos": 15,
+      "segundos": 10,
       "lineas": [
         "OK  sin ajustes",
         "OK  oscuro",
@@ -131,16 +131,16 @@
       "bien": true,
       "segundos": 3,
       "lineas": [
-        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 561 revisados",
-        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 904 revisados",
-        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 838 revisados",
-        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 635 revisados",
-        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1814 revisados",
-        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 598 revisados",
-        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 520 revisados",
-        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 527 revisados",
-        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 527 revisados",
-        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 403 revisados",
+        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 563 revisados",
+        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 906 revisados",
+        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 840 revisados",
+        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 637 revisados",
+        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1816 revisados",
+        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 600 revisados",
+        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 522 revisados",
+        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 529 revisados",
+        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 529 revisados",
+        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 405 revisados",
         "OK  Pausar: texto sobre fondo: 7.86:1",
         "OK  interruptor apagado sobre el panel: 3.13:1",
         "OK  interruptor encendido sobre el panel: 7.86:1",
@@ -162,7 +162,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 6,
       "lineas": [
         "OK  el widget carga con CSP estricta",
         "OK  sin errores JS",
@@ -187,7 +187,7 @@
       "ok": 6,
       "mal": 0,
       "bien": true,
-      "segundos": 8,
+      "segundos": 3,
       "lineas": [
         "OK  los cuatro filtros son SVGFilterElement",
         "OK  el filtro protan se aplica y cambia el rojo de la página",
@@ -207,7 +207,7 @@
       "ok": 140,
       "mal": 0,
       "bien": true,
-      "segundos": 12,
+      "segundos": 13,
       "lineas": [
         "OK  / a 1280 px: axe sin incumplimientos",
         "OK  / a 1280 px: carga el widget",
@@ -575,7 +575,7 @@
       "ok": 24,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 1,
       "lineas": [
         "OK  el tablero tiene cuatro vistas: Temas, Palabras, Míos y Buscar",
         "OK  «Palabras»: ocho grupos gramaticales con color",
@@ -616,7 +616,7 @@
       "ok": 30,
       "mal": 0,
       "bien": true,
-      "segundos": 5,
+      "segundos": 9,
       "lineas": [
         "OK  al activarse dice cuántos encabezados, enlaces y zonas hay",
         "OK  d va a la primera zona y dice su nombre y cuántos elementos tiene",
@@ -708,7 +708,7 @@
         "EN 301 549 11.5",
         "WCAG 2.5.1"
       ],
-      "ok": 9,
+      "ok": 13,
       "mal": 0,
       "bien": true,
       "segundos": 1,
@@ -721,6 +721,10 @@
         "OK  en el borde de arriba sube",
         "OK  con «Bajar y subir llevando el puntero al borde» apagado no pasa nada",
         "OK  el interruptor está en la pestaña Cara, encendido por defecto, y el texto de la cámara explica cómo bajar",
+        "OK  la franja es el 12 % de la altura",
+        "OK  la franja empieza dentro de lo que alcanza la mirada calibrada",
+        "OK  a 90 px del borde ya baja",
+        "OK  las señales «▼ Bajar» y «▲ Subir» existen y están ocultas sin cámara",
         "OK  sin errores JS"
       ]
     },
@@ -735,7 +739,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 7,
+      "segundos": 2,
       "lineas": [
         "OK  «¿Dónde estoy?» dice título, ruta, encabezados y avance",
         "OK  hay resumen: de qué va y lo más importante",
@@ -852,7 +856,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 16,
+      "segundos": 11,
       "lineas": [
         "OK  demo.html pasa axe",
         "OK  la demo tiene los siete pasos",
@@ -938,7 +942,7 @@
       "ok": 4,
       "mal": 0,
       "bien": true,
-      "segundos": 14,
+      "segundos": 9,
       "lineas": [
         "OK  el navegador avisa de cada cuadro nuevo",
         "OK  no se infiere más veces que cuadros entrega la cámara",

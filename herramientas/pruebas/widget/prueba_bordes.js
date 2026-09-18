@@ -41,6 +41,16 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   r = await page.evaluate(() => { Winclus.abrir(); Winclus.caja.getElementById("wcl-tab-cara").click(); const sw = Winclus.caja.getElementById("wcl-bordes_desplazan"); const estado = Winclus.caja.getElementById("wcl-estado").textContent; return { sw: !!sw, marcado: sw && sw.getAttribute("aria-checked"), estado: /borde de abajo/.test(estado) }; });
   comprobar(r.sw && r.marcado === "true" && r.estado, "el interruptor está en la pestaña Cara, encendido por defecto, y el texto de la cámara explica cómo bajar", JSON.stringify(r));
 
+  // La franja tiene que ser ancha: con los ojos el puntero llega como mucho al 92 % de la pantalla
+  r = await page.evaluate(() => ({ b800: Winclus.bordePx(), alcanceOjos: Math.round(window.innerHeight * 0.92) }));
+  comprobar(r.b800 === 96, "la franja es el 12 % de la altura (96 px en una ventana de 800)", JSON.stringify(r));
+  comprobar(800 - r.b800 <= r.alcanceOjos, "la franja empieza dentro de lo que alcanza la mirada calibrada", "franja desde " + (800 - r.b800) + " px, la mirada llega a " + r.alcanceOjos);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  r = await tics(710, 40);   // a 90 px del borde: fuera de la franja vieja de 56 px, dentro de la nueva
+  comprobar(r.scroll > 0, "a 90 px del borde ya baja (antes hacían falta menos de 56 px y con los ojos no se llegaba)", JSON.stringify(r));
+  r = await page.evaluate(() => ({ abajo: !!Winclus.caja.querySelector(".wcl-guia-borde.abajo"), arriba: !!Winclus.caja.querySelector(".wcl-guia-borde.arriba"), visibles: Winclus.caja.querySelectorAll(".wcl-guia-borde.visible").length, texto: (Winclus.caja.querySelector(".wcl-guia-borde.abajo") || {}).textContent }));
+  comprobar(r.abajo && r.arriba && r.visibles === 0 && /Bajar/.test(r.texto), "las señales «▼ Bajar» y «▲ Subir» existen y están ocultas sin cámara", JSON.stringify(r));
+
   comprobar(errores.length === 0, "sin errores JS", errores.join(" | "));
   await nav.close();
   console.log(fallos ? fallos + " comprobación(es) MAL" : "todo bien");

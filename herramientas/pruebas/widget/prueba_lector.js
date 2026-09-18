@@ -39,7 +39,18 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   await page.waitForTimeout(150);
   const ultimo = () => page.evaluate(() => window.__voz.join("").replace(/\s+/g, " ").trim());   // la voz habla por trozos: se juntan
   const limpiar = () => page.evaluate(() => { window.__voz = []; });
-  const tecla = async (k) => { await limpiar(); await page.keyboard.press(k); await page.waitForTimeout(60); return ultimo(); };
+  // La voz habla por trozos encadenados: se espera a que la frase deje de crecer, no un tiempo fijo
+  const esperarVoz = async () => {
+    let antes = "", iguales = 0;
+    for (let i = 0; i < 40 && iguales < 2; i++) {
+      await page.waitForTimeout(50);
+      const ahora = await ultimo();
+      iguales = ahora === antes ? iguales + 1 : 0;
+      antes = ahora;
+    }
+    return antes;
+  };
+  const tecla = async (k) => { await limpiar(); await page.keyboard.press(k); return esperarVoz(); };
   const actual = () => page.evaluate(() => { const e = Winclus.lectorActual(); return e ? (e.id || e.tagName) : null; });
 
   let r = await page.evaluate(() => window.__voz.join(""));
@@ -60,7 +71,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   comprobar(/Lista 1 de 1, 3 elementos\. Elemento 1 de 3: Cédula/.test(r), "a va a la lista y dice cuántos elementos tiene", r);
   r = await tecla("c");
   comprobar(/Casilla: sin marcar, Acepto, obligatorio\. Sin esto no se puede seguir/.test(r), "c va a la casilla y dice su estado, que es obligatoria y su descripción", r);
-  r = await tecla("Enter"); await page.waitForTimeout(350); r = await ultimo();
+  r = await tecla("Enter"); await page.waitForTimeout(350); r = await esperarVoz();   // tras activar, el lector vuelve a decir el estado 300 ms después
   comprobar(/Casilla: marcada/.test(r), "Intro la marca y se lee el nuevo estado", r);
   r = await tecla("Shift+3"); const h3 = r; r = await tecla("Shift+2");
   comprobar(/Encabezado nivel 3: Requisitos/.test(h3) && /Encabezado nivel 2: Horarios/.test(r), "1 a 6 van al encabezado de ese nivel", h3 + " | " + r);
@@ -68,7 +79,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   // --- roles y estados ---
   r = await tecla("b");
   comprobar(/Botón: Detalles, contraído/.test(r), "un botón con aria-expanded se anuncia como contraído", r);
-  r = await tecla("Enter"); await page.waitForTimeout(350); r = await ultimo();
+  r = await tecla("Enter"); await page.waitForTimeout(350); r = await esperarVoz();   // tras activar, el lector vuelve a decir el estado 300 ms después
   comprobar(/Botón: Detalles, expandido/.test(r), "y tras pulsarlo, expandido", r);
   r = await tecla("f");
   comprobar(/Campo de texto: Correo, vacío, no válido/.test(r), "un campo con aria-invalid se anuncia como no válido", r);

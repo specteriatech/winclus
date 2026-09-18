@@ -62,7 +62,13 @@ const zona = (page) => page.evaluate(() => { const z = Winclus.caja.querySelecto
   await page.waitForFunction(() => { const z = Winclus.caja.querySelector(".wcl-zona"); return z.style.display === "block" && /pie/.test(z.textContent); }, null, { timeout: 8000 });
   await page.keyboard.press("Space"); await page.waitForTimeout(80);
   const dentro = [];
-  for (let i = 0; i < 8 && (await estado(page)).nivel === "zona"; i++) { const m = await marcado(page); if (m && !dentro.includes(m)) dentro.push(m); await page.waitForTimeout(150); }
+  // El nivel y lo marcado se leen de una vez: en dos viajes distintos el barrido puede haber vuelto a las zonas entre uno y otro
+  for (let i = 0; i < 8; i++) {
+    const s = await page.evaluate(() => { const e = document.querySelector(".wcl-barrido") || Winclus.caja.querySelector(".wcl-barrido"); return { nivel: Winclus.barridoEstado().nivel, el: e ? (e.id || e.className.replace(/\s*wcl-barrido\s*/, "") || e.tagName) + ":" + (e.textContent || "").trim().slice(0, 20) : null }; });
+    if (s.nivel !== "zona") break;
+    if (s.el && !dentro.includes(s.el)) dentro.push(s.el);
+    await page.waitForTimeout(150);
+  }
   comprobar(dentro.every((m) => /^p[12]/.test(m)) && dentro.length === 2, "al elegir la zona «pie» se barren solo sus dos enlaces", dentro.join(" | "));
   await page.waitForFunction(() => Winclus.barridoEstado().nivel === "zonas", null, { timeout: 6000 });
   comprobar(true, "dos vueltas sin elegir y vuelve a las zonas");

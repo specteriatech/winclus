@@ -59,9 +59,12 @@ Lo que hacen: seguimiento ocular con hardware dedicado (precisión de 0,5 grados
 control de todo el sistema, dictado profesional con vocabulario y corrección por voz, comandos para cualquier
 aplicación.
 
-- [x] (18-sep-2026, 0.6.10 y app) **Bajar y subir por los bordes**: el puntero pegado al borde de abajo baja la página y en
-      el de arriba la sube (la forma más sencilla, además de los gestos de rueda, el menú de clics y la voz); al activar la
-      cámara se dice cómo.
+- [x] (18-sep-2026, 0.6.11 y app) **Bajar y subir por los bordes**: el puntero en la parte de abajo de la pantalla baja la
+      página y en la de arriba la sube (la forma más sencilla, además de los gestos de rueda, el menú de clics y la voz).
+      La franja es el 12 % de la altura porque con los ojos el puntero llega como mucho al 92 % de la pantalla (la
+      calibración mide hasta ahí): con una franja estrecha no se alcanzaba mirando. Con la cámara en marcha salen las
+      señales «▼ Bajar» y «▲ Subir», y al activarla se dice cómo. En la aplicación, la rueda se manda 180 px más adentro
+      para no dársela a la barra de tareas.
 - [x] Ya en Winclus: puntero con cabeza y con ojos (cámara normal), híbrido, calibración de 40 s, aprendizaje de
       clics, imán, lupa para afinar, clic por parpadeo, boca, cejas o quietud, menú de clics, órdenes por voz,
       dictado con confirmación, «números» para enlaces y campos.
