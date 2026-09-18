@@ -19,12 +19,18 @@ discapacidad, tipo de letra, alineación, interlineado, zoom de página, silenci
 - [x] (17-sep-2026, 0.6.3) **Espacio entre renglones** ajustable (100 a 250 %).
 - [x] (17-sep-2026, 0.6.3) **Texto alineado a la izquierda** (quita el justificado).
 - [x] (17-sep-2026, 0.6.3) **Zoom de toda la página** (100 a 200 %), no solo la letra.
-- [ ] **Resaltar títulos** (borde y fondo en h1 a h3) y **resaltar el foco** con un marco grueso en la página anfitriona.
-- [ ] **Silenciar la página** de un toque (además del volumen máximo).
-- [ ] **Diccionario al toque**: definición de una palabra de la página (con el glosario del sitio si lo aporta, o con
-      Wikcionario si hay red).
+- [x] (18-sep-2026, 0.6.4) **Resaltar títulos** (fondo y borde en h1 a h4) y **resaltar el foco** con un marco grueso
+      en la página anfitriona.
+- [x] (18-sep-2026, 0.6.4) **Silenciar la página** de un toque (además del volumen máximo): también lo que arranque
+      después; al apagarlo vuelve el sonido solo a lo que silenció Winclus. Los vídeos incrustados de otros sitios
+      (YouTube) no se pueden silenciar desde fuera y la ayuda lo dice.
+- [x] (18-sep-2026, 0.6.4) **Diccionario al toque**: se toca una palabra (con el ratón, con el puntero facial o dentro
+      de la lectura limpia) y sale qué significa, con dibujo. Por orden: el glosario del sitio (`window.WinclusGlosario`
+      o `data-glosario`), el glosario de trámites del widget, ARASAAC (pictograma y significado, solo con coincidencia
+      exacta) y Wikcionario. La palabra sale hacia ARASAAC y Wikcionario solo al tocarla con el diccionario encendido.
 
-Resultado cuando esté todo: Winclus hace todo lo que hace un overlay y, además, lo de las familias 2 a 6.
+Resultado (18-sep-2026, 0.6.4): Winclus hace todo lo que hace un overlay y, además, lo de las familias 2 a 6. Familia
+cerrada.
 
 ## Familia 2. Lectores de pantalla (JAWS, NVDA, VoiceOver, Narrador, TalkBack)
 
@@ -102,16 +108,19 @@ traducción, letra para dislexia, espaciado, lectura fácil.
 - [x] Ya en Winclus: lectura limpia, explicación en fácil (por reglas o con IA del sitio), lectura en voz alta con
       resaltado palabra a palabra, máscara de enfoque, letras separadas, ayuda en formularios, glosario.
 - [x] (17-sep-2026, 0.6.3) Letra para dislexia, interlineado, alineación (familia 1).
-- [ ] **Sílabas**: separar y colorear las sílabas del texto (silabeo del español por reglas).
-- [ ] **Diccionario con dibujos**: al tocar una palabra, su pictograma de ARASAAC y su definición sencilla.
+- [x] (18-sep-2026, 0.6.4) **Sílabas**: botón «Sílabas» en la lectura limpia; silabeo del español por reglas de la RAE
+      (`Winclus.silabear`: diptongos, hiatos, grupos inseparables, dígrafos), dos colores AAA alternos, el texto no cambia
+      (los lectores de pantalla lo leen igual).
+- [x] (18-sep-2026, 0.6.4) **Diccionario con dibujos**: es el diccionario al toque de la familia 1: pictograma de ARASAAC
+      y su significado, leído en voz alta.
 - [ ] **Colores por tipo de palabra** (nombres, verbos, adjetivos) en la lectura limpia.
 - [ ] **Resumen en tres frases** y **preguntas de comprobación** en «Explicar en fácil».
 - [-] **Traducción**: no sin un servicio externo; si el sitio aporta uno (como con la IA), se usará.
 
 ## Orden de trabajo
 
-1. Familia 1 completa (queda: resaltar títulos y foco, silenciar, diccionario). Familia 6: sílabas y diccionario con
-   dibujos. Son cambios pequeños en el widget.
+1. ~~Familia 1 completa (resaltar títulos y foco, silenciar, diccionario). Familia 6: sílabas y diccionario con
+   dibujos.~~ Hecho el 18-sep-2026 (0.6.4).
 2. Familia 5 completa (dos pulsadores, grupos, punto de barrido, menú de acciones). Cambios medianos en el widget.
 3. Familia 4: vocabulario nuclear, búsqueda en ARASAAC, tableros propios. Cambios grandes en el widget.
 4. Familia 2: lector completo dentro de la página. Cambios grandes en el widget. En Windows, integrar NVDA.

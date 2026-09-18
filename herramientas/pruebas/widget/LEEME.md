@@ -56,6 +56,10 @@
 - `node prueba_familias.js`: hoja de ruta por familias (docs/hoja-ruta-familias.md), bloque 1 (0.6.3): tipo de letra («Legible»
   Verdana y «Para dislexia» OpenDyslexic desde winclus.com/fuentes), espacio entre renglones, texto a la izquierda y zoom de toda la
   página; se aplican a la página y no al panel, se guardan, salen en «Lo que tienes activado» y se apagan con «Apagar todo».
+  Bloque 1b (0.6.4): resaltar títulos y foco, silenciar la página (también lo que arranca después; al apagar vuelve solo lo que
+  silenció Winclus), diccionario al toque (glosario del sitio → ARASAAC con dibujo → Wikcionario, simulados con `page.route`;
+  con el ratón, con `Winclus.clic()` y dentro de la lectura limpia; Escape cierra; botones y enlaces no lo abren) y «Sílabas» en
+  la lectura limpia (`Winclus.silabear` con 20 palabras, colores alternos, el texto no cambia). Pasa en Chromium, Firefox y WebKit.
 - `node prueba_aaa.js`: nivel AAA (docs/hoja-ruta-aaa.md, 17-sep-2026): reglas AAA de axe sobre cada pestaña del panel (ajustes
   finos abiertos, todos los grupos a la vista) y sobre todas las páginas del sitio; contraste 7:1 de todo texto del panel;
   objetivos de 44×44 en el panel (salvo las teclas del teclado en pantalla) y en enlaces y botones del sitio que no van en
