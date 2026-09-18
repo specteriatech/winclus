@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-18T17:26:18.010Z",
-  "commit": "9b1b039",
-  "version": "0.6.9",
-  "pruebas": 32,
-  "comprobaciones": 573,
+  "fecha": "2026-09-18T19:38:07.223Z",
+  "commit": "2ca25ab",
+  "version": "0.6.10",
+  "pruebas": 33,
+  "comprobaciones": 582,
   "fallan": 0,
   "resultados": [
     {
@@ -16,7 +16,7 @@
       "ok": 18,
       "mal": 0,
       "bien": true,
-      "segundos": 10,
+      "segundos": 15,
       "lineas": [
         "OK  sin ajustes",
         "OK  oscuro",
@@ -78,7 +78,7 @@
       "ok": 11,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 6,
       "lineas": [
         "OK  una sola pestaña tabulable y todas con aria-controls válido",
         "OK  la tabulable es la seleccionada",
@@ -131,16 +131,16 @@
       "bien": true,
       "segundos": 3,
       "lineas": [
-        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 557 revisados",
-        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 900 revisados",
-        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 834 revisados",
-        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 620 revisados",
-        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1810 revisados",
-        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 594 revisados",
-        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 516 revisados",
-        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 523 revisados",
-        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 523 revisados",
-        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 399 revisados",
+        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 561 revisados",
+        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 904 revisados",
+        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 838 revisados",
+        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 635 revisados",
+        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1814 revisados",
+        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 598 revisados",
+        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 520 revisados",
+        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 527 revisados",
+        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 527 revisados",
+        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 403 revisados",
         "OK  Pausar: texto sobre fondo: 7.86:1",
         "OK  interruptor apagado sobre el panel: 3.13:1",
         "OK  interruptor encendido sobre el panel: 7.86:1",
@@ -207,7 +207,7 @@
       "ok": 140,
       "mal": 0,
       "bien": true,
-      "segundos": 13,
+      "segundos": 12,
       "lineas": [
         "OK  / a 1280 px: axe sin incumplimientos",
         "OK  / a 1280 px: carga el widget",
@@ -551,7 +551,7 @@
       "ok": 9,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 1,
       "lineas": [
         "OK  el tablero se abre con categorías y pictogramas",
         "OK  las imágenes vienen de ARASAAC y se atribuye la licencia",
@@ -702,6 +702,29 @@
       ]
     },
     {
+      "archivo": "prueba_bordes.js",
+      "que": "Bajar y subir la página llevando el puntero de la cara o los ojos al borde de la pantalla, con aviso en pantalla y voz.",
+      "criterios": [
+        "EN 301 549 11.5",
+        "WCAG 2.5.1"
+      ],
+      "ok": 9,
+      "mal": 0,
+      "bien": true,
+      "segundos": 1,
+      "lineas": [
+        "OK  pasar por el borde menos de 0,35 s no mueve la página",
+        "OK  el puntero pegado al borde de abajo baja la página y sale la banda «Bajando»",
+        "OK  la primera vez lo dice con voz",
+        "OK  menos pegado al borde baja más despacio",
+        "OK  al apartar el puntero del borde se para y la banda desaparece",
+        "OK  en el borde de arriba sube",
+        "OK  con «Bajar y subir llevando el puntero al borde» apagado no pasa nada",
+        "OK  el interruptor está en la pestaña Cara, encendido por defecto, y el texto de la cámara explica cómo bajar",
+        "OK  sin errores JS"
+      ]
+    },
+    {
       "archivo": "prueba_facil.js",
       "que": "«Explicar en fácil» por reglas y con IA, resaltado palabra a palabra, «¿Dónde estoy?».",
       "criterios": [
@@ -829,7 +852,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 15,
+      "segundos": 16,
       "lineas": [
         "OK  demo.html pasa axe",
         "OK  la demo tiene los siete pasos",
@@ -915,7 +938,7 @@
       "ok": 4,
       "mal": 0,
       "bien": true,
-      "segundos": 9,
+      "segundos": 14,
       "lineas": [
         "OK  el navegador avisa de cada cuadro nuevo",
         "OK  no se infiere más veces que cuadros entrega la cámara",

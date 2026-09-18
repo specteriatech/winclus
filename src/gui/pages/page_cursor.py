@@ -519,6 +519,18 @@ class FrameOjos(customtkinter.CTkFrame):
             wraplength=430, text_color=estilo.TEXTO_SUAVE, justify=tkinter.LEFT,
             font=estilo.fuente("pequena")).grid(row=fila + 2, column=0, padx=(28, 0), pady=(0, 6), sticky="w")
         self.opc_vars["puntero_externo"] = var
+        var2 = tkinter.BooleanVar(value=True)
+        customtkinter.CTkCheckBox(opciones, text="Bajar y subir llevando el puntero al borde de la pantalla",
+                                  variable=var2, font=estilo.fuente("cuerpo"),
+                                  command=lambda v=var2: self._guardar("bordes_desplazan", bool(v.get()))).grid(
+                                      row=fila + 3, column=0, pady=(8, 0), sticky="w")
+        customtkinter.CTkLabel(
+            opciones,
+            text=("Pegado al borde de abajo, la página baja sola; al de arriba, sube. Apártalo y para. "
+                  "También sirven los gestos de rueda y el menú de clics."),
+            wraplength=430, text_color=estilo.TEXTO_SUAVE, justify=tkinter.LEFT,
+            font=estilo.fuente("pequena")).grid(row=fila + 4, column=0, padx=(28, 0), pady=(0, 6), sticky="w")
+        self.opc_vars["bordes_desplazan"] = var2
         return panel
 
     def _cargar_opciones(self):

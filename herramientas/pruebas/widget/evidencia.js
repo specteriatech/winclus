@@ -28,6 +28,7 @@ const PRUEBAS = [
   ["prueba_lector.js", "Lector de pantalla completo dentro de la página (familia 2): zonas, tablas celda a celda con cabeceras, listas, casillas, encabezados por nivel, letra a letra y palabra a palabra, deletrear, lectura continua, buscar, modo formulario, roles y estados, regiones vivas, verbosidad y tono.", ["WCAG 1.3.1", "WCAG 4.1.2", "WCAG 4.1.3", "WCAG 2.4.1", "EN 301 549 11.5"]],
   ["prueba_familias36.js", "Guiños e inclinación de la cabeza como gestos asignables (familia 3); colores por tipo de palabra, resumen en tres frases y preguntas de comprobación en la lectura fácil (familia 6).", ["WCAG 3.1.5", "COGA", "EN 301 549 11.5"]],
   ["prueba_familia3_widget.js", "Calibración ocular de 9, 13 o 25 puntos con compensación de cabeza medida, puntero de otro rastreador con clics por cámara y enlace a NVDA (familia 3 en el widget).", ["EN 301 549 11.5", "ISO 9241-171 §9"]],
+  ["prueba_bordes.js", "Bajar y subir la página llevando el puntero de la cara o los ojos al borde de la pantalla, con aviso en pantalla y voz.", ["EN 301 549 11.5", "WCAG 2.5.1"]],
   ["prueba_facil.js", "«Explicar en fácil» por reglas y con IA, resaltado palabra a palabra, «¿Dónde estoy?».", ["WCAG 3.1.5", "WCAG 2.4.8", "COGA"]],
   ["prueba_auditar.js", "Winclus Audit: informe por criterio de la Res. 1519 y borrador de declaración.", ["Res. 1519 Anexo 1"]],
   ["prueba_sdk.js", "Web component, guía de integración, plugin de WordPress y módulo de Drupal.", ["Integración"]],

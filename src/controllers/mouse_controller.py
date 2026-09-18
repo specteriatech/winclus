@@ -375,6 +375,32 @@ class MouseController(metaclass=Singleton):
                 logger.error(f"Error moviendo el puntero (se sigue): {e}", exc_info=e)
                 time.sleep(0.05)
 
+    def _bordes(self) -> None:
+        """Bajar y subir por los bordes: el puntero pegado al borde de abajo de la
+        pantalla hace rueda hacia abajo y en el de arriba hacia arriba, tras 0,35 s
+        dentro de la franja (pasar por ella no mueve nada). Es la forma más sencilla
+        de desplazar una página con la cara o los ojos."""
+        if not ConfigManager().config.get("bordes_desplazan", True):
+            return
+        try:
+            _, y = pyautogui.position()
+            alto = pyautogui.size()[1]
+        except Exception:
+            return
+        franja = 40
+        lado = 1 if y >= alto - franja else (-1 if y <= franja else 0)
+        ahora = time.time()
+        if lado != getattr(self, "_borde_lado", 0):
+            self._borde_lado = lado
+            self._borde_desde = ahora
+            return
+        if not lado or ahora - getattr(self, "_borde_desde", ahora) < 0.35:
+            return
+        if ahora - getattr(self, "_borde_ultimo", 0.0) < 0.12:
+            return
+        self._borde_ultimo = ahora
+        pyautogui.scroll(-2 if lado == 1 else 2)
+
     def _vuelta(self) -> None:
         """Una vuelta del bucle del puntero (ver main_loop)."""
         if not self.is_active.get():
@@ -384,6 +410,8 @@ class MouseController(metaclass=Singleton):
         if self.calibrando or time.time() < self.congelado_hasta:
             time.sleep(0.01)
             return
+
+        self._bordes()
 
         # Un rastreador externo (Tobii, Windows Eye Control…) ya mueve el puntero del
         # sistema: Winclus no lo toca y se queda con los clics y los gestos

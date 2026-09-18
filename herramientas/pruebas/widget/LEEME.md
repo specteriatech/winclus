@@ -64,6 +64,8 @@
   el panel, modelo ocular con rasgos sintéticos (`Winclus.ajustarModelo`, `predecir`), compensación de cabeza (`Winclus.ajustarCabeza`:
   aprende, mide la mejora, corrige con `deteccion.pose` y no se guarda si no ayuda), «Otro aparato mueve el puntero» (el ratón no toca el
   puntero virtual sin cámara; con cámara real, prueba en vivo pendiente) y el enlace a NVDA. Pasa en Chromium, Firefox y WebKit.
+- `node prueba_bordes.js`: bajar y subir por los bordes (0.6.10): `Winclus.tickBordes` con el puntero virtual en la franja de abajo (baja tras
+  0,35 s, más deprisa cuanto más pegado, banda «Bajando» y aviso de voz), en la de arriba (sube), fuera (para) y con el interruptor apagado.
 - `node prueba_facil.js`: `pagina-tramite.html`: «Explicar en fácil» por reglas (jerga → palabras corrientes con glosario,
   frases cortas, lo importante primero), con servicio de IA simulado y su caída, resaltado palabra a palabra, «¿Dónde estoy?».
 - `node prueba_auditar.js`: Winclus Audit sobre la portada local y una página mala: informe, declaración y JSON.
