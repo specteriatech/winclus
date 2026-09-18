@@ -1,10 +1,10 @@
 {
-  "fecha": "2026-09-18T15:46:31.054Z",
-  "commit": "23272e1",
-  "version": "0.6.7",
-  "pruebas": 30,
-  "comprobaciones": 551,
-  "fallan": 0,
+  "fecha": "2026-09-18T15:59:30.635Z",
+  "commit": "0c11af4",
+  "version": "0.6.8",
+  "pruebas": 31,
+  "comprobaciones": 562,
+  "fallan": 1,
   "resultados": [
     {
       "archivo": "prueba_posicion.js",
@@ -78,7 +78,7 @@
       "ok": 11,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 6,
       "lineas": [
         "OK  una sola pestaña tabulable y todas con aria-controls válido",
         "OK  la tabulable es la seleccionada",
@@ -131,16 +131,16 @@
       "bien": true,
       "segundos": 3,
       "lineas": [
-        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 539 revisados",
-        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 882 revisados",
-        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 813 revisados",
-        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 591 revisados",
-        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1408 revisados",
-        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 576 revisados",
-        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 498 revisados",
-        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 505 revisados",
-        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 505 revisados",
-        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 381 revisados",
+        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 543 revisados",
+        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 886 revisados",
+        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 817 revisados",
+        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 595 revisados",
+        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1796 revisados",
+        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 580 revisados",
+        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 502 revisados",
+        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 509 revisados",
+        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 509 revisados",
+        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 385 revisados",
         "OK  Pausar: texto sobre fondo: 7.86:1",
         "OK  interruptor apagado sobre el panel: 3.13:1",
         "OK  interruptor encendido sobre el panel: 7.86:1",
@@ -162,7 +162,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 6,
+      "segundos": 1,
       "lineas": [
         "OK  el widget carga con CSP estricta",
         "OK  sin errores JS",
@@ -478,7 +478,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 7,
       "lineas": [
         "OK  «números» pone etiquetas 1, 2, 3… sobre lo que se puede pulsar",
         "OK  «clic 2» pulsa el botón que lleva el 2",
@@ -551,7 +551,7 @@
       "ok": 9,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 1,
       "lineas": [
         "OK  el tablero se abre con categorías y pictogramas",
         "OK  las imágenes vienen de ARASAAC y se atribuye la licencia",
@@ -575,7 +575,7 @@
       "ok": 24,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 2,
       "lineas": [
         "OK  el tablero tiene cuatro vistas: Temas, Palabras, Míos y Buscar",
         "OK  «Palabras»: ocho grupos gramaticales con color",
@@ -651,6 +651,32 @@
       ]
     },
     {
+      "archivo": "prueba_familias36.js",
+      "que": "Guiños e inclinación de la cabeza como gestos asignables (familia 3); colores por tipo de palabra, resumen en tres frases y preguntas de comprobación en la lectura fácil (familia 6).",
+      "criterios": [
+        "WCAG 3.1.5",
+        "COGA",
+        "EN 301 549 11.5"
+      ],
+      "ok": 11,
+      "mal": 0,
+      "bien": true,
+      "segundos": 1,
+      "lineas": [
+        "OK  el guiño es un ojo cerrado con el otro abierto; un parpadeo de los dos ojos no cuenta",
+        "OK  la inclinación de la cabeza sale del ángulo entre los ojos, a cada lado, y sin cara vale 0",
+        "OK  los cuatro gestos nuevos se asignan en la pestaña Clics",
+        "OK  el gesto nuevo admite una acción",
+        "OK  Winclus.tipoPalabra() distingue nombres",
+        "OK  «Tipos de palabra» colorea nombres, acciones y cualidades en la lectura limpia, con leyenda y sin cambiar el texto",
+        "OK  volver a pulsarlo quita los colores y la leyenda",
+        "OK  «Explicar en fácil» añade «En tres frases» y preguntas con una palabra tapada",
+        "OK  «Ver respuesta» enseña la palabra",
+        "OK  el resumen elige las tres frases con más palabras de peso y las deja en su orden",
+        "OK  sin errores JS"
+      ]
+    },
+    {
       "archivo": "prueba_facil.js",
       "que": "«Explicar en fácil» por reglas y con IA, resaltado palabra a palabra, «¿Dónde estoy?».",
       "criterios": [
@@ -658,14 +684,14 @@
         "WCAG 2.4.8",
         "COGA"
       ],
-      "ok": 13,
-      "mal": 0,
-      "bien": true,
+      "ok": 12,
+      "mal": 1,
+      "bien": false,
       "segundos": 7,
       "lineas": [
         "OK  «¿Dónde estoy?» dice título, ruta, encabezados y avance",
         "OK  hay resumen: de qué va y lo más importante",
-        "OK  la jerga se cambia por palabras corrientes",
+        "MAL la jerga se cambia por palabras corrientes",
         "OK  las palabras cambiadas llevan el término original y su explicación",
         "OK  no quedan frases de más de 30 palabras",
         "OK  las listas de requisitos se mantienen como pasos y con palabras claras",
@@ -778,7 +804,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 11,
+      "segundos": 16,
       "lineas": [
         "OK  demo.html pasa axe",
         "OK  la demo tiene los siete pasos",
@@ -801,7 +827,7 @@
       "ok": 21,
       "mal": 0,
       "bien": true,
-      "segundos": 17,
+      "segundos": 18,
       "lineas": [
         "OK  chromium: recorrido básico",
         "OK  chromium: sin speechSynthesis ni SpeechRecognition",
@@ -864,7 +890,7 @@
       "ok": 4,
       "mal": 0,
       "bien": true,
-      "segundos": 9,
+      "segundos": 14,
       "lineas": [
         "OK  el navegador avisa de cada cuadro nuevo",
         "OK  no se infiere más veces que cuadros entrega la cámara",
@@ -886,7 +912,7 @@
       "ok": 26,
       "mal": 0,
       "bien": true,
-      "segundos": 6,
+      "segundos": 1,
       "lineas": [
         "OK  «Legible» pone Verdana en la página, no en el panel, y se guarda",
         "OK  «Para dislexia» pide OpenDyslexic desde winclus.com/fuentes",

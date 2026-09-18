@@ -57,6 +57,9 @@
   obligatorio, no válido, no disponible, descripción), modo formulario y Escape, ← → letra a letra con nombres de signos, Ctrl+← →
   palabra a palabra, s deletrea, r lectura continua con resaltado, Ctrl+F buscador, regiones vivas y alertas, tres verbosidades
   (`Winclus.describir`), tono de la voz (pitch). La voz habla por trozos: la prueba junta lo dicho. Pasa en Chromium, Firefox y WebKit.
+- `node prueba_familias36.js`: familias 3 y 6 (0.6.8): guiños e inclinación de la cabeza como gestos (`Winclus.valorGesto` con `deteccion.bs` y
+  `deteccion.lm` simulados; un parpadeo de los dos ojos da 0; en la pestaña Clics), «Tipos de palabra» en la lectura limpia (`Winclus.tipoPalabra`,
+  leyenda, sin cambiar el texto), «En tres frases» (`Winclus.resumen`) y «Compruebo que lo entendí» con «Ver respuesta» en «Explicar en fácil».
 - `node prueba_facil.js`: `pagina-tramite.html`: «Explicar en fácil» por reglas (jerga → palabras corrientes con glosario,
   frases cortas, lo importante primero), con servicio de IA simulado y su caída, resaltado palabra a palabra, «¿Dónde estoy?».
 - `node prueba_auditar.js`: Winclus Audit sobre la portada local y una página mala: informe, declaración y JSON.

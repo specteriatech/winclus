@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import logging
+import math
 import time
 
 import mediapipe as mp
@@ -32,7 +33,8 @@ logger = logging.getLogger("FaceMesh")
 MP_TASK_FILE = "assets/task/face_landmarker_with_blendshapes.task"
 
 BLENDS_MAX_BUFFER = 100
-N_SHAPES = 52
+N_SHAPES = 56                 # 52 de MediaPipe + guiños e inclinación de la cabeza (shape_list.py)
+INCLINACION_MAX_GRADOS = 22.0 # inclinar la cabeza estos grados vale 1.0 en el gesto
 np.set_printoptions(precision=2, suppress=True)
 
 
@@ -121,8 +123,10 @@ class FaceMesh(metaclass=Singleton):
                                               shift=-1,
                                               axis=0)
 
-            self.blendshapes_buffer[-1] = np.array(
-                [b.score for b in mp_result.face_blendshapes[0]])
+            # Postura de la cabeza (giro y posición) desde la matriz de MediaPipe
+            self.cabeza = self.calc_cabeza(mp_result)
+            self.blendshapes_buffer[-1] = self.con_gestos_calculados(
+                [b.score for b in mp_result.face_blendshapes[0]], self.mp_landmarks)
             self.smooth_blendshapes = utils.apply_smoothing(
                 self.blendshapes_buffer, self.smooth_kernel)
 
@@ -147,14 +151,35 @@ class FaceMesh(metaclass=Singleton):
                             f"(iris disponible: {self.mirada.disponible})")
             self.n_frames += 1
 
-            # Postura de la cabeza (giro y posición) desde la matriz de MediaPipe
-            self.cabeza = self.calc_cabeza(mp_result)
-
         else:
             self.mp_landmarks = None
             self.track_loc = None
             self.cabeza = None
             self.mirada._sin_datos()
+
+    @staticmethod
+    def con_gestos_calculados(scores, landmarks):
+        """Los 52 valores de MediaPipe más los gestos que calcula Winclus, en el
+        orden de shape_list.blendshape_names. Guiño: un ojo cerrado y el otro
+        abierto (la diferencia entre los dos parpadeos; un parpadeo normal da 0).
+        Inclinación: el ángulo de la línea entre los rabillos de los ojos (puntos
+        33 y 263), 0 a 1 al llegar a INCLINACION_MAX_GRADOS. Izquierda y derecha
+        son las de la imagen en espejo, como el resto de los gestos."""
+        v = np.zeros(N_SHAPES)
+        n = min(len(scores), 52)
+        v[:n] = scores[:n]
+        blink_left, blink_right = v[9], v[10]        # eyeBlinkLeft y eyeBlinkRight de MediaPipe (ojos de la persona)
+        v[52] = max(0.0, blink_right - blink_left)   # ojo derecho de la persona: en espejo, «el ojo izquierdo»
+        v[53] = max(0.0, blink_left - blink_right)   # «Guiñar el ojo derecho»
+        try:
+            d, i = landmarks[33], landmarks[263]      # rabillo del ojo derecho y del izquierdo (de la persona)
+            grados = math.degrees(math.atan2(i.y - d.y, i.x - d.x))
+            # Cabeza hacia el hombro derecho de la persona: ojo derecho más bajo, ángulo negativo; en espejo es «la derecha»
+            v[54] = min(1.0, max(0.0, grados / INCLINACION_MAX_GRADOS))
+            v[55] = min(1.0, max(0.0, -grados / INCLINACION_MAX_GRADOS))
+        except Exception:
+            pass
+        return v
 
     @staticmethod
     def calc_cabeza(mp_result):

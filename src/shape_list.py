@@ -74,7 +74,15 @@ blendshape_names = [
     "mouthUpperUpLeft",
     "noseSneerRight",
     "noseSneerLeft",
+    # Gestos que Winclus calcula además de los 52 de MediaPipe (detectors/facemesh.py):
+    # un guiño es un ojo cerrado con el otro abierto (un parpadeo normal no cuenta) y la
+    # inclinación sale del balanceo de la cabeza. Derecha e izquierda, como se ven en espejo.
+    "Guiñar el ojo izquierdo",
+    "Guiñar el ojo derecho",
+    "Inclinar la cabeza a la izquierda",
+    "Inclinar la cabeza a la derecha",
 ]
+N_MEDIAPIPE = 52                     # los que da el modelo; después van los calculados
 blendshape_indices = {name: i for i, name in enumerate(blendshape_names)}
 
 # Acciones del mouse que se pueden asignar a un gesto.
@@ -104,6 +112,10 @@ available_gestures = {
     "Subir la ceja derecha": "assets/images/dropdowns/subir_ceja_derecha.png",
     "Bajar la ceja derecha": "assets/images/dropdowns/bajar_ceja_derecha.png",
     "Subir las cejas": "assets/images/dropdowns/subir_cejas.png",
+    "Guiñar el ojo izquierdo": "assets/images/dropdowns/guino_izquierdo.png",
+    "Guiñar el ojo derecho": "assets/images/dropdowns/guino_derecho.png",
+    "Inclinar la cabeza a la izquierda": "assets/images/dropdowns/cabeza_izquierda.png",
+    "Inclinar la cabeza a la derecha": "assets/images/dropdowns/cabeza_derecha.png",
 }
 for k, v in available_gestures.items():
     assert k in blendshape_names, f"{k} no está en blendshape_names"

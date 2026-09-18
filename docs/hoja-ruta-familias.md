@@ -61,13 +61,19 @@ aplicación.
 - [x] Ya en Winclus: puntero con cabeza y con ojos (cámara normal), híbrido, calibración de 40 s, aprendizaje de
       clics, imán, lupa para afinar, clic por parpadeo, boca, cejas o quietud, menú de clics, órdenes por voz,
       dictado con confirmación, «números» para enlaces y campos.
-- [ ] **Precisión ocular**: usar más puntos de calibración (9 y 16), compensar el movimiento de la cabeza con los
-      dos ojos, medir y publicar el error real en píxeles (ya se calcula) y compararlo en la página de comparación.
-- [ ] **Rastreadores externos**: aceptar un rastreador ocular de hardware (Tobii y compatibles) en la aplicación de
-      Windows cuando el sistema lo expone como cursor (Windows Eye Control). Sin SDK propietario.
-- [ ] **Voz completa**: dictado con corrección («borra eso», «mayúscula», puntuación), comandos para todo lo que se
-      ve en pantalla («pulsa Enviar», «baja»), en la app de Windows con el reconocimiento del sistema.
-- [ ] **Más gestos**: guiño de un ojo, lengua fuera, inclinación de cabeza, con acción asignable.
+- [x] (18-sep-2026) **Precisión ocular**: la aplicación de Windows ya calibra con 9, 13 o 25 puntos («Duración»), con los
+      dos ojos o uno solo, con seguimiento de un punto móvil y con el paso de compensación de cabeza; mide el error real con
+      cuatro puntos que no entran en el ajuste. Error real medido el 12-sep-2026 con cámara normal y 13 puntos: 75 px
+      (unos 2 cm en un monitor corriente). Publicado en winclus.com/comparar frente a los 0,5° de Tobii.
+- [x] (18-sep-2026, app) **Rastreadores externos**: «Otro aparato mueve el puntero; Winclus solo hace los clics y los
+      gestos» (puntero_externo) en la página Puntero: Winclus no toca el puntero del sistema y deja el clic por parpadeo,
+      los gestos, el menú, el teclado y la voz encima de Tobii, Windows Eye Control o cualquier rastreador. Sin SDK.
+- [ ] **Voz completa en Windows**: dictado con corrección («borra eso», «mayúscula», puntuación) y comandos para lo que
+      se ve en pantalla con el reconocimiento del sistema. En el widget ya existen el dictado con confirmación y las
+      órdenes por voz; en la app no hay reconocimiento de voz todavía. Necesita prueba en vivo con micrófono.
+- [x] (18-sep-2026, widget 0.6.8 y app) **Más gestos**: guiño del ojo izquierdo y del derecho (un ojo cerrado con el otro
+      abierto: un parpadeo normal no cuenta) e inclinación de la cabeza a cada lado (ángulo entre los rabillos de los ojos),
+      con acción asignable en los dos. Lengua fuera: no, MediaPipe no la detecta (se dice aquí).
 - [-] **Igualar la precisión de Tobii con una cámara normal**: no es posible físicamente; se dice así en la comparación.
 
 ## Familia 4. Comunicación aumentativa y alternativa (Grid 3, TD Snap, Proloquo2Go, Cboard)
@@ -129,8 +135,12 @@ traducción, letra para dislexia, espaciado, lectura fácil.
       (los lectores de pantalla lo leen igual).
 - [x] (18-sep-2026, 0.6.4) **Diccionario con dibujos**: es el diccionario al toque de la familia 1: pictograma de ARASAAC
       y su significado, leído en voz alta.
-- [ ] **Colores por tipo de palabra** (nombres, verbos, adjetivos) en la lectura limpia.
-- [ ] **Resumen en tres frases** y **preguntas de comprobación** en «Explicar en fácil».
+- [x] (18-sep-2026, 0.6.8) **Colores por tipo de palabra**: botón «Tipos de palabra» en la lectura limpia: nombres en
+      azul, acciones en verde y cualidades en naranja, por reglas (artículo delante, listas del tablero y terminaciones),
+      con leyenda y aviso de que es aproximado.
+- [x] (18-sep-2026, 0.6.8) **Resumen en tres frases** (las de más palabras de peso, en su orden) y **preguntas de
+      comprobación** (una frase importante con la palabra clave tapada y «Ver respuesta», que la enseña y la dice) en
+      «Explicar en fácil», también con la explicación por IA.
 - [-] **Traducción**: no sin un servicio externo; si el sitio aporta uno (como con la IA), se usará.
 
 ## Orden de trabajo
@@ -143,7 +153,9 @@ traducción, letra para dislexia, espaciado, lectura fácil.
    cerrada (salvo igualar a Grid 3 en amplitud, descartado).
 4. ~~Familia 2: lector completo dentro de la página.~~ Hecho el 18-sep-2026 (0.6.7). En Windows, el instalador ofrece
    NVDA; falta la prueba en vivo con el puntero facial.
-5. Familia 3: precisión ocular, más gestos, voz completa en Windows. Investigación más desarrollo.
+5. ~~Familia 3: precisión ocular, más gestos~~ hechos el 18-sep-2026 (app y 0.6.8); **queda la voz completa en Windows**
+   (dictado y órdenes con el reconocimiento del sistema), que necesita micrófono y prueba en vivo. La familia 6 queda
+   cerrada el 18-sep-2026 (0.6.8), salvo la traducción, descartada.
 
 Cada bloque se publica como versión propia, con su prueba automática, y se marca aquí. Lo que se marque `[-]` se
 dice tal cual en winclus.com/comparar, para no prometer lo que no es.

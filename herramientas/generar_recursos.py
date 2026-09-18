@@ -281,6 +281,35 @@ def dibujo_subir_cejas() -> None:
     im.save(carpeta / "subir_cejas.png")
 
 
+def dibujos_gestos_nuevos() -> None:
+    """Dibujos de 68×48 para los gestos que calcula Winclus (guiños e inclinación
+    de la cabeza): una cara sencilla con el ojo cerrado o la cabeza ladeada."""
+    carpeta = IMAGENES / "dropdowns"
+    oscuro = rgb(estilo.TEXTO[0]) if hasattr(estilo, "TEXTO") else (16, 31, 61)
+
+    def cara(guino=None, inclinacion=0):
+        n = 4   # se dibuja grande y se reduce: bordes suaves
+        im = Image.new("RGBA", (68 * n, 48 * n), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        cx, cy, r = 34 * n, 25 * n, 19 * n
+        d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=oscuro, width=3 * n)
+        for lado, ox in (("izq", -8 * n), ("der", 8 * n)):
+            ex, ey = cx + ox, cy - 4 * n
+            if guino == lado:
+                d.line((ex - 4 * n, ey, ex + 4 * n, ey), fill=oscuro, width=3 * n)      # ojo cerrado: una raya
+            else:
+                d.ellipse((ex - 3 * n, ey - 3 * n, ex + 3 * n, ey + 3 * n), fill=oscuro)
+        d.arc((cx - 9 * n, cy + 2 * n, cx + 9 * n, cy + 12 * n), 10, 170, fill=oscuro, width=3 * n)   # sonrisa
+        if inclinacion:
+            im = im.rotate(inclinacion, resample=Image.BICUBIC, center=(cx, cy))
+        return im.resize((68, 48), Image.LANCZOS)
+
+    cara(guino="izq").save(carpeta / "guino_izquierdo.png")
+    cara(guino="der").save(carpeta / "guino_derecho.png")
+    cara(inclinacion=22).save(carpeta / "cabeza_izquierda.png")     # la cabeza cae hacia la izquierda de la imagen
+    cara(inclinacion=-22).save(carpeta / "cabeza_derecha.png")
+
+
 # ------------------------------------------------------- Globo de ayuda --
 def globo() -> None:
     """Globo de ayuda 305x80: caja clara con borde y una puntita a la izquierda."""
@@ -388,6 +417,7 @@ if __name__ == "__main__":
     logo()
     iconos_menu()
     dibujo_subir_cejas()
+    dibujos_gestos_nuevos()
     globo()
     boton_perfil()
     tema()

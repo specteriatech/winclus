@@ -62,6 +62,7 @@ VALORES_POR_DEFECTO = {
     "ojos_calibracion": None,    # modelo de detectors/calibracion.py
     "ojos_fijacion_px": 60,      # el puntero no se mueve si la mirada cambia menos
     "ojos_persistencia_ms": 150, # la mirada debe llevar este tiempo fuera para moverlo
+    "puntero_externo": False,    # otro aparato mueve el puntero (Tobii, Windows Eye Control): Winclus solo clics y gestos
     "lupa_activa": True,         # clic en dos pasos con la zona agrandada
     "lupa_zoom": 3,              # aumento de la lupa
     "lupa_region_px": 220,       # lado de la zona real que se agranda

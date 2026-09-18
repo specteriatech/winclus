@@ -503,6 +503,22 @@ class FrameOjos(customtkinter.CTkFrame):
                                           row=fila, column=0, pady=(2, 0), sticky="w")
             self.opc_vars[clave] = var
             fila += 1
+        # Rastreador externo (familia 3): Tobii, Windows Eye Control o cualquier aparato que ya mueva el puntero
+        customtkinter.CTkLabel(opciones, text="Si ya tienes un rastreador de mirada",
+                               font=estilo.fuente("etiqueta")).grid(row=fila, column=0, pady=(12, 2), sticky="w")
+        var = tkinter.BooleanVar(value=False)
+        customtkinter.CTkCheckBox(opciones, text="Otro aparato mueve el puntero; Winclus solo hace los clics y los gestos",
+                                  variable=var, font=estilo.fuente("cuerpo"),
+                                  command=lambda v=var: self._guardar("puntero_externo", bool(v.get()))).grid(
+                                      row=fila + 1, column=0, pady=(2, 0), sticky="w")
+        customtkinter.CTkLabel(
+            opciones,
+            text=("Para Tobii, Windows Eye Control (Configuración → Accesibilidad → Control ocular) o cualquier "
+                  "rastreador que ya lleve el puntero del sistema: Winclus no lo toca y pone el clic por parpadeo, "
+                  "los gestos, el menú de clics, el teclado y la voz encima."),
+            wraplength=430, text_color=estilo.TEXTO_SUAVE, justify=tkinter.LEFT,
+            font=estilo.fuente("pequena")).grid(row=fila + 2, column=0, padx=(28, 0), pady=(0, 6), sticky="w")
+        self.opc_vars["puntero_externo"] = var
         return panel
 
     def _cargar_opciones(self):

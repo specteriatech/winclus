@@ -385,6 +385,12 @@ class MouseController(metaclass=Singleton):
             time.sleep(0.01)
             return
 
+        # Un rastreador externo (Tobii, Windows Eye Control…) ya mueve el puntero del
+        # sistema: Winclus no lo toca y se queda con los clics y los gestos
+        if ConfigManager().config.get("puntero_externo", False):
+            time.sleep(ConfigManager().config["tick_interval_ms"] / 1000)
+            return
+
         if ConfigManager().config.get("modo_puntero") == "ojos":
             submodo = ConfigManager().config.get("ojos_modo", "directo")
             if submodo == "directo":
