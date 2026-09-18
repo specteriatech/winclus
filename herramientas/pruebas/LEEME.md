@@ -8,6 +8,8 @@ perdería la calibración de ojos del usuario.
 
 - `prueba_parpadeo.py`: detector de parpadeo con ojos sintéticos (sin cámara).
 - `prueba_calibracion.py`: regresión de la calibración con rasgos sintéticos (sin cámara).
+- `prueba_bordes.py`: bajar y subir llevando el puntero al borde (sin cámara): en qué franja está el puntero,
+  que el centro no desplaza, que una pantalla muy baja no los usa y que la rueda se manda lejos de la barra de tareas.
 - `prueba_anillo.py`: anillo del clic por permanencia; comprueba que el ratón lo atraviesa.
 - `recorrido.py`: abre la app, recorre las páginas y captura con PrintWindow.
 - `recorrido_ojos.py`: calibración completa de punta a punta con mirada y cabeza

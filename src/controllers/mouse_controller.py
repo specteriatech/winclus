@@ -51,6 +51,45 @@ def decidir_salto(fijacion, ultimo_salto_punto, salto_px, mirada_moviendo, cabez
     return bool(d >= salto_px)
 
 
+# Bajar y subir llevando el puntero al borde de la pantalla (gui/pages/page_cursor.py,
+# «Bajar y subir llevando el puntero al borde»). La franja es ancha porque con la cara
+# el puntero se queda pegado al borde de la pantalla, y la rueda se manda más adentro
+# para no dársela a la barra de tareas.
+FRANJA_PX = 120        # desde el borde: dentro de esto empieza a desplazar
+DENTRO_PX = 180        # a qué altura se manda la rueda (lejos de la barra de tareas)
+WM_MOUSEWHEEL = 0x020A
+
+
+def lado_borde(y: int, alto: int, franja: int = FRANJA_PX) -> int:
+    """1 si el puntero está en la franja de abajo, -1 si en la de arriba, 0 si no."""
+    if alto <= 3 * franja:            # pantalla muy baja: no se desplaza por los bordes
+        return 0
+    if y >= alto - franja:
+        return 1
+    if y <= franja:
+        return -1
+    return 0
+
+
+def rueda_en(x: int, y: int, delta: int) -> bool:
+    """Manda una rueda de ratón a la ventana que hay en ese punto de la pantalla
+    (no bajo el puntero). Devuelve False si no se pudo: entonces se usa la rueda
+    normal de pyautogui."""
+    try:
+        import win32api
+        import win32gui
+        hwnd = win32gui.WindowFromPoint((int(x), int(y)))
+        if not hwnd:
+            return False
+        wparam = (delta & 0xFFFF) << 16
+        lparam = ((int(y) & 0xFFFF) << 16) | (int(x) & 0xFFFF)
+        win32api.PostMessage(hwnd, WM_MOUSEWHEEL, wparam, lparam)
+        return True
+    except Exception as e:
+        logger.debug(f"Rueda por los bordes: {e}")
+        return False
+
+
 class MouseController(metaclass=Singleton):
 
     def __init__(self):
@@ -376,19 +415,22 @@ class MouseController(metaclass=Singleton):
                 time.sleep(0.05)
 
     def _bordes(self) -> None:
-        """Bajar y subir por los bordes: el puntero pegado al borde de abajo de la
-        pantalla hace rueda hacia abajo y en el de arriba hacia arriba, tras 0,35 s
+        """Bajar y subir por los bordes: el puntero en la franja de abajo de la
+        pantalla hace rueda hacia abajo y en la de arriba hacia arriba, tras 0,35 s
         dentro de la franja (pasar por ella no mueve nada). Es la forma más sencilla
-        de desplazar una página con la cara o los ojos."""
+        de desplazar una página con la cara o los ojos.
+
+        La rueda NO se manda donde está el puntero: en el borde de abajo el puntero
+        está sobre la barra de tareas y la página no se enteraría. Se manda a la
+        ventana que hay bastante más adentro (DENTRO_PX), que es la que se lee."""
         if not ConfigManager().config.get("bordes_desplazan", True):
             return
         try:
-            _, y = pyautogui.position()
+            x, y = pyautogui.position()
             alto = pyautogui.size()[1]
         except Exception:
             return
-        franja = 40
-        lado = 1 if y >= alto - franja else (-1 if y <= franja else 0)
+        lado = lado_borde(y, alto)
         ahora = time.time()
         if lado != getattr(self, "_borde_lado", 0):
             self._borde_lado = lado
@@ -399,7 +441,9 @@ class MouseController(metaclass=Singleton):
         if ahora - getattr(self, "_borde_ultimo", 0.0) < 0.12:
             return
         self._borde_ultimo = ahora
-        pyautogui.scroll(-2 if lado == 1 else 2)
+        destino_y = alto - DENTRO_PX if lado == 1 else DENTRO_PX
+        if not rueda_en(x, destino_y, -120 if lado == 1 else 120):
+            pyautogui.scroll(-2 if lado == 1 else 2)   # si no se pudo, la rueda de siempre
 
     def _vuelta(self) -> None:
         """Una vuelta del bucle del puntero (ver main_loop)."""

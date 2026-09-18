@@ -526,7 +526,7 @@ class FrameOjos(customtkinter.CTkFrame):
                                       row=fila + 3, column=0, pady=(8, 0), sticky="w")
         customtkinter.CTkLabel(
             opciones,
-            text=("Pegado al borde de abajo, la página baja sola; al de arriba, sube. Apártalo y para. "
+            text=("Cerca del borde de abajo, la página baja sola; cerca del de arriba, sube. Apártalo y para. "
                   "También sirven los gestos de rueda y el menú de clics."),
             wraplength=430, text_color=estilo.TEXTO_SUAVE, justify=tkinter.LEFT,
             font=estilo.fuente("pequena")).grid(row=fila + 4, column=0, padx=(28, 0), pady=(0, 6), sticky="w")
