@@ -3312,10 +3312,10 @@
     var out = [], usadas = [];
     frases.forEach(function (f) {
       var mejor = "", mejorP = 0;
-      f.split(/\s+/).forEach(function (tok) { var m = RE_NUCLEO.exec(tok); if (!m) return; var w = sinAcentos(m[2]); if (w.length > 5 && !VACIAS.test(w) && usadas.indexOf(w) < 0 && (freq[w] || 0) >= mejorP && /^[a-zñ]+$/.test(w)) { mejor = m[2]; mejorP = freq[w] || 0; } });
+      f.split(/\s+/).forEach(function (tok) { var m = RE_NUCLEO.exec(tok); if (!m) return; var w = sinAcentos(m[2]); if (w.length > 5 && !VACIAS.test(w) && usadas.indexOf(w) < 0 && (freq[w] || 0) >= mejorP && /^[a-zñ]+$/.test(w) && !GLOSARIO.some(function (g) { return sinAcentos(g[0]) === w; })) { mejor = m[2]; mejorP = freq[w] || 0; } });   // nunca se tapa (ni se enseña) una palabra de jerga: la respuesta debe ser corriente
       if (!mejor) return; usadas.push(sinAcentos(mejor));
       var hueco = f.replace(new RegExp("(^|[^A-Za-zÁÉÍÓÚÑáéíóúñü])" + mejor.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?![A-Za-zÁÉÍÓÚÑáéíóúñü])"), "$1_____");
-      out.push('<p class="pregunta">' + T("¿Qué palabra falta?") + " «" + esc2(hueco) + '» <button type="button" data-a="resp" data-r="' + esc2(mejor).replace(/"/g, "&quot;") + '">' + T("Ver respuesta") + "</button></p>");
+      out.push('<p class="pregunta">' + T("¿Qué palabra falta?") + " «" + conGlosario(hueco) + '» <button type="button" data-a="resp" data-r="' + esc2(mejor).replace(/"/g, "&quot;") + '">' + T("Ver respuesta") + "</button></p>");
     });
     return out.slice(0, 3);
   }

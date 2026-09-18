@@ -1,10 +1,10 @@
 {
-  "fecha": "2026-09-18T15:59:30.635Z",
-  "commit": "0c11af4",
+  "fecha": "2026-09-18T16:05:06.595Z",
+  "commit": "ca06e97",
   "version": "0.6.8",
   "pruebas": 31,
   "comprobaciones": 562,
-  "fallan": 1,
+  "fallan": 0,
   "resultados": [
     {
       "archivo": "prueba_posicion.js",
@@ -16,7 +16,7 @@
       "ok": 18,
       "mal": 0,
       "bien": true,
-      "segundos": 15,
+      "segundos": 10,
       "lineas": [
         "OK  sin ajustes",
         "OK  oscuro",
@@ -78,7 +78,7 @@
       "ok": 11,
       "mal": 0,
       "bien": true,
-      "segundos": 6,
+      "segundos": 1,
       "lineas": [
         "OK  una sola pestaña tabulable y todas con aria-controls válido",
         "OK  la tabulable es la seleccionada",
@@ -207,7 +207,7 @@
       "ok": 140,
       "mal": 0,
       "bien": true,
-      "segundos": 13,
+      "segundos": 15,
       "lineas": [
         "OK  / a 1280 px: axe sin incumplimientos",
         "OK  / a 1280 px: carga el widget",
@@ -454,7 +454,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 8,
+      "segundos": 3,
       "lineas": [
         "OK  un audio de la página muestra el aviso con su nombre",
         "OK  un audio creado por código",
@@ -478,7 +478,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 7,
+      "segundos": 2,
       "lineas": [
         "OK  «números» pone etiquetas 1, 2, 3… sobre lo que se puede pulsar",
         "OK  «clic 2» pulsa el botón que lleva el 2",
@@ -551,7 +551,7 @@
       "ok": 9,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 2,
       "lineas": [
         "OK  el tablero se abre con categorías y pictogramas",
         "OK  las imágenes vienen de ARASAAC y se atribuye la licencia",
@@ -661,7 +661,7 @@
       "ok": 11,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 6,
       "lineas": [
         "OK  el guiño es un ojo cerrado con el otro abierto; un parpadeo de los dos ojos no cuenta",
         "OK  la inclinación de la cabeza sale del ángulo entre los ojos, a cada lado, y sin cara vale 0",
@@ -684,14 +684,14 @@
         "WCAG 2.4.8",
         "COGA"
       ],
-      "ok": 12,
-      "mal": 1,
-      "bien": false,
-      "segundos": 7,
+      "ok": 13,
+      "mal": 0,
+      "bien": true,
+      "segundos": 2,
       "lineas": [
         "OK  «¿Dónde estoy?» dice título, ruta, encabezados y avance",
         "OK  hay resumen: de qué va y lo más importante",
-        "MAL la jerga se cambia por palabras corrientes",
+        "OK  la jerga se cambia por palabras corrientes",
         "OK  las palabras cambiadas llevan el término original y su explicación",
         "OK  no quedan frases de más de 30 palabras",
         "OK  las listas de requisitos se mantienen como pasos y con palabras claras",
@@ -777,7 +777,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 2,
       "lineas": [
         "OK  ningún medio pasa del volumen máximo",
         "OK  sin voz elegida, usa la neuronal de es-CO",
@@ -804,7 +804,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 16,
+      "segundos": 11,
       "lineas": [
         "OK  demo.html pasa axe",
         "OK  la demo tiene los siete pasos",
@@ -827,7 +827,7 @@
       "ok": 21,
       "mal": 0,
       "bien": true,
-      "segundos": 18,
+      "segundos": 13,
       "lineas": [
         "OK  chromium: recorrido básico",
         "OK  chromium: sin speechSynthesis ni SpeechRecognition",
@@ -890,7 +890,7 @@
       "ok": 4,
       "mal": 0,
       "bien": true,
-      "segundos": 14,
+      "segundos": 9,
       "lineas": [
         "OK  el navegador avisa de cada cuadro nuevo",
         "OK  no se infiere más veces que cuadros entrega la cámara",
@@ -912,7 +912,7 @@
       "ok": 26,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 6,
       "lineas": [
         "OK  «Legible» pone Verdana en la página, no en el panel, y se guarda",
         "OK  «Para dislexia» pide OpenDyslexic desde winclus.com/fuentes",
