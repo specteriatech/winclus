@@ -3,7 +3,7 @@
  * Plugin Name: Winclus
  * Plugin URI:  https://winclus.com
  * Description: Añade a tu sitio el widget de accesibilidad Winclus: uso con la cara, la voz, un solo pulsador, teclado en pantalla, pictogramas y ajustes de lectura y color. Sin cuentas ni servidores propios.
- * Version:     0.6.12
+ * Version:     0.6.13
  * Author:      Colaboradores de Winclus
  * License:     Apache-2.0
  * Text Domain: winclus
@@ -11,8 +11,8 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define( 'WINCLUS_VERSION_WIDGET', '0.6.12' );
-define( 'WINCLUS_SRI_WIDGET', 'sha384-DKaaLfoC9BhEIHUDzTBuWnU+fUPvxmp3lm5p3Rik0IX0laExydjD/vgnLwfGAW9R' );   // hash de integridad de la versión fija (winclus.com/integrar)
+define( 'WINCLUS_VERSION_WIDGET', '0.6.13' );
+define( 'WINCLUS_SRI_WIDGET', 'sha384-jNJF5O8PcPpQTX2+jystS43m6toT0wDm9E0p5E7OBJCewMGkRCeNBs01FdhBvkGx' );   // hash de integridad de la versión fija (winclus.com/integrar)
 
 function winclus_opciones() {
 	return wp_parse_args( get_option( 'winclus_opciones', array() ), array(
@@ -21,7 +21,7 @@ function winclus_opciones() {
 		'idioma'   => 'es-CO',
 		'relevo'   => 'si',
 		'explicar' => '',
-		'version'  => 'fija',   // «fija»: widget-0.6.12.js (no cambia solo); «ultima»: widget.js
+		'version'  => 'fija',   // «fija»: widget-0.6.13.js (no cambia solo); «ultima»: widget.js
 	) );
 }
 

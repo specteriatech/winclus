@@ -1,4 +1,4 @@
 widget:
-  version: 0.6.12
+  version: 0.6.13
   js:
-    https://winclus.com/widget-0.6.12.js: { type: external, attributes: { async: true, data-posicion: derecha, data-idioma: es-CO, integrity: 'sha384-DKaaLfoC9BhEIHUDzTBuWnU+fUPvxmp3lm5p3Rik0IX0laExydjD/vgnLwfGAW9R', crossorigin: anonymous } }
+    https://winclus.com/widget-0.6.13.js: { type: external, attributes: { async: true, data-posicion: derecha, data-idioma: es-CO, integrity: 'sha384-jNJF5O8PcPpQTX2+jystS43m6toT0wDm9E0p5E7OBJCewMGkRCeNBs01FdhBvkGx', crossorigin: anonymous } }

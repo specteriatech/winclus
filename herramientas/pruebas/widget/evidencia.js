@@ -30,6 +30,7 @@ const PRUEBAS = [
   ["prueba_familia3_widget.js", "Calibración ocular de 9, 13 o 25 puntos con compensación de cabeza medida, puntero de otro rastreador con clics por cámara y enlace a NVDA (familia 3 en el widget).", ["EN 301 549 11.5", "ISO 9241-171 §9"]],
   ["prueba_gestos.js", "Los gestos de la cara no se disparan al hablar o bostezar: la rueda por gesto tarda en arrancar y empieza despacio, se explica la primera vez y se pueden apagar todos sin perder el clic.", ["EN 301 549 11.5", "WCAG 2.5.1", "WCAG 3.2.5"]],
   ["prueba_bordes.js", "Bajar y subir la página llevando el puntero de la cara o los ojos al borde de la pantalla, con aviso en pantalla y voz.", ["EN 301 549 11.5", "WCAG 2.5.1"]],
+  ["prueba_elegir.js", "Elegir con los ojos sin tener que acertar: cuando hay varias cosas cerca del puntero se pregunta cuál (con su nombre y qué es), los desplegables enseñan todas sus opciones de una vez, se marca lo que se va a pulsar, el puntero llega a los bordes de la pantalla y, si el gesto de clic no sale, se ofrece otro.", ["WCAG 2.5.1", "WCAG 2.5.5", "WCAG 3.3.2", "EN 301 549 11.5", "ISO 9241-171 §9"]],
   ["prueba_facil.js", "«Explicar en fácil» por reglas y con IA, resaltado palabra a palabra, «¿Dónde estoy?».", ["WCAG 3.1.5", "WCAG 2.4.8", "COGA"]],
   ["prueba_auditar.js", "Winclus Audit: informe por criterio de la Res. 1519 y borrador de declaración.", ["Res. 1519 Anexo 1"]],
   ["prueba_sdk.js", "Web component, guía de integración, plugin de WordPress y módulo de Drupal.", ["Integración"]],

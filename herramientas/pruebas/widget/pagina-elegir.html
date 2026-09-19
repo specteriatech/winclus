@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Elegir con los ojos: página de prueba</title>
+<style>
+  body{font:16px/1.5 system-ui,sans-serif;margin:0;padding:0;color:#111;height:1400px;position:relative}
+  h1{position:absolute;left:24px;top:8px;font-size:20px}
+  /* Cada caso en su esquina, lejos de los demás: así cada prueba mide una cosa */
+  .juntos{position:absolute;left:60px;top:120px}          /* tres enlaces pegados */
+  .juntos a{margin-right:8px}
+  .desple{position:absolute;left:60px;top:520px}          /* un desplegable solo */
+  .solo{position:absolute;left:700px;top:120px}           /* un botón con espacio alrededor */
+  .lejos{position:absolute;left:1050px;top:900px}         /* nada cerca de él */
+  #marcador{position:fixed;right:8px;bottom:8px;background:#eee;padding:6px 10px;font:14px monospace}
+</style>
+</head>
+<body>
+  <h1>Elegir con los ojos</h1>
+
+  <p class="juntos">
+    <a href="#uno" id="uno">Aceptar</a>
+    <a href="#dos" id="dos">Cancelar</a>
+    <a href="#tres" id="tres">Ayuda</a>
+  </p>
+
+  <p class="desple">
+    <label for="ciudad">Ciudad</label>
+    <select id="ciudad">
+      <option value="">Elige…</option>
+      <option value="bog">Bogotá</option>
+      <option value="mde">Medellín</option>
+      <option value="cal">Cali</option>
+      <option value="bar">Barranquilla</option>
+      <option value="car">Cartagena</option>
+    </select>
+  </p>
+
+  <button class="solo" id="enviar" type="button">Enviar el formulario</button>
+  <button class="lejos" id="lejano" type="button">Botón lejano</button>
+
+  <div id="marcador">sin pulsar</div>
+<script>
+  window.__pulsado = [];
+  window.__cambios = [];
+  document.querySelectorAll("a,button").forEach(function (e) {
+    e.addEventListener("click", function (ev) { ev.preventDefault(); window.__pulsado.push(e.id); marcador.textContent = "pulsado: " + e.id; });
+  });
+  document.getElementById("ciudad").addEventListener("change", function (e) { window.__cambios.push(e.target.value); });
+</script>
+<script src="../../../web/widget.js" data-camara="si"></script>
+</body>
+</html>
