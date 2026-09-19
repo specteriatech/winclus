@@ -24,6 +24,7 @@ from src.asistente.contexto import LectorPantalla
 from src.config_manager import ConfigManager
 from src.controllers import escritura
 from src.escucha import Escucha
+from src.microfono import PICO_VOZ, VOLUMEN_BAJO, Microfono, diagnostico
 from src.ordenes_voz import EjecutorVoz
 from src.singleton_meta import Singleton
 from src.voz import Voz
@@ -32,6 +33,10 @@ logger = logging.getLogger("ControlVoz")
 
 MAX_LEER = 700          # lo que se lee en voz alta de una pantalla, como mucho
 REVISAR_VENTANA_S = 4   # cada cuánto se mira si cambió la ventana de delante
+TIC_S = 0.2             # cada cuánto se mira el nivel del micrófono
+MUDO_AVISAR_S = 20      # si en este rato no llega NADA de audio, se avisa
+REAVISAR_S = 90         # y no se repite el aviso antes de esto
+PRUEBA_MICRO_S = 4      # lo que dura «Probar el micrófono»
 
 
 def _ventana_de_delante():
@@ -104,7 +109,27 @@ class ControlVoz(metaclass=Singleton):
         ok = Escucha().empezar(self._oida, self._estado, modo, self._frases())
         if ok:
             self._arrancar_vigilante()
+            self._avisar_microfono()
         return ok
+
+    def _avisar_microfono(self) -> None:
+        """Lo que se puede saber antes de que nadie hable: mudo o sin volumen."""
+        try:
+            mic = Microfono()
+            if not mic.hay:
+                self._estado("No encuentro ningún micrófono conectado.", True)
+            elif mic.silenciado() or mic.volumen() < VOLUMEN_BAJO:
+                self._estado(diagnostico(0.0, mic.silenciado(), mic.volumen(),
+                                         False, mic.nombre()), True)
+        except Exception as e:
+            logger.info(f"Al mirar el micrófono: {e}")
+
+    def microfono(self) -> dict:
+        try:
+            return Microfono().estado()
+        except Exception as e:
+            logger.info(f"Estado del micrófono: {e}")
+            return {"hay": False, "nombre": "", "silenciado": False, "volumen": 1.0}
 
     def parar(self) -> None:
         Escucha().parar()
@@ -147,20 +172,86 @@ class ControlVoz(metaclass=Singleton):
             return
 
         def vigilar():
+            """Mira dos cosas mientras se escucha: la ventana y el micrófono.
+
+            Lo del micrófono importa más de lo que parece: si está en silencio
+            o Windows no manda nada, la persona habla y no pasa nada, sin
+            saber por qué. Cuando en todo un rato no llega ni una pizca de
+            audio (pico exactamente 0), se dice qué pasa. No se avisa por
+            estar callado: un pico bajo puede ser sencillamente silencio.
+            """
+            mic = Microfono()                 # COM: uno por hilo
+            desde, pico_max, ultimo_aviso, tics = time.time(), 0.0, 0.0, 0
             while Escucha().escuchando:
-                time.sleep(REVISAR_VENTANA_S)
+                time.sleep(TIC_S)
+                tics += 1
                 try:
-                    actual = _ventana_de_delante()
-                    if actual and actual != self._ultima_ventana:
-                        self._ultima_ventana = actual
-                        self.refrescar_ordenes()
+                    pico_max = max(pico_max, mic.pico())
+                    if tics % int(REVISAR_VENTANA_S / TIC_S) == 0:
+                        actual = _ventana_de_delante()
+                        if actual and actual != self._ultima_ventana:
+                            self._ultima_ventana = actual
+                            self.refrescar_ordenes()
+                    callado = time.time() - max(self._ultimo_oido, desde)
+                    if (callado > MUDO_AVISAR_S and pico_max <= 0.0
+                            and time.time() - ultimo_aviso > REAVISAR_S):
+                        ultimo_aviso = time.time()
+                        self._estado(diagnostico(0.0, mic.silenciado(), mic.volumen(),
+                                                 False, mic.nombre()), True)
+                    if callado > MUDO_AVISAR_S:
+                        pico_max, desde = 0.0, time.time()
                 except Exception as e:
-                    logger.info(f"Vigilante de ventana: {e}")
+                    logger.info(f"Vigilante de la escucha: {e}")
                     return
 
         self._ultima_ventana = _ventana_de_delante()
-        self._vigilante = threading.Thread(target=vigilar, name="voz_ventana", daemon=True)
+        self._vigilante = threading.Thread(target=vigilar, name="voz_vigilante", daemon=True)
         self._vigilante.start()
+
+    # --------------------------------------------------- probar el micro --
+    def probar_microfono(self, al_terminar) -> None:
+        """Escucha unos segundos y dice si llega voz. `al_terminar(texto, error)`.
+
+        El medidor de Windows solo da algo mientras alguien está capturando,
+        así que si no se estaba escuchando se enciende el micrófono para la
+        prueba y se vuelve a dejar como estaba.
+        """
+        def correr():
+            mic = Microfono()
+            estaba = Escucha().escuchando
+            oidas = []
+            anterior = self.al_oir
+            try:
+                if not estaba:
+                    self.al_oir = lambda frase, resumen: oidas.append(frase)
+                    if not self.empezar():
+                        al_terminar(Escucha().motivo or "No se pudo encender el micrófono.", True)
+                        return
+                    time.sleep(1.0)
+                self._decir("Di algo, lo que quieras.")
+                time.sleep(1.4)
+                pico = 0.0
+                fin = time.time() + PRUEBA_MICRO_S
+                while time.time() < fin:
+                    pico = max(pico, mic.pico())
+                    time.sleep(TIC_S / 2)
+                if pico >= PICO_VOZ or oidas:
+                    texto = (f"Te oigo bien por el micrófono «{mic.nombre()}»."
+                             if not oidas else
+                             f"Te oigo bien: he entendido «{oidas[-1]}».")
+                    al_terminar(texto, False)
+                else:
+                    al_terminar(diagnostico(pico, mic.silenciado(), mic.volumen(),
+                                            False, mic.nombre()), True)
+            except Exception as e:
+                logger.warning(f"Al probar el micrófono: {e}")
+                al_terminar(f"No se pudo probar el micrófono: {e}", True)
+            finally:
+                self.al_oir = anterior
+                if not estaba:
+                    self.parar()
+
+        threading.Thread(target=correr, name="voz_probar_micro", daemon=True).start()
 
     # -------------------------------------------------------------- oír --
     def _oida(self, frase: str):

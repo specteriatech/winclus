@@ -260,12 +260,19 @@ class PageEscribir(SafeDisposableFrame):
             h, text="", wraplength=680, justify=tkinter.LEFT,
             font=estilo.fuente("cuerpo"))
         self.escucha_oido.grid(row=3, column=0, columnspan=3, padx=20, pady=(0, 6), sticky="w")
+        fila_micro = customtkinter.CTkFrame(h, fg_color="transparent")
+        fila_micro.grid(row=4, column=0, columnspan=3, padx=20, pady=(0, 8), sticky="w")
+        customtkinter.CTkButton(
+            fila_micro, text="Probar el micrófono", height=36, width=200,
+            fg_color="transparent", border_width=1, border_color=estilo.BORDE,
+            text_color=estilo.TEXTO, font=estilo.fuente("boton_normal"),
+            command=self._probar_microfono).grid(row=0, column=0, padx=(0, 10))
         self.boton_ajustes_voz = customtkinter.CTkButton(
-            h, text="Abrir los ajustes de voz de Windows", height=36, width=300,
+            fila_micro, text="Abrir los ajustes de voz de Windows", height=36, width=300,
             fg_color="transparent", border_width=1, border_color=estilo.BORDE,
             text_color=estilo.TEXTO, font=estilo.fuente("boton_normal"),
             command=self._ajustes_voz_windows)
-        self.boton_ajustes_voz.grid(row=4, column=0, columnspan=3, padx=20, pady=(0, 8), sticky="w")
+        self.boton_ajustes_voz.grid(row=0, column=1)
         self.hablar_vars = {}
         for i, (clave, texto, ayuda) in enumerate((
                 ("voz_dictado_confirmar", "Confirmar antes de escribir lo dictado",
@@ -306,6 +313,21 @@ class PageEscribir(SafeDisposableFrame):
             control.empezar()
         control.dictar(not control.ejecutor.dictando)
         self.after(300, self._estado_escucha)
+
+    def _probar_microfono(self):
+        """Escucha unos segundos y dice si llega voz (y por qué no, si no llega)."""
+        control = self._control_voz()
+        self.escucha_oido.configure(text="Di algo… (probando el micrófono)")
+        control.probar_microfono(
+            lambda texto, error=False: self.after(0, self._resultado_micro, texto, error))
+
+    def _resultado_micro(self, texto, error):
+        if not self.winfo_exists():
+            return
+        self.escucha_oido.configure(text=texto,
+                                    text_color=estilo.AMBAR if error else estilo.TEXTO)
+        Voz().decir(texto, forzar=True)
+        self._estado_escucha(solo_botones=True)
 
     def _que_puedo_decir(self):
         from src import ordenes_voz
@@ -355,7 +377,11 @@ class PageEscribir(SafeDisposableFrame):
         else:
             self.boton_ajustes_voz.grid()
         if not solo_botones:
-            self.escucha_estado.configure(text=ControlVoz().texto_estado(),
+            mic = ControlVoz().microfono()
+            cual = f" Micrófono: {mic['nombre']}." if mic.get("nombre") else ""
+            if mic.get("silenciado"):
+                cual += " Está en silencio."
+            self.escucha_estado.configure(text=ControlVoz().texto_estado() + cual,
                                           text_color=estilo.TEXTO_SUAVE)
 
     def _guardar_hablar(self, clave):

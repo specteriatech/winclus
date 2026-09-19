@@ -201,6 +201,28 @@ else:
     comprobar(True, "(este equipo tiene la voz en línea encendida: el dictado libre puede arrancar)")
     comprobar(True, "(sin comprobar el aviso de «voz en línea»)")
 
+print("7. Cuando Winclus no oye, tiene que decir por qué")
+from src.microfono import Microfono, diagnostico  # noqa: E402
+
+comprobar(diagnostico(0.0, True, 0.8, False, "Casco") .startswith("Tu micrófono «Casco» está en silencio"),
+          "micrófono silenciado: lo dice y explica dónde encenderlo")
+comprobar("casi a cero" in diagnostico(0.0, False, 0.05, False),
+          "volumen casi a cero: lo dice con el porcentaje")
+comprobar("No me llega nada" in diagnostico(0.0, False, 0.8, False),
+          "sin señal: propone mirar cuál es el micrófono que se usa")
+comprobar("muy bajito" in diagnostico(0.07, False, 0.8, False),
+          "señal floja: pide acercar el micrófono")
+comprobar("no entiendo" in diagnostico(0.4, False, 0.8, False),
+          "hay voz pero no se entiende: se dice así, no «no te oigo»")
+comprobar(diagnostico(0.0, True, 0.0, True) == "",
+          "si ha entendido algo, no da la lata con el micrófono")
+mic = Microfono()
+est = mic.estado()
+print("     micrófono de este equipo:", est)
+comprobar(set(est) == {"hay", "nombre", "silenciado", "volumen"}, "el estado del micrófono trae las cuatro cosas")
+comprobar(not est["hay"] or est["nombre"], "si hay micrófono, se sabe cuál es (nombre de Windows)")
+comprobar(0.0 <= mic.pico() <= 1.0, "el medidor de Windows responde (0 si nadie está capturando)")
+
 print()
 print("FALLOS:", fallos)
 sys.exit(1 if fallos else 0)

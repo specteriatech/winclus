@@ -43,14 +43,18 @@ perdería la calibración de ojos del usuario.
 - `prueba_voz_iman.py`: voz SAPI (habla de verdad un momento), frases guardadas, capa «Frases» del
   teclado e imán a los controles con una ventanita WinForms de prueba (aparece 3 s y se cierra).
 - `recorrido_voz_iman.py`: capturas de Escribir (Voz y Frases), teclado abc y capa Frases, e Imán en Puntero.
-- `prueba_voz.py`: órdenes por voz y dictado **sin micrófono** (43 comprobaciones): se le dan las frases ya
+- `prueba_voz.py`: órdenes por voz y dictado **sin micrófono** (52 comprobaciones): se le dan las frases ya
   reconocidas y se mira qué acción sale, que la lista de frases que se le pasa al motor de Windows se entienda
   entera, la puntuación y las mayúsculas del dictado, las correcciones («borra eso», «borra palabra», «borra
   todo»), el recorrido completo con ganchos falsos (no escribe ni mueve el ratón), el dictado con confirmación
-  y qué dice este equipo de su propio motor de voz. No toca la configuración.
+  y qué dice este equipo de su propio motor de voz y de su micrófono (silenciado, volumen, nivel).
+  No toca la configuración.
 - `recorrido_voz.py`: abre la app y captura la tarjeta «Hablarle a Winclus» de la página Escribir. No enciende
   el micrófono; la ayuda «¿Qué puedo decir?» sí suena.
-- `escuchar_en_vivo.py`: **la prueba hablando**. Enciende el micrófono un rato y escribe en la consola lo que
+- `prueba_hablando.py`: **la prueba guiada hablando**. Winclus dice en voz alta «Di: baja», espera a oírte
+  y apunta si acertó, orden por orden; al final dice cuántas entendió y, si no entendió ninguna, mide el
+  micrófono y dice por qué (silenciado, sin volumen, sin señal o voz que no se entiende).
+- `escuchar_en_vivo.py`: **la prueba hablando libre**. Enciende el micrófono un rato y escribe en la consola lo que
   oye y en qué acción se convertiría, sin hacer nada; con `--ejecutar` sí lo hace, y con `--dictado` prueba el
   texto libre (necesita «Reconocimiento de voz en línea» de Windows encendido).
 

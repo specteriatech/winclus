@@ -88,8 +88,11 @@ aplicación.
       ventana de delante: así el motor acierta más y **funciona sin internet, sin que la voz salga del equipo**. El
       dictado de texto libre lo condiciona Windows: solo arranca con «Reconocimiento de voz en línea» encendido, y
       entonces es Windows quien manda el audio a Microsoft; Winclus lo dice en la misma pantalla y abre ese ajuste.
-      Probado sin micrófono con `herramientas\pruebas\prueba_voz.py` (43 comprobaciones) y `recorrido_voz.py`.
-      Falta la prueba en vivo hablando.
+      Cuando no oye, lo dice: avisa si el micrófono está silenciado o sin volumen, si en veinte segundos no
+      llega nada de sonido, y el botón «Probar el micrófono» responde en voz alta «te oigo bien» o el porqué
+      (src/microfono.py, medidor de Core Audio con comtypes; se ve el nombre del micrófono que usa Windows).
+      Probado sin micrófono con `herramientas\pruebas\prueba_voz.py` (52 comprobaciones) y `recorrido_voz.py`.
+      Falta la prueba en vivo hablando (`prueba_hablando.py`, guiada por voz).
 - [x] (18-sep-2026, widget 0.6.8 y app) **Más gestos**: guiño del ojo izquierdo y del derecho (un ojo cerrado con el otro
       abierto: un parpadeo normal no cuenta) e inclinación de la cabeza a cada lado (ángulo entre los rabillos de los ojos),
       con acción asignable en los dos. Lengua fuera: no, MediaPipe no la detecta (se dice aquí).
