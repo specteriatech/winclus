@@ -1,4 +1,4 @@
-# Informe de conformidad de accesibilidad (ACR) · Winclus widget 0.6.13
+# Informe de conformidad de accesibilidad (ACR) · Winclus widget 0.6.14
 
 Formato basado en la plantilla ITI VPAT® 2.5 (edición internacional: WCAG 2.1, EN 301 549, Sección 508),
 traducido y adaptado. Lo elaboran los propios colaboradores de Winclus; una auditoría de tercero puede
@@ -6,7 +6,7 @@ firmarlo después.
 
 | | |
 |---|---|
-| Producto | Winclus, widget web de tecnología de apoyo (`widget-0.6.13.js`) |
+| Producto | Winclus, widget web de tecnología de apoyo (`widget-0.6.14.js`) |
 | Fecha | 16 de septiembre de 2026 |
 | Contacto | hola@winclus.com |
 | Notas | El widget se añade a un sitio anfitrión. Este informe cubre el widget (panel, teclado en pantalla, tablero de pictogramas, menú de clics, calibración, avisos). No cubre el sitio anfitrión: Winclus no lo hace conforme. |

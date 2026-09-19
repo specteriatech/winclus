@@ -161,6 +161,41 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   of = await ofrecer();
   comprobar(!of, "y no vuelve a preguntar en la misma sesión");
 
+  console.log("== 11. El menú de clics no debe salir al hacer clic");
+  const umbral = await page.evaluate(() => {
+    const p = Winclus.parpadeo;
+    p.clicsMs = [];
+    const base = p.msLargo();                       // sin saber nada de la persona: lo pedido
+    [950, 1000, 1100, 980].forEach((ms) => p.anotarClicMs(ms));
+    const conPersona = p.msLargo();                 // alguien que cierra los ojos un segundo para pulsar
+    Winclus.ajustes.menu_ojos = false;
+    const apagado = p.msLargo();
+    Winclus.ajustes.menu_ojos = true;
+    Winclus.ajustes.menu_largo_ms = 2500;
+    const pedido = p.msLargo();
+    Winclus.ajustes.menu_largo_ms = 1200;
+    return { base, conPersona, apagado, pedido, media: p.mediaClicMs() };
+  });
+  comprobar(umbral.base === 1200, "de fábrica, el menú pide 1,2 s con los ojos cerrados", String(umbral.base));
+  comprobar(umbral.conPersona > 1900, "si tus clics duran ~1 s, el menú se aparta solo por encima de eso",
+    Math.round(umbral.media) + " ms de clic → " + Math.round(umbral.conPersona) + " ms de menú");
+  comprobar(umbral.apagado > 1e6, "con «Abrir el menú cerrando los ojos» apagado, no se abre nunca");
+  comprobar(umbral.pedido === 2500, "y si pides 2,5 s, se respeta", String(umbral.pedido));
+
+  console.log("== 12. Si el menú se abre sin usarse, Winclus lo pregunta");
+  const preg = await page.evaluate(() => {
+    Winclus.cerrarElegir();
+    Winclus.ajustes.menu_ojos = true;
+    for (let i = 0; i < 2; i++) { Winclus.menu(); Winclus.menuCerrar(); }   // se abre y se cierra sin elegir nada
+    const d = Winclus.caja.querySelector(".wcl-elegir");
+    return d && d.style.display === "block" ? { titulo: d.querySelector("h2").textContent, ops: Array.from(d.querySelectorAll("button")).map((b) => b.textContent.trim()) } : null;
+  });
+  comprobar(preg && /sin querer/i.test(preg.titulo), "tras abrirse dos veces sin elegir nada, pregunta si se abre sin querer", preg ? preg.titulo : "no preguntó");
+  comprobar(preg && preg.ops.some((o) => /no abrirlo con los ojos/i.test(o)) && preg.ops.some((o) => /más tiempo/i.test(o)),
+    "ofrece apagarlo o pedir más tiempo", preg ? preg.ops.join(" | ") : "");
+  await pulsarOpcion("Sí: pedir más tiempo");
+  comprobar((await page.evaluate(() => Winclus.ajustes.menu_largo_ms)) === 2500, "al elegir «más tiempo», el menú pasa a pedir 2,5 s");
+
   comprobar(errores.length === 0, "sin errores JS en toda la prueba", errores.join(" | "));
   await nav.close();
   console.log(fallos ? "FALLOS: " + fallos : "todo bien");
