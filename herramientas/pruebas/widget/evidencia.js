@@ -33,6 +33,7 @@ const PRUEBAS = [
   ["prueba_elegir.js", "Elegir con los ojos sin tener que acertar: cuando hay varias cosas cerca del puntero se pregunta cuál (con su nombre y qué es), los desplegables enseñan todas sus opciones de una vez, se marca lo que se va a pulsar, el puntero llega a los bordes de la pantalla y, si el gesto de clic no sale, se ofrece otro.", ["WCAG 2.5.1", "WCAG 2.5.5", "WCAG 3.3.2", "EN 301 549 11.5", "ISO 9241-171 §9"]],
   ["prueba_facil.js", "«Explicar en fácil» por reglas y con IA, resaltado palabra a palabra, «¿Dónde estoy?».", ["WCAG 3.1.5", "WCAG 2.4.8", "COGA"]],
   ["prueba_auditar.js", "Winclus Audit: informe por criterio de la Res. 1519 y borrador de declaración.", ["Res. 1519 Anexo 1"]],
+  ["prueba_cc1519.js", "Verificación de winclus.com contra los 32 criterios de cumplimiento del Anexo 1 de la Resolución 1519 de 2020, uno por uno y con la numeración del anexo: alternativas, vídeos, ampliación, contraste, identificación coherente, estructura, tablas y listas, saltar bloques, marcado, múltiples vías, navegación coherente, orden, tabulación, foco, audio automático, tiempos, movimiento, refresco, títulos, campos, enlaces, idioma, codificación y teclado. Lo que ninguna máquina puede juzgar se marca como revisión humana en vez de darlo por bueno.", ["Res. 1519/2020 Anexo 1 (CC1 a CC32)", "WCAG 2.1 AA", "Ley 1712/2014 art. 8"]],
   ["prueba_sdk.js", "Web component, guía de integración, plugin de WordPress y módulo de Drupal.", ["Integración"]],
   ["prueba_idiomas.js", "Panel en inglés en páginas en inglés, data-ui, idiomas añadidos por el sitio.", ["WCAG 3.1.1", "WCAG 3.1.2"]],
   ["prueba_maximo.js", "Limitador de volumen, voz neuronal preferida, asistente «¿Qué quieres hacer?», transcribir un medio.", ["WCAG 1.4.2", "COGA"]],
@@ -99,7 +100,7 @@ resultados.forEach((r) => {
   h += `<details><summary><span class="${r.bien ? "ok" : "mal"}">${r.bien ? "✓" : "✗"}</span> ${esc(r.archivo)} · ${r.ok} comprobaciones${r.mal ? ", " + r.mal + " fallan" : ""} · ${r.segundos} s</summary><p>${esc(r.que)}</p><p>${r.criterios.map((c) => `<span class="tag">${esc(c)}</span>`).join("")}</p><ul class="lineas">${r.lineas.map((l) => `<li class="${l.startsWith("OK") ? "" : "mal"}">${esc(l.replace(/^(OK|MAL)\s+/, ""))}</li>`).join("")}</ul></details>`;
 });
 h += `</main>
-<footer><div class="pie"><div>© 2026 Winclus</div><ul><li><a href="/">Portada</a></li><li><a href="accesibilidad">Accesibilidad</a></li><li><a href="comparar">Frente a otras soluciones</a></li><li><a href="privacidad">Privacidad y datos</a></li><li><a href="mapa-del-sitio">Mapa del sitio</a></li><li><a href="glosario">Glosario</a></li><li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li></ul></div></footer>
+<footer><div class="pie"><div>© 2026 Winclus</div><ul><li><a href="/">Portada</a></li><li><a href="accesibilidad">Accesibilidad</a></li><li><a href="privacidad">Privacidad y datos</a></li><li><a href="mapa-del-sitio">Mapa del sitio</a></li><li><a href="glosario">Glosario</a></li><li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li></ul></div></footer>
 <script src="widget.js" async></script>
 </body>
 </html>`;

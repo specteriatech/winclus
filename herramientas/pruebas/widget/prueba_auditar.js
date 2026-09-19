@@ -28,7 +28,12 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   comprobar(ids.includes("image-alt") && ids.includes("document-title") && ids.includes("html-has-lang") && ids.includes("label") && ids.includes("color-contrast"), "la página mala cae en alt, título, idioma, etiqueta y contraste", ids.join(", "));
   const extras = malaR ? malaR.extra.map((x) => x.id) : [];
   comprobar(extras.includes("video-caption") && extras.includes("declaracion") && extras.includes("skip-link"), "las comprobaciones de la Res. 1519 detectan vídeo sin subtítulos, sin declaración y sin «ir al contenido»", extras.join(", "));
-  comprobar(/CC1 Texto alternativo/.test(informe) && /CC5 Contraste/.test(informe) && /Cómo seguir/.test(informe) && /No constituye certificación/.test(informe), "el informe agrupa por criterio de la Res. 1519 y avisa de sus límites");
+  comprobar(/CC1 Alternativa texto para elementos no textuales/.test(informe) && /CC5 Contraste de color suficiente/.test(informe) && /Cómo seguir/.test(informe) && /No constituye certificación/.test(informe),
+    "el informe agrupa por criterio de la Res. 1519 y avisa de sus límites");
+  // Los números tienen que ser los del Anexo 1, no unos propios: si se desplazan, el informe miente
+  comprobar(/CC3 Guion para solo vídeo y solo audio/.test(informe) && /CC10 Permitir saltar bloques/.test(informe) &&
+    /CC26 Enlaces adecuados/.test(informe) && /CC32 Manejable por teclado/.test(informe) && !/CC3 Contenido con estructura/.test(informe),
+    "cada CC lleva el nombre que tiene en el Anexo 1 de la Resolución 1519");
   comprobar(/Alcaldía de Prueba/.test(decl) && /Resolución 1519 de 2020/.test(decl) && /cumple parcialmente/.test(decl) && /\[correo de contacto\]/.test(decl), "el borrador de declaración lleva la entidad, la norma, el estado y los huecos por rellenar");
   fs.rmSync(salida, { recursive: true, force: true });
   console.log(fallos ? fallos + " comprobación(es) MAL" : "todo bien");

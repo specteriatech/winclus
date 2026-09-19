@@ -1,0 +1,222 @@
+{
+  "fecha": "2026-09-19",
+  "norma": "Resolución 1519 de 2020 (MinTIC, Colombia), Anexo 1, capítulo 2.2: lineamientos de accesibilidad web",
+  "sitio": "winclus.com",
+  "paginas": [
+    "/",
+    "/accesibilidad.html",
+    "/privacidad.html",
+    "/integrar.html",
+    "/comparar.html",
+    "/guia.html",
+    "/manual.html",
+    "/cumplimiento.html",
+    "/glosario.html",
+    "/mapa-del-sitio.html",
+    "/evidencia.html",
+    "/presentacion.html",
+    "/una-pagina.html",
+    "/guion-prueba.html",
+    "/demo.html"
+  ],
+  "criterios": [
+    {
+      "cc": "CC1",
+      "nombre": "Alternativa texto para elementos no textuales",
+      "estado": "cumple",
+      "detalle": "45 imágenes, todas con alt (vacío si son decorativas)"
+    },
+    {
+      "cc": "CC2",
+      "nombre": "Complemento para vídeos o multimedia (subtítulos)",
+      "estado": "cumple",
+      "detalle": "/demo.html: 1 pista(s); /demo.html: 1 pista(s); /demo.html: 1 pista(s); /demo.html: 1 pista(s)"
+    },
+    {
+      "cc": "CC3",
+      "nombre": "Guion para solo vídeo y solo audio",
+      "estado": "cumple",
+      "detalle": "4 transcripciones en texto para 4 vídeos, desplegables junto a cada uno"
+    },
+    {
+      "cc": "CC4",
+      "nombre": "Textos e imágenes ampliables y en tamaños adecuados",
+      "estado": "cumple",
+      "detalle": "al 200 % ninguna página desborda; ningún texto por debajo de 12 px"
+    },
+    {
+      "cc": "CC5",
+      "nombre": "Contraste de color suficiente",
+      "estado": "cumple",
+      "detalle": "medido en prueba_axe.js con la fórmula de las WCAG sobre cada página y cada pestaña del panel (umbral 7:1, más exigente que el 4,5:1 exigido)"
+    },
+    {
+      "cc": "CC6",
+      "nombre": "Imágenes alternas al texto cuando sea posible",
+      "estado": "revisión humana",
+      "detalle": "14 imágenes van dentro de <figure> con pie de foto; que la imagen ilustre bien lo que dice el texto lo juzga una persona"
+    },
+    {
+      "cc": "CC7",
+      "nombre": "Identificación coherente",
+      "estado": "cumple",
+      "detalle": "89 textos de enlace distintos, cada uno a un único destino"
+    },
+    {
+      "cc": "CC8",
+      "nombre": "Todo documento y página organizado en secciones",
+      "estado": "cumple",
+      "detalle": "todas con un h1, un main y encabezados sin saltar niveles"
+    },
+    {
+      "cc": "CC9",
+      "nombre": "Contenedores como tablas y listas usados correctamente",
+      "estado": "cumple",
+      "detalle": "17 tablas y 95 listas, todas con contenido homogéneo y cabeceras"
+    },
+    {
+      "cc": "CC10",
+      "nombre": "Permitir saltar bloques que se repiten",
+      "estado": "cumple",
+      "detalle": "todas las páginas empiezan con «Ir al contenido»"
+    },
+    {
+      "cc": "CC11",
+      "nombre": "Lenguaje de marcado bien utilizado",
+      "estado": "cumple",
+      "detalle": "cada etiqueta de bloque abre y cierra en las 15 páginas"
+    },
+    {
+      "cc": "CC12",
+      "nombre": "Permitir encontrar las páginas por múltiples vías",
+      "estado": "cumple",
+      "detalle": "todas las páginas están en el mapa del sitio, además del menú y los enlaces cruzados"
+    },
+    {
+      "cc": "CC13",
+      "nombre": "Navegación coherente",
+      "estado": "cumple",
+      "detalle": "3 menús de cabecera y 2 de pie; todas las páginas interiores comparten el mismo orden de enlaces"
+    },
+    {
+      "cc": "CC14",
+      "nombre": "Orden adecuado de los contenidos si es significativo",
+      "estado": "cumple",
+      "detalle": "ningún tabindex positivo: el orden del código manda"
+    },
+    {
+      "cc": "CC15",
+      "nombre": "Advertencias bien ubicadas",
+      "estado": "revisión humana",
+      "detalle": "el sitio no tiene formularios propios; el widget pone «Campo N de M» y los avisos antes del campo en los formularios del sitio anfitrión (prueba_formularios.js). Revisar a mano en cada sede donde se instale"
+    },
+    {
+      "cc": "CC16",
+      "nombre": "Orden adecuado de los elementos al navegar con tabulación",
+      "estado": "cumple",
+      "detalle": "sin tabindex positivo, el orden de tabulación es el del código, que coincide con el visual; prueba_teclado_fisico.js lo recorre entero"
+    },
+    {
+      "cc": "CC17",
+      "nombre": "Foco visible al navegar con tabulación",
+      "estado": "cumple",
+      "detalle": "paginas.css define un contorno propio en :focus-visible; medido también en prueba_teclado_fisico.js"
+    },
+    {
+      "cc": "CC18",
+      "nombre": "No utilizar audio automático",
+      "estado": "cumple",
+      "detalle": "ningún audio ni vídeo arranca solo con sonido"
+    },
+    {
+      "cc": "CC19",
+      "nombre": "Permitir control de eventos temporizados",
+      "estado": "revisión humana",
+      "detalle": "el sitio no tiene contenidos que cambien solos ni sesiones con tiempo; en el widget, el barrido automático se pausa con Escape y su tiempo se ajusta (prueba_barrido.js)"
+    },
+    {
+      "cc": "CC20",
+      "nombre": "Permitir control de contenidos con movimiento y parpadeo",
+      "estado": "cumple",
+      "detalle": "sin <blink> ni <marquee>; las animaciones respetan prefers-reduced-motion y el modo calma (prueba_sistema.js)"
+    },
+    {
+      "cc": "CC21",
+      "nombre": "No generar actualización automática de páginas",
+      "estado": "cumple",
+      "detalle": "ninguna página lleva meta refresh"
+    },
+    {
+      "cc": "CC22",
+      "nombre": "No generar cambios automáticos al recibir el foco o entradas",
+      "estado": "cumple",
+      "detalle": "ningún control navega ni cambia la página al recibir el foco o al escribir"
+    },
+    {
+      "cc": "CC23",
+      "nombre": "Utilice textos adecuados en títulos, páginas y secciones",
+      "estado": "cumple",
+      "detalle": "15 títulos, todos distintos"
+    },
+    {
+      "cc": "CC24",
+      "nombre": "Utilice nombres e indicaciones claras en campos de formulario",
+      "estado": "cumple",
+      "detalle": "4 campos, todos con etiqueta asociada"
+    },
+    {
+      "cc": "CC25",
+      "nombre": "Utilice instrucciones expresas y claras",
+      "estado": "revisión humana",
+      "detalle": "cada control del panel lleva su ayuda escrita debajo y el sitio abre con «En pocas palabras»; que se entiendan lo dicen las personas usuarias, no una máquina"
+    },
+    {
+      "cc": "CC26",
+      "nombre": "Enlaces adecuados",
+      "estado": "cumple",
+      "detalle": "ningún enlace se llama «aquí», «ver más» o similar"
+    },
+    {
+      "cc": "CC27",
+      "nombre": "Idioma",
+      "estado": "cumple",
+      "detalle": "todas declaran lang=\"es\"; 0 fragmentos en otro idioma marcados con su propio lang"
+    },
+    {
+      "cc": "CC28",
+      "nombre": "Manejo del error",
+      "estado": "revisión humana",
+      "detalle": "el sitio no tiene formularios propios; el widget explica los errores del sitio anfitrión en lenguaje claro y lleva el foco al campo (prueba_formularios.js)"
+    },
+    {
+      "cc": "CC29",
+      "nombre": "Imágenes de texto",
+      "estado": "revisión humana",
+      "detalle": "las capturas de la guía muestran la interfaz (uso permitido por las WCAG); el logotipo está exento. Ninguna imagen sustituye texto informativo: comprobado a la vista"
+    },
+    {
+      "cc": "CC30",
+      "nombre": "Objetos programados",
+      "estado": "revisión humana",
+      "detalle": "el panel, el teclado en pantalla, el tablero de pictogramas y la calibración son objetos propios: llevan roles ARIA, se manejan con teclado y se anuncian (prueba_aria.js, prueba_teclado_fisico.js). No hay objetos de terceros incrustados"
+    },
+    {
+      "cc": "CC31",
+      "nombre": "Desde una letra hasta un elemento complejo utilizable",
+      "estado": "cumple",
+      "detalle": "todas las páginas declaran UTF-8"
+    },
+    {
+      "cc": "CC32",
+      "nombre": "Manejable por teclado",
+      "estado": "cumple",
+      "detalle": "prueba_teclado_fisico.js recorre con Tab todo el sitio y todo el panel, pulsa con Intro y Espacio y comprueba que no hay trampas"
+    },
+    {
+      "cc": "JS",
+      "nombre": "Sin errores de JavaScript en ninguna página",
+      "estado": "cumple",
+      "detalle": "15 páginas cargadas sin un solo error"
+    }
+  ]
+}

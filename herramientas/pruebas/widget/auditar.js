@@ -12,23 +12,46 @@ const urls = [], opts = { salida: path.join(process.cwd(), "informe-accesibilida
 for (let i = 0; i < args.length; i++) { if (args[i] === "--salida") opts.salida = path.resolve(args[++i]); else if (args[i] === "--entidad") opts.entidad = args[++i]; else urls.push(args[i]); }
 if (!urls.length) { console.log("Uso: node auditar.js https://sitio [más urls] [--salida carpeta] [--entidad \"Nombre\"]"); process.exit(1); }
 
-const CRITERIOS_1519 = {   // criterios del Anexo 1 de la Res. 1519 que este escáner cubre, y con qué
-  "CC1 Texto alternativo": ["image-alt", "input-image-alt", "area-alt", "object-alt", "svg-img-alt", "role-img-alt"],
-  "CC2 Subtítulos en vídeos": ["video-caption"],
-  "CC3 Contenido con estructura": ["heading-order", "empty-heading", "page-has-heading-one", "list", "listitem", "definition-list", "dlitem", "landmark-one-main", "region"],
-  "CC4 Texto ampliable al 200 %": ["zoom-200"],
-  "CC5 Contraste": ["color-contrast", "color-contrast-enhanced"],
-  "CC6 Acceso por teclado": ["scrollable-region-focusable", "focus-order-semantics", "tabindex", "accesskeys"],
-  "CC7 Sin trampas de teclado": ["no-keyboard-trap"],
-  "CC8 Saltar bloques": ["bypass", "skip-link"],
-  "CC9 Título de la página": ["document-title"],
-  "CC10 Idioma de la página": ["html-has-lang", "html-lang-valid", "valid-lang", "html-xml-lang-mismatch"],
-  "CC11 Propósito de los enlaces": ["link-name", "link-in-text-block"],
-  "CC12 Etiquetas en formularios": ["label", "label-title-only", "form-field-multiple-labels", "select-name", "input-button-name", "autocomplete-valid"],
-  "CC13 Nombre, función y valor": ["button-name", "aria-*", "aria-allowed-attr", "aria-required-attr", "aria-valid-attr", "aria-valid-attr-value", "aria-roles", "aria-hidden-focus", "nested-interactive", "frame-title"],
-  "CC14 Sin destellos ni movimiento sin control": ["blink", "marquee", "meta-refresh"],
-  "CC15 Declaración de accesibilidad": ["declaracion"]
+// Criterios de cumplimiento del Anexo 1 de la Res. 1519 de 2020, con SU numeración (CC1 a CC32),
+// y las reglas automáticas que dan señal de cada uno. Lo que ninguna regla puede juzgar se lista
+// aparte, en la revisión humana obligatoria del informe: la propia resolución (2.2.3.8) avisa de
+// que los validadores automáticos no bastan.
+const CRITERIOS_1519 = {
+  "CC1 Alternativa texto para elementos no textuales": ["image-alt", "input-image-alt", "area-alt", "object-alt", "svg-img-alt", "role-img-alt", "image-redundant-alt"],
+  "CC2 Complemento para vídeos o elementos multimedia": ["video-caption", "audio-caption", "video-description"],
+  "CC3 Guion para solo vídeo y solo audio": ["transcripcion"],
+  "CC4 Textos e imágenes ampliables y en tamaños adecuados": ["zoom-200", "meta-viewport", "meta-viewport-large"],
+  "CC5 Contraste de color suficiente en textos e imágenes": ["color-contrast", "color-contrast-enhanced", "link-in-text-block"],
+  "CC6 Imágenes alternas al texto cuando sea posible": [],
+  "CC7 Identificación coherente": ["identificacion-coherente"],
+  "CC8 Todo documento y página organizado en secciones": ["heading-order", "empty-heading", "page-has-heading-one", "landmark-one-main", "region", "landmark-unique", "landmark-no-duplicate-banner", "landmark-no-duplicate-contentinfo"],
+  "CC9 Contenedores como tablas y listas usados correctamente": ["list", "listitem", "definition-list", "dlitem", "table-duplicate-name", "table-fake-caption", "td-headers-attr", "th-has-data-cells", "scope-attr-valid", "empty-table-header", "lista-de-uno"],
+  "CC10 Permitir saltar bloques que se repiten": ["bypass", "skip-link"],
+  "CC11 Lenguaje de marcado bien utilizado": ["duplicate-id", "duplicate-id-active", "duplicate-id-aria", "marcado-sin-cerrar"],
+  "CC12 Permitir encontrar las páginas por múltiples vías": ["multiples-vias"],
+  "CC13 Navegación coherente": ["navegacion-coherente"],
+  "CC14 Orden adecuado de los contenidos si es significativo": ["tabindex", "focus-order-semantics"],
+  "CC15 Advertencias bien ubicadas": [],
+  "CC16 Orden adecuado de los elementos al navegar con tabulación": ["tabindex"],
+  "CC17 Foco visible al navegar con tabulación": ["foco-visible"],
+  "CC18 No utilizar audio automático": ["no-autoplay-audio"],
+  "CC19 Permitir control de eventos temporizados": ["meta-refresh-no-exceptions"],
+  "CC20 Permitir control de contenidos con movimiento y parpadeo": ["blink", "marquee"],
+  "CC21 No generar actualización automática de páginas": ["meta-refresh"],
+  "CC22 No generar cambios automáticos al recibir el foco o entradas": ["cambio-al-foco"],
+  "CC23 Utilice textos adecuados en títulos, páginas y secciones": ["document-title", "titulo-repetido", "frame-title", "frame-title-unique"],
+  "CC24 Utilice nombres e indicaciones claras en campos de formulario": ["label", "label-title-only", "form-field-multiple-labels", "select-name", "input-button-name", "autocomplete-valid"],
+  "CC25 Utilice instrucciones expresas y claras": [],
+  "CC26 Enlaces adecuados": ["link-name", "enlace-vago"],
+  "CC27 Idioma": ["html-has-lang", "html-lang-valid", "valid-lang", "html-xml-lang-mismatch"],
+  "CC28 Manejo del error": [],
+  "CC29 Imágenes de texto": ["image-redundant-alt"],
+  "CC30 Objetos programados": ["aria-*", "aria-allowed-attr", "aria-required-attr", "aria-valid-attr", "aria-valid-attr-value", "aria-roles", "aria-hidden-focus", "nested-interactive", "button-name", "scrollable-region-focusable"],
+  "CC31 Desde una letra hasta un elemento complejo utilizable": ["charset-utf8"],
+  "CC32 Manejable por teclado": ["no-keyboard-trap", "accesskeys", "focusable-content"],
+  "Declaración de accesibilidad (Res. 1519, 2.2.1)": ["declaracion"]
 };
+
 function criterioDe(id) { for (const c in CRITERIOS_1519) if (CRITERIOS_1519[c].some((r) => r === id || (r.endsWith("*") && id.startsWith(r.slice(0, -1))))) return c; return "Otros criterios WCAG"; }
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -59,9 +82,37 @@ async function auditarUrl(nav, url) {
           const salto = enlaces.some((t) => /(ir|saltar) al contenido|skip to (main )?content|#contenido|#main|#content/.test(t));
           const videos = Array.from(document.querySelectorAll("video")).map((v) => ({ pistas: v.querySelectorAll("track[kind=subtitles],track[kind=captions]").length }));
           const iframesVideo = document.querySelectorAll('iframe[src*="youtube"],iframe[src*="vimeo"]').length;
-          return { scrollX, declaracion, salto, videos, iframesVideo, antes };
+          const txt = (e) => (e.innerText || e.textContent || "").replace(/\s+/g, " ").trim();
+          // CC9: una lista o una tabla para un solo elemento no es correcta (Anexo 1, 2.2.3.3)
+          const listasDeUno = Array.from(document.querySelectorAll("ul,ol")).filter((l) => l.querySelectorAll(":scope > li").length === 1).length;
+          const tablasDeUno = Array.from(document.querySelectorAll("table")).filter((t) => t.rows.length <= 1 || (t.rows[0] && t.rows[0].cells.length <= 1)).length;
+          // CC26: enlaces que no dicen a dónde llevan
+          const vagos = Array.from(document.querySelectorAll("a[href]"))
+            .map(txt).filter((t) => /^(aqu[íi]|ver m[áa]s|m[áa]s|leer m[áa]s|clic aqu[íi]|pulse aqu[íi]|enlace|link)$/i.test(t)).length;
+          // CC22: controles que navegan o cambian la página al recibir el foco o al escribir
+          const alFoco = document.querySelectorAll("select[onchange],input[onchange],select[onfocus],a[onfocus]").length;
+          // CC31: codificación declarada
+          const charset = (document.characterSet || "").toLowerCase();
+          // CC3: guion en texto de lo que es solo vídeo o solo audio
+          const transcripciones = Array.from(document.querySelectorAll("summary,h2,h3,a")).filter((e) => /transcripci[óo]n|guion/i.test(txt(e))).length;
+          // CC7 y CC13: para compararlos entre páginas hace falta el menú y los enlaces de cada una
+          const menuPie = Array.from(document.querySelectorAll("footer a")).map(txt).join(" · ");
+          const enlacesRuta = Array.from(document.querySelectorAll("a[href]")).map((a) => ({ texto: txt(a), ruta: (a.href || "").replace(/^https?:\/\/[^/]+/, "").replace(/#.*$/, "") }));
+          // CC12: varias vías para llegar a las páginas
+          const mapa = Array.from(document.querySelectorAll("a[href]")).some((a) => /mapa del sitio|sitemap/i.test(txt(a)));
+          const buscador = !!document.querySelector("input[type=search],[role=search]");
+          return { scrollX, declaracion, salto, videos, iframesVideo, antes,
+                   listasDeUno, tablasDeUno, vagos, alFoco, charset, transcripciones, menuPie, enlacesRuta, mapa, buscador };
         });
         if (extra.scrollX) res.extra.push({ id: "zoom-200", criterio: "CC4 Texto ampliable al 200 %", impact: "serious", help: "Con el texto al 200 % aparece desplazamiento horizontal", detalle: "El contenido debería reorganizarse (WCAG 1.4.4 y 1.4.10)." });
+        if (extra.listasDeUno) res.extra.push({ id: "lista-de-uno", criterio: "CC9 Contenedores como tablas y listas usados correctamente", impact: "minor", help: extra.listasDeUno + " lista(s) con un solo elemento", detalle: "El Anexo 1 (2.2.3.3) dice que una lista o una tabla para un solo elemento no es correcta: usa un párrafo." });
+        if (extra.tablasDeUno) res.extra.push({ id: "lista-de-uno", criterio: "CC9 Contenedores como tablas y listas usados correctamente", impact: "minor", help: extra.tablasDeUno + " tabla(s) de una sola fila o columna", detalle: "Las tablas son para relacionar datos, no para dar diseño (Anexo 1, 2.2.3.3)." });
+        if (extra.vagos) res.extra.push({ id: "enlace-vago", criterio: "CC26 Enlaces adecuados", impact: "moderate", help: extra.vagos + " enlace(s) del tipo «aquí» o «ver más»", detalle: "Los enlaces deben entenderse solos, sin el texto que los rodea (Anexo 1, 2.2.3.6)." });
+        if (extra.alFoco) res.extra.push({ id: "cambio-al-foco", criterio: "CC22 No generar cambios automáticos al recibir el foco o entradas", impact: "serious", help: extra.alFoco + " control(es) que actúan al recibir el foco o al escribir", detalle: "Un cambio de página o de contenido sin pedirlo desorienta a quien usa lector de pantalla (Anexo 1, 2.2.3.5)." });
+        if (extra.charset && extra.charset !== "utf-8") res.extra.push({ id: "charset-utf8", criterio: "CC31 Desde una letra hasta un elemento complejo utilizable", impact: "moderate", help: "La página declara la codificación «" + extra.charset + "»", detalle: "El Anexo 1 pide UTF-8 para que las tildes y la ñ lleguen bien a las ayudas técnicas." });
+        if (extra.videos.length && !extra.transcripciones) res.extra.push({ id: "transcripcion", criterio: "CC3 Guion para solo vídeo y solo audio", impact: "moderate", help: "Hay vídeo pero no se encontró transcripción ni guion en texto", detalle: "Junto al vídeo o en un enlace señalado, para quien no puede verlo ni oírlo (Anexo 1, 2.2.3.1)." });
+        if (!extra.mapa && !extra.buscador) res.extra.push({ id: "multiples-vias", criterio: "CC12 Permitir encontrar las páginas por múltiples vías", impact: "moderate", help: "No se encontró buscador ni enlace al mapa del sitio", detalle: "Toda página debe poder alcanzarse por más de un camino (Anexo 1, 2.2.3.3)." });
+        res.menuPie = extra.menuPie; res.enlacesRuta = extra.enlacesRuta;
         if (!extra.declaracion) res.extra.push({ id: "declaracion", criterio: "CC15 Declaración de accesibilidad", impact: "moderate", help: "No se encontró un enlace a la declaración de accesibilidad", detalle: "La Res. 1519 pide publicarla (nivel alcanzado, fecha, contacto). Winclus genera un borrador en este informe." });
         if (!extra.salto) res.extra.push({ id: "skip-link", criterio: "CC8 Saltar bloques", impact: "moderate", help: "No se encontró un enlace «Ir al contenido»", detalle: "Un enlace al principio de la página que lleve al contenido principal (WCAG 2.4.1)." });
         extra.videos.forEach((v, i) => { if (!v.pistas) res.extra.push({ id: "video-caption", criterio: "CC2 Subtítulos en vídeos", impact: "critical", help: "Vídeo " + (i + 1) + " sin pista de subtítulos", detalle: "Añadir <track kind=\"subtitles\"> o subtítulos abiertos (WCAG 1.2.2; Res. 1519: 100 % de los vídeos)." }); });
@@ -74,8 +125,41 @@ async function auditarUrl(nav, url) {
   return res;
 }
 
+// CC7 y CC13 solo se ven comparando páginas entre sí: el mismo texto de enlace debe llevar siempre
+// al mismo sitio, y el menú debe repetirse en el mismo orden en todas las páginas.
+function coherenciaEntrePaginas(resultados) {
+  const hallazgos = [];
+  const conRutas = resultados.filter((r) => r.enlacesRuta && r.enlacesRuta.length);
+  if (conRutas.length > 1) {
+    const porTexto = {};
+    conRutas.forEach((r) => r.enlacesRuta.forEach((a) => {
+      const k = (a.texto || "").toLowerCase().trim();
+      if (!k || !a.ruta || /^(ir al contenido|saltar)/.test(k)) return;
+      (porTexto[k] = porTexto[k] || new Set()).add(a.ruta.replace(/\.html$/, "").replace(/\/$/, ""));
+    }));
+    const dobles = Object.entries(porTexto).filter(([, d]) => d.size > 1);
+    dobles.slice(0, 10).forEach(([t, d]) => hallazgos.push({
+      id: "identificacion-coherente", criterio: "CC7 Identificación coherente", impact: "moderate",
+      help: "El enlace «" + t + "» lleva a " + d.size + " destinos distintos",
+      detalle: "El Anexo 1 (2.2.3.2) pide que lo que se llama igual haga lo mismo; si llevan a sitios distintos, hay que distinguir sus textos."
+    }));
+    const menus = {};
+    conRutas.forEach((r) => { if (r.menuPie != null) (menus[r.menuPie] = menus[r.menuPie] || []).push(r.url); });
+    const raros = Object.entries(menus).filter(([, u]) => u.length === 1);
+    if (Object.keys(menus).length > 1 && raros.length) hallazgos.push({
+      id: "navegacion-coherente", criterio: "CC13 Navegación coherente", impact: "moderate",
+      help: raros.length + " página(s) con el menú del pie distinto al de las demás",
+      detalle: "Los enlaces que se repiten deben ir en el mismo orden en todas las páginas (Anexo 1, 2.2.3.3): " + raros.map(([, u]) => u[0]).join(", ")
+    });
+  }
+  return hallazgos;
+}
+
 function informeHtml(resultados) {
   const fecha = new Date().toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" });
+  // Lo que solo se ve comparando páginas se añade a la primera, para que salga en el informe
+  const entrePaginas = coherenciaEntrePaginas(resultados);
+  if (entrePaginas.length && resultados[0]) resultados[0].extra = resultados[0].extra.concat(entrePaginas);
   let total = 0, porCriterio = {};
   resultados.forEach((r) => { r.paginas.forEach((p) => p.violaciones.forEach((v) => { total += v.nodos.length; const c = criterioDe(v.id); porCriterio[c] = (porCriterio[c] || 0) + v.nodos.length; })); r.extra.forEach((x) => { total++; porCriterio[x.criterio] = (porCriterio[x.criterio] || 0) + 1; }); });
   const criterios = Object.keys(CRITERIOS_1519);

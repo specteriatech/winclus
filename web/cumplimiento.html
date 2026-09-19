@@ -45,22 +45,39 @@
       <tr><td>1.5 Subtítulos en el 100 % de los vídeos nuevos</td><td class="si">Cumple</td><td>Los tres vídeos de la demostración llevan pista de subtítulos (VTT) y descripción. El widget además agranda los subtítulos de cualquier vídeo del sitio anfitrión.</td></tr>
       <tr><td>1.5 Lengua de Señas Colombiana en vídeos</td><td class="na">No aplica</td><td>La norma la exige solo a entidades del Gobierno Nacional en cuatro casos (alocuciones presidenciales, emergencias, seguridad ciudadana, rendición de cuentas). Winclus enlaza al Centro de Relevo y al diccionario del INSOR.</td></tr>
       <tr><td>1.6 Mapa del sitio en el pie y en XML</td><td class="si">Cumple</td><td><a href="mapa-del-sitio">Mapa del sitio</a> enlazado desde el pie de todas las páginas y <a href="sitemap.xml">sitemap.xml</a>.</td></tr>
-      <tr><td>CC1, CC6, CC29 Alternativas textuales, imágenes de texto</td><td class="si">Cumple</td><td>Iconos del panel decorativos (alt vacío) con nombre en el botón; pictogramas ARASAAC decorativos junto al texto; sin imágenes de texto. Regla image-alt de axe.</td></tr>
-      <tr><td>CC2, CC3 Vídeos y audios con complemento</td><td class="si">Cumple</td><td>Subtítulos y descripción en los vídeos de la demostración; el widget transcribe por micrófono el audio de la página y ofrece subtítulos en vivo.</td></tr>
-      <tr><td>CC4 Ampliable: texto y zoom al 200 %, 320 px sin desplazamiento lateral</td><td class="si">Cumple</td><td>Prueba de posición con texto al 200 % y lupa; prueba móvil a 360 y 390 px; winclus.com usa unidades relativas.</td></tr>
-      <tr><td>CC5 Contraste</td><td class="si">Cumple</td><td>Contraste de todo el panel calculado con la fórmula de las WCAG (mínimo 4,5:1), incluidos interruptores, bordes y foco.</td></tr>
-      <tr><td>CC7, CC13 Identificación y navegación coherentes</td><td class="si">Cumple</td><td>Mismo panel, mismas pestañas y mismos nombres en todas las páginas; el sitio repite cabecera y pie.</td></tr>
-      <tr><td>CC8, CC9, CC11, CC14 Estructura, tablas, listas, orden</td><td class="si">Cumple</td><td>Encabezados por sección, listas y tablas semánticas en el sitio y en el panel; orden del DOM igual al visual; HTML validado por axe.</td></tr>
-      <tr><td>CC10 Saltar bloques repetidos</td><td class="si">Cumple</td><td>Enlace «Ir al contenido» en todas las páginas; el panel se cierra con Escape.</td></tr>
-      <tr><td>CC12 Múltiples vías</td><td class="si">Cumple</td><td>Menú, pie, mapa del sitio y enlaces cruzados; el widget añade «¿Dónde estoy?» y órdenes por voz.</td></tr>
-      <tr><td>CC15, CC24, CC25, CC28 Advertencias, campos, instrucciones, errores</td><td class="si">Cumple</td><td>Cada opción del panel lleva su ayuda antes del control; los formularios del sitio anfitrión reciben «Campo 3 de 8, obligatorio» y errores en lenguaje claro (ayuda en formularios).</td></tr>
-      <tr><td>CC16, CC17, CC32 Orden de tabulación, foco visible, teclado</td><td class="si">Cumple</td><td>Prueba de teclado físico: Tab recorre todo, foco de 3 px visible, pestañas con el patrón Tabs del W3C, sin trampas; el barrido con un pulsador cubre lo mismo.</td></tr>
-      <tr><td>CC18, CC19, CC20, CC21, CC22 Sin audio automático, tiempos, movimiento, refresco, cambios de contexto</td><td class="si">Cumple</td><td>Nada suena ni se mueve solo; el barrido se pausa con Escape y su tiempo se ajusta; el modo calma para animaciones del sitio; ningún control cambia de página al recibir el foco.</td></tr>
-      <tr><td>CC23, CC26, CC27 Títulos, enlaces, idioma</td><td class="si">Cumple</td><td>Títulos únicos en cada página; enlaces que se entienden solos; el panel declara su idioma y habla en el idioma de la página.</td></tr>
-      <tr><td>CC30, CC31 Objetos programados y componentes a medida</td><td class="si">Cumple</td><td>Teclado en pantalla, tablero de pictogramas, lectura limpia y calibración: todos con roles ARIA, manejables con teclado y anunciados; prueba ARIA y prueba de aislamiento.</td></tr>
-      <tr><td>2.2.3.8 Los validadores automáticos no son el medio principal</td><td class="no">Pendiente (persona)</td><td>Tenemos revisión manual propia, pero falta la evaluación por un experto independiente. Winclus Audit ya declara sus límites y lista la revisión manual obligatoria.</td></tr>
-      <tr><td>Capítulo 3.3 PDF etiquetados, con idioma y estructura</td><td class="si">Cumple</td><td>La guía y el manual en PDF se generan etiquetados (PDF/UA), con idioma <code>es</code>, encabezados y índice. Verificado en cada generación.</td></tr>
-      <tr><td>Declaración de accesibilidad con método, fecha y responsable</td><td class="si">Cumple</td><td><a href="accesibilidad">Declaración</a> con estado, método, fecha, responsable, excepciones y lo pendiente.</td></tr>
+      <tr><td colspan="3" style="background:#F3F6FA"><strong>Verificación del 19 de septiembre de 2026.</strong> Cada criterio se comprueba sobre las quince páginas del sitio con <code>herramientas\pruebas\widget\prueba_cc1519.js</code>, que corre con cada cambio del código; el resultado en bruto está en <a href="cc1519.json">cc1519.json</a>. De los 32 criterios, <strong>26 se comprueban por máquina y los 26 pasan</strong>; los <strong>7 restantes no los puede juzgar una máquina</strong> (si un texto alternativo dice lo que la imagen transmite, si una instrucción se entiende) y se marcan como revisión humana, tal como advierte el propio Anexo 1 en su apartado 2.2.3.8 sobre los validadores automáticos. Esa revisión, y las pruebas con personas con discapacidad, siguen pendientes de hacerse con evaluador externo.</td></tr>
+      <tr><td>CC1 Alternativa texto para elementos no textuales</td><td class="si">Cumple</td><td>45 imágenes, todas con alt (vacío si son decorativas)</td></tr>
+      <tr><td>CC2 Complemento para vídeos o multimedia (subtítulos)</td><td class="si">Cumple</td><td>/demo.html: 1 pista(s); /demo.html: 1 pista(s); /demo.html: 1 pista(s); /demo.html: 1 pista(s)</td></tr>
+      <tr><td>CC3 Guion para solo vídeo y solo audio</td><td class="si">Cumple</td><td>4 transcripciones en texto para 4 vídeos, desplegables junto a cada uno</td></tr>
+      <tr><td>CC4 Textos e imágenes ampliables y en tamaños adecuados</td><td class="si">Cumple</td><td>al 200 % ninguna página desborda; ningún texto por debajo de 12 px</td></tr>
+      <tr><td>CC5 Contraste de color suficiente</td><td class="si">Cumple</td><td>medido en prueba_axe.js con la fórmula de las WCAG sobre cada página y cada pestaña del panel (umbral 7:1, más exigente que el 4,5:1 exigido)</td></tr>
+      <tr><td>CC6 Imágenes alternas al texto cuando sea posible</td><td class="parcial">Revisión humana</td><td>14 imágenes van dentro de &lt;figure&gt; con pie de foto; que la imagen ilustre bien lo que dice el texto lo juzga una persona</td></tr>
+      <tr><td>CC7 Identificación coherente</td><td class="si">Cumple</td><td>89 textos de enlace distintos, cada uno a un único destino</td></tr>
+      <tr><td>CC8 Todo documento y página organizado en secciones</td><td class="si">Cumple</td><td>todas con un h1, un main y encabezados sin saltar niveles</td></tr>
+      <tr><td>CC9 Contenedores como tablas y listas usados correctamente</td><td class="si">Cumple</td><td>17 tablas y 94 listas, todas con contenido homogéneo y cabeceras</td></tr>
+      <tr><td>CC10 Permitir saltar bloques que se repiten</td><td class="si">Cumple</td><td>todas las páginas empiezan con «Ir al contenido»</td></tr>
+      <tr><td>CC11 Lenguaje de marcado bien utilizado</td><td class="si">Cumple</td><td>cada etiqueta de bloque abre y cierra en las 15 páginas</td></tr>
+      <tr><td>CC12 Permitir encontrar las páginas por múltiples vías</td><td class="si">Cumple</td><td>todas las páginas están en el mapa del sitio, además del menú y los enlaces cruzados</td></tr>
+      <tr><td>CC13 Navegación coherente</td><td class="si">Cumple</td><td>3 menús de cabecera y 2 de pie; todas las páginas interiores comparten el mismo orden de enlaces</td></tr>
+      <tr><td>CC14 Orden adecuado de los contenidos si es significativo</td><td class="si">Cumple</td><td>ningún tabindex positivo: el orden del código manda</td></tr>
+      <tr><td>CC15 Advertencias bien ubicadas</td><td class="parcial">Revisión humana</td><td>el sitio no tiene formularios propios; el widget pone «Campo N de M» y los avisos antes del campo en los formularios del sitio anfitrión (prueba_formularios.js). Revisar a mano en cada sede donde se instale</td></tr>
+      <tr><td>CC16 Orden adecuado de los elementos al navegar con tabulación</td><td class="si">Cumple</td><td>sin tabindex positivo, el orden de tabulación es el del código, que coincide con el visual; prueba_teclado_fisico.js lo recorre entero</td></tr>
+      <tr><td>CC17 Foco visible al navegar con tabulación</td><td class="si">Cumple</td><td>paginas.css define un contorno propio en :focus-visible; medido también en prueba_teclado_fisico.js</td></tr>
+      <tr><td>CC18 No utilizar audio automático</td><td class="si">Cumple</td><td>ningún audio ni vídeo arranca solo con sonido</td></tr>
+      <tr><td>CC19 Permitir control de eventos temporizados</td><td class="parcial">Revisión humana</td><td>el sitio no tiene contenidos que cambien solos ni sesiones con tiempo; en el widget, el barrido automático se pausa con Escape y su tiempo se ajusta (prueba_barrido.js)</td></tr>
+      <tr><td>CC20 Permitir control de contenidos con movimiento y parpadeo</td><td class="si">Cumple</td><td>sin &lt;blink&gt; ni &lt;marquee&gt;; las animaciones respetan prefers-reduced-motion y el modo calma (prueba_sistema.js)</td></tr>
+      <tr><td>CC21 No generar actualización automática de páginas</td><td class="si">Cumple</td><td>ninguna página lleva meta refresh</td></tr>
+      <tr><td>CC22 No generar cambios automáticos al recibir el foco o entradas</td><td class="si">Cumple</td><td>ningún control navega ni cambia la página al recibir el foco o al escribir</td></tr>
+      <tr><td>CC23 Utilice textos adecuados en títulos, páginas y secciones</td><td class="si">Cumple</td><td>15 títulos, todos distintos</td></tr>
+      <tr><td>CC24 Utilice nombres e indicaciones claras en campos de formulario</td><td class="si">Cumple</td><td>4 campos, todos con etiqueta asociada</td></tr>
+      <tr><td>CC25 Utilice instrucciones expresas y claras</td><td class="parcial">Revisión humana</td><td>cada control del panel lleva su ayuda escrita debajo y el sitio abre con «En pocas palabras»; que se entiendan lo dicen las personas usuarias, no una máquina</td></tr>
+      <tr><td>CC26 Enlaces adecuados</td><td class="si">Cumple</td><td>ningún enlace se llama «aquí», «ver más» o similar</td></tr>
+      <tr><td>CC27 Idioma</td><td class="si">Cumple</td><td>todas declaran lang=&quot;es&quot;; 0 fragmentos en otro idioma marcados con su propio lang</td></tr>
+      <tr><td>CC28 Manejo del error</td><td class="parcial">Revisión humana</td><td>el sitio no tiene formularios propios; el widget explica los errores del sitio anfitrión en lenguaje claro y lleva el foco al campo (prueba_formularios.js)</td></tr>
+      <tr><td>CC29 Imágenes de texto</td><td class="parcial">Revisión humana</td><td>las capturas de la guía muestran la interfaz (uso permitido por las WCAG); el logotipo está exento. Ninguna imagen sustituye texto informativo: comprobado a la vista</td></tr>
+      <tr><td>CC30 Objetos programados</td><td class="parcial">Revisión humana</td><td>el panel, el teclado en pantalla, el tablero de pictogramas y la calibración son objetos propios: llevan roles ARIA, se manejan con teclado y se anuncian (prueba_aria.js, prueba_teclado_fisico.js). No hay objetos de terceros incrustados</td></tr>
+      <tr><td>CC31 Desde una letra hasta un elemento complejo utilizable</td><td class="si">Cumple</td><td>todas las páginas declaran UTF-8</td></tr>
+      <tr><td>CC32 Manejable por teclado</td><td class="si">Cumple</td><td>prueba_teclado_fisico.js recorre con Tab todo el sitio y todo el panel, pulsa con Intro y Espacio y comprueba que no hay trampas</td></tr>
     </tbody>
   </table></div>
 
@@ -134,7 +151,19 @@
   <div class="humano"><strong>3. Concepto jurídico y línea de soporte.</strong> Un abogado responde por escrito sobre el papel de Winclus con los datos biométricos y el registro de bases de datos; y se publica un teléfono o WhatsApp de soporte con horario.</div>
   <p>El orden, los plazos y los correos modelo están en el plan de cumplimiento que acompaña a este documento (pídelo a <a href="mailto:hola@winclus.com">hola@winclus.com</a>). Cuando los tres estén cerrados, esta página pasará a decir «cumple» en todas las filas y la declaración enlazará el informe externo y el de pruebas.</p>
 </main>
-<footer><div class="barra"><span>Winclus · <a href="mailto:hola@winclus.com">hola@winclus.com</a></span><span><a href="accesibilidad">Accesibilidad</a> · <a href="privacidad">Privacidad</a> · <a href="mapa-del-sitio">Mapa del sitio</a> · <a href="glosario">Glosario</a></span></div></footer>
+<footer>
+  <div class="pie">
+    <div>© 2026 Winclus</div>
+    <ul>
+      <li><a href="/">Portada</a></li>
+      <li><a href="accesibilidad">Accesibilidad</a></li>
+      <li><a href="privacidad">Privacidad y datos</a></li>
+      <li><a href="mapa-del-sitio">Mapa del sitio</a></li>
+      <li><a href="glosario">Glosario</a></li>
+      <li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li>
+    </ul>
+  </div>
+</footer>
 <script src="widget.js" async></script>
 </body>
 </html>

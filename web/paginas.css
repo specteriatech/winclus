@@ -54,3 +54,6 @@ main{overflow-wrap:anywhere}
 .tabla{overflow-x:auto;margin:12px 0 20px}
 .tabla table{margin:0;min-width:640px}
 @media (max-width:600px){ .barra{min-height:64px} .volver{padding:8px 14px} table{font-size:.88rem} th,td{padding:7px 6px} }
+
+/* Un enlace del pie a la propia página se oculta; que ningún estilo lo resucite */
+[hidden]{display:none!important}

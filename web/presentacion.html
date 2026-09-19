@@ -31,10 +31,16 @@
   .grid{grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr))}
   .ayuda{position:fixed;left:12px;bottom:10px;font-size:.8rem;color:#C8D0DC;background:rgba(255,255,255,.85);padding:4px 10px;border-radius:999px}
   @media print{.diapo{min-height:auto;page-break-after:always;border:0;padding:24px}.ayuda{display:none}html,body{background:#fff}}
+  .salto{position:absolute;left:-9999px;display:inline-flex;align-items:center;min-height:44px}.salto:focus{left:8px;top:8px;z-index:10;background:#fff;color:#101F3D;padding:10px 16px;border-radius:8px}
+  footer .pie{padding:18px 24px;color:#C8D0DC;font-size:.9rem}footer .pie ul{list-style:none;display:flex;flex-wrap:wrap;gap:12px;padding:0;margin:6px 0 0}footer .pie a{color:#8FD9C4}
+  [hidden]{display:none!important}
 </style>
 </head>
 <body>
+<a class="salto" href="#contenido">Ir al contenido</a>
 <span class="ayuda" aria-hidden="true">Avanza con ↓ o Espacio · imprime con Ctrl+P</span>
+
+<main id="contenido">
 
 <section class="diapo oscura" id="d1">
   <p class="sub" style="color:#8FD9C4;font-weight:600;letter-spacing:.08em;text-transform:uppercase">Winclus</p>
@@ -164,12 +170,28 @@
 </section>
 
 <section class="diapo oscura" id="d12">
-  <h1>Compruébalo, no nos creas.</h1>
+  <h2>Compruébalo, no nos creas.</h2>
   <p class="sub">winclus.com/demo · winclus.com/evidencia · winclus.com/comparar</p>
   <p class="sub">hola@winclus.com</p>
   <p class="nota" style="color:#C8D0DC"><a href="demo">Demostración</a> · <a href="evidencia">Evidencia</a> · <a href="comparar">Comparación</a> · <a href="una-pagina">Hoja de una página</a> · <a href="mapa-del-sitio">Mapa del sitio</a> · <a href="glosario">Glosario</a> · <a href="accesibilidad">Accesibilidad</a> · <a href="privacidad">Privacidad y datos</a></p>
   <span class="num">12</span>
 </section>
+
+</main>
+
+<footer>
+  <div class="pie">
+    <div>© 2026 Winclus</div>
+    <ul>
+      <li><a href="/">Portada</a></li>
+      <li><a href="accesibilidad">Accesibilidad</a></li>
+      <li><a href="privacidad">Privacidad y datos</a></li>
+      <li><a href="mapa-del-sitio">Mapa del sitio</a></li>
+      <li><a href="glosario">Glosario</a></li>
+      <li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li>
+    </ul>
+  </div>
+</footer>
 
 <script>
   document.addEventListener("keydown", function (e) {

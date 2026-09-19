@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-19T20:33:33.338Z",
-  "commit": "c0221c5",
+  "fecha": "2026-09-19T21:04:54.265Z",
+  "commit": "905beae",
   "version": "0.6.14",
-  "pruebas": 35,
-  "comprobaciones": 633,
+  "pruebas": 36,
+  "comprobaciones": 660,
   "fallan": 0,
   "resultados": [
     {
@@ -207,7 +207,7 @@
       "ok": 140,
       "mal": 0,
       "bien": true,
-      "segundos": 13,
+      "segundos": 14,
       "lineas": [
         "OK  / a 1280 px: axe sin incumplimientos",
         "OK  / a 1280 px: carga el widget",
@@ -841,7 +841,7 @@
       "criterios": [
         "Res. 1519 Anexo 1"
       ],
-      "ok": 7,
+      "ok": 8,
       "mal": 0,
       "bien": true,
       "segundos": 9,
@@ -852,7 +852,49 @@
         "OK  la página mala cae en alt, título, idioma, etiqueta y contraste",
         "OK  las comprobaciones de la Res. 1519 detectan vídeo sin subtítulos, sin declaración y sin «ir al contenido»",
         "OK  el informe agrupa por criterio de la Res. 1519 y avisa de sus límites",
+        "OK  cada CC lleva el nombre que tiene en el Anexo 1 de la Resolución 1519",
         "OK  el borrador de declaración lleva la entidad, la norma, el estado y los huecos por rellenar"
+      ]
+    },
+    {
+      "archivo": "prueba_cc1519.js",
+      "que": "Verificación de winclus.com contra los 32 criterios de cumplimiento del Anexo 1 de la Resolución 1519 de 2020, uno por uno y con la numeración del anexo: alternativas, vídeos, ampliación, contraste, identificación coherente, estructura, tablas y listas, saltar bloques, marcado, múltiples vías, navegación coherente, orden, tabulación, foco, audio automático, tiempos, movimiento, refresco, títulos, campos, enlaces, idioma, codificación y teclado. Lo que ninguna máquina puede juzgar se marca como revisión humana en vez de darlo por bueno.",
+      "criterios": [
+        "Res. 1519/2020 Anexo 1 (CC1 a CC32)",
+        "WCAG 2.1 AA",
+        "Ley 1712/2014 art. 8"
+      ],
+      "ok": 26,
+      "mal": 0,
+      "bien": true,
+      "segundos": 8,
+      "lineas": [
+        "OK    CC1 Alternativa texto para elementos no textuales",
+        "OK    CC2 Complemento para vídeos o multimedia",
+        "OK    CC3 Guion para solo vídeo y solo audio",
+        "OK    CC4 Textos e imágenes ampliables y en tamaños adecuados",
+        "OK    CC5 Contraste de color suficiente",
+        "OK    CC7 Identificación coherente",
+        "OK    CC8 Todo documento y página organizado en secciones",
+        "OK    CC9 Contenedores como tablas y listas usados correctamente",
+        "OK    CC10 Permitir saltar bloques que se repiten",
+        "OK    CC11 Lenguaje de marcado bien utilizado",
+        "OK    CC12 Permitir encontrar las páginas por múltiples vías",
+        "OK    CC13 Navegación coherente",
+        "OK    CC14 Orden adecuado de los contenidos si es significativo",
+        "OK    CC16 Orden adecuado de los elementos al navegar con tabulación",
+        "OK    CC17 Foco visible al navegar con tabulación",
+        "OK    CC18 No utilizar audio automático",
+        "OK    CC20 Permitir control de contenidos con movimiento y parpadeo",
+        "OK    CC21 No generar actualización automática de páginas",
+        "OK    CC22 No generar cambios automáticos al recibir el foco o entradas",
+        "OK    CC23 Utilice textos adecuados en títulos, páginas y secciones",
+        "OK    CC24 Utilice nombres e indicaciones claras en campos de formulario",
+        "OK    CC26 Enlaces adecuados",
+        "OK    CC27 Idioma",
+        "OK    CC31 Desde una letra hasta un elemento complejo utilizable",
+        "OK    CC32 Manejable por teclado",
+        "OK    JS Sin errores de JavaScript en ninguna página"
       ]
     },
     {
@@ -935,7 +977,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 16,
+      "segundos": 15,
       "lineas": [
         "OK  demo.html pasa axe",
         "OK  la demo tiene los siete pasos",
@@ -958,7 +1000,7 @@
       "ok": 21,
       "mal": 0,
       "bien": true,
-      "segundos": 17,
+      "segundos": 13,
       "lineas": [
         "OK  chromium: recorrido básico",
         "OK  chromium: sin speechSynthesis ni SpeechRecognition",
