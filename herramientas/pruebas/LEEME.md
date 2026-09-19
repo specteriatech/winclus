@@ -43,6 +43,16 @@ perdería la calibración de ojos del usuario.
 - `prueba_voz_iman.py`: voz SAPI (habla de verdad un momento), frases guardadas, capa «Frases» del
   teclado e imán a los controles con una ventanita WinForms de prueba (aparece 3 s y se cierra).
 - `recorrido_voz_iman.py`: capturas de Escribir (Voz y Frases), teclado abc y capa Frases, e Imán en Puntero.
+- `prueba_voz.py`: órdenes por voz y dictado **sin micrófono** (43 comprobaciones): se le dan las frases ya
+  reconocidas y se mira qué acción sale, que la lista de frases que se le pasa al motor de Windows se entienda
+  entera, la puntuación y las mayúsculas del dictado, las correcciones («borra eso», «borra palabra», «borra
+  todo»), el recorrido completo con ganchos falsos (no escribe ni mueve el ratón), el dictado con confirmación
+  y qué dice este equipo de su propio motor de voz. No toca la configuración.
+- `recorrido_voz.py`: abre la app y captura la tarjeta «Hablarle a Winclus» de la página Escribir. No enciende
+  el micrófono; la ayuda «¿Qué puedo decir?» sí suena.
+- `escuchar_en_vivo.py`: **la prueba hablando**. Enciende el micrófono un rato y escribe en la consola lo que
+  oye y en qué acción se convertiría, sin hacer nada; con `--ejecutar` sí lo hace, y con `--dictado` prueba el
+  texto libre (necesita «Reconocimiento de voz en línea» de Windows encendido).
 
 - `prueba_parpadeo_real.py`: cierres de ojos medidos al usuario (un ojo se queda más abierto) con la
   regla de la media: cuentan como clic; guiño y parpadeo involuntario no.

@@ -11,3 +11,6 @@ PyDirectInput==1.0.4
 pywin32
 comtypes
 anthropic
+# Reconocimiento de voz de Windows (src/escucha.py); si falta, Winclus sigue
+# funcionando y dice que no puede escuchar en vez de fallar en silencio
+winsdk

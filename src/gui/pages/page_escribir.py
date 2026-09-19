@@ -183,11 +183,14 @@ class PageEscribir(SafeDisposableFrame):
                                 command=lambda: Voz().decir("Hola, soy Winclus. Así sueno.", forzar=True)).grid(
                                     row=5, column=0, columnspan=2, padx=20, pady=(6, 12), sticky="w")
 
+        # -------------------------------------------- hablarle a Winclus --
+        self._tarjeta_hablar(c, fila=6)
+
         # ------------------------------------------------------- frases --
         customtkinter.CTkLabel(c, text="Frases para decir", font=estilo.fuente("subtitulo")).grid(
-            row=6, column=0, padx=20, pady=(6, 0), sticky="w")
+            row=8, column=0, padx=20, pady=(6, 0), sticky="w")
         fr = customtkinter.CTkFrame(c, fg_color=estilo.TARJETA, corner_radius=16)
-        fr.grid(row=7, column=0, padx=20, pady=(6, 16), sticky="ew")
+        fr.grid(row=9, column=0, padx=20, pady=(6, 16), sticky="ew")
         fr.grid_columnconfigure(0, weight=1)
         customtkinter.CTkLabel(
             fr,
@@ -212,6 +215,159 @@ class PageEscribir(SafeDisposableFrame):
 
         self.cargar()
         self.after(300, self._cargar_voces)
+        self.after(600, self._estado_escucha)
+
+    # --------------------------------------------- hablarle a Winclus --
+    def _tarjeta_hablar(self, c, fila):
+        """«Hablar»: órdenes por voz y dictado con el reconocimiento de Windows."""
+        customtkinter.CTkLabel(c, text="Hablarle a Winclus",
+                               font=estilo.fuente("subtitulo")).grid(
+                                   row=fila, column=0, padx=20, pady=(10, 0), sticky="w")
+        h = customtkinter.CTkFrame(c, fg_color=estilo.TARJETA, corner_radius=16)
+        h.grid(row=fila + 1, column=0, padx=20, pady=(6, 10), sticky="ew")
+        h.grid_columnconfigure(2, weight=1)
+        customtkinter.CTkLabel(
+            h,
+            text=("Di lo que quieres y Winclus lo hace: «baja», «clic», «pulsa Aceptar», "
+                  "«abre el bloc de notas», «lee la pantalla». Con «dicta» se escribe lo que "
+                  "digas, con sus comas y sus puntos, y «borra eso» corrige lo último."),
+            wraplength=680, justify=tkinter.LEFT, text_color=estilo.TEXTO_SUAVE,
+            font=estilo.fuente("pequena")).grid(row=0, column=0, columnspan=3, padx=20,
+                                                pady=(10, 8), sticky="w")
+        self.boton_escuchar = customtkinter.CTkButton(
+            h, text="Escuchar", height=56, width=220, corner_radius=16,
+            fg_color=estilo.AMBAR, hover_color=estilo.AMBAR_HOVER,
+            text_color=estilo.TEXTO_SOBRE_AMBAR, font=estilo.fuente("boton_grande"),
+            command=self._alternar_escucha)
+        self.boton_escuchar.grid(row=1, column=0, padx=(20, 10), pady=(0, 8), sticky="w")
+        self.boton_dictar = customtkinter.CTkButton(
+            h, text="Dictar", height=56, width=180, corner_radius=16,
+            fg_color="transparent", border_width=1, border_color=estilo.BORDE,
+            text_color=estilo.TEXTO, font=estilo.fuente("boton_normal"),
+            command=self._alternar_dictado)
+        self.boton_dictar.grid(row=1, column=1, padx=(0, 10), pady=(0, 8), sticky="w")
+        customtkinter.CTkButton(
+            h, text="¿Qué puedo decir?", height=56, width=190, corner_radius=16,
+            fg_color="transparent", border_width=1, border_color=estilo.BORDE,
+            text_color=estilo.TEXTO, font=estilo.fuente("boton_normal"),
+            command=self._que_puedo_decir).grid(row=1, column=2, padx=(0, 20),
+                                                pady=(0, 8), sticky="w")
+        self.escucha_estado = customtkinter.CTkLabel(
+            h, text="Comprobando el micrófono…", wraplength=680, justify=tkinter.LEFT,
+            text_color=estilo.TEXTO_SUAVE, font=estilo.fuente("pequena"))
+        self.escucha_estado.grid(row=2, column=0, columnspan=3, padx=20, pady=(0, 4), sticky="w")
+        self.escucha_oido = customtkinter.CTkLabel(
+            h, text="", wraplength=680, justify=tkinter.LEFT,
+            font=estilo.fuente("cuerpo"))
+        self.escucha_oido.grid(row=3, column=0, columnspan=3, padx=20, pady=(0, 6), sticky="w")
+        self.boton_ajustes_voz = customtkinter.CTkButton(
+            h, text="Abrir los ajustes de voz de Windows", height=36, width=300,
+            fg_color="transparent", border_width=1, border_color=estilo.BORDE,
+            text_color=estilo.TEXTO, font=estilo.fuente("boton_normal"),
+            command=self._ajustes_voz_windows)
+        self.boton_ajustes_voz.grid(row=4, column=0, columnspan=3, padx=20, pady=(0, 8), sticky="w")
+        self.hablar_vars = {}
+        for i, (clave, texto, ayuda) in enumerate((
+                ("voz_dictado_confirmar", "Confirmar antes de escribir lo dictado",
+                 "Winclus enseña lo que ha entendido y espera a que digas «sí» o «no»."),
+                ("voz_escuchar_al_activar", "Encender el micrófono al activar Winclus",
+                 "Al pulsar Activar, Winclus empieza a escuchar órdenes."))):
+            var = tkinter.BooleanVar()
+            customtkinter.CTkCheckBox(h, text=texto, variable=var, font=estilo.fuente("cuerpo"),
+                                      command=partial(self._guardar_hablar, clave)).grid(
+                                          row=5 + i * 2, column=0, columnspan=3, padx=20,
+                                          pady=(6, 0), sticky="w")
+            customtkinter.CTkLabel(h, text=ayuda, wraplength=640, justify=tkinter.LEFT,
+                                   text_color=estilo.TEXTO_SUAVE,
+                                   font=estilo.fuente("pequena")).grid(
+                                       row=6 + i * 2, column=0, columnspan=3, padx=(52, 20),
+                                       pady=(0, 4), sticky="w")
+            self.hablar_vars[clave] = var
+        customtkinter.CTkLabel(h, text="").grid(row=9, column=0, pady=2)
+
+    def _control_voz(self):
+        from src.control_voz import ControlVoz
+        control = ControlVoz()
+        control.al_estado = lambda t, err=False: self.after(0, self._pintar_estado, t, err)
+        control.al_oir = lambda frase, resumen: self.after(0, self._pintar_oido, frase, resumen)
+        return control
+
+    def _alternar_escucha(self):
+        control = self._control_voz()
+        if control.escuchando:
+            control.parar()
+        else:
+            control.empezar()
+        self.after(200, self._estado_escucha)
+
+    def _alternar_dictado(self):
+        control = self._control_voz()
+        if not control.escuchando:
+            control.empezar()
+        control.dictar(not control.ejecutor.dictando)
+        self.after(300, self._estado_escucha)
+
+    def _que_puedo_decir(self):
+        from src import ordenes_voz
+        Voz().decir(ordenes_voz.AYUDA, forzar=True)
+        self.escucha_oido.configure(text=ordenes_voz.AYUDA)
+
+    @staticmethod
+    def _ajustes_voz_windows():
+        import os
+        from src.escucha import AJUSTES_VOZ
+        try:
+            os.startfile(AJUSTES_VOZ)
+        except OSError as e:
+            logger.warning(f"No se pudieron abrir los ajustes de voz: {e}")
+
+    def _pintar_estado(self, texto, error=False):
+        if not self.winfo_exists():
+            return
+        self.escucha_estado.configure(text=texto,
+                                      text_color=estilo.AMBAR if error else estilo.TEXTO_SUAVE)
+        self._estado_escucha(solo_botones=True)
+
+    def _pintar_oido(self, frase, resumen):
+        if not self.winfo_exists():
+            return
+        self.escucha_oido.configure(text=f"Te oí: «{frase}» → {resumen or 'sin nada que hacer'}")
+        self._estado_escucha(solo_botones=True)
+
+    def _estado_escucha(self, solo_botones=False):
+        """Pone los botones y el texto de estado como está la escucha ahora."""
+        try:
+            from src.control_voz import ControlVoz
+            estado = ControlVoz().estado()
+        except Exception as e:                       # sin winsdk, sin micrófono…
+            logger.info(f"Estado de la escucha: {e}")
+            self.escucha_estado.configure(text="No se puede escuchar en este equipo.")
+            return
+        escuchando, dictando = estado["escuchando"], estado["dictando"]
+        self.boton_escuchar.configure(
+            text="Dejar de escuchar" if escuchando else "Escuchar",
+            fg_color=estilo.PRIMARIO if escuchando else estilo.AMBAR,
+            hover_color=estilo.PRIMARIO_HOVER if escuchando else estilo.AMBAR_HOVER,
+            text_color=estilo.TEXTO_SOBRE_PRIMARIO if escuchando else estilo.TEXTO_SOBRE_AMBAR)
+        self.boton_dictar.configure(text="Parar el dictado" if dictando else "Dictar")
+        if estado["puede_dictar"]:
+            self.boton_ajustes_voz.grid_remove()
+        else:
+            self.boton_ajustes_voz.grid()
+        if not solo_botones:
+            self.escucha_estado.configure(text=ControlVoz().texto_estado(),
+                                          text_color=estilo.TEXTO_SUAVE)
+
+    def _guardar_hablar(self, clave):
+        valor = bool(self.hablar_vars[clave].get())
+        ConfigManager().set_temp_config(clave, valor)
+        ConfigManager().apply_config()
+        if clave == "voz_dictado_confirmar":
+            try:
+                from src.control_voz import ControlVoz
+                ControlVoz().ejecutor.confirmar = valor
+            except Exception as e:
+                logger.info(f"Confirmación del dictado: {e}")
 
     # ------------------------------------------------------------ carga --
     def cargar(self):
@@ -225,6 +381,8 @@ class PageEscribir(SafeDisposableFrame):
             var.set(bool(cfg.get(clave, True)))
         for clave, var in self.voz_vars.items():
             var.set(bool(cfg.get(clave, clave == "voz_activa")))
+        for clave, var in self.hablar_vars.items():
+            var.set(bool(cfg.get(clave, False)))
         v = int(cfg.get("voz_velocidad", 0))
         self.voz_vel.set(v)
         self.voz_vel_txt.configure(text=self._texto_vel(v))
@@ -331,3 +489,4 @@ class PageEscribir(SafeDisposableFrame):
     def enter(self):
         super().enter()
         self.refrescar_boton()
+        self._estado_escucha()

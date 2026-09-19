@@ -26,6 +26,7 @@ import src.gui.pages as pages
 from src.config_manager import ConfigManager
 from src.controllers import ControladorClic, MouseController
 from src.asistente import Asistente
+from src.control_voz import ControlVoz
 from src.detectors.aprendizaje import AprendizajeClics
 from src.voz import Voz
 from src.gui.anillo import Anillo
@@ -229,6 +230,16 @@ class MainGui():
         ControladorClic().menu_gui = self.menu_clics
         ControladorClic().alternar_teclado = self.teclado.alternar
 
+        # Control por voz: lo que se oye por el micrófono mueve, pulsa y escribe
+        control = ControlVoz()
+        control.avisar = self.aviso.mostrar
+        control.pausar = lambda: self.tk_root.after(0, self.set_mediapipe_mouse_enable, False)
+        control.seguir = lambda: self.tk_root.after(0, self.set_mediapipe_mouse_enable, True)
+        control.alternar_teclado = lambda: self.tk_root.after(0, self.teclado.alternar)
+        control.abrir_menu = lambda: self.tk_root.after(0, ControladorClic().abrir_menu)
+        control.abrir_asistente = lambda: self.tk_root.after(0, self.abrir_asistente)
+        control.abrir_recentrado = lambda: self.tk_root.after(0, self.abrir_recentrado)
+
     def abrir_asistente(self):
         self.root_function_callback("change_page", {"target": "page_asistente"})
         try:
@@ -302,8 +313,12 @@ class MainGui():
             MouseController().set_active(True)
             if ConfigManager().config.get("teclado_mostrar_al_activar", False):
                 self.teclado.mostrar()
+            if ConfigManager().config.get("voz_escuchar_al_activar", False):
+                ControlVoz().empezar()
         else:
             MouseController().set_active(False)
+            # El micrófono se queda encendido a propósito: con el puntero en
+            # pausa, «sigue» es la forma de volver sin usar las manos.
         if self.aviso is not None and ConfigManager().config.get("avisos_visuales", True):
             self.aviso.mostrar("Activado" if new_state else "En pausa", 1200,
                                color=estilo.PRIMARIO if new_state else estilo.AMBAR)

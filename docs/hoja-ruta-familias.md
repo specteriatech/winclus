@@ -78,9 +78,18 @@ aplicación.
       pestaña Cara (el puntero del sistema manda y la cámara hace los clics y gestos); en la aplicación, «Otro aparato mueve el puntero; Winclus solo hace los clics y los
       gestos» (puntero_externo) en la página Puntero: Winclus no toca el puntero del sistema y deja el clic por parpadeo,
       los gestos, el menú, el teclado y la voz encima de Tobii, Windows Eye Control o cualquier rastreador. Sin SDK.
-- [ ] **Voz completa en Windows**: dictado con corrección («borra eso», «mayúscula», puntuación) y comandos para lo que
-      se ve en pantalla con el reconocimiento del sistema. En el widget ya existen el dictado con confirmación y las
-      órdenes por voz; en la app no hay reconocimiento de voz todavía. Necesita prueba en vivo con micrófono.
+- [x] (19-sep-2026, app) **Voz completa en Windows**: la aplicación escucha por el micrófono con el motor de voz del
+      propio Windows (`Windows.Media.SpeechRecognition` a través de `winsdk`). Página «Escribir» → «Hablarle a Winclus».
+      Órdenes para todo el ordenador («baja», «clic», «doble clic», «pulsa» y el nombre de un botón por UI Automation,
+      «abre el bloc de notas», «busca…», «copia», «pega», «atrás», «lee la pantalla», «teclado», «menú», «pausa»,
+      «sigue», «calla», «deja de escuchar», «¿qué puedo decir?») y dictado con puntuación hablada («coma», «punto»,
+      «nueva línea», «abre interrogación», «mayúscula») y corrección («borra eso», «borra palabra», «borra todo»), con
+      la opción de confirmar antes de escribir. Las órdenes se oyen con una lista cerrada que se rehace cuando cambia la
+      ventana de delante: así el motor acierta más y **funciona sin internet, sin que la voz salga del equipo**. El
+      dictado de texto libre lo condiciona Windows: solo arranca con «Reconocimiento de voz en línea» encendido, y
+      entonces es Windows quien manda el audio a Microsoft; Winclus lo dice en la misma pantalla y abre ese ajuste.
+      Probado sin micrófono con `herramientas\pruebas\prueba_voz.py` (43 comprobaciones) y `recorrido_voz.py`.
+      Falta la prueba en vivo hablando.
 - [x] (18-sep-2026, widget 0.6.8 y app) **Más gestos**: guiño del ojo izquierdo y del derecho (un ojo cerrado con el otro
       abierto: un parpadeo normal no cuenta) e inclinación de la cabeza a cada lado (ángulo entre los rabillos de los ojos),
       con acción asignable en los dos. Lengua fuera: no, MediaPipe no la detecta (se dice aquí).
@@ -163,9 +172,11 @@ traducción, letra para dislexia, espaciado, lectura fácil.
    cerrada (salvo igualar a Grid 3 en amplitud, descartado).
 4. ~~Familia 2: lector completo dentro de la página.~~ Hecho el 18-sep-2026 (0.6.7). En Windows, el instalador ofrece
    NVDA; falta la prueba en vivo con el puntero facial.
-5. ~~Familia 3: precisión ocular, más gestos~~ hechos el 18-sep-2026 (app y 0.6.8); **queda la voz completa en Windows**
-   (dictado y órdenes con el reconocimiento del sistema), que necesita micrófono y prueba en vivo. La familia 6 queda
-   cerrada el 18-sep-2026 (0.6.8), salvo la traducción, descartada.
+5. ~~Familia 3: precisión ocular, más gestos~~ hechos el 18-sep-2026 (app y 0.6.8); ~~la voz completa en Windows~~
+   hecha el 19-sep-2026 (órdenes con lista cerrada sin internet y dictado con puntuación y corrección; el dictado libre
+   depende de que Windows tenga encendido «Reconocimiento de voz en línea»). La familia 6 queda cerrada el
+   18-sep-2026 (0.6.8), salvo la traducción, descartada. **Las seis familias quedan cerradas en código: lo que falta es
+   humano** (pruebas en vivo con micrófono y con personas usuarias).
 
 Cada bloque se publica como versión propia, con su prueba automática, y se marca aquí. Lo que se marque `[-]` se
 dice tal cual en winclus.com/comparar, para no prometer lo que no es.

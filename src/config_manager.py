@@ -82,6 +82,9 @@ VALORES_POR_DEFECTO = {
     "voz_nombre": "",            # descripción de la voz SAPI; vacío = la primera en español
     "voz_velocidad": 0,          # -5 (lenta) .. 5 (rápida)
     "voz_eco": False,            # leer cada palabra al terminarla
+    # Hablarle a Winclus (src/escucha.py, src/control_voz.py)
+    "voz_escuchar_al_activar": False,   # encender el micrófono al activar Winclus
+    "voz_dictado_confirmar": False,     # enseñar lo dictado y esperar un «sí»
     # Imán a los controles (src/iman.py), solo con el puntero por los ojos
     "iman_activo": True,
     "iman_radio_px": 90,

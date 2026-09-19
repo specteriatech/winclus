@@ -42,7 +42,10 @@ app = Analysis(
                     ('configs/Inicial/mouse_bindings.json', 'configs/Inicial'),
                     (CURSOR_LIMPIO.as_posix(), 'configs/Inicial'),
                     (ctk_init.parent.as_posix(), 'customtkinter')],
-    hiddenimports=['mediapipe.tasks.c'],
+    hiddenimports=['mediapipe.tasks.c',
+                   # winsdk carga sus módulos por nombre (reconocimiento de voz)
+                   'winsdk.windows.media.speechrecognition',
+                   'winsdk.windows.globalization'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
