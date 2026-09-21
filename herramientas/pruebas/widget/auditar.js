@@ -17,7 +17,7 @@ if (!urls.length) { console.log("Uso: node auditar.js https://sitio [más urls] 
 // aparte, en la revisión humana obligatoria del informe: la propia resolución (2.2.3.8) avisa de
 // que los validadores automáticos no bastan.
 const CRITERIOS_1519 = {
-  "CC1 Alternativa texto para elementos no textuales": ["image-alt", "input-image-alt", "area-alt", "object-alt", "svg-img-alt", "role-img-alt", "image-redundant-alt"],
+  "CC1 Alternativa texto para elementos no textuales": ["captcha", "image-alt", "input-image-alt", "area-alt", "object-alt", "svg-img-alt", "role-img-alt", "image-redundant-alt"],
   "CC2 Complemento para vídeos o elementos multimedia": ["video-caption", "audio-caption", "video-description"],
   "CC3 Guion para solo vídeo y solo audio": ["transcripcion"],
   "CC4 Textos e imágenes ampliables y en tamaños adecuados": ["zoom-200", "meta-viewport", "meta-viewport-large"],
@@ -35,7 +35,7 @@ const CRITERIOS_1519 = {
   "CC16 Orden adecuado de los elementos al navegar con tabulación": ["tabindex"],
   "CC17 Foco visible al navegar con tabulación": ["foco-visible"],
   "CC18 No utilizar audio automático": ["no-autoplay-audio"],
-  "CC19 Permitir control de eventos temporizados": ["meta-refresh-no-exceptions"],
+  "CC19 Permitir control de eventos temporizados": ["tiempo-sesion", "meta-refresh-no-exceptions"],
   "CC20 Permitir control de contenidos con movimiento y parpadeo": ["blink", "marquee"],
   "CC21 No generar actualización automática de páginas": ["meta-refresh"],
   "CC22 No generar cambios automáticos al recibir el foco o entradas": ["cambio-al-foco"],
@@ -45,7 +45,7 @@ const CRITERIOS_1519 = {
   "CC26 Enlaces adecuados": ["link-name", "enlace-vago"],
   "CC27 Idioma": ["html-has-lang", "html-lang-valid", "valid-lang", "html-xml-lang-mismatch"],
   "CC28 Manejo del error": [],
-  "CC29 Imágenes de texto": ["image-redundant-alt"],
+  "CC29 Imágenes de texto": ["captcha-imagen", "image-redundant-alt"],
   "CC30 Objetos programados": ["aria-*", "aria-allowed-attr", "aria-required-attr", "aria-valid-attr", "aria-valid-attr-value", "aria-roles", "aria-hidden-focus", "nested-interactive", "button-name", "scrollable-region-focusable"],
   "CC31 Desde una letra hasta un elemento complejo utilizable": ["charset-utf8"],
   "CC32 Manejable por teclado": ["no-keyboard-trap", "accesskeys", "focusable-content"],
@@ -55,10 +55,26 @@ const CRITERIOS_1519 = {
 function criterioDe(id) { for (const c in CRITERIOS_1519) if (CRITERIOS_1519[c].some((r) => r === id || (r.endsWith("*") && id.startsWith(r.slice(0, -1))))) return c; return "Otros criterios WCAG"; }
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
+// CC19: los límites de tiempo de sesión no se ven en el HTML, se programan. Antes de que cargue la página se
+// envuelven setTimeout y setInterval para anotar los de 30 s o más (sin cambiar lo que hacen); después se mira
+// si su código cierra la sesión o cambia de página. Un temporizador así sin aviso previo deja fuera a quien
+// lee, escribe o se mueve despacio: pierde el trámite a medias.
+function vigilarTiempos() {
+  const lista = (window.__wclTiempos = []);
+  ["setTimeout", "setInterval"].forEach((nombre) => {
+    const orig = window[nombre];
+    window[nombre] = function (fn, ms) {
+      try { if (+ms >= 30000) lista.push({ tipo: nombre, ms: +ms, codigo: String(fn).slice(0, 600) }); } catch (e) {}
+      return orig.apply(this, arguments);
+    };
+  });
+}
+
 async function auditarUrl(nav, url) {
   const res = { url, paginas: [], extra: [] };
   for (const [nombre, vista] of [["escritorio 1280 px", { width: 1280, height: 900 }], ["móvil 390 px", { width: 390, height: 844 }]]) {
     const ctx = await nav.newContext({ viewport: vista, ignoreHTTPSErrors: true });
+    await ctx.addInitScript(vigilarTiempos);
     const page = await ctx.newPage();
     const r = { vista: nombre, ok: false, error: "", violaciones: [], revisados: 0, titulo: "", lang: "" };
     try {
@@ -101,8 +117,32 @@ async function auditarUrl(nav, url) {
           // CC12: varias vías para llegar a las páginas
           const mapa = Array.from(document.querySelectorAll("a[href]")).some((a) => /mapa del sitio|sitemap/i.test(txt(a)));
           const buscador = !!document.querySelector("input[type=search],[role=search]");
+          // CC1 y CC29: CAPTCHA. Los que plantean un desafío (marcar imágenes, copiar letras, escuchar un audio)
+          // dejan fuera a personas ciegas, con discapacidad intelectual o con movilidad reducida; los invisibles
+          // solo muestran desafío si sospechan. Se distinguen porque el riesgo no es el mismo.
+          const fuentes = Array.from(document.querySelectorAll("script[src],iframe[src]")).map((e) => e.getAttribute("src") || "");
+          const fuente = (re) => fuentes.some((s) => re.test(s));
+          const desafio = [], invisible = [];
+          const rc = document.querySelector(".g-recaptcha");
+          // dibujado desde JavaScript (sin .g-recaptcha): el iframe de Google dice su tamaño en la dirección
+          const ancla = fuentes.find((s) => /recaptcha\/(api2|enterprise)\/anchor/.test(s));
+          if ((rc && rc.getAttribute("data-size") !== "invisible") || (ancla && !/[?&]size=invisible/.test(ancla))) desafio.push("reCAPTCHA («No soy un robot»)");
+          else if (rc || fuente(/(google\.com|recaptcha\.net)\/recaptcha\/(api|enterprise)\.js/)) invisible.push("reCAPTCHA invisible");
+          const hc = document.querySelector(".h-captcha");
+          if (hc && hc.getAttribute("data-size") !== "invisible") desafio.push("hCaptcha");
+          else if (hc || fuente(/hcaptcha\.com/)) invisible.push("hCaptcha invisible");
+          if (document.querySelector(".cf-turnstile") || fuente(/challenges\.cloudflare\.com\/turnstile/)) invisible.push("Cloudflare Turnstile");
+          const esCaptcha = (e) => /captcha/i.test([e.id, e.className && e.className.baseVal == null ? e.className : "", e.getAttribute("name"), e.getAttribute("src"), e.getAttribute("alt")].join(" "));
+          const captchaImagen = Array.from(document.querySelectorAll("img,canvas")).filter((e) => esCaptcha(e) && !/recaptcha|hcaptcha/i.test(e.getAttribute("src") || "")).length
+            + (/escrib[ae] (los caracteres|el (texto|c[óo]digo)) (de|que (ve|ves|aparece)) (en )?la imagen/i.test(document.body.innerText || "") ? 1 : 0);
+          // CC19: límites de tiempo. Temporizadores largos que cierran la sesión o cambian de página, y avisos en el texto
+          const tiempos = (window.__wclTiempos || []).filter((t) => t.ms >= 60000 &&
+            /location\s*(\.\s*(href|assign|replace|reload)\b|=)|logout|log-out|signout|sign-out|cerrar.?sesi|expir|caduc/i.test(t.codigo))
+            .map((t) => ({ tipo: t.tipo, minutos: Math.round(t.ms / 6000) / 10 }));
+          const avisoTiempo = ((document.body.innerText || "").match(/(su|tu) sesi[óo]n (expirar[áa]|caducar[áa]|finalizar[áa]|terminar[áa]|se cerrar[áa])[^.\n]{0,40}|tiempo (restante|de sesi[óo]n)[^.\n]{0,30}|sesi[óo]n (expirada|caducada)|session (will )?(expire|time ?out)[^.\n]{0,30}|you will be logged out[^.\n]{0,30}/i) || [""])[0].trim();
           return { scrollX, declaracion, salto, videos, iframesVideo, antes,
-                   listasDeUno, tablasDeUno, vagos, alFoco, charset, transcripciones, menuPie, enlacesRuta, mapa, buscador };
+                   listasDeUno, tablasDeUno, vagos, alFoco, charset, transcripciones, menuPie, enlacesRuta, mapa, buscador,
+                   desafio, invisible, captchaImagen, tiempos, avisoTiempo };
         });
         if (extra.scrollX) res.extra.push({ id: "zoom-200", criterio: "CC4 Texto ampliable al 200 %", impact: "serious", help: "Con el texto al 200 % aparece desplazamiento horizontal", detalle: "El contenido debería reorganizarse (WCAG 1.4.4 y 1.4.10)." });
         if (extra.listasDeUno) res.extra.push({ id: "lista-de-uno", criterio: "CC9 Contenedores como tablas y listas usados correctamente", impact: "minor", help: extra.listasDeUno + " lista(s) con un solo elemento", detalle: "El Anexo 1 (2.2.3.3) dice que una lista o una tabla para un solo elemento no es correcta: usa un párrafo." });
@@ -112,6 +152,16 @@ async function auditarUrl(nav, url) {
         if (extra.charset && extra.charset !== "utf-8") res.extra.push({ id: "charset-utf8", criterio: "CC31 Desde una letra hasta un elemento complejo utilizable", impact: "moderate", help: "La página declara la codificación «" + extra.charset + "»", detalle: "El Anexo 1 pide UTF-8 para que las tildes y la ñ lleguen bien a las ayudas técnicas." });
         if (extra.videos.length && !extra.transcripciones) res.extra.push({ id: "transcripcion", criterio: "CC3 Guion para solo vídeo y solo audio", impact: "moderate", help: "Hay vídeo pero no se encontró transcripción ni guion en texto", detalle: "Junto al vídeo o en un enlace señalado, para quien no puede verlo ni oírlo (Anexo 1, 2.2.3.1)." });
         if (!extra.mapa && !extra.buscador) res.extra.push({ id: "multiples-vias", criterio: "CC12 Permitir encontrar las páginas por múltiples vías", impact: "moderate", help: "No se encontró buscador ni enlace al mapa del sitio", detalle: "Toda página debe poder alcanzarse por más de un camino (Anexo 1, 2.2.3.3)." });
+        if (extra.desafio.length) res.extra.push({ id: "captcha", impact: "serious", help: "CAPTCHA con desafío: " + extra.desafio.join(", "),
+          detalle: "Pedir que se marquen imágenes, se copien letras o se escuche un audio deja fuera a personas ciegas, sordociegas, con discapacidad intelectual, con dislexia o con movilidad reducida. WCAG 1.1.1 exige una alternativa en otra modalidad y WCAG 2.2 (3.3.8) no permite exigir una prueba cognitiva sin alternativa. Qué hacer: cambiarlo por una verificación sin desafío (reCAPTCHA v3, Turnstile no interactivo, un campo trampa oculto, límite de intentos) y ofrecer siempre otra vía para el trámite (teléfono, correo, ventanilla). Una tecnología de apoyo no debe saltárselo: la barrera tiene que quitarla el sitio." });
+        if (extra.invisible.length && !extra.desafio.length) res.extra.push({ id: "captcha", impact: "minor", help: "Verificación antirrobots invisible: " + extra.invisible.join(", "),
+          detalle: "No plantea desafío a la mayoría, pero si sospecha puede mostrar uno (sobre todo a quien navega con teclado, lector de pantalla o conexiones compartidas). Comprobar a mano que, si aparece, haya otra forma de terminar el trámite." });
+        if (extra.captchaImagen) res.extra.push({ id: "captcha-imagen", impact: "critical", help: extra.captchaImagen + " CAPTCHA de imagen con letras para copiar",
+          detalle: "Es texto dentro de una imagen que hay que transcribir: un lector de pantalla no puede leerlo y el Anexo 1 (CC29) pide no entregar texto en imágenes. Hay que quitarlo (ver el CAPTCHA en CC1 para las alternativas)." });
+        if (extra.tiempos.length) res.extra.push({ id: "tiempo-sesion", impact: "serious", help: "Temporizador de " + extra.tiempos.map((t) => t.minutos + " min").join(", ") + " que cierra la sesión o cambia de página",
+          detalle: "Quien lee, escribe o se mueve despacio pierde el trámite a medias. WCAG 2.2.1 y el Anexo 1 (CC19): avisar al menos 20 segundos antes, dejar ampliar el tiempo con una acción sencilla (al menos 10 veces) y no borrar lo que la persona ya escribió. Comprobar a mano que el aviso existe y se anuncia a los lectores de pantalla." });
+        else if (extra.avisoTiempo) res.extra.push({ id: "tiempo-sesion", impact: "moderate", help: "La página habla de un límite de tiempo: «" + extra.avisoTiempo.slice(0, 80) + "»",
+          detalle: "Comprobar a mano que se avisa antes de que se acabe, que se puede ampliar con una acción sencilla y que no se pierde lo escrito (WCAG 2.2.1, Anexo 1 CC19)." });
         res.menuPie = extra.menuPie; res.enlacesRuta = extra.enlacesRuta;
         if (!extra.declaracion) res.extra.push({ id: "declaracion", criterio: "CC15 Declaración de accesibilidad", impact: "moderate", help: "No se encontró un enlace a la declaración de accesibilidad", detalle: "La Res. 1519 pide publicarla (nivel alcanzado, fecha, contacto). Winclus genera un borrador en este informe." });
         if (!extra.salto) res.extra.push({ id: "skip-link", criterio: "CC8 Saltar bloques", impact: "moderate", help: "No se encontró un enlace «Ir al contenido»", detalle: "Un enlace al principio de la página que lleve al contenido principal (WCAG 2.4.1)." });
@@ -122,6 +172,9 @@ async function auditarUrl(nav, url) {
     res.paginas.push(r);
     await ctx.close();
   }
+  // El criterio sale siempre de la tabla del Anexo 1 por el id de la regla, nunca escrito a mano: así un
+  // hallazgo no puede llevar un número o un nombre que no son los de la resolución.
+  res.extra.forEach((x) => { x.criterio = criterioDe(x.id); });
   return res;
 }
 
@@ -159,6 +212,7 @@ function informeHtml(resultados) {
   const fecha = new Date().toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" });
   // Lo que solo se ve comparando páginas se añade a la primera, para que salga en el informe
   const entrePaginas = coherenciaEntrePaginas(resultados);
+  entrePaginas.forEach((x) => { x.criterio = criterioDe(x.id); });
   if (entrePaginas.length && resultados[0]) resultados[0].extra = resultados[0].extra.concat(entrePaginas);
   let total = 0, porCriterio = {};
   resultados.forEach((r) => { r.paginas.forEach((p) => p.violaciones.forEach((v) => { total += v.nodos.length; const c = criterioDe(v.id); porCriterio[c] = (porCriterio[c] || 0) + v.nodos.length; })); r.extra.forEach((x) => { total++; porCriterio[x.criterio] = (porCriterio[x.criterio] || 0) + 1; }); });
@@ -195,6 +249,7 @@ function informeHtml(resultados) {
 <tr><td>CC16 · CC17 · CC32 (tabulación, foco, teclado)</td><td>Recorrer todo el sitio solo con teclado: orden lógico, foco siempre visible, ninguna trampa, menús y ventanas emergentes manejables.</td></tr>
 <tr><td>CC18 · CC19 · CC20 · CC21 · CC22 (audio, tiempo, movimiento, refresco, cambios de contexto)</td><td>Nada arranca solo, todo lo que se mueve o parpadea se puede parar, los tiempos se pueden ampliar y nada cambia de página al recibir el foco.</td></tr>
 <tr><td>CC23 · CC26 · CC27 (títulos, enlaces, idioma)</td><td>Títulos de página únicos y descriptivos, enlaces que se entienden fuera de contexto, cambios de idioma marcados.</td></tr>
+<tr><td>CC1 · CC19 · CC29 (CAPTCHA y tiempo de sesión en trámites)</td><td>Hacer un trámite completo (inicio de sesión, PQRSD, pagos) con lector de pantalla y solo con teclado: ningún CAPTCHA con desafío sin otra vía, aviso antes de que caduque la sesión con opción de ampliarla y sin perder lo escrito. El escáner no ve lo que está detrás de un inicio de sesión.</td></tr>
 <tr><td>CC30 · CC31 (objetos programados, componentes)</td><td>Carruseles, mapas, calendarios, visores de PDF y componentes a medida: usables con teclado y anunciados por el lector.</td></tr>
 <tr><td>Capítulo 3 (documentos)</td><td>Cada PDF, Word, Excel y presentación descargable: etiquetado, idioma, encabezados, orden de lectura, texto alternativo, sin información solo por color.</td></tr>
 <tr><td>Lenguaje claro (§1.4, principio comprensible)</td><td>Que los textos de trámites se entiendan sin jerga; una persona ajena a la entidad debe poder decir de qué va la página.</td></tr>

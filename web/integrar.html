@@ -100,7 +100,7 @@ media-src  blob:;                                  /* la cámara, si se permite 
   <p>Si el servicio falla, el widget usa las reglas locales. Un ejemplo de servicio con la API de Claude en Node o Python cabe en 30 líneas: recibe el texto, pide «reescríbelo en lenguaje claro, frases de menos de 20 palabras, sin jerga, con los pasos en lista» y devuelve el resultado.</p>
 
   <h2 id="audit">7. Winclus Audit: cómo está tu sitio</h2>
-  <p>Escáner de accesibilidad: axe-core (WCAG 2.1 y 2.2 AA) en escritorio y móvil, más comprobaciones de la Resolución 1519 (texto al 200 %, declaración, ir al contenido, subtítulos). Genera un informe agrupado por criterio con cómo corregir cada cosa y un borrador de declaración de accesibilidad.</p>
+  <p>Escáner de accesibilidad: axe-core (WCAG 2.1 y 2.2 AA) en escritorio y móvil, más comprobaciones de la Resolución 1519 (texto al 200 %, declaración, ir al contenido, subtítulos, CAPTCHA que bloquean el trámite y sesiones que caducan sin aviso), cada una con el número y el nombre oficial de su criterio del Anexo 1. Genera un informe agrupado por criterio con cómo corregir cada cosa y un borrador de declaración de accesibilidad.</p>
   <p>Se entrega con el acuerdo de soporte. Ejecución: <code>node auditar.js https://tu-sitio.gov.co --entidad "Alcaldía de …" --salida informe</code>. Pídelo en hola@winclus.com.</p>
   <p>Un escáner detecta entre el 30 y el 50 % de las barreras; el resto sale de la revisión manual y de probar con personas con discapacidad. El informe lo dice.</p>
 

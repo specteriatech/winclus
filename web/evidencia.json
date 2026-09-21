@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-21T16:57:38.144Z",
-  "commit": "67b213a",
+  "fecha": "2026-09-21T17:13:05.791Z",
+  "commit": "3adea52",
   "version": "0.6.15",
   "pruebas": 37,
-  "comprobaciones": 674,
+  "comprobaciones": 682,
   "fallan": 0,
   "resultados": [
     {
@@ -49,7 +49,7 @@
       "ok": 14,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 3,
       "lineas": [
         "OK  ninguna tecla con tabindex=-1",
         "OK  con Tab se llega al teclado en pantalla",
@@ -187,7 +187,7 @@
       "ok": 6,
       "mal": 0,
       "bien": true,
-      "segundos": 3,
+      "segundos": 8,
       "lineas": [
         "OK  los cuatro filtros son SVGFilterElement",
         "OK  el filtro protan se aplica y cambia el rojo de la página",
@@ -207,7 +207,7 @@
       "ok": 140,
       "mal": 0,
       "bien": true,
-      "segundos": 13,
+      "segundos": 14,
       "lineas": [
         "OK  / a 1280 px: axe sin incumplimientos",
         "OK  / a 1280 px: carga el widget",
@@ -454,7 +454,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 3,
+      "segundos": 8,
       "lineas": [
         "OK  un audio de la página muestra el aviso con su nombre",
         "OK  un audio creado por código",
@@ -686,7 +686,7 @@
       "ok": 11,
       "mal": 0,
       "bien": true,
-      "segundos": 6,
+      "segundos": 1,
       "lineas": [
         "OK  la calibración tiene 9, 13 o 25 puntos distintos según «Rápida», «Normal» o «Completa»",
         "OK  el panel tiene las opciones de calibración y «Otro aparato mueve el puntero»",
@@ -844,7 +844,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 7,
+      "segundos": 8,
       "lineas": [
         "OK  «¿Dónde estoy?» dice título, ruta, encabezados y avance",
         "OK  hay resumen: de qué va y lo más importante",
@@ -863,14 +863,18 @@
     },
     {
       "archivo": "prueba_auditar.js",
-      "que": "Winclus Audit: informe por criterio de la Res. 1519 y borrador de declaración.",
+      "que": "Winclus Audit: informe por criterio de la Res. 1519 (cada hallazgo con su número y nombre oficial) y borrador de declaración; detecta CAPTCHA con desafío o de imagen y sesiones que caducan sin aviso, y no confunde los invisibles ni los temporizadores inofensivos.",
       "criterios": [
-        "Res. 1519 Anexo 1"
+        "Res. 1519 Anexo 1",
+        "Res. 1519 CC1",
+        "Res. 1519 CC19",
+        "Res. 1519 CC29",
+        "WCAG 2.2.1"
       ],
-      "ok": 8,
+      "ok": 16,
       "mal": 0,
       "bien": true,
-      "segundos": 9,
+      "segundos": 17,
       "lineas": [
         "OK  el escáner termina bien",
         "OK  genera informe.html, declaracion.html y resultados.json",
@@ -879,6 +883,14 @@
         "OK  las comprobaciones de la Res. 1519 detectan vídeo sin subtítulos, sin declaración y sin «ir al contenido»",
         "OK  el informe agrupa por criterio de la Res. 1519 y avisa de sus límites",
         "OK  cada CC lleva el nombre que tiene en el Anexo 1 de la Resolución 1519",
+        "OK  cada hallazgo lleva el número y el nombre oficial de su criterio",
+        "OK  un CAPTCHA con casilla se marca como barrera seria en CC1 y dice cómo quitarlo",
+        "OK  un CAPTCHA de imagen con letras se marca como crítico en CC29",
+        "OK  un temporizador que cierra la sesión a los 15 min se marca en CC19 con lo que exige la WCAG 2.2.1",
+        "OK  un CAPTCHA invisible solo se señala para revisar, y un temporizador que no cierra nada no se marca",
+        "OK  un reCAPTCHA con casilla dibujado desde JavaScript",
+        "OK  la portada de winclus.com no da falsos positivos de CAPTCHA ni de tiempo",
+        "OK  la revisión manual pide probar un trámite completo",
         "OK  el borrador de declaración lleva la entidad, la norma, el estado y los huecos por rellenar"
       ]
     },
@@ -979,7 +991,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 2,
       "lineas": [
         "OK  ningún medio pasa del volumen máximo",
         "OK  sin voz elegida, usa la neuronal de es-CO",
@@ -1006,7 +1018,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 11,
+      "segundos": 16,
       "lineas": [
         "OK  demo.html pasa axe",
         "OK  la demo tiene los siete pasos",
@@ -1029,7 +1041,7 @@
       "ok": 21,
       "mal": 0,
       "bien": true,
-      "segundos": 12,
+      "segundos": 19,
       "lineas": [
         "OK  chromium: recorrido básico",
         "OK  chromium: sin speechSynthesis ni SpeechRecognition",
@@ -1114,7 +1126,7 @@
       "ok": 26,
       "mal": 0,
       "bien": true,
-      "segundos": 6,
+      "segundos": 7,
       "lineas": [
         "OK  «Legible» pone Verdana en la página, no en el panel, y se guarda",
         "OK  «Para dislexia» pide OpenDyslexic desde winclus.com/fuentes",
@@ -1160,7 +1172,7 @@
       "ok": 18,
       "mal": 0,
       "bien": true,
-      "segundos": 4,
+      "segundos": 5,
       "lineas": [
         "OK  reglas AAA de axe sobre el panel: sin violaciones",
         "OK  1.4.6: todo el texto del panel tiene contraste 7:1",

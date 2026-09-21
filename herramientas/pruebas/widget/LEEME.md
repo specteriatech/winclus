@@ -73,7 +73,7 @@
   0,35 s, más deprisa cuanto más pegado, banda «Bajando» y aviso de voz), en la de arriba (sube), fuera (para) y con el interruptor apagado.
 - `node prueba_facil.js`: `pagina-tramite.html`: «Explicar en fácil» por reglas (jerga → palabras corrientes con glosario,
   frases cortas, lo importante primero), con servicio de IA simulado y su caída, resaltado palabra a palabra, «¿Dónde estoy?».
-- `node prueba_auditar.js`: Winclus Audit sobre la portada local y una página mala: informe, declaración y JSON.
+- `node prueba_auditar.js`: Winclus Audit sobre cuatro páginas locales (portada, una página mala, una con CAPTCHA invisible y otra con reCAPTCHA dibujado desde JavaScript): informe, declaración y JSON; cada hallazgo con el criterio oficial del Anexo 1; CAPTCHA con desafío (CC1), CAPTCHA de imagen (CC29) y temporizador que cierra la sesión (CC19), sin falsos positivos en la portada ni con temporizadores inofensivos.
 - `node prueba_sdk.js`: `<winclus-widget>` (pagina-sdk.html), guía integrar.html, plugin WordPress y módulo Drupal.
 - `node prueba_idiomas.js`: panel en inglés en página en inglés, `data-ui`, idioma añadido con `WinclusIdiomas`, sin diccionario → español.
 - `node auditar.js https://sitio [--salida carpeta] [--entidad "Nombre"]`: el escáner (no es una prueba).
