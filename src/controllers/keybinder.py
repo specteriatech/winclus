@@ -108,6 +108,13 @@ class Keybinder(metaclass=Singleton):
 
         elif mode == "single":
             if (val > thres):
+                from src.barrido import Barrido
+                if action == "left" and Barrido().activo:
+                    # Con el barrido activo, el gesto de clic es la señal del pulsador
+                    if not self.key_states[state_name]:
+                        Barrido().senal()
+                    self.key_states[state_name] = True
+                    return
                 if not self.key_states[state_name]:
                     pydirectinput.click(button=action)
                     self.start_hold_ts = time.time()

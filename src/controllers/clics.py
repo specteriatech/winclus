@@ -148,6 +148,11 @@ class ControladorClic(metaclass=Singleton):
             self.tick_quieto()
 
     def clic(self) -> None:
+        from src.barrido import Barrido
+        if Barrido().activo:
+            # Con el barrido activo, el gesto de clic es la señal del pulsador: pulsa lo que marca el marco
+            Barrido().senal()
+            return
         if self._sobre_boton_pausa():
             # Un parpadeo o una permanencia encima de «Pausar» no apagan el
             # puntero: hace falta cerrar los ojos 1,2 s.

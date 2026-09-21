@@ -30,6 +30,8 @@ from src.control_voz import ControlVoz
 from src.detectors.aprendizaje import AprendizajeClics
 from src.voz import Voz
 from src.gui.anillo import Anillo
+from src.gui.marco_barrido import MarcoBarrido
+from src.barrido import Barrido
 from src.gui.calibracion import VentanaRecentrado
 from src.gui.lupa import Lupa
 from src.gui.aviso import AvisoPuntero
@@ -221,6 +223,13 @@ class MainGui():
         Iman().avisar = self.aviso.mostrar
         Iman().start()
 
+        # Barrido con un pulsador en todo Windows (src/barrido.py): marco, voz y aviso desde el hilo de tkinter
+        self.marco_barrido = MarcoBarrido(self.tk_root)
+        Barrido().decir = lambda texto: Voz().decir(texto)
+        Barrido().avisar = lambda texto: self.tk_root.after(0, self.aviso.mostrar, texto)
+        if (ConfigManager().config or {}).get("barrido_activo", False):
+            Barrido().activar()
+
         # Asistente: habla con la voz de Winclus y se abre desde el menú de clics
         Asistente().decir = lambda texto: Voz().decir(texto, forzar=True)
         ControladorClic().abrir_asistente = self.abrir_asistente
@@ -273,6 +282,8 @@ class MainGui():
             return
         try:
             self.anillo.actualizar(ControladorClic().estado_anillo())
+            if self.marco_barrido is not None:
+                self.marco_barrido.actualizar(Barrido().rect_actual() if Barrido().activo else None)
             if self.aviso is not None:
                 self.aviso.actualizar()
         except Exception as e:
@@ -343,6 +354,10 @@ class MainGui():
         if self.anillo is not None:
             self.anillo.destruir()
             self.anillo = None
+        Barrido().desactivar()
+        if getattr(self, "marco_barrido", None) is not None:
+            self.marco_barrido.destruir()
+            self.marco_barrido = None
         if getattr(self, "aviso", None) is not None:
             self.aviso.destruir()
             self.aviso = None

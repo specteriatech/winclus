@@ -1,4 +1,4 @@
-﻿# Copyright 2023 Google LLC
+# Copyright 2023 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ class PageHome(SafeDisposableFrame):
         self.configure(fg_color="transparent")
 
         self.grid_columnconfigure((0, 1), weight=1, uniform="col")
-        self.grid_rowconfigure(5, weight=1)
+        self.grid_rowconfigure(6, weight=1)
 
         # Título y explicación
         titulo = customtkinter.CTkLabel(master=self,
@@ -99,6 +99,17 @@ class PageHome(SafeDisposableFrame):
                      padx=(28 if col == 0 else 10, 28 if col == 1 else 10),
                      pady=10, sticky="ew")
 
+        # Un solo pulsador: enciende o apaga el barrido en todo Windows (src/barrido.py). No es una página: la tarjeta
+        # misma dice si está encendido, y se guarda en el perfil.
+        self.btn_barrido = customtkinter.CTkButton(
+            master=self, text="", image=estilo.imagen_doble("iconos/reloj", ICONO_SIZE), compound="left", anchor="w",
+            height=96, corner_radius=18, border_width=2, border_color=estilo.BORDE, fg_color=estilo.TARJETA,
+            hover_color=estilo.PRIMARIO_SUAVE, text_color=estilo.TEXTO, font=estilo.fuente("boton_normal"),
+            command=self.alternar_barrido)
+        fila = 2 + len(ACCESOS) // 2
+        self.btn_barrido.grid(row=fila, column=0, columnspan=2, padx=28, pady=10, sticky="ew")
+        self.pintar_barrido()
+
         # Aviso
         aviso = customtkinter.CTkLabel(
             master=self,
@@ -107,5 +118,24 @@ class PageHome(SafeDisposableFrame):
             anchor="w",
             text_color=estilo.TEXTO_SUAVE,
             font=estilo.fuente("pequena"))
-        aviso.grid(row=6, column=0, columnspan=2, padx=28, pady=(6, 18),
+        aviso.grid(row=7, column=0, columnspan=2, padx=28, pady=(6, 18),
                    sticky="sw")
+
+    def pintar_barrido(self):
+        from src.barrido import Barrido
+        if Barrido().activo:
+            estado = "Encendido: Winclus va marcando y tú pulsas Espacio o haces el gesto de clic"
+        else:
+            estado = "Apagado. Tócalo para usar Windows con un solo botón"
+        self.btn_barrido.configure(text=f"  Un solo pulsador\n  {estado}")
+
+    def alternar_barrido(self):
+        from src.barrido import Barrido
+        from src.config_manager import ConfigManager
+        if Barrido().activo:
+            Barrido().desactivar()
+        else:
+            Barrido().activar()
+        ConfigManager().set_temp_config("barrido_activo", Barrido().activo)
+        ConfigManager().apply_config()
+        self.pintar_barrido()

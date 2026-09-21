@@ -85,6 +85,11 @@ VALORES_POR_DEFECTO = {
     # Hablarle a Winclus (src/escucha.py, src/control_voz.py)
     "voz_escuchar_al_activar": False,   # encender el micrófono al activar Winclus
     "voz_dictado_confirmar": False,     # enseñar lo dictado y esperar un «sí»
+    # Barrido con un pulsador en todo Windows (src/barrido.py)
+    "barrido_activo": False,
+    "barrido_ms": 1500,          # tiempo en cada control
+    "barrido_tecla": "espacio",  # tecla-pulsador: "espacio", "intro", "f8", "f9", "f10" o "ninguna" (solo el gesto)
+    "barrido_voz": True,         # decir el nombre de cada control marcado
     # Imán a los controles (src/iman.py), solo con el puntero por los ojos
     "iman_activo": True,
     "iman_radio_px": 90,
