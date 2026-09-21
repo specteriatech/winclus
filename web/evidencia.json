@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-21T20:19:48.435Z",
-  "commit": "9565c62",
-  "version": "0.6.17",
-  "pruebas": 42,
-  "comprobaciones": 763,
+  "fecha": "2026-09-21T21:02:06.587Z",
+  "commit": "98c302f",
+  "version": "0.6.18",
+  "pruebas": 46,
+  "comprobaciones": 796,
   "fallan": 0,
   "resultados": [
     {
@@ -16,7 +16,7 @@
       "ok": 18,
       "mal": 0,
       "bien": true,
-      "segundos": 15,
+      "segundos": 10,
       "lineas": [
         "OK  sin ajustes",
         "OK  oscuro",
@@ -131,17 +131,17 @@
       "bien": true,
       "segundos": 4,
       "lineas": [
-        "OK  vista sencilla con una opción puesta: 0 regla(s) incumplida(s), 0 elemento(s), 592 revisados",
-        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 679 revisados",
-        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 968 revisados",
-        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 962 revisados",
-        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 753 revisados",
-        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1927 revisados",
-        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 662 revisados",
-        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 584 revisados",
-        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 575 revisados",
-        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 575 revisados",
-        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 451 revisados",
+        "OK  vista sencilla con una opción puesta: 0 regla(s) incumplida(s), 0 elemento(s), 595 revisados",
+        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 682 revisados",
+        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 971 revisados",
+        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 976 revisados",
+        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 759 revisados",
+        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1930 revisados",
+        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 665 revisados",
+        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 587 revisados",
+        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 578 revisados",
+        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 578 revisados",
+        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 454 revisados",
         "OK  Pausar: texto sobre fondo: 7.86:1",
         "OK  interruptor apagado sobre el panel: 3.13:1",
         "OK  interruptor encendido sobre el panel: 7.86:1",
@@ -163,7 +163,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 6,
       "lineas": [
         "OK  el widget carga con CSP estricta",
         "OK  sin errores JS",
@@ -188,7 +188,7 @@
       "ok": 6,
       "mal": 0,
       "bien": true,
-      "segundos": 3,
+      "segundos": 8,
       "lineas": [
         "OK  los cuatro filtros son SVGFilterElement",
         "OK  el filtro protan se aplica y cambia el rojo de la página",
@@ -208,7 +208,7 @@
       "ok": 140,
       "mal": 0,
       "bien": true,
-      "segundos": 16,
+      "segundos": 15,
       "lineas": [
         "OK  / a 1280 px: axe sin incumplimientos",
         "OK  / a 1280 px: carga el widget",
@@ -479,7 +479,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 7,
       "lineas": [
         "OK  «números» pone etiquetas 1, 2, 3… sobre lo que se puede pulsar",
         "OK  «clic 2» pulsa el botón que lleva el 2",
@@ -552,7 +552,7 @@
       "ok": 9,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 1,
       "lineas": [
         "OK  el tablero se abre con categorías y pictogramas",
         "OK  las imágenes vienen de ARASAAC y se atribuye la licencia",
@@ -1141,7 +1141,7 @@
       "ok": 4,
       "mal": 0,
       "bien": true,
-      "segundos": 9,
+      "segundos": 14,
       "lineas": [
         "OK  el navegador avisa de cada cuadro nuevo",
         "OK  no se infiere más veces que cuadros entrega la cámara",
@@ -1287,7 +1287,7 @@
       "ok": 24,
       "mal": 0,
       "bien": true,
-      "segundos": 5,
+      "segundos": 10,
       "lineas": [
         "OK  el panel se abre en la vista sencilla: sin pestañas, con «Ver más opciones» y «Volver a como estaba» fijos abajo",
         "OK  hay 10 opciones, con «No veo» y «Confundo los colores» nuevas",
@@ -1392,6 +1392,99 @@
         "OK  la grabación sigue al volver a la página",
         "OK  «Borrar» la quita",
         "OK  «Restablecer todo» borra también las frases con su voz",
+        "OK  sin errores de JavaScript"
+      ]
+    },
+    {
+      "archivo": "prueba_atajo_imagenes.js",
+      "que": "Alt+Mayúsculas+W abre el panel desde cualquier sitio; las imágenes sin texto alternativo se dicen como tales, con la mejor pista de la página y sin inventar, o con la descripción del servicio del sitio (data-describir); la transcripción de los subtítulos en vivo se guarda en un archivo con la hora de cada frase.",
+      "criterios": [
+        "WCAG 2.1.1",
+        "WCAG 1.1.1",
+        "Res. 1519 CC1",
+        "WCAG 1.2.4"
+      ],
+      "ok": 14,
+      "mal": 0,
+      "bien": true,
+      "segundos": 1,
+      "lineas": [
+        "OK  Alt+Mayúsculas+W abre el panel con el foco en la primera opción",
+        "OK  y otra vez lo cierra",
+        "OK  con alt: dice el alt",
+        "OK  con alt vacío: «Imagen decorativa»",
+        "OK  sin alt dentro de una figura: dice que el sitio no la describió y da el pie de foto como pista",
+        "OK  sin alt dentro de un enlace: la pista es el texto del enlace",
+        "OK  sin alt ni texto cerca: la pista sale del nombre del archivo",
+        "OK  si el nombre del archivo no dice nada",
+        "OK  con data-describir, se pide la descripción al servicio del sitio",
+        "OK  y cuando responde, el lector dice esa descripción",
+        "OK  la descripción se guarda: no se vuelve a pedir",
+        "OK  «Guardar lo escrito» aparece cuando hay subtítulos que guardar",
+        "OK  se descarga un .txt con cada frase y su hora",
+        "OK  sin errores de JavaScript"
+      ]
+    },
+    {
+      "archivo": "prueba_pdf.js",
+      "que": "Los PDF del mismo sitio se abren en la lectura limpia con su texto y su título (pdf.js desde winclus.com); los de otro sitio, como siempre; un PDF escaneado se dice que no tiene texto.",
+      "criterios": [
+        "Res. 1519 Anexo 1 cap. 3",
+        "WCAG 1.4.4",
+        "Ley 1680/2013"
+      ],
+      "ok": 8,
+      "mal": 0,
+      "bien": true,
+      "segundos": 10,
+      "lineas": [
+        "OK  con el interruptor apagado, el enlace al PDF hace lo de siempre",
+        "OK  con el interruptor, el enlace a un PDF del sitio no navega",
+        "OK  el PDF se abre en la lectura limpia con su título y su texto",
+        "OK  con las herramientas de siempre: leer en voz alta y explicar en fácil",
+        "OK  un PDF de otro sitio se abre como siempre",
+        "OK  un PDF escaneado",
+        "OK  el interruptor está en la pestaña Ver con su ayuda, y «quiero leer los pdf» lo enciende",
+        "OK  sin errores de JavaScript"
+      ]
+    },
+    {
+      "archivo": "prueba_mascarilla.js",
+      "que": "ELA con ventilación: con una mascarilla oronasal (simulada sobre una cara real) se detecta la cara, el puntero sigue a la cabeza y el parpadeo da la misma señal que sin ella.",
+      "criterios": [
+        "EN 301 549 11.5",
+        "WCAG 2.5.1"
+      ],
+      "ok": 5,
+      "mal": 0,
+      "bien": true,
+      "segundos": 37,
+      "lineas": [
+        "OK  sin mascarilla: cara detectada, puntero al centro y a los dos lados, parpadeo con señal",
+        "OK  con la mascarilla puesta desde el inicio: se detecta la cara, el puntero reposa al centro y sigue a la cabeza a los dos lados",
+        "OK  con la mascarilla puesta desde el inicio: el parpadeo da la misma señal que sin mascarilla",
+        "OK  con la mascarilla puesta después: se detecta la cara, el puntero reposa al centro y sigue a la cabeza a los dos lados",
+        "OK  con la mascarilla puesta después: el parpadeo da la misma señal que sin mascarilla"
+      ]
+    },
+    {
+      "archivo": "prueba_alcance.js",
+      "que": "ELA que avanza y cansancio: «Ajustar el puntero a lo que puedo mover» mide el movimiento de cabeza que queda y lo hace cruzar la pantalla; si ni al máximo alcanza, propone los ojos o un pulsador.",
+      "criterios": [
+        "EN 301 549 11.5",
+        "WCAG 2.5.1",
+        "ISO 9241-171 §9"
+      ],
+      "ok": 6,
+      "mal": 0,
+      "bien": true,
+      "segundos": 39,
+      "lineas": [
+        "OK  sin cámara, dice que primero hay que activarla",
+        "OK  con poco movimiento, la medición sube la velocidad",
+        "OK  y ese mismo movimiento pequeño pasa a cruzar la pantalla",
+        "OK  con movimiento mínimo, pone el máximo y propone los ojos o un pulsador",
+        "OK  elegir «Con un pulsador» enciende el barrido",
         "OK  sin errores de JavaScript"
       ]
     }

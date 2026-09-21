@@ -106,6 +106,10 @@
 - `node prueba_temblor.js`: «Ayudarme a pulsar con el ratón» (0.6.17) con clics reales del ratón.
 - `node prueba_ayuda_voz.js`: «Pedir ayuda» y «Mis frases con mi voz» (0.6.17), con el micrófono simulado de Chromium.
 - `node prueba_documentos.mjs`: capítulo 3.3 del Anexo 1 sobre los PDF de web/ con pdf.js (pdfjs-dist): etiquetado, idioma, título, encabezados, listas, alt en todas las figuras, texto real, índice, permisos y campos.
+- `node prueba_atajo_imagenes.js`: Alt+Mayúsculas+W, imágenes sin alt (pistas y data-describir con un servicio simulado) y guardar la transcripción (0.6.18).
+- `node prueba_pdf.js`: «Abrir los documentos PDF aquí» con el manual real, un PDF de otro origen y uno escaneado generado en la prueba (0.6.18).
+- `node prueba_mascarilla.js`: control con la cara con una mascarilla de ventilación dibujada sobre la cara simulada, con MediaPipe real (0.6.18).
+- `node prueba_alcance.js`: «Ajustar el puntero a lo que puedo mover» (0.6.18) con la cara simulada: movimiento pequeño que pasa a cruzar la pantalla y movimiento mínimo que propone ojos o pulsador.
 - `node prueba_robustez.js`: regresión de los fallos de la revisión del 16-sep-2026 (ver el comentario del archivo).
 - Cualquier prueba corre en otro motor con `NAVEGADOR=firefox node prueba_x.js` (o `webkit`). El WebKit de Playwright en Windows no trae síntesis de voz ni portapapeles: `voz-simulada.js` se inyecta como sustituto y las comprobaciones de portapapeles se saltan en ese motor.
 - Todas las pruebas del widget usan `Winclus.caja` (el shadow root) para llegar a sus piezas; los selectores de
