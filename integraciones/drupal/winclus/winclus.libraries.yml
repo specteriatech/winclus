@@ -1,4 +1,12 @@
+# «widget» carga siempre la última versión de winclus.com: las mejoras llegan solas, sin tocar el sitio.
 widget:
-  version: 0.6.14
   js:
-    https://winclus.com/widget-0.6.14.js: { type: external, attributes: { async: true, data-posicion: derecha, data-idioma: es-CO, integrity: 'sha384-5kgQ+gYpn+UZsgM4kfGQkxCdkwZNSDi/PisNQjzaVpnHZzVdEyO0a2npyXc9K1gG', crossorigin: anonymous } }
+    https://winclus.com/widget.js: { type: external, attributes: { async: true, data-posicion: derecha, data-idioma: es-CO } }
+
+# «widget_fija» solo si la entidad exige integridad de subrecursos (SRI): no cambia nunca y hay que
+# actualizar versión y hash a mano (winclus.com/integrar). Para usarla, cambia 'winclus/widget' por
+# 'winclus/widget_fija' en winclus.module.
+widget_fija:
+  version: 0.6.15
+  js:
+    https://winclus.com/widget-0.6.15.js: { type: external, attributes: { async: true, data-posicion: derecha, data-idioma: es-CO, integrity: 'sha384-QLHXdaShXyTo7wnUZqEgPsakPJwYfE5nZxy78XfZdo3LIB+7Yg0MzwLct5acbTXH', crossorigin: anonymous } }

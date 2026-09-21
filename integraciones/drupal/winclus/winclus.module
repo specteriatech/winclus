@@ -5,7 +5,8 @@
  * Winclus: carga el widget de accesibilidad en todas las páginas.
  *
  * Para cambiar posición, cámara o idioma, edita los atributos data-* en
- * winclus.libraries.yml (o en un tema, con hook_library_info_alter).
+ * winclus.libraries.yml (o en un tema, con hook_library_info_alter). Carga
+ * widget.js, que se actualiza solo; la versión fija con SRI es winclus/widget_fija.
  */
 
 /**

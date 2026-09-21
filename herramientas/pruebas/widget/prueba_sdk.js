@@ -35,6 +35,12 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   comprobar(/Plugin Name: Winclus/.test(wp) && /wp_enqueue_script/.test(wp) && /data-posicion/.test(wp) && /register_setting/.test(wp), "el plugin de WordPress tiene cabecera, encola el script con data-* y ajustes");
   const dr = ["winclus.info.yml", "winclus.libraries.yml", "winclus.module"].map((f) => fs.readFileSync(path.join(RAIZ, "integraciones/drupal/winclus", f), "utf8"));
   comprobar(/type: module/.test(dr[0]) && /widget-0\.\d+\.\d+\.js/.test(dr[1]) && /hook_page_attachments|winclus_page_attachments/.test(dr[2]), "el módulo de Drupal declara la librería externa y la adjunta a todas las páginas");
+  // Lo que se instala por defecto tiene que actualizarse solo: con la versión fija, cada sitio se quedaba
+  // congelado en la versión del día en que se instaló.
+  const primera = /<pre[^>]*><code>&lt;script[^&]*?src="https:\/\/winclus\.com\/([^"]+)"/.exec(guia);
+  comprobar(primera && primera[1] === "widget.js", "la primera línea que da integrar.html es widget.js (se actualiza sola)", primera && primera[1]);
+  comprobar(/^widget:\s*\n\s*js:\s*\n\s*https:\/\/winclus\.com\/widget\.js:/m.test(dr[1]) && /'winclus\/widget'/.test(dr[2]), "Drupal carga por defecto widget.js (la fija es winclus/widget_fija)");
+  comprobar(/'version'\s*=>\s*'ultima'/.test(wp) && /'fija' === \$in\['version'\] \) \? 'fija' : 'ultima'/.test(wp), "WordPress trae por defecto «Siempre la última»");
   console.log(fallos ? fallos + " comprobación(es) MAL" : "todo bien");
   process.exit(fallos ? 1 : 0);
 })();

@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-19T21:04:54.265Z",
-  "commit": "905beae",
-  "version": "0.6.14",
-  "pruebas": 36,
-  "comprobaciones": 660,
+  "fecha": "2026-09-21T16:57:38.144Z",
+  "commit": "67b213a",
+  "version": "0.6.15",
+  "pruebas": 37,
+  "comprobaciones": 674,
   "fallan": 0,
   "resultados": [
     {
@@ -16,7 +16,7 @@
       "ok": 18,
       "mal": 0,
       "bien": true,
-      "segundos": 15,
+      "segundos": 10,
       "lineas": [
         "OK  sin ajustes",
         "OK  oscuro",
@@ -131,16 +131,16 @@
       "bien": true,
       "segundos": 3,
       "lineas": [
-        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 587 revisados",
-        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 930 revisados",
-        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 864 revisados",
-        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 704 revisados",
-        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1865 revisados",
-        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 624 revisados",
-        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 546 revisados",
-        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 553 revisados",
-        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 553 revisados",
-        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 429 revisados",
+        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 590 revisados",
+        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 933 revisados",
+        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 867 revisados",
+        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 718 revisados",
+        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1868 revisados",
+        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 627 revisados",
+        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 549 revisados",
+        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 556 revisados",
+        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 556 revisados",
+        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 432 revisados",
         "OK  Pausar: texto sobre fondo: 7.86:1",
         "OK  interruptor apagado sobre el panel: 3.13:1",
         "OK  interruptor encendido sobre el panel: 7.86:1",
@@ -162,7 +162,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 6,
+      "segundos": 1,
       "lineas": [
         "OK  el widget carga con CSP estricta",
         "OK  sin errores JS",
@@ -187,7 +187,7 @@
       "ok": 6,
       "mal": 0,
       "bien": true,
-      "segundos": 8,
+      "segundos": 3,
       "lineas": [
         "OK  los cuatro filtros son SVGFilterElement",
         "OK  el filtro protan se aplica y cambia el rojo de la página",
@@ -207,7 +207,7 @@
       "ok": 140,
       "mal": 0,
       "bien": true,
-      "segundos": 14,
+      "segundos": 13,
       "lineas": [
         "OK  / a 1280 px: axe sin incumplimientos",
         "OK  / a 1280 px: carga el widget",
@@ -454,7 +454,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 8,
+      "segundos": 3,
       "lineas": [
         "OK  un audio de la página muestra el aviso con su nombre",
         "OK  un audio creado por código",
@@ -478,7 +478,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 7,
+      "segundos": 2,
       "lineas": [
         "OK  «números» pone etiquetas 1, 2, 3… sobre lo que se puede pulsar",
         "OK  «clic 2» pulsa el botón que lleva el 2",
@@ -575,7 +575,7 @@
       "ok": 24,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 2,
       "lineas": [
         "OK  el tablero tiene cuatro vistas: Temas, Palabras, Míos y Buscar",
         "OK  «Palabras»: ocho grupos gramaticales con color",
@@ -661,7 +661,7 @@
       "ok": 11,
       "mal": 0,
       "bien": true,
-      "segundos": 6,
+      "segundos": 1,
       "lineas": [
         "OK  el guiño es un ojo cerrado con el otro abierto; un parpadeo de los dos ojos no cuenta",
         "OK  la inclinación de la cabeza sale del ángulo entre los ojos, a cada lado, y sin cara vale 0",
@@ -686,7 +686,7 @@
       "ok": 11,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 6,
       "lineas": [
         "OK  la calibración tiene 9, 13 o 25 puntos distintos según «Rápida», «Normal» o «Completa»",
         "OK  el panel tiene las opciones de calibración y «Otro aparato mueve el puntero»",
@@ -808,6 +808,32 @@
       ]
     },
     {
+      "archivo": "prueba_seguir_camara.js",
+      "que": "La cámara sigue encendida al pasar de una página a otra: quien no tiene manos no pierde el control a cada enlace. Se reanuda solo con consentimiento, permiso del navegador ya concedido y la cámara encendida al salir; lo dice en pantalla y en voz; apagarla a mano, el interruptor o «Restablecer todo» lo impiden.",
+      "criterios": [
+        "WCAG 2.1.1",
+        "EN 301 549 11.5",
+        "Ley 1581/2012 art. 5"
+      ],
+      "ok": 11,
+      "mal": 0,
+      "bien": true,
+      "segundos": 41,
+      "lineas": [
+        "OK  al entrar por primera vez la cámara no se enciende sola",
+        "OK  tras seguir un enlace, la cámara vuelve a encenderse sola",
+        "OK  y se ve en pantalla «Cámara encendida otra vez, como la dejaste.»",
+        "OK  y lo dice en voz alta, con cómo apagarla",
+        "OK  al recargar la página, también",
+        "OK  si la apagas con «Apagar cámara», la página siguiente no la enciende",
+        "OK  con el interruptor apagado, la cámara no se reanuda",
+        "OK  «Restablecer todo» borra el recuerdo de la cámara",
+        "OK  sin el consentimiento de Winclus no se enciende sola",
+        "OK  si el navegador no ha concedido ya el permiso, no se enciende ni se pregunta",
+        "OK  sin errores de JavaScript"
+      ]
+    },
+    {
       "archivo": "prueba_facil.js",
       "que": "«Explicar en fácil» por reglas y con IA, resaltado palabra a palabra, «¿Dónde estoy?».",
       "criterios": [
@@ -903,7 +929,7 @@
       "criterios": [
         "Integración"
       ],
-      "ok": 8,
+      "ok": 11,
       "mal": 0,
       "bien": true,
       "segundos": 0,
@@ -915,7 +941,10 @@
         "OK  sin errores JS",
         "OK  la guía de integración cubre versión fija, CSP, web component, WordPress, Drupal, GOV.CO, IA y Winclus Audit",
         "OK  el plugin de WordPress tiene cabecera, encola el script con data-* y ajustes",
-        "OK  el módulo de Drupal declara la librería externa y la adjunta a todas las páginas"
+        "OK  el módulo de Drupal declara la librería externa y la adjunta a todas las páginas",
+        "OK  la primera línea que da integrar.html es widget.js",
+        "OK  Drupal carga por defecto widget.js",
+        "OK  WordPress trae por defecto «Siempre la última»"
       ]
     },
     {
@@ -977,7 +1006,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 15,
+      "segundos": 11,
       "lineas": [
         "OK  demo.html pasa axe",
         "OK  la demo tiene los siete pasos",
@@ -1000,7 +1029,7 @@
       "ok": 21,
       "mal": 0,
       "bien": true,
-      "segundos": 13,
+      "segundos": 12,
       "lineas": [
         "OK  chromium: recorrido básico",
         "OK  chromium: sin speechSynthesis ni SpeechRecognition",
@@ -1063,7 +1092,7 @@
       "ok": 4,
       "mal": 0,
       "bien": true,
-      "segundos": 14,
+      "segundos": 9,
       "lineas": [
         "OK  el navegador avisa de cada cuadro nuevo",
         "OK  no se infiere más veces que cuadros entrega la cámara",

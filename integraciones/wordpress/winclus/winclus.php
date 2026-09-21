@@ -3,7 +3,7 @@
  * Plugin Name: Winclus
  * Plugin URI:  https://winclus.com
  * Description: Añade a tu sitio el widget de accesibilidad Winclus: uso con la cara, la voz, un solo pulsador, teclado en pantalla, pictogramas y ajustes de lectura y color. Sin cuentas ni servidores propios.
- * Version:     0.6.14
+ * Version:     0.6.15
  * Author:      Colaboradores de Winclus
  * License:     Apache-2.0
  * Text Domain: winclus
@@ -11,8 +11,8 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define( 'WINCLUS_VERSION_WIDGET', '0.6.14' );
-define( 'WINCLUS_SRI_WIDGET', 'sha384-5kgQ+gYpn+UZsgM4kfGQkxCdkwZNSDi/PisNQjzaVpnHZzVdEyO0a2npyXc9K1gG' );   // hash de integridad de la versión fija (winclus.com/integrar)
+define( 'WINCLUS_VERSION_WIDGET', '0.6.15' );
+define( 'WINCLUS_SRI_WIDGET', 'sha384-QLHXdaShXyTo7wnUZqEgPsakPJwYfE5nZxy78XfZdo3LIB+7Yg0MzwLct5acbTXH' );   // hash de integridad de la versión fija (winclus.com/integrar)
 
 function winclus_opciones() {
 	return wp_parse_args( get_option( 'winclus_opciones', array() ), array(
@@ -21,7 +21,7 @@ function winclus_opciones() {
 		'idioma'   => 'es-CO',
 		'relevo'   => 'si',
 		'explicar' => '',
-		'version'  => 'fija',   // «fija»: widget-0.6.14.js (no cambia solo); «ultima»: widget.js
+		'version'  => 'ultima', // «ultima»: widget.js, las mejoras llegan solas; «fija»: widget-0.6.15.js con SRI (no cambia nunca)
 	) );
 }
 
@@ -70,7 +70,7 @@ function winclus_sanear( $in ) {
 	$o['posicion'] = ( isset( $in['posicion'] ) && 'izquierda' === $in['posicion'] ) ? 'izquierda' : 'derecha';
 	$o['camara']   = ( isset( $in['camara'] ) && 'no' === $in['camara'] ) ? 'no' : 'si';
 	$o['relevo']   = ( isset( $in['relevo'] ) && 'no' === $in['relevo'] ) ? 'no' : 'si';
-	$o['version']  = ( isset( $in['version'] ) && 'ultima' === $in['version'] ) ? 'ultima' : 'fija';
+	$o['version']  = ( isset( $in['version'] ) && 'fija' === $in['version'] ) ? 'fija' : 'ultima';
 	$o['idioma']   = isset( $in['idioma'] ) ? preg_replace( '/[^a-zA-Z-]/', '', $in['idioma'] ) : 'es-CO';
 	$o['explicar'] = isset( $in['explicar'] ) ? esc_url_raw( $in['explicar'] ) : '';
 	return $o;
@@ -90,7 +90,7 @@ function winclus_pagina_ajustes() {
 				<tr><th scope="row"><label for="winclus-idioma">Idioma del reconocimiento de voz</label></th><td><input id="winclus-idioma" name="winclus_opciones[idioma]" value="<?php echo esc_attr( $o['idioma'] ); ?>" class="regular-text"> <span class="description">es-CO, es-MX, es-ES, en-US…</span></td></tr>
 				<tr><th scope="row">Botón al Centro de Relevo (Colombia)</th><td><label><input type="radio" name="winclus_opciones[relevo]" value="si" <?php checked( $o['relevo'], 'si' ); ?>> Mostrar</label> &nbsp; <label><input type="radio" name="winclus_opciones[relevo]" value="no" <?php checked( $o['relevo'], 'no' ); ?>> Ocultar</label></td></tr>
 				<tr><th scope="row"><label for="winclus-explicar">Servicio de lectura fácil con IA (opcional)</label></th><td><input id="winclus-explicar" name="winclus_opciones[explicar]" value="<?php echo esc_attr( $o['explicar'] ); ?>" class="regular-text" placeholder="https://…"> <span class="description">URL que reciba POST {texto, idioma} y devuelva {texto}. Sin ella, la lectura fácil funciona por reglas.</span></td></tr>
-				<tr><th scope="row">Versión del widget</th><td><label><input type="radio" name="winclus_opciones[version]" value="fija" <?php checked( $o['version'], 'fija' ); ?>> Fija (<?php echo esc_html( WINCLUS_VERSION_WIDGET ); ?>): no cambia hasta que actualices el plugin</label><br><label><input type="radio" name="winclus_opciones[version]" value="ultima" <?php checked( $o['version'], 'ultima' ); ?>> Siempre la última de winclus.com</label></td></tr>
+				<tr><th scope="row">Versión del widget</th><td><label><input type="radio" name="winclus_opciones[version]" value="ultima" <?php checked( $o['version'], 'ultima' ); ?>> Siempre la última de winclus.com (recomendado: las mejoras llegan solas)</label><br><label><input type="radio" name="winclus_opciones[version]" value="fija" <?php checked( $o['version'], 'fija' ); ?>> Fija (<?php echo esc_html( WINCLUS_VERSION_WIDGET ); ?>) con integridad SRI: no cambia hasta que actualices el plugin</label></td></tr>
 			</table>
 			<?php submit_button(); ?>
 		</form>
