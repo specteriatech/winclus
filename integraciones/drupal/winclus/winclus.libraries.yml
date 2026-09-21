@@ -7,6 +7,6 @@ widget:
 # actualizar versión y hash a mano (winclus.com/integrar). Para usarla, cambia 'winclus/widget' por
 # 'winclus/widget_fija' en winclus.module.
 widget_fija:
-  version: 0.6.18
+  version: 0.6.19
   js:
-    https://winclus.com/widget-0.6.18.js: { type: external, attributes: { async: true, data-posicion: derecha, data-idioma: es-CO, integrity: 'sha384-wXq+E2oMu0vWYc/YFxNJsPwA3nGsm0xVY1JFmzrBIhRmrQZ60exENOMibbBop2yH', crossorigin: anonymous } }
+    https://winclus.com/widget-0.6.19.js: { type: external, attributes: { async: true, data-posicion: derecha, data-idioma: es-CO, integrity: 'sha384-dXJr2XtOWf9B4C+D3S3Kq0Fx29YCJT+zGT6NsRxVwyFfDldPszPh5bJm+Uw+lkZs', crossorigin: anonymous } }

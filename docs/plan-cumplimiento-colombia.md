@@ -1,6 +1,6 @@
 # Plan para poder decir «cumplimos en todo» en Colombia
 
-Estado al 17 de septiembre de 2026 (widget 0.6.18). La matriz norma por norma está publicada en
+Estado al 17 de septiembre de 2026 (widget 0.6.19). La matriz norma por norma está publicada en
 winclus.com/cumplimiento. Este documento es la parte de trabajo: qué falta, quién lo hace, en qué orden y
 con qué plantillas.
 

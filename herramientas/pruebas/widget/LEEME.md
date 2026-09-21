@@ -110,6 +110,7 @@
 - `node prueba_pdf.js`: «Abrir los documentos PDF aquí» con el manual real, un PDF de otro origen y uno escaneado generado en la prueba (0.6.18).
 - `node prueba_mascarilla.js`: control con la cara con una mascarilla de ventilación dibujada sobre la cara simulada, con MediaPipe real (0.6.18).
 - `node prueba_alcance.js`: «Ajustar el puntero a lo que puedo mover» (0.6.18) con la cara simulada: movimiento pequeño que pasa a cruzar la pantalla y movimiento mínimo que propone ojos o pulsador.
+- `node prueba_otro_idioma.js`: «Otro idioma» (0.6.19), la opción de cambiar idioma que pide la Res. 2893: versiones del sitio por hreflang, selector con lang o data-idiomas; sin ellas, cómo traducir con el navegador.
 - `node prueba_robustez.js`: regresión de los fallos de la revisión del 16-sep-2026 (ver el comentario del archivo).
 - Cualquier prueba corre en otro motor con `NAVEGADOR=firefox node prueba_x.js` (o `webkit`). El WebKit de Playwright en Windows no trae síntesis de voz ni portapapeles: `voz-simulada.js` se inyecta como sustituto y las comprobaciones de portapapeles se saltan en ese motor.
 - Todas las pruebas del widget usan `Winclus.caja` (el shadow root) para llegar a sus piezas; los selectores de

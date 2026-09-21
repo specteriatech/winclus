@@ -54,6 +54,7 @@ const PRUEBAS = [
   ["prueba_pdf.js", "Los PDF del mismo sitio se abren en la lectura limpia con su texto y su título (pdf.js desde winclus.com); los de otro sitio, como siempre; un PDF escaneado se dice que no tiene texto.", ["Res. 1519 Anexo 1 cap. 3", "WCAG 1.4.4", "Ley 1680/2013"]],
   ["prueba_mascarilla.js", "ELA con ventilación: con una mascarilla oronasal (simulada sobre una cara real) se detecta la cara, el puntero sigue a la cabeza y el parpadeo da la misma señal que sin ella.", ["EN 301 549 11.5", "WCAG 2.5.1"]],
   ["prueba_alcance.js", "ELA que avanza y cansancio: «Ajustar el puntero a lo que puedo mover» mide el movimiento de cabeza que queda y lo hace cruzar la pantalla; si ni al máximo alcanza, propone los ojos o un pulsador.", ["EN 301 549 11.5", "WCAG 2.5.1", "ISO 9241-171 §9"]],
+  ["prueba_otro_idioma.js", "Cambiar el idioma desde la barra de accesibilidad (Res. MinTIC 2893 de 2020, Anexo 1, 4.3.2 b): «Otro idioma» se ve al abrir el panel y lleva a las versiones del sitio en otros idiomas (hreflang, selector con lang o data-idiomas); si no hay, explica cómo traducir con el navegador sin enviar la página a nadie.", ["Res. MinTIC 2893 de 2020, Anexo 1, 4.3.2 b", "WCAG 3.1.1", "WCAG 2.5.5"]],
 ];
 
 function commit() { try { return execSync("git rev-parse --short HEAD", { cwd: RAIZ }).toString().trim(); } catch (e) { return "?"; } }

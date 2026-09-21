@@ -26,7 +26,7 @@
 <main id="contenido">
 <nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><span aria-current="page">Cumplimiento normativo</span></nav>
   <h1>Cumplimiento normativo en Colombia</h1>
-  <p class="meta">Norma por norma: qué exige, qué cumple Winclus (el widget 0.6.18 y winclus.com), cómo se demuestra y qué falta. Actualizado el 17 de septiembre de 2026. Es una autoevaluación honesta: lo que está en rojo no lo puede cerrar el código, lo cierra una persona o una entidad externa.</p>
+  <p class="meta">Norma por norma: qué exige, qué cumple Winclus (el widget 0.6.19 y winclus.com), cómo se demuestra y qué falta. Actualizado el 17 de septiembre de 2026. Es una autoevaluación honesta: lo que está en rojo no lo puede cerrar el código, lo cierra una persona o una entidad externa.</p>
   <div class="facil"><h2>En pocas palabras</h2><ul><li>En Colombia, los sitios del Estado deben cumplir unas reglas de accesibilidad (Resolución 1519 de 2020).</li><li>Winclus cumple casi todas las que le tocan: 37 de 41.</li><li>Faltan tres cosas que solo puede hacer una persona: una evaluación externa, pruebas con personas con discapacidad y una opinión de un abogado sobre los datos.</li><li>Cuando estén hechas, diremos «cumplimos en todo».</li><li>Winclus ayuda a usar un sitio; el sitio también tiene que cumplir por su cuenta.</li></ul></div>
 
   <div class="resumen">
@@ -94,7 +94,20 @@
     </tbody>
   </table></div>
 
-  <h2>3. NTC 5854 (ICONTEC)</h2>
+  <h2>3. Resolución 2893 de 2020 de MinTIC (sedes electrónicas), Anexo 1, 4.3.2 b): la barra de accesibilidad</h2>
+  <p>Es el único requisito de la norma colombiana que se cumple con un elemento que se añade al sitio. Dice: «Se debe contar con una barra de accesibilidad visible, en la que se pueda modificar el contraste, reducir o aumentar la letra, y la opción de cambiar idioma». La sede electrónica la define el Decreto 620 de 2020 (Decreto 1078 de 2015, art. 2.2.17.6.1).</p>
+  <div class="tabla" tabindex="0" role="region" aria-label="Barra de accesibilidad de la Resolución 2893"><table>
+    <thead><tr><th>Requisito</th><th>Estado</th><th>Cómo se demuestra</th></tr></thead>
+    <tbody>
+      <tr><td>Barra visible</td><td class="si">Cumple</td><td>El botón de Winclus está siempre a la vista, en todas las páginas del sitio, y se abre también con Alt+Mayúsculas+W.</td></tr>
+      <tr><td>Modificar el contraste</td><td class="si">Cumple</td><td>«Veo poco» en la primera pantalla del panel; alto contraste, modo oscuro y colores de la página en la pestaña Ver.</td></tr>
+      <tr><td>Reducir o aumentar la letra</td><td class="si">Cumple</td><td>«Veo poco» en la primera pantalla; «Tamaño del texto» del 80 % al 200 % y zoom de toda la página en la pestaña Ver.</td></tr>
+      <tr><td>Opción de cambiar idioma</td><td class="si">Cumple, si el sitio tiene otros idiomas</td><td>«Otro idioma», a la vista al abrir el panel (desde la 0.6.19), lleva a las versiones del sitio en otros idiomas que declare con <code>hreflang</code>, con un selector de idioma o con <code>data-idiomas</code>. Si el sitio solo está en español, explica cómo traducirlo con el navegador: Winclus no traduce la página, para no enviarla a ningún servicio. <code>prueba_otro_idioma.js</code>.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>4. NTC 5854 (ICONTEC): ya no la exige la norma</h2>
+  <p>La Resolución 1519 de 2020 no menciona la NTC 5854: adoptó directamente las WCAG 2.1 AA y derogó la Resolución 3564 de 2015, que era la que remitía a la NTC. Se deja aquí porque algunas entidades todavía la piden en sus pliegos.</p>
   <div class="tabla" tabindex="0" role="region" aria-label="NTC 5854"><table>
     <thead><tr><th>Requisito</th><th>Estado</th><th>Cómo se demuestra</th></tr></thead>
     <tbody>
@@ -103,7 +116,7 @@
     </tbody>
   </table></div>
 
-  <h2>4. Leyes de inclusión y transparencia</h2>
+  <h2>5. Leyes de inclusión y transparencia</h2>
   <div class="tabla" tabindex="0" role="region" aria-label="Leyes de inclusión"><table>
     <thead><tr><th>Norma</th><th>Qué pide que toque a Winclus</th><th>Estado</th><th>Cómo se demuestra</th></tr></thead>
     <tbody>
@@ -117,7 +130,7 @@
     </tbody>
   </table></div>
 
-  <h2>5. Ley 1581 de 2012 y Decreto 1377 de 2013 (datos personales)</h2>
+  <h2>6. Ley 1581 de 2012 y Decreto 1377 de 2013 (datos personales)</h2>
   <div class="tabla" tabindex="0" role="region" aria-label="Datos personales"><table>
     <thead><tr><th>Requisito</th><th>Estado</th><th>Cómo se demuestra</th></tr></thead>
     <tbody>
@@ -128,7 +141,7 @@
     </tbody>
   </table></div>
 
-  <h2>6. Norma europea EN 301 549 (la que las entidades usan para software de apoyo)</h2>
+  <h2>7. Norma europea EN 301 549 (la que las entidades usan para software de apoyo)</h2>
   <div class="tabla" tabindex="0" role="region" aria-label="EN 301 549"><table>
     <thead><tr><th>Requisito</th><th>Estado</th><th>Cómo se demuestra</th></tr></thead>
     <tbody>
@@ -138,7 +151,7 @@
     </tbody>
   </table></div>
 
-  <h2>7. Nivel AAA de las WCAG (no lo exige ninguna norma; se alcanza como ventaja)</h2>
+  <h2>8. Nivel AAA de las WCAG (no lo exige ninguna norma; se alcanza como ventaja)</h2>
   <div class="tabla" tabindex="0" role="region" aria-label="Nivel AAA"><table>
     <thead><tr><th>Requisito</th><th>Estado</th><th>Cómo se demuestra</th></tr></thead>
     <tbody>

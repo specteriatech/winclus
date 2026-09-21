@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-21T21:02:06.587Z",
-  "commit": "98c302f",
-  "version": "0.6.18",
-  "pruebas": 46,
-  "comprobaciones": 796,
+  "fecha": "2026-09-21T22:28:10.676Z",
+  "commit": "9e91af5",
+  "version": "0.6.19",
+  "pruebas": 47,
+  "comprobaciones": 809,
   "fallan": 0,
   "resultados": [
     {
@@ -16,7 +16,7 @@
       "ok": 18,
       "mal": 0,
       "bien": true,
-      "segundos": 10,
+      "segundos": 15,
       "lineas": [
         "OK  sin ajustes",
         "OK  oscuro",
@@ -131,17 +131,17 @@
       "bien": true,
       "segundos": 4,
       "lineas": [
-        "OK  vista sencilla con una opción puesta: 0 regla(s) incumplida(s), 0 elemento(s), 595 revisados",
-        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 682 revisados",
-        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 971 revisados",
-        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 976 revisados",
-        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 759 revisados",
-        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1930 revisados",
-        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 665 revisados",
-        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 587 revisados",
-        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 578 revisados",
-        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 578 revisados",
-        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 454 revisados",
+        "OK  vista sencilla con una opción puesta: 0 regla(s) incumplida(s), 0 elemento(s), 604 revisados",
+        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 691 revisados",
+        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 982 revisados",
+        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 977 revisados",
+        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 760 revisados",
+        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1931 revisados",
+        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 666 revisados",
+        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 588 revisados",
+        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 579 revisados",
+        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 579 revisados",
+        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 455 revisados",
         "OK  Pausar: texto sobre fondo: 7.86:1",
         "OK  interruptor apagado sobre el panel: 3.13:1",
         "OK  interruptor encendido sobre el panel: 7.86:1",
@@ -208,7 +208,7 @@
       "ok": 140,
       "mal": 0,
       "bien": true,
-      "segundos": 15,
+      "segundos": 14,
       "lineas": [
         "OK  / a 1280 px: axe sin incumplimientos",
         "OK  / a 1280 px: carga el widget",
@@ -552,7 +552,7 @@
       "ok": 9,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 2,
       "lineas": [
         "OK  el tablero se abre con categorías y pictogramas",
         "OK  las imágenes vienen de ARASAAC y se atribuye la licencia",
@@ -1055,7 +1055,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 16,
+      "segundos": 11,
       "lineas": [
         "OK  demo.html pasa axe",
         "OK  la demo tiene los siete pasos",
@@ -1458,7 +1458,7 @@
       "ok": 5,
       "mal": 0,
       "bien": true,
-      "segundos": 37,
+      "segundos": 38,
       "lineas": [
         "OK  sin mascarilla: cara detectada, puntero al centro y a los dos lados, parpadeo con señal",
         "OK  con la mascarilla puesta desde el inicio: se detecta la cara, el puntero reposa al centro y sigue a la cabeza a los dos lados",
@@ -1485,6 +1485,34 @@
         "OK  y ese mismo movimiento pequeño pasa a cruzar la pantalla",
         "OK  con movimiento mínimo, pone el máximo y propone los ojos o un pulsador",
         "OK  elegir «Con un pulsador» enciende el barrido",
+        "OK  sin errores de JavaScript"
+      ]
+    },
+    {
+      "archivo": "prueba_otro_idioma.js",
+      "que": "Cambiar el idioma desde la barra de accesibilidad (Res. MinTIC 2893 de 2020, Anexo 1, 4.3.2 b): «Otro idioma» se ve al abrir el panel y lleva a las versiones del sitio en otros idiomas (hreflang, selector con lang o data-idiomas); si no hay, explica cómo traducir con el navegador sin enviar la página a nadie.",
+      "criterios": [
+        "Res. MinTIC 2893 de 2020, Anexo 1, 4.3.2 b",
+        "WCAG 3.1.1",
+        "WCAG 2.5.5"
+      ],
+      "ok": 13,
+      "mal": 0,
+      "bien": true,
+      "segundos": 9,
+      "lineas": [
+        "OK  «Otro idioma» se ve nada más abrir el panel sencillo, con 44 px de alto",
+        "OK  con hreflang: un botón por idioma, sin el propio ni x-default ni el inglés repetido",
+        "OK  la dirección se resuelve contra la página",
+        "OK  el botón dice si la lista está abierta",
+        "OK  pulsar el idioma lleva a esa versión del sitio",
+        "OK  un selector <a lang> con el nombre del idioma cuenta; el enlace a un artículo en inglés, no",
+        "OK  data-idiomas del script también cuenta",
+        "OK  sin otras versiones, explica cómo traducir con Chrome, Edge, Safari y Firefox",
+        "OK  y no envía la página a ningún servicio de traducción",
+        "OK  la pestaña Ver tiene la sección «Idioma de la página»",
+        "OK  decir «quiero la página en inglés» abre la lista y dice qué idiomas hay",
+        "OK  con el panel en inglés, el botón dice «Another language»",
         "OK  sin errores de JavaScript"
       ]
     }

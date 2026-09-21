@@ -24,7 +24,7 @@
 <main id="contenido">
 <nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><span aria-current="page">Integrar Winclus</span></nav>
   <h1>Integrar Winclus en tu sitio</h1>
-  <p class="meta">Guía técnica para el widget 0.6.18. Winclus es tecnología de apoyo que se añade a un sitio: no lo hace conforme con la norma por sí solo. Para saber cómo está tu sitio, usa <a href="#audit">Winclus Audit</a>.</p>
+  <p class="meta">Guía técnica para el widget 0.6.19. Winclus es tecnología de apoyo que se añade a un sitio: no lo hace conforme con la norma por sí solo. Para saber cómo está tu sitio, usa <a href="#audit">Winclus Audit</a>.</p>
   <div class="facil"><h2>En pocas palabras</h2><ul><li>Winclus se pone en tu sitio con una sola línea de código, al final de cada página.</li><li>Usa <code>widget.js</code>: cada mejora que publicamos llega sola a tu sitio, sin tocar nada.</li><li>Puedes decirle el idioma y en qué lado sale el botón.</li><li>Si tu sitio tiene reglas de seguridad estrictas, Winclus las respeta.</li><li>Winclus ayuda a las personas a usar tu sitio; no arregla tu sitio por ti.</li></ul></div>
 
   <h2>1. Una línea</h2>
@@ -33,10 +33,10 @@
   <p><code>widget.js</code> es siempre la última versión: cuando publicamos una mejora, tu sitio la tiene en menos de 5 minutos, sin cambiar nada. Es la forma recomendada.</p>
   <h3>Versión fija con integridad (solo si tu política de seguridad la exige)</h3>
   <p>Si tu entidad exige integridad de subrecursos (SRI) para los scripts de terceros, usa la copia fija de una versión con su hash:</p>
-  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.6.18.js" async
-        integrity="sha384-wXq+E2oMu0vWYc/YFxNJsPwA3nGsm0xVY1JFmzrBIhRmrQZ60exENOMibbBop2yH"
+  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.6.19.js" async
+        integrity="sha384-dXJr2XtOWf9B4C+D3S3Kq0Fx29YCJT+zGT6NsRxVwyFfDldPszPh5bJm+Uw+lkZs"
         crossorigin="anonymous"&gt;&lt;/script&gt;</code></pre>
-  <p>El atributo <code>integrity</code> es el hash SHA-384 del archivo: el navegador comprueba que lo que llega es exactamente la versión 0.6.18 y, si no coincide, no lo ejecuta. A cambio, <strong>esta versión no se actualiza nunca</strong>: para recibir las mejoras tienes que cambiar tú el número y el hash por los de la última versión publicada aquí. <code>widget.js</code> no lleva hash porque cambia.</p>
+  <p>El atributo <code>integrity</code> es el hash SHA-384 del archivo: el navegador comprueba que lo que llega es exactamente la versión 0.6.19 y, si no coincide, no lo ejecuta. A cambio, <strong>esta versión no se actualiza nunca</strong>: para recibir las mejoras tienes que cambiar tú el número y el hash por los de la última versión publicada aquí. <code>widget.js</code> no lleva hash porque cambia.</p>
   <p>Atributos opcionales en el mismo <code>&lt;script&gt;</code>:</p>
   <div class="tabla" tabindex="0" role="region" aria-label="Atributos del script"><table>
     <thead><tr><th>Atributo</th><th>Valores</th><th>Qué hace</th></tr></thead>
@@ -48,6 +48,7 @@
       <tr><td><code>data-ui</code></td><td><code>es</code>, <code>en</code></td><td>Idioma de los textos del panel. Sin él, se toma del <code>lang</code> de la página.</td></tr>
       <tr><td><code>data-relevo</code></td><td><code>no</code></td><td>Quita los botones al Centro de Relevo y al diccionario de LSC (para sitios fuera de Colombia).</td></tr>
       <tr><td><code>data-explicar</code></td><td>URL</td><td>Servicio propio de lectura fácil con IA (ver <a href="#ia">más abajo</a>). Sin él, la lectura fácil funciona por reglas.</td></tr>
+      <tr><td><code>data-idiomas</code></td><td>Lista</td><td>Versiones del sitio en otros idiomas, para el botón «Otro idioma» que pide la barra de accesibilidad de la Resolución 2893 de 2020 (Anexo 1, 4.3.2 b): <code>data-idiomas="en=/en/, pt=https://…/pt/"</code>. Solo hace falta si el sitio no las declara ya con <code>&lt;link rel="alternate" hreflang&gt;</code>, con enlaces <code>hreflang</code> o con un selector de idioma con <code>lang</code>: Winclus las encuentra solo. Sin ninguna, el botón explica cómo traducir con el navegador.</td></tr>
       <tr><td><code>data-describir</code></td><td>URL</td><td>Servicio propio que describe las imágenes que el sitio publicó sin texto alternativo: recibe <code>POST {imagen, contexto, idioma}</code> y devuelve <code>{texto}</code>. La imagen va a tu servidor, no a Winclus. Sin él, el lector de Winclus da la mejor pista de la página (pie de foto, título, nombre del archivo) y dice que el sitio no la describió; nunca inventa una descripción.</td></tr>
       <tr><td><code>data-glosario</code></td><td>URL</td><td>JSON <code>{"palabra": "definición"}</code> con el glosario del sitio para «Diccionario al tocar una palabra» (o <code>window.WinclusGlosario</code> con ese objeto). Manda sobre ARASAAC y Wikcionario. Sin él, el diccionario usa el glosario de trámites del widget, ARASAAC y Wikcionario.</td></tr>
     </tbody>
