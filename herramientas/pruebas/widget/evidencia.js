@@ -67,6 +67,17 @@ for (const [archivo, que, criterios] of PRUEBAS) {
 const fecha = new Date();
 const json = { fecha: fecha.toISOString(), commit: commit(), version: (fs.readFileSync(path.join(RAIZ, "web/widget.js"), "utf8").match(/var VERSION = "([^"]+)"/) || [])[1], pruebas: resultados.length, comprobaciones: resultados.reduce((s, r) => s + r.ok + r.mal, 0), fallan, resultados };
 fs.writeFileSync(path.join(RAIZ, "web/evidencia.json"), JSON.stringify(json, null, 2));
+// Las cifras que citan las páginas (presentación, comparar, una página…) van en <span data-cifra="…"> y se ponen
+// aquí, con el resultado real: antes se escribían a mano y cada página decía un número distinto (22, 35, 36…).
+// Solo si todo ha pasado: una cifra publicada tiene que ser de una batería en verde.
+if (!fallan) {
+  const cifras = { pruebas: json.pruebas, comprobaciones: json.comprobaciones.toLocaleString("es-CO"), version: json.version };
+  fs.readdirSync(path.join(RAIZ, "web")).filter((f) => f.endsWith(".html")).forEach((f) => {
+    const p = path.join(RAIZ, "web", f), antes = fs.readFileSync(p, "utf8");
+    const despues = antes.replace(/(<span data-cifra="(\w+)">)[^<]*(<\/span>)/g, (m, a, k, z) => (k in cifras ? a + cifras[k] + z : m));
+    if (despues !== antes) fs.writeFileSync(p, despues);
+  });
+}
 
 const fechaTxt = fecha.toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" }) + ", " + fecha.toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
 const porCriterio = {};

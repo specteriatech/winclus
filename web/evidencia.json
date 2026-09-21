@@ -1,6 +1,6 @@
 {
-  "fecha": "2026-09-21T18:18:52.561Z",
-  "commit": "1d851bb",
+  "fecha": "2026-09-21T19:12:14.533Z",
+  "commit": "5bd3800",
   "version": "0.6.16",
   "pruebas": 38,
   "comprobaciones": 707,
@@ -16,7 +16,7 @@
       "ok": 18,
       "mal": 0,
       "bien": true,
-      "segundos": 17,
+      "segundos": 22,
       "lineas": [
         "OK  sin ajustes",
         "OK  oscuro",
@@ -163,7 +163,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 6,
       "lineas": [
         "OK  el widget carga con CSP estricta",
         "OK  sin errores JS",
@@ -208,7 +208,7 @@
       "ok": 140,
       "mal": 0,
       "bien": true,
-      "segundos": 14,
+      "segundos": 15,
       "lineas": [
         "OK  / a 1280 px: axe sin incumplimientos",
         "OK  / a 1280 px: carga el widget",
@@ -845,7 +845,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 7,
       "lineas": [
         "OK  «¿Dónde estoy?» dice título, ruta, encabezados y avance",
         "OK  hay resumen: de qué va y lo más importante",
@@ -992,7 +992,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 2,
       "lineas": [
         "OK  ningún medio pasa del volumen máximo",
         "OK  sin voz elegida, usa la neuronal de es-CO",
@@ -1019,7 +1019,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 16,
+      "segundos": 11,
       "lineas": [
         "OK  demo.html pasa axe",
         "OK  la demo tiene los siete pasos",
@@ -1042,7 +1042,7 @@
       "ok": 21,
       "mal": 0,
       "bien": true,
-      "segundos": 19,
+      "segundos": 13,
       "lineas": [
         "OK  chromium: recorrido básico",
         "OK  chromium: sin speechSynthesis ni SpeechRecognition",
@@ -1105,7 +1105,7 @@
       "ok": 4,
       "mal": 0,
       "bien": true,
-      "segundos": 14,
+      "segundos": 9,
       "lineas": [
         "OK  el navegador avisa de cada cuadro nuevo",
         "OK  no se infiere más veces que cuadros entrega la cámara",
@@ -1127,7 +1127,7 @@
       "ok": 26,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 6,
       "lineas": [
         "OK  «Legible» pone Verdana en la página, no en el panel, y se guarda",
         "OK  «Para dislexia» pide OpenDyslexic desde winclus.com/fuentes",

@@ -52,6 +52,7 @@
 
 <section class="diapo" id="d2">
   <h2>El problema que nadie está resolviendo en la web</h2>
+  <p class="sub"><b>3.134.036 personas</b> en Colombia (el 7,1 %) tienen alguna dificultad para las actividades diarias. Para el 37,7 % la que más pesa es ver; para el 27,9 %, moverse; para el 9,3 %, oír, y para el 7 %, entender (DANE, Censo 2018).</p>
   <div class="grid">
     <div class="caja"><b>Quien no puede usar ratón ni teclado</b>ELA, lesión medular, parálisis cerebral, distrofia, Parkinson. Para ellos una sede electrónica es una puerta cerrada: ningún widget de accesibilidad les sirve. El hardware que sí sirve cuesta entre USD 1 000 y 3 000 y no se subsidia.</div>
     <div class="caja"><b>Quien no habla, no oye o no entiende</b>Afasia, autismo no verbal, sordera con LSC como primera lengua, discapacidad intelectual, mayores frente a un trámite en lenguaje jurídico.</div>
@@ -61,6 +62,27 @@
 </section>
 
 <section class="diapo" id="d3">
+  <h2>Por qué ahora: lo que dice la ley</h2>
+  <div class="grid">
+    <div class="caja"><b>En Colombia</b><ul>
+      <li><b>Ley 1346 de 2009</b>: aprueba la Convención de la ONU. Artículos 9 y 21: acceso a la información y a las TIC en igualdad de condiciones.</li>
+      <li><b>Ley Estatutaria 1618 de 2013</b>, artículo 16: derecho a la información y las comunicaciones, y masificar el software libre para personas con discapacidad.</li>
+      <li><b>Ley 1680 de 2013</b>: acceso autónomo de personas ciegas y con baja visión a la información y a las TIC.</li>
+      <li><b>Ley 1712 de 2014</b>, artículos 5 y 8: quiénes son sujetos obligados y el deber de adecuar los medios para las personas con discapacidad.</li>
+      <li><b>Resolución 1519 de 2020 de MinTIC</b>: accesibilidad web (WCAG 2.1 AA, 32 criterios del Anexo 1) para todos los sujetos obligados de la Ley 1712.</li>
+    </ul></div>
+    <div class="caja"><b>La fuente internacional</b><ul>
+      <li><b>Convención de la ONU</b> sobre los derechos de las personas con discapacidad (2006), artículos 9 y 21.</li>
+      <li><b>WCAG 2.2</b>, norma internacional ISO/IEC 40500:2025 desde el 21 de octubre de 2025.</li>
+      <li><b>Unión Europea</b>: Acta Europea de Accesibilidad (Directiva 2019/882), obligatoria desde el 28 de junio de 2025 para el comercio electrónico y la banca, también para empresas de fuera que venden allí.</li>
+      <li><b>Estados Unidos</b>: ADA, título II (regla de 2024): WCAG 2.1 AA para gobiernos estatales y locales, con plazos en 2027 y 2028.</li>
+    </ul></div>
+  </div>
+  <p class="nota">Winclus es tecnología de apoyo: ayuda a cumplir el derecho de la persona a usar el sitio, pero no hace conforme el sitio. Para eso está Winclus Audit, que dice qué le falta criterio por criterio.</p>
+  <span class="num">3</span>
+</section>
+
+<section class="diapo" id="d4">
   <h2>Qué es Winclus</h2>
   <p class="sub">Una línea de código en el sitio. La persona pulsa un botón y elige cómo usarlo.</p>
   <div class="grid">
@@ -71,10 +93,10 @@
     <div class="caja"><b>Sin entender</b>«Explícame esta página»: frases cortas, palabras corrientes, glosario; ayuda en formularios; asistente «¿qué quieres hacer?».</div>
     <div class="caja"><b>Sin oír, viendo poco, con dislexia, con epilepsia</b>Avisos de sonido, subtítulos, Centro de Relevo; texto 200 %, lupa 16×, contraste, daltonismo real; lectura limpia; modo calma.</div>
   </div>
-  <span class="num">3</span>
+  <span class="num">4</span>
 </section>
 
-<section class="diapo oscura" id="d4">
+<section class="diapo oscura" id="d5">
   <h2>Demostración en vivo</h2>
   <p class="sub">winclus.com/demo · una sede electrónica de ejemplo con un trámite</p>
   <ul>
@@ -84,10 +106,10 @@
     <li>Decir «yo necesito ayuda» <b>sin hablar</b>, con pictogramas.</li>
     <li>Plan B si la sala no tiene cámara o micrófono: los tres vídeos de la misma página, grabados automáticamente por las pruebas.</li>
   </ul>
-  <span class="num">4</span>
+  <span class="num">5</span>
 </section>
 
-<section class="diapo" id="d5">
+<section class="diapo" id="d6">
   <h2>Frente a lo que ya existe</h2>
   <div class="tabla" tabindex="0" role="region" aria-label="Comparación resumida"><table>
     <thead><tr><th>Puede la persona…</th><th>Overlays (accessiBe, UserWay, EqualWeb, AudioEye)</th><th>Tobii · JAWS · Grid 3</th><th>Winclus</th></tr></thead>
@@ -98,35 +120,35 @@
       <tr><td>entender un texto jurídico en fácil</td><td class="no">No</td><td class="no">No</td><td class="si">Sí</td></tr>
       <tr><td>ver texto grande, contraste, lectura en voz alta</td><td class="si">Sí</td><td class="no">No</td><td class="si">Sí</td></tr>
       <tr><td>saber dónde van sus datos</td><td class="no">Servidores del proveedor</td><td class="si">Equipo</td><td class="si">Su navegador</td></tr>
-      <tr><td>comprobar que funciona</td><td class="no">Sin pruebas públicas; sanción de la FTC (2025)</td><td class="no">Sin pruebas públicas</td><td class="si">22 pruebas públicas, evidencia con fecha y commit</td></tr>
+      <tr><td>comprobar que funciona</td><td class="no">Sin pruebas públicas; sanción de la FTC (2025)</td><td class="no">Sin pruebas públicas</td><td class="si"><span data-cifra="pruebas">38</span> pruebas públicas, evidencia con fecha y commit</td></tr>
     </tbody>
   </table></div>
   <p class="nota">Detalle, fuentes y «dónde nos ganan hoy» en winclus.com/comparar.</p>
-  <span class="num">5</span>
+  <span class="num">6</span>
 </section>
 
-<section class="diapo" id="d6">
+<section class="diapo" id="d7">
   <h2>Evidencia, no promesas</h2>
   <div class="grid">
-    <div class="caja"><span class="kpi">22</span>pruebas automáticas públicas, 292 comprobaciones, corriendo en GitHub con cada cambio. Resultado en winclus.com/evidencia.</div>
+    <div class="caja"><span class="kpi"><span data-cifra="pruebas">38</span></span>pruebas automáticas públicas, <span data-cifra="comprobaciones">707</span> comprobaciones, corriendo en GitHub con cada cambio. Resultado en winclus.com/evidencia.</div>
     <div class="caja"><span class="kpi">0</span>incumplimientos de WCAG 2.1 y 2.2 AA en el propio widget y en winclus.com, en escritorio y móvil (axe-core más contraste calculado a mano).</div>
     <div class="caja"><span class="kpi">0</span>servidores con datos de las personas. Sin cuentas, sin cookies, sin rastreo. Ley 1581: consentimiento explícito para la cámara.</div>
     <div class="caja"><span class="kpi">9/9</span>grupos de discapacidad del catálogo del W3C con funciones útiles. Declaración de accesibilidad y ACR (formato VPAT) publicados.</div>
   </div>
-  <span class="num">6</span>
+  <span class="num">7</span>
 </section>
 
-<section class="diapo oscura" id="d7">
+<section class="diapo oscura" id="d8">
   <h2>Lo que decimos y lo que no decimos</h2>
   <ul>
     <li><b>Decimos:</b> Winclus es tecnología de apoyo. Permite usar el sitio con la cara, la voz, un pulsador y pictogramas. Cumple por sí mismo la norma y no interfiere con los lectores de pantalla.</li>
     <li><b>No decimos:</b> que hace conforme el sitio que lo instala. Un sitio cumple cuando su código cumple. Para eso ofrecemos <b>Winclus Audit</b>: escáner por criterio de la Resolución 1519 con borrador de declaración.</li>
     <li><b>Reconocemos:</b> no tenemos aún informes de pruebas con personas usuarias. El protocolo, el consentimiento y la plantilla del informe son públicos y la primera ronda es lo primero que haremos con quien nos elija.</li>
   </ul>
-  <span class="num">7</span>
+  <span class="num">8</span>
 </section>
 
-<section class="diapo" id="d8">
+<section class="diapo" id="d9">
   <h2>Cómo se integra</h2>
   <div class="grid">
     <div class="caja"><b>Una línea</b><code>&lt;script src="https://winclus.com/widget.js" async&gt;&lt;/script&gt;</code><br>Se actualiza sola con cada mejora. Si la entidad exige SRI, hay versión fija con hash. Funciona con CSP estricta.</div>
@@ -134,20 +156,36 @@
     <div class="caja"><b>Sin cambiar el sitio</b>Vive en un shadow root: ni el sitio rompe el widget ni el widget rompe el sitio.</div>
     <div class="caja"><b>Cifras para reportar</b>Cuántas gestiones se completan con la cara, con pulsador, con pictogramas. Solo números, y solo si la persona lo activa.</div>
   </div>
-  <span class="num">8</span>
+  <span class="num">9</span>
 </section>
 
-<section class="diapo" id="d9">
+<section class="diapo" id="d10">
+  <h2>A quién le sirve y por qué</h2>
+  <div class="tabla" tabindex="0" role="region" aria-label="Públicos, obligación y qué reciben"><table>
+    <thead><tr><th>Público</th><th>Por qué lo necesita</th><th>Qué recibe</th></tr></thead>
+    <tbody>
+      <tr><td><b>Gobierno central</b>: ministerios, departamentos administrativos, superintendencias</td><td>Sujetos obligados (Ley 1712, art. 5 a); la Resolución 1519 les exige el Anexo 1 y la Procuraduría lo mide en el ITA</td><td>Widget en la sede electrónica, Winclus Audit por criterio, borrador de declaración y pruebas con personas usuarias</td></tr>
+      <tr><td><b>Entes territoriales</b>: gobernaciones, alcaldías, concejos, personerías, entidades descentralizadas</td><td>Mismas obligaciones (art. 5 a, órdenes departamental, municipal y distrital), con menos presupuesto y equipo técnico</td><td>Una línea en la plantilla GOV.CO o MiColombiaDigital; gratis para la persona; soporte y capacitación</td></tr>
+      <tr><td><b>Órganos autónomos y de control</b></td><td>Sujetos obligados (art. 5 b)</td><td>Lo mismo que el gobierno central</td></tr>
+      <tr><td><b>Privados con funciones públicas o que prestan servicios públicos</b>: notarías, cámaras de comercio, EPS, empresas de servicios públicos</td><td>Obligados en la información de su función o servicio (art. 5 c y d)</td><td>El widget donde la persona hace el trámite (citas, pagos, certificados) y Winclus Audit sobre esas páginas</td></tr>
+      <tr><td><b>Quienes administran recursos públicos</b>: cajas de compensación, fondos, partidos políticos</td><td>Obligados en lo que toca a esos recursos (art. 5 e y f)</td><td>Widget y auditoría de las páginas de afiliados y beneficiarios</td></tr>
+      <tr><td><b>Privados no obligados</b>: comercio, banca, salud, educación, turismo</td><td>Valor agregado: 3,1 millones de personas con discapacidad más las personas mayores; y quien vende en Europa o EE. UU. ya tiene obligaciones allí</td><td>Widget gratis, licencia con soporte y funciones a medida, e informe para su reporte de sostenibilidad</td></tr>
+    </tbody>
+  </table></div>
+  <span class="num">10</span>
+</section>
+
+<section class="diapo" id="d11">
   <h2>Modelo</h2>
   <div class="grid">
     <div class="caja"><b>Gratis, siempre</b>Para las personas y para cualquier sitio. Versión fija y acuerdo de soporte: sin sorpresas ni dependencia.</div>
     <div class="caja"><b>Para entidades y empresas</b>Soporte con acuerdo de nivel de servicio, auditoría del sitio con Winclus Audit e informe para el ITA, capacitación del equipo y de las personas usuarias, versión fija mantenida, pruebas con personas usuarias documentadas.</div>
     <div class="caja"><b>Para plataformas</b>Licencia enterprise para SaaS gubernamentales, banca y salud que lo embeban en sus productos, con idiomas y funciones a medida.</div>
   </div>
-  <span class="num">9</span>
+  <span class="num">11</span>
 </section>
 
-<section class="diapo oscura" id="d10">
+<section class="diapo oscura" id="d12">
   <h2>Propuesta: un piloto de 60 días</h2>
   <ul>
     <li><b>Semana 1:</b> Winclus en la sede electrónica (una línea) y Winclus Audit sobre ella, con informe y borrador de declaración.</li>
@@ -155,10 +193,10 @@
     <li><b>Semanas 7 y 8:</b> correcciones, informe público sin datos personales, cifras de gestiones completadas.</li>
     <li><b>Coste del piloto para la entidad:</b> cero. Lo que pedimos: acceso, tiempo de su equipo y permiso para publicar el informe.</li>
   </ul>
-  <span class="num">10</span>
+  <span class="num">12</span>
 </section>
 
-<section class="diapo" id="d11">
+<section class="diapo" id="d13">
   <h2>Hoja de ruta</h2>
   <ul>
     <li><b>Ya:</b> todo lo de esta presentación está en producción, con pruebas públicas.</li>
@@ -166,15 +204,15 @@
     <li><b>6 meses:</b> reconocimiento de voz local (sin Google ni Microsoft); frases y pictogramas en lenguas nativas colombianas con hablantes que las validen; más idiomas del panel.</li>
     <li><b>12 meses:</b> avatar de Lengua de Señas para textos cortos; Winclus como tecnología de apoyo de referencia en programas como ConVerTIC.</li>
   </ul>
-  <span class="num">11</span>
+  <span class="num">13</span>
 </section>
 
-<section class="diapo oscura" id="d12">
+<section class="diapo oscura" id="d14">
   <h2>Compruébalo, no nos creas.</h2>
   <p class="sub">winclus.com/demo · winclus.com/evidencia · winclus.com/comparar</p>
   <p class="sub">hola@winclus.com</p>
   <p class="nota" style="color:#C8D0DC"><a href="demo">Demostración</a> · <a href="evidencia">Evidencia</a> · <a href="comparar">Comparación</a> · <a href="una-pagina">Hoja de una página</a> · <a href="mapa-del-sitio">Mapa del sitio</a> · <a href="glosario">Glosario</a> · <a href="accesibilidad">Accesibilidad</a> · <a href="privacidad">Privacidad y datos</a></p>
-  <span class="num">12</span>
+  <span class="num">14</span>
 </section>
 
 </main>
