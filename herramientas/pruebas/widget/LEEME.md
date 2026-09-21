@@ -95,6 +95,7 @@
   libres) y modo dislexia (interlineado, párrafos, sin justificar, ≤ 80 caracteres); glosario en todos los pies; migas de
   pan con aria-current; «En pocas palabras» en las páginas técnicas; transcripciones de los cuatro vídeos.
 - `node prueba_entender.js`: el panel se entiende sin manual (17-sep-2026): Inicio con «¿Qué te cuesta?» (ocho situaciones que
+- `node prueba_situaciones.js`: «¿Qué te cuesta?» (0.6.16): las diez opciones se ponen y se quitan (aria-pressed y ✓), al quitarlas vuelve lo de antes y no lo de fábrica, «Quitar» del pie, se recuerdan al volver, «Volver a como estaba», el permiso de la cámara en Inicio, «Ver más opciones» y «Volver a lo sencillo», la caja «Dímelo» («soy ciego» / «no veo bien») y el teclado.
   encienden lo adecuado y explican qué han hecho), «Lo que tienes activado» y «Apagar todo lo activado», ayuda en palabras
   corrientes bajo cada interruptor y cada −/+ (aria-describedby), «Ajustes finos» plegados y cerrados, sin jerga en los nombres
   visibles, y en inglés no se cuela español (también los −/+, que antes no se traducían). Además: bienvenida de la

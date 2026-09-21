@@ -46,6 +46,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   // --- dictado con confirmación ---
   await page.focus("#campo");
   await page.evaluate(() => Winclus.abrir());
+  await page.evaluate(() => Winclus.vistaCompleta(true));   // las pestañas salen con «Ver más opciones»
   await page.click("#wcl-tab-escribir");
   await page.evaluate(() => { Array.from(Winclus.caja.querySelectorAll("#wcl-panel-escribir button")).find((b) => b.textContent === "Dictar").click(); });
   await page.waitForTimeout(100);

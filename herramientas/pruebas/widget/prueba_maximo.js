@@ -49,7 +49,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   r = await pregunta("no oigo");
   comprobar(/Avisos en pantalla/.test(r) && (await page.evaluate(() => Winclus.ajustes.alertas_sonido && Winclus.ajustes.subtitulos)), "«no oigo» activa avisos y subtítulos");
   r = await pregunta("solo puedo pulsar un botón");
-  comprobar(/Barrido activado/.test(r) && (await page.evaluate(() => Winclus.ajustes.barrido)), "«solo puedo pulsar un botón» activa el barrido");
+  comprobar(/marco azul/.test(r) && (await page.evaluate(() => Winclus.ajustes.barrido)), "«solo puedo pulsar un botón» activa el barrido");
   await page.evaluate(() => { Winclus.ajustes.barrido = false; });
   r = await pregunta("no puedo hablar");
   comprobar(/Tablero de dibujos/.test(r) && (await page.evaluate(() => getComputedStyle(Winclus.caja.querySelector(".wcl-pictos")).display !== "none")), "«no puedo hablar» abre los pictogramas");
@@ -63,6 +63,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   comprobar((await page.evaluate(() => Winclus.ajustes.calma)), "una orden por voz que no es orden va al asistente («me marea el movimiento» → calma)");
 
   // --- transcribir un medio ---
+  await page.evaluate(() => Winclus.vistaCompleta(true));   // las pestañas salen con «Ver más opciones»
   await page.click("#wcl-tab-oir");
   await page.evaluate(() => { const v = document.getElementById("video"); v.muted = true; Array.from(Winclus.caja.querySelectorAll("#wcl-panel-oir button")).find((b) => /Transcribir el vídeo/.test(b.textContent)).click(); });
   await page.waitForTimeout(150);

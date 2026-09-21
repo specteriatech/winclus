@@ -24,7 +24,7 @@
 <main id="contenido">
 <nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><span aria-current="page">Integrar Winclus</span></nav>
   <h1>Integrar Winclus en tu sitio</h1>
-  <p class="meta">Guía técnica para el widget 0.6.15. Winclus es tecnología de apoyo que se añade a un sitio: no lo hace conforme con la norma por sí solo. Para saber cómo está tu sitio, usa <a href="#audit">Winclus Audit</a>.</p>
+  <p class="meta">Guía técnica para el widget 0.6.16. Winclus es tecnología de apoyo que se añade a un sitio: no lo hace conforme con la norma por sí solo. Para saber cómo está tu sitio, usa <a href="#audit">Winclus Audit</a>.</p>
   <div class="facil"><h2>En pocas palabras</h2><ul><li>Winclus se pone en tu sitio con una sola línea de código, al final de cada página.</li><li>Usa <code>widget.js</code>: cada mejora que publicamos llega sola a tu sitio, sin tocar nada.</li><li>Puedes decirle el idioma y en qué lado sale el botón.</li><li>Si tu sitio tiene reglas de seguridad estrictas, Winclus las respeta.</li><li>Winclus ayuda a las personas a usar tu sitio; no arregla tu sitio por ti.</li></ul></div>
 
   <h2>1. Una línea</h2>
@@ -33,10 +33,10 @@
   <p><code>widget.js</code> es siempre la última versión: cuando publicamos una mejora, tu sitio la tiene en menos de 5 minutos, sin cambiar nada. Es la forma recomendada.</p>
   <h3>Versión fija con integridad (solo si tu política de seguridad la exige)</h3>
   <p>Si tu entidad exige integridad de subrecursos (SRI) para los scripts de terceros, usa la copia fija de una versión con su hash:</p>
-  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.6.15.js" async
-        integrity="sha384-QLHXdaShXyTo7wnUZqEgPsakPJwYfE5nZxy78XfZdo3LIB+7Yg0MzwLct5acbTXH"
+  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.6.16.js" async
+        integrity="sha384-usAOOescY/bMYI6ymG/zndiOs/Emc8plZLNuZ93feG9pD43+qFsnmphdVMw21xCh"
         crossorigin="anonymous"&gt;&lt;/script&gt;</code></pre>
-  <p>El atributo <code>integrity</code> es el hash SHA-384 del archivo: el navegador comprueba que lo que llega es exactamente la versión 0.6.15 y, si no coincide, no lo ejecuta. A cambio, <strong>esta versión no se actualiza nunca</strong>: para recibir las mejoras tienes que cambiar tú el número y el hash por los de la última versión publicada aquí. <code>widget.js</code> no lleva hash porque cambia.</p>
+  <p>El atributo <code>integrity</code> es el hash SHA-384 del archivo: el navegador comprueba que lo que llega es exactamente la versión 0.6.16 y, si no coincide, no lo ejecuta. A cambio, <strong>esta versión no se actualiza nunca</strong>: para recibir las mejoras tienes que cambiar tú el número y el hash por los de la última versión publicada aquí. <code>widget.js</code> no lleva hash porque cambia.</p>
   <p>Atributos opcionales en el mismo <code>&lt;script&gt;</code>:</p>
   <div class="tabla" tabindex="0" role="region" aria-label="Atributos del script"><table>
     <thead><tr><th>Atributo</th><th>Valores</th><th>Qué hace</th></tr></thead>

@@ -34,7 +34,13 @@ async function correr(page, nombre) {
   await page.addScriptTag({ content: AXE });
   const todo = [];
   await page.evaluate(() => Winclus.abrir());
+  // La vista sencilla (lo primero que ve todo el mundo), con una situación puesta (✓) y su respuesta en el pie
+  await page.evaluate(() => { Winclus.vistaCompleta(false); Winclus.caja.querySelector('[data-situ="marea"]').click(); });
+  await page.waitForTimeout(150);
+  todo.push(...await correr(page, "vista sencilla con una opción puesta"));
+  await page.evaluate(() => Winclus.caja.querySelector('[data-situ="marea"]').click());
   for (const tab of ["inicio", "ver", "oir", "cara", "clics", "escribir", "mas"]) {
+    await page.evaluate(() => Winclus.vistaCompleta(true));   // las pestañas salen con «Ver más opciones»
     await page.click("#wcl-tab-" + tab);
     await page.waitForTimeout(100);
     todo.push(...await correr(page, "pestaña " + tab));
@@ -60,6 +66,7 @@ async function correr(page, nombre) {
   await page.reload();
   await page.waitForFunction(() => window.Winclus);
   await page.evaluate(() => { const p = Winclus.caja.querySelector(".wcl-pausa"); p.style.display = "block"; Winclus.abrir(); });
+  await page.evaluate(() => Winclus.vistaCompleta(true));   // las pestañas salen con «Ver más opciones»
   await page.click("#wcl-tab-ver");
   await page.waitForTimeout(100);
   const manual = await page.evaluate(() => {

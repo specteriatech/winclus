@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-21T17:13:05.791Z",
-  "commit": "3adea52",
-  "version": "0.6.15",
-  "pruebas": 37,
-  "comprobaciones": 682,
+  "fecha": "2026-09-21T18:18:52.561Z",
+  "commit": "1d851bb",
+  "version": "0.6.16",
+  "pruebas": 38,
+  "comprobaciones": 707,
   "fallan": 0,
   "resultados": [
     {
@@ -16,7 +16,7 @@
       "ok": 18,
       "mal": 0,
       "bien": true,
-      "segundos": 10,
+      "segundos": 17,
       "lineas": [
         "OK  sin ajustes",
         "OK  oscuro",
@@ -49,7 +49,7 @@
       "ok": 14,
       "mal": 0,
       "bien": true,
-      "segundos": 3,
+      "segundos": 2,
       "lineas": [
         "OK  ninguna tecla con tabindex=-1",
         "OK  con Tab se llega al teclado en pantalla",
@@ -126,21 +126,22 @@
         "WCAG 1.4.11",
         "Res. 1519 CC5"
       ],
-      "ok": 19,
+      "ok": 20,
       "mal": 0,
       "bien": true,
-      "segundos": 3,
+      "segundos": 4,
       "lineas": [
-        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 590 revisados",
-        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 933 revisados",
-        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 867 revisados",
-        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 718 revisados",
-        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1868 revisados",
-        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 627 revisados",
-        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 549 revisados",
-        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 556 revisados",
-        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 556 revisados",
-        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 432 revisados",
+        "OK  vista sencilla con una opción puesta: 0 regla(s) incumplida(s), 0 elemento(s), 572 revisados",
+        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 659 revisados",
+        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 951 revisados",
+        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 885 revisados",
+        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 736 revisados",
+        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1886 revisados",
+        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 645 revisados",
+        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 567 revisados",
+        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 558 revisados",
+        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 558 revisados",
+        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 434 revisados",
         "OK  Pausar: texto sobre fondo: 7.86:1",
         "OK  interruptor apagado sobre el panel: 3.13:1",
         "OK  interruptor encendido sobre el panel: 7.86:1",
@@ -187,7 +188,7 @@
       "ok": 6,
       "mal": 0,
       "bien": true,
-      "segundos": 8,
+      "segundos": 3,
       "lineas": [
         "OK  los cuatro filtros son SVGFilterElement",
         "OK  el filtro protan se aplica y cambia el rojo de la página",
@@ -478,7 +479,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 7,
       "lineas": [
         "OK  «números» pone etiquetas 1, 2, 3… sobre lo que se puede pulsar",
         "OK  «clic 2» pulsa el botón que lleva el 2",
@@ -661,7 +662,7 @@
       "ok": 11,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 6,
       "lineas": [
         "OK  el guiño es un ojo cerrado con el otro abierto; un parpadeo de los dos ojos no cuenta",
         "OK  la inclinación de la cabeza sale del ángulo entre los ojos, a cada lado, y sin cara vale 0",
@@ -844,7 +845,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 8,
+      "segundos": 2,
       "lineas": [
         "OK  «¿Dónde estoy?» dice título, ruta, encabezados y avance",
         "OK  hay resumen: de qué va y lo más importante",
@@ -874,7 +875,7 @@
       "ok": 16,
       "mal": 0,
       "bien": true,
-      "segundos": 17,
+      "segundos": 16,
       "lineas": [
         "OK  el escáner termina bien",
         "OK  genera informe.html, declaracion.html y resultados.json",
@@ -991,7 +992,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 1,
       "lineas": [
         "OK  ningún medio pasa del volumen máximo",
         "OK  sin voz elegida, usa la neuronal de es-CO",
@@ -1104,7 +1105,7 @@
       "ok": 4,
       "mal": 0,
       "bien": true,
-      "segundos": 9,
+      "segundos": 14,
       "lineas": [
         "OK  el navegador avisa de cada cuadro nuevo",
         "OK  no se infiere más veces que cuadros entrega la cámara",
@@ -1126,7 +1127,7 @@
       "ok": 26,
       "mal": 0,
       "bien": true,
-      "segundos": 7,
+      "segundos": 1,
       "lineas": [
         "OK  «Legible» pone Verdana en la página, no en el panel, y se guarda",
         "OK  «Para dislexia» pide OpenDyslexic desde winclus.com/fuentes",
@@ -1209,7 +1210,7 @@
       "segundos": 1,
       "lineas": [
         "OK  al abrir por primera vez se ve la pestaña Inicio",
-        "OK  hay ocho botones por situación, dichos como lo diría la persona",
+        "OK  hay diez botones por situación",
         "OK  la caja «¿Qué quieres hacer?» está en Inicio",
         "OK  sin nada activado lo dice y no ofrece «Apagar todo»",
         "OK  «Veo poco» agranda el texto y pone contraste",
@@ -1236,6 +1237,46 @@
         "OK  con el barrido a 2 s o más, los interruptores del panel se anuncian con su ayuda",
         "OK  se cuenta qué se toca del panel",
         "OK  sin errores JS"
+      ]
+    },
+    {
+      "archivo": "prueba_situaciones.js",
+      "que": "«¿Qué te cuesta?» se pone y se quita: diez opciones (también «No veo» y «Confundo los colores») que encienden lo que dicen, quedan marcadas con ✓ y al tocarlas otra vez dejan todo como estaba antes; el permiso de la cámara sale en Inicio; el panel se abre sencillo y «Ver más opciones» enseña las pestañas.",
+      "criterios": [
+        "WCAG 3.3.2",
+        "WCAG 4.1.2",
+        "WCAG 2.1.1",
+        "Res. 1519 CC25"
+      ],
+      "ok": 24,
+      "mal": 0,
+      "bien": true,
+      "segundos": 10,
+      "lineas": [
+        "OK  el panel se abre en la vista sencilla: sin pestañas, con «Ver más opciones» y «Volver a como estaba» fijos abajo",
+        "OK  hay 10 opciones, con «No veo» y «Confundo los colores» nuevas",
+        "OK  «Veo poco» pone contraste",
+        "OK  al tocarla otra vez se quita y deja la letra en 200 %, como estaba antes",
+        "OK  «No veo» enciende el lector de la página, y al tocarla otra vez se quita",
+        "OK  «Confundo los colores» corrige los colores y subraya los enlaces, y al tocarla otra vez se quita",
+        "OK  «No oigo bien» pone avisos en pantalla y subtítulos grandes, y al tocarla otra vez se quita",
+        "OK  «Solo puedo pulsar un botón» enciende el barrido, y al tocarla otra vez se quita",
+        "OK  «La pantalla me marea» pone el modo calma, y al tocarla otra vez se quita",
+        "OK  «No puedo hablar» abre el tablero de dibujos, y al tocarla otra vez se quita",
+        "OK  «Me cuesta leer o entender» abre la página en fácil, y al tocarla otra vez se quita",
+        "OK  «Me cuesta escribir» abre el teclado en pantalla, y al tocarla otra vez se quita",
+        "OK  «Quitar», en el pie, deshace la última opción",
+        "OK  se pueden sumar varias y al volver a la página siguen marcadas",
+        "OK  «Volver a como estaba» quita todas y lo dice",
+        "OK  si se apaga a mano lo que puso una opción, deja de estar marcada",
+        "OK  «No puedo usar el ratón» enseña el permiso de la cámara en Inicio, con el foco en «Acepto»",
+        "OK  «Ahora no» cierra el permiso, no marca la opción y devuelve el foco a ella",
+        "OK  «Ver más opciones» enseña las pestañas y lleva a Ver",
+        "OK  «Volver a lo sencillo» esconde las pestañas y vuelve a «¿Qué te cuesta?»",
+        "OK  escribir «soy ciego» en la caja enciende «No veo» y lo marca",
+        "OK  «no veo bien» es «Veo poco», no «No veo»",
+        "OK  con el teclado: Intro sobre una opción la pone",
+        "OK  sin errores de JavaScript"
       ]
     }
   ]

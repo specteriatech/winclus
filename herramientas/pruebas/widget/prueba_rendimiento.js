@@ -23,6 +23,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   await page.goto("http://127.0.0.1:8765/pruebas/camara-falsa.html");
   await page.waitForFunction(() => window.Winclus);
   await page.evaluate(() => Winclus.abrir());
+  await page.evaluate(() => Winclus.vistaCompleta(true));   // las pestañas salen con «Ver más opciones»
   await page.click("#wcl-tab-cara");
   await page.evaluate(() => Winclus.activarCamara());
   try {

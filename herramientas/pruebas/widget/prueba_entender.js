@@ -35,7 +35,7 @@ function pagina(nombre, html) { const p = path.join(__dirname, nombre); fs.write
     };
   });
   comprobar(inicio.activa === "wcl-tab-inicio", "al abrir por primera vez se ve la pestaña Inicio", inicio.activa);
-  comprobar(inicio.situaciones.length === 8 && inicio.situaciones.some((t) => /Veo poco/.test(t)) && inicio.situaciones.some((t) => /No puedo usar el ratón/.test(t)) && inicio.situaciones.some((t) => /Solo puedo pulsar un botón/.test(t)), "hay ocho botones por situación, dichos como lo diría la persona", inicio.situaciones.join(" | "));
+  comprobar(inicio.situaciones.length === 10 && inicio.situaciones.some((t) => /^No veo/.test(t)) && inicio.situaciones.some((t) => /Confundo los colores/.test(t)) && inicio.situaciones.some((t) => /Veo poco/.test(t)) && inicio.situaciones.some((t) => /No puedo usar el ratón/.test(t)) && inicio.situaciones.some((t) => /Solo puedo pulsar un botón/.test(t)), "hay diez botones por situación (también «No veo» y «Confundo los colores»), dichos como lo diría la persona", inicio.situaciones.join(" | "));
   comprobar(inicio.caja, "la caja «¿Qué quieres hacer?» está en Inicio");
   comprobar(/Nada todavía/.test(inicio.nada) && inicio.apagar === "none", "sin nada activado lo dice y no ofrece «Apagar todo»", inicio.nada + " / " + inicio.apagar);
 
@@ -130,7 +130,7 @@ function pagina(nombre, html) { const p = path.join(__dirname, nombre); fs.write
   await page.waitForTimeout(100);
   comprobar((await page.evaluate(() => (window.__voz || []).join(""))) === "", "la bienvenida solo suena la primera vez");
   const pictos = await page.evaluate(() => Array.from(Winclus.caja.querySelectorAll(".wcl-situ button .ico img")).map((i) => [i.getAttribute("alt"), /static\.arasaac\.org\/pictograms\/\d+\/\d+_300\.png$/.test(i.src)]));
-  comprobar(pictos.length === 8 && pictos.every((p) => p[0] === "" && p[1]), "cada situación lleva un pictograma ARASAAC decorativo (alt vacío)", JSON.stringify(pictos));
+  comprobar(pictos.length === 10 && pictos.every((p) => p[0] === "" && p[1]), "cada situación lleva un pictograma ARASAAC decorativo (alt vacío)", JSON.stringify(pictos));
   const expl = await page.evaluate(() => { const b = Array.from(Winclus.caja.querySelectorAll("#wcl-panel-inicio .wcl-big")).find((x) => /Explícame esta página en fácil/.test(x.textContent)); b.click(); return !!Winclus.caja.querySelector(".wcl-limpia-texto"); });
   comprobar(expl, "«Explícame esta página en fácil» abre la lectura limpia desde Inicio");
   await page.evaluate(() => { Array.from(Winclus.caja.querySelectorAll(".wcl-limpia-barra button")).find((b) => /Cerrar/.test(b.textContent)).click(); });
