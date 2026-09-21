@@ -72,7 +72,7 @@
       "cc": "CC9",
       "nombre": "Contenedores como tablas y listas usados correctamente",
       "estado": "cumple",
-      "detalle": "18 tablas y 99 listas, todas con contenido homogéneo y cabeceras"
+      "detalle": "18 tablas y 102 listas, todas con contenido homogéneo y cabeceras"
     },
     {
       "cc": "CC10",

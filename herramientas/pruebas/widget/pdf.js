@@ -14,6 +14,10 @@ const RAIZ = path.resolve(__dirname, "../../..");
   for (const [ruta, salida, titulo] of [["/guia.html", "guia-winclus.pdf", "Guía de uso de Winclus"], ["/manual.html", "manual-winclus.pdf", "Manual de uso para entidades · Winclus"]]) {
     await page.goto("http://127.0.0.1:8765" + ruta, { waitUntil: "networkidle" });
     await page.evaluate(() => { const w = document.querySelector(".wcl-root"); if (w) w.remove(); });   // el widget no va en el PDF
+    // Chromium etiqueta el <figure> de la web como una Figura sin texto alternativo que envuelve a la imagen (que sí
+    // lo tiene): el capítulo 3.3 del Anexo 1 pide alternativa en TODAS las figuras. Solo para el PDF, el <figure> pasa
+    // a ser un grupo con el pie de foto como nombre; la imagen de dentro sigue siendo la figura, con su alt.
+    await page.evaluate(() => document.querySelectorAll("figure").forEach((f) => { const c = f.querySelector("figcaption"); f.setAttribute("role", "group"); if (c) f.setAttribute("aria-label", c.textContent.trim()); }));
     await page.emulateMedia({ media: "print" });
     const destino = path.join(RAIZ, "web", salida);
     // tagged: PDF etiquetado (estructura para lectores de pantalla, PDF/UA); outline: índice navegable. Lo exige la Resolución 1519 para documentos.

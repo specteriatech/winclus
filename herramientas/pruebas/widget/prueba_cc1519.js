@@ -284,7 +284,7 @@ function humano(cc, nombre, detalle) {
     criterios: resultados
   };
   fs.writeFileSync(path.join(__dirname, "../../../web/cc1519.json"), JSON.stringify(salida, null, 2), "utf8");
-  console.log("\nCriterios comprobados por máquina: " + resultados.filter((r) => r.estado !== "revisión humana").length +
+  console.log("\nCriterios comprobados por máquina: " + resultados.filter((r) => /^CC\d/.test(r.cc) && r.estado !== "revisión humana").length + " de 32 (más la comprobación de errores de JavaScript)" +
     " · Fallan: " + fallos + " · Necesitan revisión humana: " + humanos);
   console.log(fallos ? "FALLOS: " + fallos : "todo bien · web/cc1519.json");
   process.exit(fallos ? 1 : 0);

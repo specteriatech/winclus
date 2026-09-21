@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-21T19:12:14.533Z",
-  "commit": "5bd3800",
-  "version": "0.6.16",
-  "pruebas": 38,
-  "comprobaciones": 707,
+  "fecha": "2026-09-21T20:19:48.435Z",
+  "commit": "9565c62",
+  "version": "0.6.17",
+  "pruebas": 42,
+  "comprobaciones": 763,
   "fallan": 0,
   "resultados": [
     {
@@ -16,7 +16,7 @@
       "ok": 18,
       "mal": 0,
       "bien": true,
-      "segundos": 22,
+      "segundos": 15,
       "lineas": [
         "OK  sin ajustes",
         "OK  oscuro",
@@ -131,17 +131,17 @@
       "bien": true,
       "segundos": 4,
       "lineas": [
-        "OK  vista sencilla con una opción puesta: 0 regla(s) incumplida(s), 0 elemento(s), 572 revisados",
-        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 659 revisados",
-        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 951 revisados",
-        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 885 revisados",
-        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 736 revisados",
-        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1886 revisados",
-        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 645 revisados",
-        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 567 revisados",
-        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 558 revisados",
-        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 558 revisados",
-        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 434 revisados",
+        "OK  vista sencilla con una opción puesta: 0 regla(s) incumplida(s), 0 elemento(s), 592 revisados",
+        "OK  pestaña inicio: 0 regla(s) incumplida(s), 0 elemento(s), 679 revisados",
+        "OK  pestaña ver: 0 regla(s) incumplida(s), 0 elemento(s), 968 revisados",
+        "OK  pestaña oir: 0 regla(s) incumplida(s), 0 elemento(s), 962 revisados",
+        "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 753 revisados",
+        "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1927 revisados",
+        "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 662 revisados",
+        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 584 revisados",
+        "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 575 revisados",
+        "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 575 revisados",
+        "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 451 revisados",
         "OK  Pausar: texto sobre fondo: 7.86:1",
         "OK  interruptor apagado sobre el panel: 3.13:1",
         "OK  interruptor encendido sobre el panel: 7.86:1",
@@ -163,7 +163,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 6,
+      "segundos": 1,
       "lineas": [
         "OK  el widget carga con CSP estricta",
         "OK  sin errores JS",
@@ -208,7 +208,7 @@
       "ok": 140,
       "mal": 0,
       "bien": true,
-      "segundos": 15,
+      "segundos": 16,
       "lineas": [
         "OK  / a 1280 px: axe sin incumplimientos",
         "OK  / a 1280 px: carga el widget",
@@ -479,7 +479,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 7,
+      "segundos": 2,
       "lineas": [
         "OK  «números» pone etiquetas 1, 2, 3… sobre lo que se puede pulsar",
         "OK  «clic 2» pulsa el botón que lleva el 2",
@@ -552,7 +552,7 @@
       "ok": 9,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 2,
       "lineas": [
         "OK  el tablero se abre con categorías y pictogramas",
         "OK  las imágenes vienen de ARASAAC y se atribuye la licencia",
@@ -937,6 +937,42 @@
       ]
     },
     {
+      "archivo": "prueba_documentos.mjs",
+      "que": "Capítulo 3.3 del Anexo 1 (documentos PDF): los PDF de winclus.com están etiquetados, con idioma, título, encabezados sin saltos, listas, texto alternativo en todas las figuras, texto real, índice y sin restricciones para lectores de pantalla.",
+      "criterios": [
+        "Res. 1519 Anexo 1 cap. 3",
+        "PDF/UA",
+        "WCAG 1.1.1"
+      ],
+      "ok": 21,
+      "mal": 0,
+      "bien": true,
+      "segundos": 0,
+      "lineas": [
+        "OK  winclus.com publica 2 PDF: guia-winclus.pdf, manual-winclus.pdf",
+        "OK  guia-winclus.pdf: etiquetado",
+        "OK  guia-winclus.pdf: idioma principal declarado",
+        "OK  guia-winclus.pdf: título del documento en sus propiedades",
+        "OK  guia-winclus.pdf: estructura por encabezados, con un solo H1 y sin saltar niveles",
+        "OK  guia-winclus.pdf: las listas están etiquetadas como listas con sus elementos",
+        "OK  guia-winclus.pdf: todas las figuras tienen texto alternativo",
+        "OK  guia-winclus.pdf: el texto es texto de verdad, no una imagen escaneada",
+        "OK  guia-winclus.pdf: índice navegable",
+        "OK  guia-winclus.pdf: la seguridad no impide la lectura con lectores de pantalla",
+        "OK  guia-winclus.pdf: los campos de formulario están identificados",
+        "OK  manual-winclus.pdf: etiquetado",
+        "OK  manual-winclus.pdf: idioma principal declarado",
+        "OK  manual-winclus.pdf: título del documento en sus propiedades",
+        "OK  manual-winclus.pdf: estructura por encabezados, con un solo H1 y sin saltar niveles",
+        "OK  manual-winclus.pdf: las listas están etiquetadas como listas con sus elementos",
+        "OK  manual-winclus.pdf: todas las figuras tienen texto alternativo",
+        "OK  manual-winclus.pdf: el texto es texto de verdad, no una imagen escaneada",
+        "OK  manual-winclus.pdf: índice navegable",
+        "OK  manual-winclus.pdf: la seguridad no impide la lectura con lectores de pantalla",
+        "OK  manual-winclus.pdf: los campos de formulario están identificados"
+      ]
+    },
+    {
       "archivo": "prueba_sdk.js",
       "que": "Web component, guía de integración, plugin de WordPress y módulo de Drupal.",
       "criterios": [
@@ -992,7 +1028,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 1,
       "lineas": [
         "OK  ningún medio pasa del volumen máximo",
         "OK  sin voz elegida, usa la neuronal de es-CO",
@@ -1019,7 +1055,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 11,
+      "segundos": 16,
       "lineas": [
         "OK  demo.html pasa axe",
         "OK  la demo tiene los siete pasos",
@@ -1042,7 +1078,7 @@
       "ok": 21,
       "mal": 0,
       "bien": true,
-      "segundos": 13,
+      "segundos": 18,
       "lineas": [
         "OK  chromium: recorrido básico",
         "OK  chromium: sin speechSynthesis ni SpeechRecognition",
@@ -1251,7 +1287,7 @@
       "ok": 24,
       "mal": 0,
       "bien": true,
-      "segundos": 10,
+      "segundos": 5,
       "lineas": [
         "OK  el panel se abre en la vista sencilla: sin pestañas, con «Ver más opciones» y «Volver a como estaba» fijos abajo",
         "OK  hay 10 opciones, con «No veo» y «Confundo los colores» nuevas",
@@ -1276,6 +1312,86 @@
         "OK  escribir «soy ciego» en la caja enciende «No veo» y lo marca",
         "OK  «no veo bien» es «Veo poco», no «No veo»",
         "OK  con el teclado: Intro sobre una opción la pone",
+        "OK  sin errores de JavaScript"
+      ]
+    },
+    {
+      "archivo": "prueba_amplificar.js",
+      "que": "Para la hipoacusia: subir el volumen por encima de lo normal (medido: 3 veces al 300 %, con limitador para que no se rompa) y «Voz más clara» (quita graves, realza la voz); los audios de otro sitio sin permiso no se tocan, porque sonarían en silencio.",
+      "criterios": [
+        "WCAG 1.4.7",
+        "EN 301 549 7.2",
+        "Ley 1618/2013 art. 16"
+      ],
+      "ok": 10,
+      "mal": 0,
+      "bien": true,
+      "segundos": 19,
+      "lineas": [
+        "OK  el audio pasa por la cadena de Winclus y suena",
+        "OK  al 300 % sale unas tres veces más fuerte",
+        "OK  al 400 % con un sonido fuerte, el limitador impide que se rompa",
+        "OK  «Voz más clara» quita los graves",
+        "OK  y realza la voz",
+        "OK  un audio de otro sitio sin CORS no se toca, sigue sonando y se avisa de que no se puede subir",
+        "OK  en la pestaña Oír están «Subir el volumen por encima de lo normal» y «Voz más clara», con su ayuda",
+        "OK  «Lo que tienes activado» lo dice",
+        "OK  «Volver a como estaba» lo quita",
+        "OK  sin errores de JavaScript"
+      ]
+    },
+    {
+      "archivo": "prueba_temblor.js",
+      "que": "Temblor con el ratón de siempre: el clic que cae al lado de un botón lo pulsa (o pregunta cuál), el segundo clic sin querer no cuenta; nunca toca un clic que ya cae en algo pulsable.",
+      "criterios": [
+        "WCAG 2.5.8",
+        "WCAG 2.5.2",
+        "EN 301 549 11.5"
+      ],
+      "ok": 12,
+      "mal": 0,
+      "bien": true,
+      "segundos": 11,
+      "lineas": [
+        "OK  con la ayuda apagada, un clic al lado del botón no lo pulsa",
+        "OK  con la ayuda encendida, un clic que cae 15 px al lado de «Pagar» pulsa «Pagar»",
+        "OK  si cae entre dos botones, pregunta «¿Cuál de estos?» y no pulsa ninguno",
+        "OK  y al elegir «Borrar» pulsa «Borrar»",
+        "OK  dos clics seguidos sin querer sobre «Pagar» cuentan como uno",
+        "OK  pasado el tiempo, el siguiente clic sí cuenta",
+        "OK  un clic lejos de todo no pulsa nada ni pregunta",
+        "OK  un clic en algo que la página ya hace pulsable",
+        "OK  dos clics de la página (no del ratón) cuentan los dos: solo se filtra el ratón real",
+        "OK  decir «me tiembla la mano» en la caja lo enciende",
+        "OK  el interruptor está en la pestaña Clics, con su ayuda",
+        "OK  sin errores de JavaScript"
+      ]
+    },
+    {
+      "archivo": "prueba_ayuda_voz.js",
+      "que": "ELA avanzada: «Pedir ayuda» en toda la pantalla sin destellos, que para cualquier tecla o gesto; «Mis frases con mi voz»: la frase grabada suena con la voz de la persona en vez de la sintética, se guarda solo en el navegador y se borra.",
+      "criterios": [
+        "WCAG 2.3.1",
+        "CDPD art. 21",
+        "Ley 1581/2012"
+      ],
+      "ok": 13,
+      "mal": 0,
+      "bien": true,
+      "segundos": 10,
+      "lineas": [
+        "OK  «Pedir ayuda a quien esté cerca» pone el aviso en toda la pantalla",
+        "OK  el aviso no destella: el color no cambia",
+        "OK  y la voz dice «Necesito ayuda»",
+        "OK  cualquier tecla lo para",
+        "OK  el gesto de clic de la cámara también lo para",
+        "OK  decir «socorro» en la caja también pide ayuda",
+        "OK  se graba «Tengo sed» con el micrófono y sale en la lista",
+        "OK  al decir «tengo sed» suena la grabación con su voz, no la voz sintética",
+        "OK  una frase sin grabar sigue con la voz sintética",
+        "OK  la grabación sigue al volver a la página",
+        "OK  «Borrar» la quita",
+        "OK  «Restablecer todo» borra también las frases con su voz",
         "OK  sin errores de JavaScript"
       ]
     }

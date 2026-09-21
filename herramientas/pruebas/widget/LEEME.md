@@ -94,14 +94,18 @@
   línea; «Restablecer todo» y los tres «Olvidar…» preguntan en dos pasos con el foco en «No»; colores propios (preajustes y
   libres) y modo dislexia (interlineado, párrafos, sin justificar, ≤ 80 caracteres); glosario en todos los pies; migas de
   pan con aria-current; «En pocas palabras» en las páginas técnicas; transcripciones de los cuatro vídeos.
-- `node prueba_entender.js`: el panel se entiende sin manual (17-sep-2026): Inicio con «¿Qué te cuesta?» (ocho situaciones que
-- `node prueba_situaciones.js`: «¿Qué te cuesta?» (0.6.16): las diez opciones se ponen y se quitan (aria-pressed y ✓), al quitarlas vuelve lo de antes y no lo de fábrica, «Quitar» del pie, se recuerdan al volver, «Volver a como estaba», el permiso de la cámara en Inicio, «Ver más opciones» y «Volver a lo sencillo», la caja «Dímelo» («soy ciego» / «no veo bien») y el teclado.
+- `node prueba_entender.js`: el panel se entiende sin manual (17-sep-2026): Inicio con «¿Qué te cuesta?» (diez situaciones que
   encienden lo adecuado y explican qué han hecho), «Lo que tienes activado» y «Apagar todo lo activado», ayuda en palabras
   corrientes bajo cada interruptor y cada −/+ (aria-describedby), «Ajustes finos» plegados y cerrados, sin jerga en los nombres
   visibles, y en inglés no se cuela español (también los −/+, que antes no se traducían). Además: bienvenida de la
   primera vez (voz + botones que laten, `winclus.visto`), pictogramas ARASAAC en las situaciones, «Explícame esta página
   en fácil» desde Inicio, «Léemelo» por sección (`Winclus.textoSeccion`), ayuda en el barrido a ≥ 2 s (`Winclus.ayudaBarrido`)
   y cifras de qué se toca del panel (`uso.panel`, sin datos personales).
+- `node prueba_situaciones.js`: «¿Qué te cuesta?» (0.6.16): las diez opciones se ponen y se quitan (aria-pressed y ✓), al quitarlas vuelve lo de antes y no lo de fábrica, «Quitar» del pie, se recuerdan al volver, «Volver a como estaba», el permiso de la cámara en Inicio, «Ver más opciones» y «Volver a lo sencillo», la caja «Dímelo» («soy ciego» / «no veo bien») y el teclado.
+- `node prueba_amplificar.js`: subir el volumen y «Voz más clara» (0.6.17), midiendo el sonido real con tonos generados; audios de otro sitio sin CORS intactos.
+- `node prueba_temblor.js`: «Ayudarme a pulsar con el ratón» (0.6.17) con clics reales del ratón.
+- `node prueba_ayuda_voz.js`: «Pedir ayuda» y «Mis frases con mi voz» (0.6.17), con el micrófono simulado de Chromium.
+- `node prueba_documentos.mjs`: capítulo 3.3 del Anexo 1 sobre los PDF de web/ con pdf.js (pdfjs-dist): etiquetado, idioma, título, encabezados, listas, alt en todas las figuras, texto real, índice, permisos y campos.
 - `node prueba_robustez.js`: regresión de los fallos de la revisión del 16-sep-2026 (ver el comentario del archivo).
 - Cualquier prueba corre en otro motor con `NAVEGADOR=firefox node prueba_x.js` (o `webkit`). El WebKit de Playwright en Windows no trae síntesis de voz ni portapapeles: `voz-simulada.js` se inyecta como sustituto y las comprobaciones de portapapeles se saltan en ese motor.
 - Todas las pruebas del widget usan `Winclus.caja` (el shadow root) para llegar a sus piezas; los selectores de
