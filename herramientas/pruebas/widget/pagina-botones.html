@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Página para los botones nuevos</title>
+<style>
+  body { margin: 0; font: 16px/1.5 sans-serif; color: #222; background: #fff; }
+  .flojo { color: #9a9a9a; }           /* 2,7:1 sobre blanco: no llega */
+  .grande { font-size: 26px; color: #8a8a8a; }   /* 3,3:1: vale por ser grande */
+  .oscuro { background: #333; color: #777; padding: 8px; }   /* 2,4:1 sobre oscuro: debe pasar a blanco */
+  .foto { background-image: url(x.png); color: #999; }   /* sobre imagen no se toca */
+  .bueno { color: #101F3D; }
+  img { width: 80px; height: 40px; background: #cfc; }
+</style>
+</head>
+<body>
+<header><nav aria-label="Principal"><a href="/a" title="Ir a la sección A">A</a> <a href="/b">B</a></nav></header>
+<main>
+  <h1>Título principal</h1>
+  <h2>Sección uno</h2>
+  <p class="bueno">Texto que se lee bien.</p>
+  <p class="flojo" id="flojo">Texto gris flojo sobre blanco.</p>
+  <p class="grande" id="grande">Texto grande gris.</p>
+  <div class="oscuro" id="oscuro">Texto gris sobre fondo oscuro.</div>
+  <p class="foto" id="foto">Texto sobre una foto.</p>
+  <h3>Sub sección</h3>
+  <button type="button" id="guardar" aria-label="Guardar el formulario">💾</button>
+  <img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Foto de la plaza" id="foto1">
+  <p><abbr title="Peticiones, quejas, reclamos, sugerencias y denuncias">PQRSD</abbr></p>
+  <a href="mailto:accesibilidad@ejemplo.gov.co">Contacto de accesibilidad</a>
+  <h2>Sección dos</h2>
+  <section aria-label="Noticias"><p>Noticias del día.</p></section>
+</main>
+<footer><p>Pie de página</p></footer>
+<div id="tarde"></div>
+<script>document.write('<script src="../../../web/widget.js"' + (location.search === "?contacto" ? ' data-contacto="https://barreras.ejemplo/aviso"' : "") + '><\/script>');</script>
+</body>
+</html>

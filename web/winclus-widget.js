@@ -10,6 +10,7 @@
  *   data-color="#101F3D"        color del botón
  *   data-camara="no"            ocultar el control con la cámara (solo panel de accesibilidad)
  *   data-glosario="/glosario.json"  JSON {palabra: definición} para el diccionario al toque (o window.WinclusGlosario)
+ *   data-contacto="mailto:accesibilidad@entidad.gov.co"  a dónde llega «Avisar de una barrera» (mailto: o URL que reciba un POST)
  *   data-arreglos="no"          no arreglar al vuelo lo que le falta a la página (alt, nombres, etiquetas, saltar al contenido, foco, zoom, lang)
  *
  * Hace dentro de la página lo mismo que la aplicación Winclus para Windows:
@@ -35,6 +36,7 @@
     idiomas: (script && script.dataset.idiomas) || "",      // versiones del sitio en otros idiomas, si no las declara con hreflang: "en=/en/, fr=https://…"
     metricas: (script && script.dataset.metricas) || "",    // URL opcional a la que el sitio recibe cifras de uso anónimas (solo si la persona lo activa)
     glosario: (script && script.dataset.glosario) || "",    // URL opcional de un JSON {palabra: definición} para el diccionario al toque (o window.WinclusGlosario)
+    contacto: (script && script.dataset.contacto) || "",    // a dónde van los avisos de barrera: mailto:… o URL (POST {url, texto, navegador, version, fecha})
     arreglos: !(script && script.dataset.arreglos === "no")  // arreglos al vuelo para todas las ayudas técnicas (ver «arreglos del sitio»); se anotan para quien mantiene el sitio
   };
   // Cifras de uso: cuántas veces se hizo clic con la cara, se dijo una frase, se explicó un error… Solo números,
@@ -47,7 +49,7 @@
       uso.n = uso.n || {}; uso.n[clave] = (uso.n[clave] || 0) + 1; localStorage.setItem("winclus.uso", JSON.stringify(uso));
     } catch (e) {}
   }
-  var NOMBRES_USO = { clics_cara: "clics hechos con la cara", barrido: "acciones con el barrido", frases: "frases dichas con voz", pictos: "frases dichas con pictogramas", teclado: "veces que se abrió el teclado", dictado: "dictados escritos", errores: "errores de formulario explicados", facil: "páginas explicadas en fácil", limpia: "lecturas limpias", diccionario: "palabras buscadas en el diccionario", silabas: "textos separados en sílabas", camara: "sesiones con la cámara", ordenes: "órdenes por voz ejecutadas", asistente: "peticiones al asistente" };
+  var NOMBRES_USO = { clics_cara: "clics hechos con la cara", barrido: "acciones con el barrido", frases: "frases dichas con voz", pictos: "frases dichas con pictogramas", teclado: "veces que se abrió el teclado", dictado: "dictados escritos", errores: "errores de formulario explicados", facil: "páginas explicadas en fácil", limpia: "lecturas limpias", diccionario: "palabras buscadas en el diccionario", estructura: "veces que se abrió la estructura de la página", barreras: "avisos de barrera enviados", silabas: "textos separados en sílabas", camara: "sesiones con la cámara", ordenes: "órdenes por voz ejecutadas", asistente: "peticiones al asistente" };
   function resumenUso() {
     try { uso = uso || JSON.parse(localStorage.getItem("winclus.uso") || "null"); } catch (e) {}
     if (!uso || !uso.n || !Object.keys(uso.n).length) return T("Todavía no hay cifras de uso en este navegador.");
@@ -61,7 +63,7 @@
     { base: ORIGEN + "/mediapipe", modelo: ORIGEN + "/mediapipe/face_landmarker.task" },
     { base: "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35", modelo: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task" }
   ];
-  var VERSION = "0.7.0";
+  var VERSION = "0.8.0";
   var CAM_W = 640, CAM_H = 480;
   var raiz = document.documentElement;
   var LADO = opciones.posicion === "izquierda" ? "left" : "right";
@@ -93,6 +95,7 @@
     subtitulos: false, alertas_sonido: false, dictado_confirmar: false, formularios: true, volumen_max: 100, amplificar: 100, voz_clara: false, raton_temblor: false, raton_doble_ms: 600, raton_radio_px: 40, pdf_lectura: false, metricas_compartir: false,
     dalton: "no", calma: false, colores: "no", color_texto: "#000000", color_fondo: "#FFFFFF", letra: "no", alinear: false, interlineado: 100, zoom_pagina: 100, titulos: false, foco: false, silencio: false, diccionario: false, dislexia: false, sinimg: false, mascara: false, lector: false, facil: false,
     lupa_pantalla: false, lupa_pantalla_zoom: 2,
+    ocultar_img: false, saturacion: 100, tooltips: false, contraste_inteligente: false, boton_lado: "auto", panel_grande: false,   // 0.8.0: lo que le faltaba al panel frente a los overlays
     situaciones: [], situ_antes: {}   // lo elegido en «¿Qué te cuesta?» y cómo estaba cada ajuste antes, para quitarlo tal cual
   };
   var CLAVE = "winclus.ajustes";
@@ -161,7 +164,19 @@
       "Ayuda en formularios": "Form help", "Al entrar en un campo te dice cuál es y cuántos quedan («Campo 3 de 8: Correo, obligatorio»); si el sitio marca un error, lo explica en lenguaje claro; y deja pegar aunque el sitio lo bloquee.": "When you enter a field it tells you which one it is and how many are left (“Field 3 of 8: Email, required”); if the site flags an error, it explains it in plain language; and it lets you paste even if the site blocks it.",
       "Dictado": "Dictation", "Dictar": "Dictate", "Parar el dictado": "Stop dictation", "Confirmar lo dictado": "Confirm dictation", "Escribir (o di «sí»)": "Type it (or say “yes”)", "Descartar (o di «no»)": "Discard (or say “no”)",
       "Perfil": "Profile", "Copiar enlace con mis ajustes": "Copy a link with my settings", "Restablecer todo": "Reset everything", "Acerca de": "About",
-      "Lo que Winclus arregló en esta página": "What Winclus fixed on this page", "Para quien usa lector de pantalla, teclado o zoom: lo que le faltaba a la página y Winclus puso al vuelo. Quien mantiene el sitio debe ponerlo en el código; la lista se lo dice.": "For screen reader, keyboard or zoom users: what the page was missing and Winclus added on the fly. Whoever maintains the site should put it in the code; the list tells them.", "Saltar al contenido": "Skip to content", "Copiar la lista para quien mantiene el sitio": "Copy the list for whoever maintains the site", "Ver la lista": "See the list",
+      "Lo que Winclus arregló en esta página": "What Winclus fixed on this page",
+      "Contraste inteligente": "Smart contrast", "Arregla solo los textos que no se leen bien: los oscurece o los aclara hasta que contrasten con su fondo. Los demás colores del sitio se quedan como están.": "Fixes only the text that is hard to read: darkens or lightens it until it contrasts with its background. The rest of the site's colors stay as they are.",
+      "Información al pasar": "Info on hover", "Muestra en grande, junto al puntero o al foco, la explicación que el sitio dejó en cada botón, enlace o imagen.": "Shows, large and next to the pointer or the focus, the explanation the site left on each button, link or image.",
+      "Estructura de la página": "Page structure", "La lista de títulos, zonas y enlaces de la página: toca uno para ir directo, sin buscarlo.": "The list of the page's headings, regions and links: tap one to go straight there.",
+      "Ocultar imágenes": "Hide images", "Quita del todo fotos, vídeos, iconos y fondos, para leer sin distracciones. Los iconos de los botones se quedan.": "Removes photos, videos, icons and backgrounds entirely, to read without distractions. Button icons stay.",
+      "Saturación de los colores": "Color saturation", "0 deja la página en gris; 100 es como la puso el sitio; más de 100 aviva los colores.": "0 turns the page gray; 100 is how the site made it; above 100 makes colors more vivid.", "Saturación al": "Saturation at",
+      "Imágenes ocultas": "Images hidden", "Panel grande": "Large panel", "Todo el panel y el botón un 20 % más grandes.": "The whole panel and the button 20 % larger.",
+      "El botón y el panel": "The button and the panel", "Por si el botón tapa algo del sitio o el panel se ve pequeño.": "In case the button covers something on the site or the panel looks small.", "Dónde sale el botón": "Where the button appears", "Como lo puso el sitio": "As the site set it", "Derecha": "Right", "Izquierda": "Left", "El botón flotante y el panel se ponen en ese lado de la pantalla, en todas las páginas de este sitio.": "The floating button and the panel go on that side of the screen, on every page of this site.",
+      "Avisar de una barrera": "Report a barrier", "Si algo de esta página no se puede usar, díselo a quien la mantiene. Winclus añade la dirección de la página, tu navegador y lo que tienes activado.": "If something on this page cannot be used, tell whoever maintains it. Winclus adds the page address, your browser and what you have on.", "¿Qué no pudiste hacer?": "What could you not do?", "¿Qué no pudiste hacer? Por ejemplo: el formulario de PQRSD no se puede enviar con el teclado.": "What could you not do? For example: the complaints form cannot be submitted with the keyboard.", "Enviar el aviso al sitio": "Send the report to the site", "Va al contacto de accesibilidad que el sitio haya dejado. Si no hay ninguno, el texto se copia para que lo pegues en su buzón de quejas (PQRSD).": "It goes to the accessibility contact the site left. If there is none, the text is copied so you can paste it into their complaints box.",
+      "Escribe primero qué no pudiste hacer": "First write what you could not do", "Barrera de accesibilidad en": "Accessibility barrier on", "Fecha": "Date", "Qué no se pudo hacer": "What could not be done", "Navegador": "Browser", "Ayudas activas": "Active aids", "ninguna": "none", "Aviso enviado": "Report sent", "El sitio lo ha recibido.": "The site has received it.", "Se ha abierto un correo con el aviso.": "An email with the report has opened.", "Aviso copiado": "Report copied", "Este sitio no dejó un contacto de accesibilidad. El aviso se ha copiado: pégalo en su buzón de quejas o de PQRSD.": "This site left no accessibility contact. The report has been copied: paste it into their complaints box.",
+      "Títulos de la página": "Page headings", "Zonas de la página": "Page regions", "Enlaces de la página": "Page links", "Título de nivel": "Heading level", "Enlace": "Link", "Títulos": "Headings", "Zonas": "Regions", "Enlaces": "Links", "Qué listar": "What to list", "Esta página no tiene títulos": "This page has no headings", "Esta página no tiene zonas marcadas": "This page has no marked regions", "Esta página no tiene enlaces": "This page has no links",
+      "Cabecera": "Header", "Menú": "Menu", "Contenido principal": "Main content", "Lateral": "Sidebar", "Pie": "Footer", "Formulario": "Form", "Buscador": "Search", "Sección": "Section", "Ventana": "Dialog", "textos con más contraste": "texts with more contrast", "Todos los textos ya contrastan bien": "All texts already contrast well",
+      "veces que se abrió la estructura de la página": "times the page structure was opened", "avisos de barrera enviados": "barrier reports sent", "Para quien usa lector de pantalla, teclado o zoom: lo que le faltaba a la página y Winclus puso al vuelo. Quien mantiene el sitio debe ponerlo en el código; la lista se lo dice.": "For screen reader, keyboard or zoom users: what the page was missing and Winclus added on the fly. Whoever maintains the site should put it in the code; the list tells them.", "Saltar al contenido": "Skip to content", "Copiar la lista para quien mantiene el sitio": "Copy the list for whoever maintains the site", "Ver la lista": "See the list",
       "arreglo(s) hechos": "fixes made", "cosa(s) que necesitan a una persona": "items that need a person", "No hizo falta arreglar nada": "Nothing needed fixing", "Todavía revisando la página…": "Still checking the page…", "Este sitio pidió no arreglar nada al vuelo.": "This site asked for no on-the-fly fixes.", "Lista copiada": "List copied",
       "Borra de este navegador todo lo que Winclus guarda: ajustes, calibración de los ojos, clics aprendidos, frases, palabras y el permiso de la cámara.": "Deletes everything Winclus stores in this browser: settings, eye calibration, learned clicks, phrases, words and the camera permission.",
       "🔊 Leer la página": "🔊 Read the page", "🔇 Callar": "🔇 Stop talking", "A+ Texto más grande": "A+ Larger text", "◐ Alto contraste": "◐ High contrast", "📖 Lectura limpia": "📖 Clean reading", "🔍 Lupa de pantalla": "🔍 Magnifier", "📷 Usar con la cara": "📷 Use with my face", "Ver todas las opciones": "See all options",
@@ -524,6 +539,12 @@
     + '.wcl-apuntado{outline:4px solid #2743B4!important;outline-offset:3px;box-shadow:0 0 0 4px rgba(39,67,180,.18)!important}'
     // Elegir entre varias cosas (o entre las opciones de un desplegable) con
     // botones grandes: un problema de puntería se convierte en uno de elegir.
+    + '.wcl-tip{position:fixed;z-index:2147483019;max-width:min(90vw,420px);background:#101F3D;color:#fff;font:600 18px/1.35 "Segoe UI",system-ui,sans-serif;padding:10px 14px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.35);display:none;pointer-events:none;word-break:break-word}'
+    + ':host(.wcl-izq) .wcl-btn{right:auto!important;left:22px!important}:host(.wcl-izq) .wcl-pausa{right:auto!important;left:92px!important}:host(.wcl-izq) .wcl-panel{right:auto!important;left:22px!important}'
+    + ':host(.wcl-der) .wcl-btn{left:auto!important;right:22px!important}:host(.wcl-der) .wcl-pausa{left:auto!important;right:92px!important}:host(.wcl-der) .wcl-panel{left:auto!important;right:22px!important}'
+    + '@media (max-width:480px){:host(.wcl-izq) .wcl-panel,:host(.wcl-der) .wcl-panel{left:8px!important;right:8px!important}}'
+    + ':host(.wcl-grande) .wcl-panel,:host(.wcl-grande) .wcl-btn,:host(.wcl-grande) .wcl-elegir{zoom:1.22}'
+    + '.wcl-elegir .wcl-est-tabs{display:flex;gap:6px;margin:0 0 10px}.wcl-elegir .wcl-est-tabs button{flex:1;margin:0}.wcl-elegir .wcl-est-tabs button[aria-pressed=true]{background:#2743B4;color:#fff}.wcl-elegir button.n2{padding-left:28px}.wcl-elegir button.n3{padding-left:44px}.wcl-elegir button.n4,.wcl-elegir button.n5,.wcl-elegir button.n6{padding-left:60px}'
     + '.wcl-elegir{position:fixed;z-index:2147483018;inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);display:none;width:min(94vw,560px);max-height:86vh;overflow:auto;box-sizing:border-box;background:#fff;color:#101F3D;border:4px solid #2743B4;border-radius:16px;padding:14px;box-shadow:0 12px 40px rgba(0,0,0,.35);font:16px/1.4 "Segoe UI",system-ui,sans-serif}'
     + '.wcl-elegir h2{margin:2px 0 10px;font:700 20px/1.3 "Segoe UI",system-ui,sans-serif;color:#101F3D}'
     + '.wcl-elegir button{display:block;width:100%;min-height:64px;margin:0 0 10px;padding:10px 14px;border-radius:12px;border:2px solid #C9D2E3;background:#F4F7FC;color:#101F3D;font:600 19px/1.25 "Segoe UI",system-ui,sans-serif;text-align:left;cursor:pointer}'
@@ -1759,7 +1780,10 @@
     else if (accion === "recentrar") recentrar();
     else if (accion === "leer") leerElemento(bajoPuntero());
   }
-  function clic() {
+  // clicGesto: el clic viene del gesto de la persona (no de una orden por voz ni del asistente): si cae fuera del panel, lo cierra
+  var clicGesto = false;
+  function clic() { clicGesto = true; try { clicReal(); } finally { clicGesto = false; } }
+  function clicReal() {
     if (ayudaEl) { pararAyuda(); return; }   // con el aviso de ayuda sonando, cualquier gesto lo para
     if (ajustes.barrido) { barridoSenal(); return; }   // con el barrido activo, el gesto de clic es la señal
     if (sobrePausar()) { avisar("Cierra los ojos 1,2 s para pausar", true); return; }
@@ -3499,6 +3523,7 @@
     if (a.amplificar > 100) l.push(T("Volumen subido al") + " " + a.amplificar + " %"); if (a.voz_clara) l.push("Voz más clara");
     if (a.raton_temblor) l.push("Ayuda con el temblor del ratón");
     if (a.pdf_lectura) l.push("Documentos PDF en la lectura limpia");
+    if (a.ocultar_img) l.push("Imágenes ocultas"); if (a.saturacion !== 100) l.push(T("Saturación al") + " " + a.saturacion + " %"); if (a.tooltips) l.push("Información al pasar"); if (a.contraste_inteligente) l.push("Contraste inteligente"); if (a.panel_grande) l.push("Panel grande");
     if (escuchando) l.push("Escuchando órdenes"); if (subtitulando) l.push("Subtítulos en vivo");
     if (camaraActiva) l.push(a.puntero_externo ? "Puntero de otro aparato, clics con la cara" : a.modo_puntero === "ojos" ? "Puntero con los ojos" : "Puntero con la cabeza");
     if (a.barrido) l.push(a.barrido_modo === "pasos" ? "Barrido con dos pulsadores" : "Barrido con un pulsador");
@@ -3515,6 +3540,7 @@
     ["contraste", "oscuro", "enlaces", "guia", "cursor_grande", "animaciones", "calma", "lupa_pantalla", "mascara", "dislexia", "sinimg", "lectura", "lector", "alertas_sonido", "subtitulos", "barrido", "facil", "titulos", "foco", "silencio", "diccionario"].forEach(function (k) { ajustes[k] = POR_DEFECTO[k]; });
     ajustes.texto = 100; ajustes.dalton = "no"; ajustes.colores = "no"; ajustes.letra = "no"; ajustes.alinear = false; ajustes.interlineado = 100; ajustes.zoom_pagina = 100;
     ajustes.amplificar = 100; ajustes.voz_clara = false; aplicarAmplificacion(); ajustes.raton_temblor = false; ajustes.pdf_lectura = false;
+    ajustes.ocultar_img = false; ajustes.saturacion = 100; ajustes.tooltips = false; ocultarTip(); if (ajustes.contraste_inteligente) { ajustes.contraste_inteligente = false; aplicarContrasteInteligente(false); }
     ajustes.situaciones = []; ajustes.situ_antes = {}; ultimaSitu = null; guardar();
     if (camaraActiva) desactivarCamara(); pararEscucha(); pararSubvivo(); pararDictado(); ocultarTeclado(); cerrarLimpia(); cerrarPictos(); ocultarNumeros();
     aplicarTodo(); aplicarLupaPantalla(); aplicarBarrido(); activarLector(false); refrescos.forEach(function (f) { f(); });
@@ -3542,6 +3568,10 @@
   s.appendChild(filaSw("guia", "Guía de lectura", aplicarClases, "Una línea de color sigue al puntero para no perder el renglón que lees."));
   s.appendChild(filaSw("cursor_grande", "Cursor del ratón grande", aplicarClases, "Una flecha más grande, para no perder el ratón de vista."));
   s.appendChild(filaSw("animaciones", "Quitar el movimiento", aplicarClases, "Para las animaciones y los carruseles que se mueven solos."));
+  s.appendChild(filaSw("contraste_inteligente", "Contraste inteligente", aplicarContrasteInteligente, "Arregla solo los textos que no se leen bien: los oscurece o los aclara hasta que contrasten con su fondo. Los demás colores del sitio se quedan como están."));
+  s.appendChild(filaSw("tooltips", "Información al pasar", function (si) { if (!si) ocultarTip(); }, "Muestra en grande, junto al puntero o al foco, la explicación que el sitio dejó en cada botón, enlace o imagen."));
+  s.appendChild(botonGrande("Estructura de la página", "suave", function () { abrirEstructura("titulos"); }));
+  s.appendChild(el("div", { "class": "wcl-ayuda" }, "La lista de títulos, zonas y enlaces de la página: toca uno para ir directo, sin buscarlo."));
   tabs.ver.appendChild(s);
   s = seccion("Leer con menos esfuerzo", "Para dislexia, cansancio o cuando la página tiene demasiadas cosas.");
   s.appendChild(botonGrande("Lectura limpia: solo el texto, grande", "azul", lecturaLimpia));
@@ -3550,6 +3580,7 @@
   s.appendChild(filaPaso("lupa_pantalla_zoom", "Cuánto agranda la lupa", 2, 16, 1, function (n) { return "×" + n; }, aplicarLupaPantalla, "×2 es el doble de grande; ×4, cuatro veces."));
   s.appendChild(filaSw("mascara", "Ver solo una franja", aplicarClases, "Oscurece toda la página menos una franja a la altura del puntero, para concentrarte en un renglón."));
   s.appendChild(filaSw("dislexia", "Letras y palabras más separadas", aplicarClases, "Más aire entre letras, palabras y renglones: se leen con menos esfuerzo."));
+  s.appendChild(filaSw("ocultar_img", "Ocultar imágenes", aplicarClases, "Quita del todo fotos, vídeos, iconos y fondos, para leer sin distracciones. Los iconos de los botones se quedan."));
   s.appendChild(filaSw("sinimg", "Atenuar imágenes y vídeos", aplicarClases, "Las imágenes se ven muy suaves, para que no distraigan del texto."));
   // Familias 1 y 6: diccionario al toque, con el dibujo de ARASAAC. Las sílabas van en la barra de la lectura limpia
   s.appendChild(filaSw("diccionario", "Diccionario al tocar una palabra", aplicarClases, "Toca una palabra y sale qué significa, con un dibujo si lo hay. Mira en el glosario de este sitio, en ARASAAC y en Wikcionario (la palabra se envía a esos sitios para buscarla). En «Lectura limpia» también, y allí el botón «Sílabas» colorea cada sílaba."));
@@ -3561,6 +3592,7 @@
   tabs.ver.appendChild(s);
   s = seccion("Colores y calma", "Para quien confunde colores o se marea con destellos y movimiento.");
   s.appendChild(filaOpc("dalton", "Si confundes colores", [["no", "Ninguna"], ["protan", "No distingo el rojo"], ["deutan", "No distingo el verde"], ["tritan", "No distingo el azul"], ["gris", "Todo en gris"]], aplicarClases, null, "Cambia los colores de la página para que se distingan. Prueba uno y quédate con el que mejor veas."));
+  s.appendChild(filaPaso("saturacion", "Saturación de los colores", 0, 200, 25, pct, aplicarClases, "0 deja la página en gris; 100 es como la puso el sitio; más de 100 aviva los colores."));
   s.appendChild(filaSw("calma", "Modo calma", aplicarClases, "Sin destellos, sin animaciones y sin vídeos que arranquen solos. Colores más suaves. Para epilepsia fotosensible, migrañas o sensibilidad."));
   // AAA 1.4.8: la persona elige los colores de texto y fondo de toda la página
   s.appendChild(filaOpc("colores", "Colores de la página", [["no", "Los del sitio"], ["amarillo_negro", "Amarillo sobre negro"], ["negro_crema", "Negro sobre crema"], ["azul_blanco", "Azul oscuro sobre blanco"], ["propios", "Los que yo elija"]], aplicarTodo, null, "Cambia el color de todo el texto y del fondo. Para quien lee mejor con una combinación concreta. «Los que yo elija» deja escoger cualquiera."));
@@ -4073,6 +4105,17 @@
   s.appendChild(botonGrande("Cargar mis ajustes desde un archivo", "suave", function () { entrada.click(); }));
   s.appendChild(el("div", { "class": "wcl-ayuda" }, "El archivo (.winclus) guarda ajustes, calibración de los ojos, frases, palabras aprendidas y tus tableros de dibujos."));
   tabs.mas.appendChild(s);
+  s = seccion("El botón y el panel", "Por si el botón tapa algo del sitio o el panel se ve pequeño.");
+  s.appendChild(filaOpc("boton_lado", "Dónde sale el botón", [["auto", "Como lo puso el sitio"], ["derecha", "Derecha"], ["izquierda", "Izquierda"]], aplicarClases, null, "El botón flotante y el panel se ponen en ese lado de la pantalla, en todas las páginas de este sitio."));
+  s.appendChild(filaSw("panel_grande", "Panel grande", aplicarClases, "Todo el panel y el botón un 20 % más grandes."));
+  tabs.mas.appendChild(s);
+  s = seccion("Avisar de una barrera", "Si algo de esta página no se puede usar, díselo a quien la mantiene. Winclus añade la dirección de la página, tu navegador y lo que tienes activado.");
+  var barreraTxt = el("textarea", { "class": "wcl-area", "rows": "3", "id": "wcl-barrera", "aria-label": "¿Qué no pudiste hacer?", "placeholder": "¿Qué no pudiste hacer? Por ejemplo: el formulario de PQRSD no se puede enviar con el teclado." });
+  s.appendChild(el("label", { "for": "wcl-barrera", "class": "wcl-estado" }, "¿Qué no pudiste hacer?"));
+  s.appendChild(barreraTxt);
+  s.appendChild(botonGrande("Enviar el aviso al sitio", "azul", function () { avisarBarrera(barreraTxt.value); }));
+  s.appendChild(el("div", { "class": "wcl-ayuda" }, "Va al contacto de accesibilidad que el sitio haya dejado. Si no hay ninguno, el texto se copia para que lo pegues en su buzón de quejas (PQRSD)."));
+  tabs.mas.appendChild(s);
   s = seccion("Empezar de cero", "Si algo se ha descolocado y quieres volver a como estaba al principio.");
   s.appendChild(botonPeligroso("Restablecer todo", function () {
     desactivarCamara(); consentidoAhora = false;   // también si estaba activándose
@@ -4165,6 +4208,7 @@
     // AAA 1.4.8: colores de texto y fondo elegidos por la persona, sobre toda la página (el widget vive fuera de <body> y no se ve afectado)
     + 'html.wcl-colores body,html.wcl-colores body *:not(img):not(video):not(svg):not(canvas):not(picture){color:var(--wcl-fg)!important;background-color:var(--wcl-bg)!important;border-color:var(--wcl-fg)!important;background-image:none!important;text-shadow:none!important;box-shadow:none!important}html.wcl-colores body a{text-decoration:underline!important}'
     + 'html.wcl-sinimg body img,html.wcl-sinimg body video,html.wcl-sinimg body iframe,html.wcl-sinimg body picture,html.wcl-sinimg body canvas{opacity:.12!important}'
+    + 'html.wcl-ocultarimg body img,html.wcl-ocultarimg body picture,html.wcl-ocultarimg body video,html.wcl-ocultarimg body canvas,html.wcl-ocultarimg body iframe,html.wcl-ocultarimg body [style*="background-image"],html.wcl-ocultarimg body svg:not(a svg,button svg,[role=button] svg){visibility:hidden!important}'
     + '.wcl-mascara{position:fixed;left:0;right:0;background:rgba(10,14,25,.62);pointer-events:none;z-index:2147482998;display:none}'
     + '.wcl-limpia{position:fixed;inset:0;z-index:2147483014;background:#FBF8F1;color:#1d1d1d;overflow:auto;font:20px/1.9 "Segoe UI",system-ui,sans-serif;letter-spacing:.02em}'
     + '.wcl-limpia-barra{position:sticky;top:0;display:flex;gap:8px;align-items:center;padding:10px 14px;background:#101F3D;color:#fff;z-index:1;flex-wrap:wrap}.wcl-limpia-barra b{flex:1;font-size:16px}'
@@ -5164,12 +5208,16 @@
     raiz.classList.toggle("wcl-dicc", !!ajustes.diccionario); if (!ajustes.diccionario) cerrarDicc();
     aplicarSilencio();
     raiz.classList.toggle("wcl-sinimg", ajustes.sinimg);
+    raiz.classList.toggle("wcl-ocultarimg", !!ajustes.ocultar_img);
+    cont.classList.toggle("wcl-grande", !!ajustes.panel_grande); aplicarLado();
+    if (ajustes.contraste_inteligente && !ciActivo) aplicarContrasteInteligente(true);
     guia.style.display = ajustes.guia ? "block" : "none";
     if (!FILTROS.isConnected) raiz.appendChild(FILTROS);   // por si el sitio reconstruyó el documento
     var f = [];
     if (ajustes.contraste) f.push("contrast(1.35) saturate(1.15)");
     if (ajustes.oscuro) f.push("invert(1) hue-rotate(180deg)");
     if (ajustes.calma) f.push("saturate(.7) brightness(.93)");
+    if (isFinite(ajustes.saturacion) && ajustes.saturacion !== 100) f.push("saturate(" + (ajustes.saturacion / 100) + ")");
     var fd = ajustes.dalton && ajustes.dalton !== "no" ? "url(#wcl-f-" + ajustes.dalton + ")" : "";
     // Firefox no aplica un filtro SVG (url(#…)) sobre <html> y, si va en la lista, descarta también los demás; ahí el
     // de daltonismo va sobre <body> (el widget cuelga de <html>, así que no le afecta) y los otros se quedan en <html>
@@ -5221,6 +5269,16 @@
     }
   }, true);
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && panel.classList.contains("abierto") && !calibrando) { abrir(false); boton.focus(); } });
+  // Un clic fuera del panel lo cierra, como cualquier menú: con el ratón, con el dedo o con el puntero facial. No cuando
+  // el clic es la señal del barrido (sería cerrar el panel cada vez que la persona elige algo).
+  document.addEventListener("pointerdown", function (e) {
+    if (!panel.classList.contains("abierto") || calibrando) return;
+    if (!e.isTrusted && !clicGesto) return;   // los clics que hace el propio widget (una orden por voz, el asistente) no cierran el panel
+    if (ajustes.barrido && (ajustes.barrido_senal === "raton" || (ajustes.barrido_modo === "pasos" && ajustes.barrido_senal2 === "raton"))) return;
+    var t = e.composedPath ? e.composedPath()[0] : e.target;
+    if (enWidget(t)) return;
+    abrir(false);
+  }, true);
   document.addEventListener("mousemove", function (e) { if (ajustes.guia && !camaraActiva) guia.style.top = e.clientY + "px"; });
   document.addEventListener("mousemove", function (e) { if (ajustes.puntero_externo && camaraActiva && e.isTrusted) mover(e.clientX, e.clientY); });   // el puntero del sistema manda; la cámara hace los clics
   window.addEventListener("pagehide", function () {
@@ -5245,6 +5303,161 @@
   window.addEventListener("pageshow", function (e) { if (e.persisted) reanudarCamara(); });   // vuelta atrás desde la caché del navegador
   window.addEventListener("resize", function () { if (tecVisible) dibujarTeclado(); });
 
+  // --------------------------------------------- 0.8.0: lado del botón, información al pasar, estructura, contraste --
+  function aplicarLado() {
+    var lado = ajustes.boton_lado === "izquierda" || ajustes.boton_lado === "derecha" ? ajustes.boton_lado : "";
+    cont.classList.toggle("wcl-izq", lado === "izquierda"); cont.classList.toggle("wcl-der", lado === "derecha");
+  }
+  // Información al pasar: lo que el sitio dejó en title, alt, aria-label o aria-describedby, en grande junto al puntero o al foco
+  var tipEl = null;
+  function textoTip(e) {
+    var n = e && e.closest ? e.closest("[title],[alt],[aria-label],[aria-describedby],abbr") : null;
+    if (!n || enWidget(n)) return null;
+    var t = n.getAttribute("title") || n.getAttribute("aria-label") || (n.tagName === "IMG" ? n.getAttribute("alt") : "") || "";
+    var d = n.getAttribute("aria-describedby"); if (d) { var de = document.getElementById(d.split(" ")[0]); if (de) t = (t ? t + ". " : "") + textoDe(de); }
+    t = (t || "").replace(/\s+/g, " ").trim();
+    if (!t || t === textoDe(n)) return null;
+    return t.slice(0, 300);
+  }
+  function mostrarTip(e, x, y) {
+    var t = textoTip(e); if (!t) { ocultarTip(); return; }
+    if (!tipEl) { tipEl = el("div", { "class": "wcl-tip", "role": "tooltip" }); caja.appendChild(tipEl); }
+    tipEl.textContent = t; tipEl.style.display = "block";
+    var r = e.getBoundingClientRect ? e.getBoundingClientRect() : { left: 0, top: 0, bottom: 0 };
+    var top = (y != null ? y : r.bottom) + 14, left = x != null ? x + 8 : r.left;
+    if (top + 90 > window.innerHeight) top = Math.max(8, r.top - 70);
+    tipEl.style.left = Math.max(8, Math.min(left, window.innerWidth - 436)) + "px"; tipEl.style.top = Math.max(8, top) + "px";
+  }
+  function ocultarTip() { if (tipEl) tipEl.style.display = "none"; }
+  document.addEventListener("mouseover", function (ev) { if (ajustes.tooltips) mostrarTip(ev.target, ev.clientX, ev.clientY); });
+  document.addEventListener("mouseout", function () { if (ajustes.tooltips) ocultarTip(); });
+  document.addEventListener("focusin", function (ev) { if (ajustes.tooltips) mostrarTip(ev.target); });
+  document.addEventListener("focusout", function () { if (ajustes.tooltips) ocultarTip(); });
+  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape") ocultarTip(); });
+  // Estructura de la página: títulos, zonas y enlaces en una lista; tocar uno lleva allí
+  var NOMBRE_ZONA_EST = { header: "Cabecera", nav: "Menú", main: "Contenido principal", aside: "Lateral", footer: "Pie", form: "Formulario", search: "Buscador", section: "Sección", banner: "Cabecera", navigation: "Menú", complementary: "Lateral", contentinfo: "Pie", region: "Sección", dialog: "Ventana" };
+  function visibleEstructura(e) { if (enWidget(e)) return false; var r = e.getBoundingClientRect(); return !!(r.width || r.height) && getComputedStyle(e).visibility !== "hidden"; }
+  function irA(e, nombre) {
+    cerrarElegir();
+    try { e.scrollIntoView({ block: "center" }); } catch (x) { e.scrollIntoView(); }
+    if (!e.hasAttribute("tabindex") && !e.matches("a[href],button,input,select,textarea")) e.setAttribute("tabindex", "-1");
+    try { e.focus({ preventScroll: true }); } catch (x) {}
+    if (lectorEl !== undefined && ajustes.lector) irLector(e);
+    avisar(nombre.slice(0, 60)); decirVoz(nombre, true, true);
+  }
+  function abrirEstructura(vista) {
+    vista = vista || "titulos";
+    var lista = [], i;
+    if (vista === "titulos") {
+      var hs = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+      for (i = 0; i < hs.length && lista.length < 200; i++) { var h = hs[i], th = textoDe(h); if (!th || !visibleEstructura(h)) continue; lista.push({ texto: th.slice(0, 90), nota: T("Título de nivel") + " " + h.tagName[1], clase: "n" + h.tagName[1], el: h, nombre: T("Título de nivel") + " " + h.tagName[1] + ": " + th }); }
+    } else if (vista === "zonas") {
+      var zs = document.querySelectorAll("header,nav,main,aside,footer,form,section,[role=banner],[role=navigation],[role=main],[role=complementary],[role=contentinfo],[role=search],[role=region],[role=form],[role=dialog]");
+      for (i = 0; i < zs.length && lista.length < 100; i++) {
+        var z = zs[i]; if (!visibleEstructura(z)) continue;
+        var rol = z.getAttribute("role") || z.tagName.toLowerCase(); if (rol === "section" && !z.getAttribute("aria-label") && !z.getAttribute("aria-labelledby")) continue;
+        var nz = T(NOMBRE_ZONA_EST[rol] || rol), et = z.getAttribute("aria-label") || ""; if (!et && z.getAttribute("aria-labelledby")) { var le = document.getElementById(z.getAttribute("aria-labelledby").split(" ")[0]); if (le) et = textoDe(le); }
+        if (!et) { var hz = z.querySelector("h1,h2,h3,h4"); if (hz && z.contains(hz)) et = textoDe(hz).slice(0, 60); }
+        lista.push({ texto: nz + (et ? ": " + et : ""), nota: textoDe(z).slice(0, 70), el: z, nombre: nz + (et ? ": " + et : "") });
+      }
+    } else {
+      var as = document.querySelectorAll("a[href]");
+      for (i = 0; i < as.length && lista.length < 300; i++) { var a = as[i]; if (!visibleEstructura(a) || a.getAttribute("data-winclus-arreglo") === "salto") continue; var ta = textoDe(a) || a.getAttribute("aria-label") || a.getAttribute("title") || ""; if (!ta) continue; lista.push({ texto: ta.slice(0, 90), nota: (a.getAttribute("href") || "").slice(0, 60), el: a, nombre: T("Enlace") + ": " + ta }); }
+    }
+    var titulo = { titulos: "Títulos de la página", zonas: "Zonas de la página", enlaces: "Enlaces de la página" }[vista];
+    var opciones = lista.map(function (o) { return { texto: o.texto, nota: o.nota, al: function () { irA(o.el, o.nombre); } }; });
+    if (!opciones.length) opciones.push({ texto: T({ titulos: "Esta página no tiene títulos", zonas: "Esta página no tiene zonas marcadas", enlaces: "Esta página no tiene enlaces" }[vista]), al: function () {} });
+    abrirElegir(T(titulo), opciones);
+    var botones = elegirEl.querySelectorAll("button"); lista.forEach(function (o, k) { if (o.clase && botones[k]) botones[k].classList.add(o.clase); });
+    var tabsEl = el("div", { "class": "wcl-est-tabs", "role": "group", "aria-label": "Qué listar" });
+    [["titulos", "Títulos"], ["zonas", "Zonas"], ["enlaces", "Enlaces"]].forEach(function (p) {
+      var b = el("button", { "type": "button", "aria-pressed": p[0] === vista ? "true" : "false" }, p[1]);
+      b.addEventListener("click", function () { abrirEstructura(p[0]); });
+      tabsEl.appendChild(b);
+    });
+    elegirEl.insertBefore(tabsEl, elegirEl.children[1]);
+    contar("estructura");
+  }
+  // Contraste inteligente: solo los textos que no llegan a 4,5:1 (3:1 si son grandes) cambian a negro o blanco, lo que
+  // más contraste dé con su fondo. El resto de colores del sitio no se toca. Lo que se cambió queda anotado para el sitio.
+  var ciActivo = false, ciOriginales = [], ciObs = null, ciTemp = 0, ciPendiente = null;
+  function luminancia(c) { var a = c.slice(0, 3).map(function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2]; }
+  function rgbDe(s) { var m = /rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)(?:[,\s\/]+([\d.]+%?))?/.exec(s || ""); if (!m) return null; var a = m[4] == null ? 1 : (/%$/.test(m[4]) ? parseFloat(m[4]) / 100 : +m[4]); return [+m[1], +m[2], +m[3], a]; }
+  function ratioContraste(a, b) { var l1 = luminancia(a) + 0.05, l2 = luminancia(b) + 0.05; return l1 > l2 ? l1 / l2 : l2 / l1; }
+  function fondoDe(e) {
+    var n = e;
+    while (n && n !== document.documentElement) {
+      var cs = getComputedStyle(n);
+      if (cs.backgroundImage && cs.backgroundImage !== "none") return null;   // sobre una imagen no se puede saber
+      var c = rgbDe(cs.backgroundColor); if (c && c[3] >= 0.9) return c;
+      n = n.parentElement;
+    }
+    var cb = rgbDe(getComputedStyle(document.body).backgroundColor);
+    return cb && cb[3] >= 0.9 ? cb : [255, 255, 255, 1];
+  }
+  function contrastarTextos(base) {
+    var n = 0, malos = [], lista = (base || document).querySelectorAll("p,li,a,span,h1,h2,h3,h4,h5,h6,td,th,label,button,dt,dd,legend,summary,figcaption,small,strong,em,b,i,blockquote,cite,time,div,input,textarea,select");
+    for (var i = 0; i < lista.length && i < 5000; i++) {
+      var e = lista[i]; if (enWidget(e) || e.hasAttribute("data-wcl-ci")) continue;
+      var propio = e.matches("input,textarea,select") ? !!(e.value || e.placeholder) : false;
+      if (!propio) for (var k = 0; k < e.childNodes.length; k++) if (e.childNodes[k].nodeType === 3 && e.childNodes[k].textContent.trim()) { propio = true; break; }
+      if (!propio) continue;
+      var cs = getComputedStyle(e); if (cs.visibility === "hidden" || cs.display === "none" || parseFloat(cs.opacity) < 0.3) continue;
+      var col = rgbDe(cs.color); if (!col || col[3] < 0.5) continue;
+      var fondo = fondoDe(e); if (!fondo) continue;
+      var tam = parseFloat(cs.fontSize), grande = tam >= 24 || (tam >= 18.66 && +cs.fontWeight >= 700), minimo = grande ? 3 : 4.5;
+      var r = ratioContraste(col, fondo); if (r >= minimo) continue;
+      var nuevo = ratioContraste([0, 0, 0], fondo) >= ratioContraste([255, 255, 255], fondo) ? "#000000" : "#FFFFFF";
+      ciOriginales.push([e, e.style.getPropertyValue("color"), e.style.getPropertyPriority("color")]);
+      e.style.setProperty("color", nuevo, "important"); e.setAttribute("data-wcl-ci", "1"); n++;
+      if (malos.length < 8) malos.push(selectorDe(e) + " (" + r.toFixed(1) + ":1)");
+    }
+    if (n) {
+      if (ciPendiente) ciPendiente.que = ""; else { ciPendiente = { tipo: "contraste", selector: "", que: "" }; pendientes.push(ciPendiente); }
+      ciPendiente.n = (ciPendiente.n || 0) + n;
+      ciPendiente.que = ciPendiente.n + " texto(s) con contraste insuficiente (WCAG 1.4.3): " + malos.join(", ") + (ciPendiente.n > 8 ? "…" : "") + ". Winclus los pone en negro o blanco al vuelo; el sitio debe corregir sus colores";
+    }
+    return n;
+  }
+  function aplicarContrasteInteligente(si) {
+    if (si && !ciActivo) {
+      ciActivo = true;
+      var n = contrastarTextos(document);
+      avisar(n ? n + " " + T("textos con más contraste") : T("Todos los textos ya contrastan bien"));
+      if (typeof MutationObserver === "function") { ciObs = new MutationObserver(function () { if (ciTemp) return; ciTemp = setTimeout(function () { ciTemp = 0; try { contrastarTextos(document); } catch (e) {} }, 500); }); ciObs.observe(document.body, { childList: true, subtree: true }); }
+    } else if (!si && ciActivo) {
+      ciActivo = false; if (ciObs) { ciObs.disconnect(); ciObs = null; }
+      ciOriginales.forEach(function (o) { o[0].removeAttribute("data-wcl-ci"); if (o[1]) o[0].style.setProperty("color", o[1], o[2]); else o[0].style.removeProperty("color"); });
+      ciOriginales = [];
+    }
+    refrescos.forEach(function (f) { f(); });
+  }
+  // Avisar de una barrera: al contacto que dejó el sitio (data-contacto, o un enlace de accesibilidad con correo), o al portapapeles
+  function contactoDelSitio() {
+    if (opciones.contacto) return opciones.contacto;
+    var enlaces = document.querySelectorAll("a[href^='mailto:']");
+    for (var i = 0; i < enlaces.length; i++) if (/accesib|accessib|pqr|contacto|atenci|ayuda/i.test(enlaces[i].href + " " + textoDe(enlaces[i]))) return enlaces[i].getAttribute("href").split("?")[0];
+    return "";
+  }
+  function avisarBarrera(texto) {
+    texto = (texto || "").trim();
+    if (!texto) { avisar("Escribe primero qué no pudiste hacer", true); decirVoz(T("Escribe primero qué no pudiste hacer"), true, true); return; }
+    var nav = (navigator.userAgent.match(/(Firefox|Edg|Chrome|Safari)\/[\d.]+/) || [navigator.userAgent.slice(0, 40)])[0];
+    var cuerpo = T("Barrera de accesibilidad en") + " " + location.href + "\n" + T("Fecha") + ": " + new Date().toISOString().slice(0, 16).replace("T", " ") + "\n" + T("Qué no se pudo hacer") + ": " + texto + "\n" + T("Navegador") + ": " + nav + " · Winclus " + VERSION + "\n" + T("Ayudas activas") + ": " + (activos().join(", ") || T("ninguna"));
+    var destino = contactoDelSitio(), listo = function (como) { contar("barreras"); avisar(T("Aviso enviado")); decirVoz(T("Aviso enviado") + ". " + como, true, true); };
+    if (/^https?:/i.test(destino)) {
+      fetch(destino, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: location.href, texto: texto, navegador: nav, version: VERSION, fecha: new Date().toISOString(), ayudas: activos() }) })
+        .then(function (r) { if (r.ok) listo(T("El sitio lo ha recibido.")); else throw new Error(); }, function () { throw new Error(); })
+        .catch(function () { copiarBarrera(cuerpo); });
+      return;
+    }
+    if (/^mailto:/i.test(destino)) { window.open(destino + "?subject=" + encodeURIComponent(T("Barrera de accesibilidad en") + " " + location.hostname) + "&body=" + encodeURIComponent(cuerpo), "_blank"); listo(T("Se ha abierto un correo con el aviso.")); return; }
+    copiarBarrera(cuerpo);
+  }
+  function copiarBarrera(cuerpo) {
+    var dicho = function () { avisar(T("Aviso copiado")); decirVoz(T("Este sitio no dejó un contacto de accesibilidad. El aviso se ha copiado: pégalo en su buzón de quejas o de PQRSD."), true, true); contar("barreras"); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(cuerpo).then(dicho, function () { window.prompt("Copia este aviso:", cuerpo); dicho(); }); else { window.prompt("Copia este aviso:", cuerpo); dicho(); }
+  }
   // ------------------------------------------------------ arreglos del sitio --
   // Lo que un lector de pantalla, el teclado o el zoom necesitan y el sitio no puso, Winclus lo pone al vuelo
   // para TODAS las ayudas técnicas (NVDA, JAWS, VoiceOver, TalkBack, Narrador), no solo para su propio lector:
@@ -5868,7 +6081,8 @@
     pedirAyuda: pedirAyuda, pararAyuda: pararAyuda,   // aviso de ayuda a quien esté cerca
     transcripcion: function () { return subTodo.slice(); }, anotarSub: anotarSub, guardarTranscripcion: guardarTranscripcion,   // subtítulos en vivo guardables
     describirImagen: describirImagen,   // qué dice el lector de una imagen (con o sin alt, con o sin data-describir)
-    arreglos: function () { return arreglos.slice(); }, pendientes: function () { return pendientes.slice(); }, arreglar: arreglarSitio, informeArreglos: informeArreglos,   // arreglos al vuelo del sitio y la lista para quien lo mantiene
+    arreglos: function () { return arreglos.slice(); }, pendientes: function () { return pendientes.slice(); }, arreglar: arreglarSitio, informeArreglos: informeArreglos,
+    estructura: abrirEstructura, contrastar: aplicarContrasteInteligente, avisarBarrera: avisarBarrera, textoTip: textoTip,   // 0.8.0   // arreglos al vuelo del sitio y la lista para quien lo mantiene
     idiomasDelSitio: idiomasDelSitio,   // versiones del sitio en otros idiomas que ofrece «Otro idioma» (Res. 2893, 4.3.2 b)
     abrirPdf: abrirPdfEnLectura,   // abrir un PDF del sitio en la lectura limpia
     ajustarAlcance: ajustarAlcance,   // «Ajustar el puntero a lo que puedo mover»

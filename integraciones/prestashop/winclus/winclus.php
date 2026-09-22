@@ -9,14 +9,14 @@ if (!defined('_PS_VERSION_')) {
 
 class Winclus extends Module
 {
-    const VERSION_WIDGET = '0.7.0';
-    const SRI_WIDGET = 'sha384-9r1CnHZGydkr7EZQfpuH/E5mfqVrDbqTH58GdjRs09fM+mLhy75MdcbKh7rb8w2a';
+    const VERSION_WIDGET = '0.8.0';
+    const SRI_WIDGET = 'sha384-agbdf84tq/QjFTn0MV2UAKTXh8ISlaWIoMuTUctnPnFTR20Akt1tsvSGAXUcoxSH';
 
     public function __construct()
     {
         $this->name = 'winclus';
         $this->tab = 'front_office_features';
-        $this->version = '0.7.0';
+        $this->version = '0.8.0';
         $this->author = 'Colaboradores de Winclus';
         $this->need_instance = 0;
         $this->ps_versions_compliancy = ['min' => '1.7.0.0', 'max' => _PS_VERSION_];

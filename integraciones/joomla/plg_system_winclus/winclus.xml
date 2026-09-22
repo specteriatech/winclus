@@ -6,7 +6,7 @@
   <copyright>Winclus</copyright>
   <license>Apache-2.0</license>
   <authorUrl>https://winclus.com</authorUrl>
-  <version>0.7.0</version>
+  <version>0.8.0</version>
   <description>Añade a todas las páginas el widget de accesibilidad Winclus: uso con la cara, la voz, un solo pulsador, teclado en pantalla, pictogramas, ajustes de lectura y color, y arreglos al vuelo para lectores de pantalla. Sin cuentas ni servidores propios. Tecnología de apoyo: no sustituye la accesibilidad del propio sitio.</description>
   <files>
     <filename plugin="winclus">winclus.php</filename>
@@ -34,7 +34,7 @@
         <field name="explicar" type="url" label="Servicio de lectura fácil con IA (opcional)" default="" description="URL que reciba POST {texto, idioma} y devuelva {texto}. Sin ella, la lectura fácil funciona por reglas." />
         <field name="version" type="list" label="Versión del widget" default="ultima">
           <option value="ultima">Siempre la última de winclus.com (recomendado)</option>
-          <option value="fija">Fija 0.7.0 con integridad SRI (no cambia hasta actualizar el plugin)</option>
+          <option value="fija">Fija 0.8.0 con integridad SRI (no cambia hasta actualizar el plugin)</option>
         </field>
       </fieldset>
     </fields>

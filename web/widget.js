@@ -6,12 +6,14 @@
  * Este archivo pesa unos 3 KB y no frena la página: el widget completo (winclus-widget.min.js, minificado) se
  * trae cuando la página ya se pintó, o antes si esta persona ya usa Winclus (tiene ajustes guardados, dejó la
  * cámara encendida o llega con su perfil en el enlace). Los atributos data-* del <script> pasan tal cual al widget.
+ * Si la página está en un idioma distinto de español o inglés, trae antes el diccionario del panel (idiomas/xx.json:
+ * portugués, francés, italiano y alemán de fábrica; un sitio puede poner el suyo junto a este archivo).
  * Para leer el código completo: https://winclus.com/winclus-widget.js
  */
 (function () {
   "use strict";
   if (window.Winclus || window.WinclusCargador) return;
-  var VERSION = "0.7.0";
+  var VERSION = "0.8.0";
   var script = document.currentScript || (function () { var s = document.querySelectorAll('script[src*="widget.js"]'); return s[s.length - 1] || null; })();
   var ORIGEN = (script && script.src) ? script.src.replace(/\/[^\/]*$/, "") : "https://winclus.com";
   var ARCHIVO = (script && script.dataset && script.dataset.completo) || "winclus-widget.min.js";   // data-completo="winclus-widget.js" para depurar con el código legible
@@ -32,6 +34,19 @@
     try { if (localStorage.getItem("winclus.ajustes") || localStorage.getItem("winclus.camara_seguir") || localStorage.getItem("winclus.visto")) return true; } catch (e) {}
     return /[#&]winclus(-tablero)?=/.test(location.hash || "");
   }
+  // Idioma del panel: el diccionario se pide antes que el widget, que lo lee de window.WinclusIdiomas al arrancar
+  var IDIOMA = (((script && script.dataset && script.dataset.ui) || document.documentElement.lang || "es").split("-")[0] || "es").toLowerCase();
+  var conIdioma = function (f) {
+    if (IDIOMA === "es" || IDIOMA === "en" || (window.WinclusIdiomas && window.WinclusIdiomas[IDIOMA]) || !window.fetch || !/^[a-z]{2,3}$/.test(IDIOMA)) { f(); return; }
+    var listo = false, seguir = function () { if (!listo) { listo = true; f(); } };
+    setTimeout(seguir, 2500);   // sin diccionario a tiempo, el panel sale en español
+    fetch(ORIGEN + "/idiomas/" + IDIOMA + ".json").then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      if (d && typeof d === "object") { window.WinclusIdiomas = window.WinclusIdiomas || {}; window.WinclusIdiomas[IDIOMA] = Object.assign(d, window.WinclusIdiomas[IDIOMA] || {}); }
+      seguir();
+    }, seguir);
+  };
+  var cargarSinIdioma = cargar;
+  cargar = function () { if (pedido || window.Winclus) return; conIdioma(cargarSinIdioma); };
   function cuandoQuieto() {
     if (window.requestIdleCallback) window.requestIdleCallback(cargar, { timeout: 1500 }); else setTimeout(cargar, 300);
   }
