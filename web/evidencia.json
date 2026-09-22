@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-21T22:28:10.676Z",
-  "commit": "9e91af5",
-  "version": "0.6.19",
-  "pruebas": 47,
-  "comprobaciones": 809,
+  "fecha": "2026-09-22T20:25:29.640Z",
+  "commit": "3815632",
+  "version": "0.7.0",
+  "pruebas": 50,
+  "comprobaciones": 863,
   "fallan": 0,
   "resultados": [
     {
@@ -138,7 +138,7 @@
         "OK  pestaña cara: 0 regla(s) incumplida(s), 0 elemento(s), 760 revisados",
         "OK  pestaña clics: 0 regla(s) incumplida(s), 0 elemento(s), 1931 revisados",
         "OK  pestaña escribir: 0 regla(s) incumplida(s), 0 elemento(s), 666 revisados",
-        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 588 revisados",
+        "OK  pestaña mas: 0 regla(s) incumplida(s), 0 elemento(s), 604 revisados",
         "OK  teclado en pantalla: 0 regla(s) incumplida(s), 0 elemento(s), 579 revisados",
         "OK  teclado, capa Frases: 0 regla(s) incumplida(s), 0 elemento(s), 579 revisados",
         "OK  modo fácil: 0 regla(s) incumplida(s), 0 elemento(s), 455 revisados",
@@ -208,7 +208,7 @@
       "ok": 140,
       "mal": 0,
       "bien": true,
-      "segundos": 14,
+      "segundos": 15,
       "lineas": [
         "OK  / a 1280 px: axe sin incumplimientos",
         "OK  / a 1280 px: carga el widget",
@@ -385,7 +385,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 8,
+      "segundos": 9,
       "lineas": [
         "OK  el barrido recorre el botón del widget, el enlace y el botón de la página",
         "OK  va diciendo en voz alta lo marcado",
@@ -414,7 +414,7 @@
       "ok": 25,
       "mal": 0,
       "bien": true,
-      "segundos": 103,
+      "segundos": 114,
       "lineas": [
         "OK  con dos pulsadores el marco no se mueve solo",
         "OK  Espacio",
@@ -872,13 +872,14 @@
         "Res. 1519 CC29",
         "WCAG 2.2.1"
       ],
-      "ok": 16,
+      "ok": 17,
       "mal": 0,
       "bien": true,
       "segundos": 16,
       "lineas": [
         "OK  el escáner termina bien",
         "OK  genera informe.html, declaracion.html y resultados.json",
+        "OK  genera el informe de conformidad (ACR, plantilla VPAT 2.5) en HTML y Markdown con los tres estados",
         "OK  la portada de winclus.com sale limpia",
         "OK  la página mala cae en alt, título, idioma, etiqueta y contraste",
         "OK  las comprobaciones de la Res. 1519 detectan vídeo sin subtítulos, sin declaración y sin «ir al contenido»",
@@ -1028,7 +1029,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 2,
       "lineas": [
         "OK  ningún medio pasa del volumen máximo",
         "OK  sin voz elegida, usa la neuronal de es-CO",
@@ -1055,7 +1056,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 11,
+      "segundos": 16,
       "lineas": [
         "OK  demo.html pasa axe",
         "OK  la demo tiene los siete pasos",
@@ -1078,7 +1079,7 @@
       "ok": 21,
       "mal": 0,
       "bien": true,
-      "segundos": 18,
+      "segundos": 20,
       "lineas": [
         "OK  chromium: recorrido básico",
         "OK  chromium: sin speechSynthesis ni SpeechRecognition",
@@ -1147,6 +1148,116 @@
         "OK  no se infiere más veces que cuadros entrega la cámara",
         "OK  en modo ahorro se infiere unas 15 veces por segundo",
         "OK  hay interruptor «Gastar menos batería» (modo ahorro) en el panel"
+      ]
+    },
+    {
+      "archivo": "prueba_arreglos.js",
+      "que": "Arreglos al vuelo para todas las ayudas técnicas: lang, alt a partir de lo que ya dice la página (nunca inventado), nombres de botones y enlaces con solo un icono, enlaces «aquí» con su contexto, etiquetas de campos, «Saltar al contenido», zona principal, foco visible, zoom permitido, títulos de iframes, cabeceras de tablas y controles en medios que arrancan solos; lo que no se puede arreglar sin riesgo se anota para quien mantiene el sitio; axe encuentra menos de la mitad de incumplimientos.",
+      "criterios": [
+        "WCAG 1.1.1",
+        "WCAG 1.3.1",
+        "WCAG 1.4.4",
+        "WCAG 2.4.1",
+        "WCAG 2.4.4",
+        "WCAG 2.4.7",
+        "WCAG 3.1.1",
+        "WCAG 3.3.2",
+        "WCAG 4.1.2",
+        "Res. 1519 CC1",
+        "Res. 1519 CC10",
+        "Res. 1519 CC17",
+        "Res. 1519 CC24",
+        "Res. 1519 CC26",
+        "Res. 1519 CC27"
+      ],
+      "ok": 26,
+      "mal": 0,
+      "bien": true,
+      "segundos": 4,
+      "lineas": [
+        "OK  <html> sin lang recibe el idioma del sitio",
+        "OK  el viewport deja ampliar con los dedos",
+        "OK  la zona del contenido se marca como principal",
+        "OK  hay un enlace «Saltar al contenido» al principio que lleva a la zona principal",
+        "OK  el foco vuelve a verse cuando el sitio lo quita con outline:none",
+        "OK  el logo del enlace de inicio recibe alt por el destino del enlace",
+        "OK  una imagen sin alt recibe el nombre del archivo, marcado como provisional",
+        "OK  una imagen sin ninguna pista NO recibe un alt inventado: queda para una persona",
+        "OK  un espaciador de 1×1 se marca decorativo",
+        "OK  el title y el pie de foto pasan a alt",
+        "OK  el enlace «aquí» recibe el texto del párrafo que lo rodea",
+        "OK  el enlace «Leer más» recibe el texto del párrafo",
+        "OK  un enlace a un PDF dice que abre un PDF",
+        "OK  los enlaces que solo llevan un icono reciben nombre por el destino o el icono",
+        "OK  los botones con solo un icono reciben nombre; los que ya tienen texto no se tocan",
+        "OK  los campos sin etiqueta reciben nombre por placeholder, texto de al lado, tipo o name",
+        "OK  el iframe sin título recibe uno por su origen",
+        "OK  la primera fila de una tabla sin <th> se anuncia como cabecera",
+        "OK  un vídeo que arranca solo sin controles recibe controles",
+        "OK  lo que no se puede arreglar sin riesgo queda anotado para quien mantiene el sitio",
+        "OK  la lista para quien mantiene el sitio lleva los arreglos, sus selectores y lo pendiente",
+        "OK  lo que aparece después de cargar también se arregla",
+        "OK  la pestaña Más dice cuántos arreglos hizo, los lista y deja copiarlos",
+        "OK  con data-arreglos=\"no\" el sitio queda tal cual",
+        "OK  axe encuentra menos de la mitad de incumplimientos con los arreglos puestos",
+        "OK  sin errores de JavaScript"
+      ]
+    },
+    {
+      "archivo": "prueba_monitor.js",
+      "que": "Winclus Monitor: vigilancia continua del sitio con historial, panel, informes con ACR y avisos por webhook cuando aparece una barrera nueva, una página deja de responder, el widget desaparece o se pierde la declaración; páginas del sitemap.",
+      "criterios": [
+        "Res. 1519 Anexo 1",
+        "WCAG 2.1 AA",
+        "ITI VPAT 2.5",
+        "EN 301 549"
+      ],
+      "ok": 15,
+      "mal": 0,
+      "bien": true,
+      "segundos": 36,
+      "lineas": [
+        "OK  la primera ejecución termina bien",
+        "OK  la portada sale limpia, con widget y con enlace a la declaración",
+        "OK  primera vez: historial de una entrada, sin avisos y sin llamar al webhook",
+        "OK  guarda el informe completo de la ejecución con declaración y ACR",
+        "OK  el ACR sigue la plantilla VPAT 2.5 con los 55 criterios A y AA, la cláusula de la EN 301 549 y sin marcar «Cumple» a secas",
+        "OK  ningún criterio sale como «Cumple» sin la coletilla de evaluación automática",
+        "OK  la segunda ejecución termina bien",
+        "OK  las páginas del sitemap se suman a la lista y las imágenes se ignoran",
+        "OK  la página con barreras se resume por problema, con los de axe y los de la Res. 1519",
+        "OK  avisa de la página nueva con sus problemas y el historial crece",
+        "OK  el webhook recibe el aviso con asunto, lista y entidad",
+        "OK  el panel muestra entidad, avisos, páginas, evolución y enlaces a los informes",
+        "OK  el panel marca en rojo la página sin widget o sin declaración",
+        "OK  sin cambios no hay avisos ni webhook, y el historial sigue creciendo",
+        "OK  avisa de las páginas que salen de la lista y de las que no responden"
+      ]
+    },
+    {
+      "archivo": "prueba_cargador.js",
+      "que": "Cargador ligero: widget.js pesa unos 3 KB y trae el widget minificado cuando la página ya se pintó, o antes si la persona ya lo usa; pasa data-* y nonce, Alt+Mayús+W lo pide, y cargarlo dos veces no duplica nada.",
+      "criterios": [
+        "Rendimiento",
+        "EN 301 549 11.7"
+      ],
+      "ok": 12,
+      "mal": 0,
+      "bien": true,
+      "segundos": 2,
+      "lineas": [
+        "OK  el cargador pesa menos de 6 KB",
+        "OK  cargador, código legible y minificado llevan la misma versión",
+        "OK  el minificado conserva la licencia y dice dónde está el código legible",
+        "OK  el minificado pesa al menos un 25 % menos que el legible",
+        "OK  en DOMContentLoaded solo está el cargador; el widget todavía no",
+        "OK  después de cargar la página llega winclus-widget.min.js del mismo origen y monta el botón",
+        "OK  quien ya usa Winclus no espera: el widget se pide antes de «load» y aplica sus ajustes",
+        "OK  Alt+Mayús+W antes de que llegue el widget lo pide y abre el panel cuando llega",
+        "OK  los atributos data-* y el nonce del <script> pasan al widget completo",
+        "OK  con CSP estricta con nonce no hay violaciones al cargar en dos pasos",
+        "OK  cargar widget.js dos veces no duplica el widget",
+        "OK  sin errores de JavaScript"
       ]
     },
     {
@@ -1221,7 +1332,7 @@
         "OK  «Amarillo sobre negro» cambia texto y fondo de toda la página",
         "OK  «Los que yo elija» muestra los selectores y aplica y guarda el color",
         "OK  modo dislexia: interlineado 1,5, párrafos a 1,5 veces el interlineado, sin justificar, renglón ≤ 80 caracteres",
-        "OK  reglas AAA de axe sobre las 15 páginas del sitio (contraste 7:1 incluido): sin violaciones",
+        "OK  reglas AAA de axe sobre las 16 páginas del sitio (contraste 7:1 incluido): sin violaciones",
         "OK  2.5.5: enlaces y botones del sitio que no van en línea miden al menos 44 px",
         "OK  3.1.4: el glosario está enlazado desde el pie de todas las páginas",
         "OK  2.4.8: las páginas interiores llevan migas de pan con aria-current",
@@ -1458,7 +1569,7 @@
       "ok": 5,
       "mal": 0,
       "bien": true,
-      "segundos": 38,
+      "segundos": 37,
       "lineas": [
         "OK  sin mascarilla: cara detectada, puntero al centro y a los dos lados, parpadeo con señal",
         "OK  con la mascarilla puesta desde el inicio: se detecta la cara, el puntero reposa al centro y sigue a la cabeza a los dos lados",

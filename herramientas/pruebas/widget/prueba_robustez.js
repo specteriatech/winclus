@@ -12,7 +12,7 @@ let fallos = 0;
 function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log((bien ? "OK  " : "MAL ") + nombre + (detalle ? "  (" + detalle + ")" : "")); }
 
 (async () => {
-  const src = fs.readFileSync(path.join(__dirname, "../../../web/widget.js"), "utf8");
+  const src = fs.readFileSync(path.join(__dirname, "../../../web/winclus-widget.js"), "utf8");
   comprobar(!/\(\?<[=!]/.test(src), "sin lookbehind en ninguna regex (Safari e iOS < 16.4 no lo analizan)");
 
   const nav = await chromium.launch();

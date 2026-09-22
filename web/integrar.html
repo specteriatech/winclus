@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Integrar Winclus · Guía técnica</title>
-<meta name="description" content="Cómo añadir el widget Winclus a un sitio: una línea de script, atributos, versión fija, CSP con nonce, web component, React y Vue, WordPress, Drupal, GOV.CO, lectura fácil con IA y Winclus Audit.">
+<meta name="description" content="Cómo añadir el widget Winclus a un sitio: una línea de script, atributos, versión fija, CSP con nonce, web component, React y Vue, WordPress, Drupal, Joomla, PrestaShop y 20 plataformas más, GOV.CO, arreglos al vuelo, lectura fácil con IA, Winclus Audit, Winclus Monitor y el informe de conformidad (ACR).">
 <link rel="icon" href="img/icono.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,19 +24,20 @@
 <main id="contenido">
 <nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><span aria-current="page">Integrar Winclus</span></nav>
   <h1>Integrar Winclus en tu sitio</h1>
-  <p class="meta">Guía técnica para el widget 0.6.19. Winclus es tecnología de apoyo que se añade a un sitio: no lo hace conforme con la norma por sí solo. Para saber cómo está tu sitio, usa <a href="#audit">Winclus Audit</a>.</p>
-  <div class="facil"><h2>En pocas palabras</h2><ul><li>Winclus se pone en tu sitio con una sola línea de código, al final de cada página.</li><li>Usa <code>widget.js</code>: cada mejora que publicamos llega sola a tu sitio, sin tocar nada.</li><li>Puedes decirle el idioma y en qué lado sale el botón.</li><li>Si tu sitio tiene reglas de seguridad estrictas, Winclus las respeta.</li><li>Winclus ayuda a las personas a usar tu sitio; no arregla tu sitio por ti.</li></ul></div>
+  <p class="meta">Guía técnica para el widget 0.7.0. Winclus es tecnología de apoyo que se añade a un sitio: no lo hace conforme con la norma por sí solo. Para saber cómo está tu sitio, usa <a href="#audit">Winclus Audit</a>.</p>
+  <div class="facil"><h2>En pocas palabras</h2><ul><li>Winclus se pone en tu sitio con una sola línea de código, al final de cada página.</li><li>Usa <code>widget.js</code>: cada mejora que publicamos llega sola a tu sitio, sin tocar nada. Pesa 3 KB y trae el resto cuando la página ya se pintó.</li><li>Winclus arregla al vuelo lo que le falta a la página para los lectores de pantalla (alt, nombres, etiquetas, «Saltar al contenido», foco) y te da la lista para que lo pases al código.</li><li>Puedes decirle el idioma y en qué lado sale el botón.</li><li>Si tu sitio tiene reglas de seguridad estrictas, Winclus las respeta.</li><li>Winclus ayuda a las personas a usar tu sitio; no arregla tu sitio por ti.</li></ul></div>
 
   <h2>1. Una línea</h2>
   <p>Antes de <code>&lt;/body&gt;</code>, en la plantilla común de todas las páginas:</p>
   <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget.js" async&gt;&lt;/script&gt;</code></pre>
   <p><code>widget.js</code> es siempre la última versión: cuando publicamos una mejora, tu sitio la tiene en menos de 5 minutos, sin cambiar nada. Es la forma recomendada.</p>
+  <p><strong>No frena la página.</strong> <code>widget.js</code> es un cargador de unos 3 KB: el widget completo (<code>winclus-widget.min.js</code>, minificado) se pide cuando la página ya se pintó, o enseguida si la persona ya usa Winclus (tiene ajustes guardados, dejó la cámara encendida o llega con su perfil en el enlace). Alt+Mayús+W lo trae al momento. El código legible está en <a href="winclus-widget.js"><code>winclus-widget.js</code></a>, para auditarlo.</p>
   <h3>Versión fija con integridad (solo si tu política de seguridad la exige)</h3>
   <p>Si tu entidad exige integridad de subrecursos (SRI) para los scripts de terceros, usa la copia fija de una versión con su hash:</p>
-  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.6.19.js" async
-        integrity="sha384-dXJr2XtOWf9B4C+D3S3Kq0Fx29YCJT+zGT6NsRxVwyFfDldPszPh5bJm+Uw+lkZs"
+  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.7.0.js" async
+        integrity="sha384-X6BhT2D8uzD69hh0/hrNpePgzss68qUW8xPUT5Fj67x2JEocCSpFSasD43BnZUdn"
         crossorigin="anonymous"&gt;&lt;/script&gt;</code></pre>
-  <p>El atributo <code>integrity</code> es el hash SHA-384 del archivo: el navegador comprueba que lo que llega es exactamente la versión 0.6.19 y, si no coincide, no lo ejecuta. A cambio, <strong>esta versión no se actualiza nunca</strong>: para recibir las mejoras tienes que cambiar tú el número y el hash por los de la última versión publicada aquí. <code>widget.js</code> no lleva hash porque cambia.</p>
+  <p>El atributo <code>integrity</code> es el hash SHA-384 del archivo: el navegador comprueba que lo que llega es exactamente la versión 0.7.0 y, si no coincide, no lo ejecuta. A cambio, <strong>esta versión no se actualiza nunca</strong>: para recibir las mejoras tienes que cambiar tú el número y el hash por los de la última versión publicada aquí. <code>widget.js</code> no lleva hash porque cambia.</p>
   <p>Atributos opcionales en el mismo <code>&lt;script&gt;</code>:</p>
   <div class="tabla" tabindex="0" role="region" aria-label="Atributos del script"><table>
     <thead><tr><th>Atributo</th><th>Valores</th><th>Qué hace</th></tr></thead>
@@ -50,6 +51,8 @@
       <tr><td><code>data-explicar</code></td><td>URL</td><td>Servicio propio de lectura fácil con IA (ver <a href="#ia">más abajo</a>). Sin él, la lectura fácil funciona por reglas.</td></tr>
       <tr><td><code>data-idiomas</code></td><td>Lista</td><td>Versiones del sitio en otros idiomas, para el botón «Otro idioma» que pide la barra de accesibilidad de la Resolución 2893 de 2020 (Anexo 1, 4.3.2 b): <code>data-idiomas="en=/en/, pt=https://…/pt/"</code>. Solo hace falta si el sitio no las declara ya con <code>&lt;link rel="alternate" hreflang&gt;</code>, con enlaces <code>hreflang</code> o con un selector de idioma con <code>lang</code>: Winclus las encuentra solo. Sin ninguna, el botón explica cómo traducir con el navegador.</td></tr>
       <tr><td><code>data-describir</code></td><td>URL</td><td>Servicio propio que describe las imágenes que el sitio publicó sin texto alternativo: recibe <code>POST {imagen, contexto, idioma}</code> y devuelve <code>{texto}</code>. La imagen va a tu servidor, no a Winclus. Sin él, el lector de Winclus da la mejor pista de la página (pie de foto, título, nombre del archivo) y dice que el sitio no la describió; nunca inventa una descripción.</td></tr>
+      <tr><td><code>data-arreglos</code></td><td><code>no</code></td><td>Apaga los <a href="#arreglos">arreglos al vuelo</a>. Por defecto Winclus pone en la página lo que le falta para los lectores de pantalla, el teclado y el zoom, y lo anota para quien mantiene el sitio.</td></tr>
+      <tr><td><code>data-completo</code></td><td><code>winclus-widget.js</code></td><td>Cargar el código legible en vez del minificado (para depurar).</td></tr>
       <tr><td><code>data-glosario</code></td><td>URL</td><td>JSON <code>{"palabra": "definición"}</code> con el glosario del sitio para «Diccionario al tocar una palabra» (o <code>window.WinclusGlosario</code> con ese objeto). Manda sobre ARASAAC y Wikcionario. Sin él, el diccionario usa el glosario de trámites del widget, ARASAAC y Wikcionario.</td></tr>
     </tbody>
   </table></div>
@@ -79,7 +82,12 @@ media-src  blob:;                                  /* la cámara, si se permite 
   <p>Vue (en <code>App.vue</code>, <code>onMounted</code>) es idéntico. Angular: en <code>ngOnInit</code> del componente raíz. Svelte: en <code>onMount</code>. En todos los casos, el widget se inicializa una vez y sobrevive a la navegación interna (SPA); si el contenido cambia, no hace falta avisarle.</p>
   <p>Desde JavaScript puedes hablarle: <code>Winclus.abrir()</code>, <code>Winclus.cerrar()</code>, <code>Winclus.leer()</code>, <code>Winclus.decir("texto")</code>, <code>Winclus.teclado()</code>, <code>Winclus.orden("baja")</code>, <code>Winclus.ajustes</code> (los ajustes vivos), <code>Winclus.caja</code> (el shadow root).</p>
 
-  <h2>4. WordPress y Drupal</h2>
+  <h2 id="arreglos">3b. Arreglos al vuelo para todas las ayudas técnicas</h2>
+  <p>Al cargar, y cada vez que llega contenido nuevo, Winclus pone en la página lo que le falta para NVDA, JAWS, VoiceOver, TalkBack o el Narrador, no solo para su propio lector: <code>lang</code> en <code>&lt;html&gt;</code>, <code>alt</code> en imágenes a partir de lo que ya dice la página (título, pie de foto, texto del enlace o nombre del archivo; con <code>data-describir</code>, la descripción de tu servicio; nunca un texto inventado), nombre de botones y enlaces que solo llevan un icono, enlaces «aquí» y «leer más» con su contexto, etiquetas de campos sin etiqueta, enlace «Saltar al contenido», zona principal, foco visible cuando el sitio lo quita, zoom permitido cuando el viewport lo prohíbe, título de los iframes, cabeceras de tablas y controles en vídeos que arrancan solos con sonido.</p>
+  <p>Lo que no se puede arreglar sin riesgo (ids repetidos, saltos de nivel en los títulos, <code>tabindex</code> positivos, controles ocultos con <code>aria-hidden</code>, imágenes sin ninguna pista) se anota. En la pestaña Más del panel, «Lo que Winclus arregló en esta página» lista cada arreglo con su selector y deja copiarla para quien mantiene el sitio: un parche al vuelo ayuda hoy, pero <strong>no es cumplimiento</strong>; la corrección va en el código. Desde JavaScript: <code>Winclus.arreglos()</code>, <code>Winclus.pendientes()</code> y <code>Winclus.informeArreglos()</code>.</p>
+
+  <h2>4. WordPress, Drupal, Joomla, PrestaShop y 20 plataformas más</h2>
+  <p>Dónde pegar la línea en cada plataforma (Magento, Shopify, Wix, Squarespace, Webflow, Framer, HubSpot, Ghost, Moodle, Odoo, Blogger, Weebly, Jimdo, SharePoint…), el plugin de Joomla, el módulo de PrestaShop y la etiqueta lista para Google Tag Manager: <a href="plataformas">winclus.com/plataformas</a>.</p>
   <p><strong>WordPress:</strong> copia la carpeta <code>integraciones/wordpress/winclus</code> (se entrega con el acuerdo) a <code>wp-content/plugins/</code> y actívalo. En Ajustes → Winclus eliges posición, cámara, idioma, Centro de Relevo, servicio de IA y la versión: por defecto «Siempre la última», que recibe las mejoras sola; la fija con integridad es para quien la exija.</p>
   <p><strong>Drupal 9, 10 u 11:</strong> copia <code>integraciones/drupal/winclus</code> a <code>modules/custom/</code> y actívalo (<code>drush en winclus</code>). Adjunta a todas las páginas <code>widget.js</code>, que se actualiza solo; los atributos y la versión fija con integridad (<code>winclus/widget_fija</code>) están en <code>winclus.libraries.yml</code>.</p>
 
@@ -101,9 +109,11 @@ media-src  blob:;                                  /* la cámara, si se permite 
 { "texto": "# Resumen\n\nFrases cortas…\n\n# Pasos\n\n…" }   /* párrafos separados por línea en blanco; «# » hace un título */</code></pre>
   <p>Si el servicio falla, el widget usa las reglas locales. Un ejemplo de servicio con la API de Claude en Node o Python cabe en 30 líneas: recibe el texto, pide «reescríbelo en lenguaje claro, frases de menos de 20 palabras, sin jerga, con los pasos en lista» y devuelve el resultado.</p>
 
-  <h2 id="audit">7. Winclus Audit: cómo está tu sitio</h2>
+  <h2 id="audit">7. Winclus Audit, Winclus Monitor y el informe de conformidad (ACR)</h2>
   <p>Escáner de accesibilidad: axe-core (WCAG 2.1 y 2.2 AA) en escritorio y móvil, más comprobaciones de la Resolución 1519 (texto al 200 %, declaración, ir al contenido, subtítulos, CAPTCHA que bloquean el trámite y sesiones que caducan sin aviso), cada una con el número y el nombre oficial de su criterio del Anexo 1. Genera un informe agrupado por criterio con cómo corregir cada cosa y un borrador de declaración de accesibilidad.</p>
   <p>Se entrega con el acuerdo de soporte. Ejecución: <code>node auditar.js https://tu-sitio.gov.co --entidad "Alcaldía de …" --salida informe</code>. Pídelo en hola@winclus.com.</p>
+  <p><strong>Informe de conformidad (ACR, plantilla VPAT 2.5).</strong> En la misma ejecución sale <code>acr.html</code> y <code>acr.md</code>: los 55 criterios de nivel A y AA de las WCAG 2.1 y 2.2, cada uno con su cláusula de la EN 301 549 y la Sección 508, en tres estados: «No cumple» con los elementos, «Cumple (evaluación automática)» y «Pendiente de revisión manual» con lo que hay que comprobar. Nunca marca «Cumple» a secas: una persona lo completa y lo firma. Es el documento que piden los pliegos y los compradores públicos.</p>
+  <p><strong>Winclus Monitor: que nada empeore sin que nadie se entere.</strong> <code>node monitor.js monitor.json</code> pasa el escáner cada día por las páginas de la lista y por las del <code>sitemap.xml</code>, compara con la vez anterior, guarda el historial, actualiza un panel (<code>panel.html</code>: total, evolución, cada página con su cambio, si tiene el widget y el enlace a la declaración) y avisa por correo, por webhook (Slack, Teams, n8n, Make) o abriendo un issue si aparece una barrera nueva, una página deja de responder, el widget desaparece o se pierde la declaración. Se programa con <code>monitor.ps1</code> (Programador de tareas de Windows), con cron o con la plantilla de GitHub Actions <code>integraciones/github/winclus-monitor.yml</code>. Sin límite de páginas ni de sitios.</p>
   <p>Un escáner detecta entre el 30 y el 50 % de las barreras; el resto sale de la revisión manual y de probar con personas con discapacidad. El informe lo dice.</p>
 
   <h2>8. Añadir un idioma al panel</h2>

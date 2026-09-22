@@ -1,0 +1,53 @@
+# Winclus Monitor en GitHub Actions: cada día pasa el escáner por el sitio, guarda el panel y el historial en el
+# repositorio (carpeta monitor/) y abre un issue cuando aparece una barrera nueva, una página deja de responder,
+# el widget desaparece o se pierde el enlace a la declaración. Gratis con los minutos que da GitHub.
+#
+# Cómo usarlo:
+#   1. Copia auditar.js, monitor.js y package.json de Winclus Audit a la carpeta herramientas/winclus/ de tu repositorio.
+#   2. Copia monitor.ejemplo.json a herramientas/winclus/monitor.json y pon tus páginas (o "sitemap": "auto").
+#   3. Guarda este archivo en .github/workflows/winclus-monitor.yml.
+#   4. (Opcional) Para avisar por correo o webhook, guarda WINCLUS_WEBHOOK o WINCLUS_SMTP_CLAVE en Settings → Secrets.
+#   5. Si tu repositorio publica con GitHub Pages, monitor/panel.html queda visible para todo el equipo.
+name: Winclus Monitor
+on:
+  schedule:
+    - cron: "0 11 * * *"   # 06:00 en Colombia (UTC−5), todos los días
+  workflow_dispatch:
+permissions:
+  contents: write
+  issues: write
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Instalar Winclus Audit
+        working-directory: herramientas/winclus
+        run: |
+          npm i --no-audit --no-fund playwright axe-core nodemailer
+          npx playwright install --with-deps chromium
+      - name: Vigilar el sitio
+        working-directory: herramientas/winclus
+        env:
+          WINCLUS_SMTP_CLAVE: ${{ secrets.WINCLUS_SMTP_CLAVE }}
+        run: |
+          if [ -n "${{ secrets.WINCLUS_WEBHOOK }}" ]; then node monitor.js monitor.json --webhook "${{ secrets.WINCLUS_WEBHOOK }}"; else node monitor.js monitor.json; fi
+      - name: Guardar panel e historial en el repositorio
+        run: |
+          git config user.name "Winclus Monitor"
+          git config user.email "monitor@winclus.com"
+          git add herramientas/winclus/monitor
+          git diff --cached --quiet || git commit -m "Monitor de accesibilidad: $(date -u +%Y-%m-%d)"
+          git push
+      - name: Abrir un issue si hay avisos
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("fs");
+            const a = JSON.parse(fs.readFileSync("herramientas/winclus/monitor/alerta.json", "utf8"));
+            if (!a.avisos.length) return;
+            const cuerpo = "Winclus Monitor, " + a.fecha + ". Total: " + a.total + " problema(s). Barreras nuevas: " + a.nuevos + ". Resueltas: " + a.resueltos + ".\n\n" + a.avisos.map((x) => "- " + x).join("\n") + "\n\nPanel: `herramientas/winclus/monitor/panel.html`";
+            await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title: a.asunto, body: cuerpo, labels: ["accesibilidad"] });

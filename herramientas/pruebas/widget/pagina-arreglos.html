@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Página con lo que suele faltar</title>
+<style>
+  a:focus, button:focus { outline: none; }
+  .fa-search::before { content: "🔍"; }
+  .icon-menu::before { content: "☰"; }
+</style>
+</head>
+<body>
+<div id="pagina">
+  <header>
+    <a class="logo" href="/"><img src="logo.png" width="120" height="40"></a>
+    <button type="button" id="hamburguesa"><i class="icon-menu"></i></button>
+    <a href="/buscar" class="btn"><i class="fa fa-search"></i></a>
+    <a href="https://www.facebook.com/alcaldia"><svg width="16" height="16"><path d="M0 0h16v16H0z"/></svg></a>
+    <nav><a href="/tramites">Trámites</a> <a href="/noticias">Noticias</a></nav>
+  </header>
+  <div class="contenido">
+    <h1>Alcaldía de Ejemplo</h1>
+    <img src="alcaldia-fachada.jpg" width="300" height="200">
+    <img src="img_0234.jpg" width="300" height="200">
+    <img src="spacer.gif" width="1" height="1">
+    <img src="mapa.png" title="Mapa de la ciudad" width="200" height="100">
+    <figure><img src="plaza.jpg" width="200" height="100"><figcaption>La plaza mayor un domingo</figcaption></figure>
+    <h3 id="tramites">Trámites</h3>
+    <p>Para pedir el certificado de residencia entre <a href="/certificado">aquí</a>.</p>
+    <p>El plan de desarrollo tiene cuatro ejes: salud, educación, vías y ambiente. <a href="/plan">Leer más</a></p>
+    <p><a href="/docs/informe.pdf">Informe anual</a></p>
+    <form action="/enviar">
+      <input type="text" placeholder="Tu correo">
+      Nombre: <input type="text" id="nombre">
+      <select name="departamento"><option>Antioquia</option><option>Bolívar</option></select>
+      <input type="search" name="q">
+      <div>Mensaje</div>
+      <textarea name="mensaje"></textarea>
+      <button type="button" class="btn-close"><svg width="10" height="10"><path d="M0 0L10 10M10 0L0 10"/></svg></button>
+      <button type="submit">Enviar</button>
+    </form>
+    <iframe src="https://www.youtube.com/embed/xyz" width="200" height="100"></iframe>
+    <table>
+      <tr><td>Trámite</td><td>Costo</td><td>Plazo</td></tr>
+      <tr><td>Certificado</td><td>$ 0</td><td>1 día</td></tr>
+      <tr><td>Licencia</td><td>$ 20.000</td><td>15 días</td></tr>
+    </table>
+    <video autoplay width="100" height="60"></video>
+    <div id="repetido">uno</div><div id="repetido">dos</div>
+    <a href="/x" tabindex="5">Con tabindex</a>
+    <div aria-hidden="true"><button type="button">Oculto pero alcanzable</button></div>
+    <div id="nuevo"></div>
+  </div>
+  <footer>Pie</footer>
+</div>
+<script>document.write('<script src="../../../web/widget.js"' + (location.search === "?sin" ? ' data-arreglos="no"' : '') + '><\/script>');</script>
+</body>
+</html>

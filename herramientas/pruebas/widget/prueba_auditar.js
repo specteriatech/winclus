@@ -34,6 +34,9 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   const decl = fs.existsSync(path.join(salida, "declaracion.html")) ? fs.readFileSync(path.join(salida, "declaracion.html"), "utf8") : "";
   const json = fs.existsSync(path.join(salida, "resultados.json")) ? JSON.parse(fs.readFileSync(path.join(salida, "resultados.json"), "utf8")) : [];
   comprobar(informe.length > 2000 && decl.length > 1000 && json.length === 4, "genera informe.html, declaracion.html y resultados.json");
+  const acr = fs.existsSync(path.join(salida, "acr.html")) ? fs.readFileSync(path.join(salida, "acr.html"), "utf8") : "", acrMd = fs.existsSync(path.join(salida, "acr.md")) ? fs.readFileSync(path.join(salida, "acr.md"), "utf8") : "";
+  comprobar(/VPAT/.test(acr) && /Alcaldía de Prueba/.test(acr) && /<strong>1\.1\.1<\/strong> Contenido no textual/.test(acr) && /No cumple/.test(acr) && /Cumple \(evaluación automática\)/.test(acr) && /Pendiente de revisión manual/.test(acr) && /^\| \*\*1\.1\.1\*\*/m.test(acrMd),
+    "genera el informe de conformidad (ACR, plantilla VPAT 2.5) en HTML y Markdown con los tres estados");
   const portada = json[0], malaR = json[1];
   comprobar(portada && portada.paginas.every((p) => p.ok && p.violaciones.length === 0), "la portada de winclus.com sale limpia", portada ? portada.paginas.map((p) => p.vista + ":" + p.violaciones.length).join(", ") : "");
   const ids = malaR ? malaR.paginas[0].violaciones.map((v) => v.id) : [];

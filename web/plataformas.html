@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Winclus en cada plataforma</title>
+<meta name="description" content="Dónde pegar la línea de Winclus en WordPress, Drupal, Joomla, PrestaShop, Magento, Shopify, Wix, Squarespace, Webflow, Framer, HubSpot, Ghost, Moodle, Odoo, Blogger, Weebly, Jimdo, Google Tag Manager, GOV.CO y MiColombiaDigital, y en React, Vue, Angular o Svelte.">
+<link rel="icon" href="img/icono.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="paginas.css">
+<style>pre{background:#101F3D;color:#EEF1EA;padding:14px 16px;border-radius:10px;overflow-x:auto;font:14px/1.5 Consolas,ui-monospace,monospace;white-space:pre}code{font-family:Consolas,ui-monospace,monospace;font-size:.92em;background:#F3F6FA;padding:1px 5px;border-radius:4px}pre code{background:none;padding:0}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:18px 0}.grid a{display:block;background:#F3F6FA;border:1px solid #DCE3EC;border-radius:12px;padding:12px 14px;text-decoration:none;color:#101F3D;font-weight:600}.grid a:hover,.grid a:focus{border-color:#2743B4}.grid small{display:block;font-weight:400;color:#2E3A52;margin-top:2px}h2{scroll-margin-top:80px}.paso{background:#FFF;border:1px solid #DCE3EC;border-radius:12px;padding:14px 18px;margin:10px 0 22px}</style>
+</head>
+<body>
+<a class="salto" href="#contenido">Ir al contenido</a>
+<header>
+  <div class="barra">
+    <a class="marca" href="/"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a>
+    <a class="volver" href="integrar">Volver a la guía técnica</a>
+  </div>
+</header>
+
+<main id="contenido">
+<nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><a href="integrar">Integrar Winclus</a><span aria-hidden="true">›</span><span aria-current="page">Plataformas</span></nav>
+  <h1>Winclus en cada plataforma</h1>
+  <p class="meta">Widget 0.7.0. En todas es lo mismo: una línea antes de <code>&lt;/body&gt;</code> en la plantilla común. Aquí está dónde se pega en cada plataforma, y los plugins y módulos listos para las que los tienen.</p>
+  <div class="facil"><h2>En pocas palabras</h2><ul><li>La línea es siempre esta: <code>&lt;script src="https://winclus.com/widget.js" async&gt;&lt;/script&gt;</code>.</li><li>Busca en tu plataforma el sitio donde se pone «código en el pie» o «scripts de todas las páginas» y pégala ahí.</li><li>Para WordPress, Drupal, Joomla y PrestaShop hay plugin o módulo; para Google Tag Manager, una etiqueta lista.</li><li>Si dudas, escribe a <a href="mailto:hola@winclus.com">hola@winclus.com</a> y lo ponemos contigo.</li></ul></div>
+
+  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget.js" async data-idioma="es-CO"&gt;&lt;/script&gt;</code></pre>
+  <p>Los atributos opcionales (<code>data-posicion</code>, <code>data-camara</code>, <code>data-idioma</code>, <code>data-arreglos</code>…) están en la <a href="integrar">guía técnica</a>. En Colombia deja <code>data-idioma="es-CO"</code>.</p>
+
+  <nav aria-label="Plataformas"><div class="grid">
+    <a href="#wordpress">WordPress<small>plugin</small></a><a href="#drupal">Drupal<small>módulo</small></a><a href="#joomla">Joomla<small>plugin</small></a><a href="#prestashop">PrestaShop<small>módulo</small></a>
+    <a href="#magento">Magento / Adobe Commerce<small>configuración</small></a><a href="#shopify">Shopify<small>theme.liquid</small></a><a href="#wix">Wix<small>código personalizado</small></a><a href="#squarespace">Squarespace<small>inyección de código</small></a>
+    <a href="#webflow">Webflow<small>custom code</small></a><a href="#framer">Framer<small>custom code</small></a><a href="#hubspot">HubSpot<small>HTML del pie</small></a><a href="#ghost">Ghost<small>code injection</small></a>
+    <a href="#moodle">Moodle<small>HTML adicional</small></a><a href="#odoo">Odoo<small>website</small></a><a href="#blogger">Blogger<small>tema</small></a><a href="#weebly">Weebly<small>código del pie</small></a>
+    <a href="#jimdo">Jimdo<small>código en la cabecera</small></a><a href="#gtm">Google Tag Manager<small>etiqueta lista</small></a><a href="#govco">GOV.CO y MiColombiaDigital<small>pie de la plantilla</small></a><a href="#spa">React, Vue, Angular, Svelte<small>web component</small></a>
+    <a href="#estatico">HTML estático, Hugo, Jekyll, Astro<small>plantilla base</small></a><a href="#sharepoint">SharePoint y Power Pages<small>plantilla o web part</small></a>
+  </div></nav>
+
+  <h2 id="wordpress">WordPress</h2>
+  <div class="paso"><p><strong>Plugin:</strong> copia la carpeta <code>integraciones/wordpress/winclus</code> a <code>wp-content/plugins/</code> y actívalo. En Ajustes → Winclus eliges posición, cámara, idioma, Centro de Relevo, servicio de IA y versión (por defecto «Siempre la última»).</p><p><strong>Sin plugin:</strong> Apariencia → Editor de temas → <code>footer.php</code>, antes de <code>&lt;/body&gt;</code>; o con un plugin de «insertar cabeceras y pies» pega la línea en el pie.</p></div>
+
+  <h2 id="drupal">Drupal 9, 10 y 11</h2>
+  <div class="paso"><p><strong>Módulo:</strong> copia <code>integraciones/drupal/winclus</code> a <code>modules/custom/</code> y actívalo (<code>drush en winclus</code>). Adjunta <code>widget.js</code> a todas las páginas; los atributos y la versión fija con integridad están en <code>winclus.libraries.yml</code>.</p><p><strong>Sin módulo:</strong> en <code>html.html.twig</code> del tema, antes de <code>&lt;/body&gt;</code>.</p></div>
+
+  <h2 id="joomla">Joomla 4 y 5</h2>
+  <div class="paso"><p><strong>Plugin de sistema:</strong> comprime la carpeta <code>integraciones/joomla/plg_system_winclus</code> en un zip e instálalo desde Sistema → Instalar → Extensiones. Actívalo en Sistema → Plugins → «System - Winclus» y elige posición, cámara e idioma en sus opciones.</p><p><strong>Sin plugin:</strong> en la plantilla, <code>templates/tu-plantilla/index.php</code> antes de <code>&lt;/body&gt;</code>; o un módulo «HTML personalizado» en una posición del pie con el editor en modo código.</p></div>
+
+  <h2 id="prestashop">PrestaShop 1.7 y 8</h2>
+  <div class="paso"><p><strong>Módulo:</strong> comprime <code>integraciones/prestashop/winclus</code> en <code>winclus.zip</code> e instálalo desde Módulos → Administrador de módulos → Subir un módulo. Se engancha en <code>displayBeforeBodyClosingTag</code>; en Configurar eliges posición, cámara e idioma.</p><p><strong>Sin módulo:</strong> en el tema, <code>themes/tu-tema/templates/_partials/footer.tpl</code> o <code>layouts/layout-both-columns.tpl</code>, antes de <code>&lt;/body&gt;</code>.</p></div>
+
+  <h2 id="magento">Magento 2 / Adobe Commerce</h2>
+  <div class="paso"><p>Contenido → Diseño → Configuración → edita tu tema → «Pie de página» → «Varios HTML»: pega la línea. Se aplica a toda la tienda sin tocar el tema. (Alternativa: HTML Head → «Scripts y hojas de estilo», aunque el pie es mejor.)</p></div>
+
+  <h2 id="shopify">Shopify</h2>
+  <div class="paso"><p>Tienda online → Temas → Acciones → Editar código → <code>layout/theme.liquid</code>: pega la línea justo antes de <code>&lt;/body&gt;</code>. Si usas el checkout personalizado de Shopify Plus, repítela en <code>checkout.liquid</code>.</p></div>
+
+  <h2 id="wix">Wix</h2>
+  <div class="paso"><p>Configuración → Avanzado → Código personalizado → «+ Agregar código personalizado»: pega la línea, aplícalo a «Todas las páginas», colócalo en «Fin del body» y guarda. Necesita un plan con dominio propio (Wix no permite código en los planes gratuitos).</p></div>
+
+  <h2 id="squarespace">Squarespace</h2>
+  <div class="paso"><p>Configuración → Avanzado → Inyección de código → «Pie de página»: pega la línea y guarda. Disponible en los planes Business y Commerce.</p></div>
+
+  <h2 id="webflow">Webflow</h2>
+  <div class="paso"><p>Project settings → Custom code → «Footer code»: pega la línea, guarda y publica. Se aplica a todas las páginas del proyecto.</p></div>
+
+  <h2 id="framer">Framer</h2>
+  <div class="paso"><p>Site settings → General → Custom code → «End of &lt;body&gt; tag»: pega la línea y publica.</p></div>
+
+  <h2 id="hubspot">HubSpot CMS</h2>
+  <div class="paso"><p>Settings → Website → Pages → elige el dominio → «Site footer HTML»: pega la línea. Vale para páginas del sitio, landing pages y blog.</p></div>
+
+  <h2 id="ghost">Ghost</h2>
+  <div class="paso"><p>Settings → Code injection → «Site footer»: pega la línea y guarda.</p></div>
+
+  <h2 id="moodle">Moodle</h2>
+  <div class="paso"><p>Administración del sitio → Apariencia → HTML adicional → «Antes de que se cierre BODY»: pega la línea y guarda. Así todas las aulas y cursos llevan Winclus; junto a las herramientas de accesibilidad de Moodle (no las sustituye).</p></div>
+
+  <h2 id="odoo">Odoo Website</h2>
+  <div class="paso"><p>Sitio web → Configuración → Ajustes → «Código personalizado» (o «Inyección de código») → «&lt;/body&gt;»: pega la línea y guarda.</p></div>
+
+  <h2 id="blogger">Blogger</h2>
+  <div class="paso"><p>Tema → Personalizar → «Editar HTML»: busca <code>&lt;/body&gt;</code> y pega la línea justo antes. Guarda el tema.</p></div>
+
+  <h2 id="weebly">Weebly</h2>
+  <div class="paso"><p>Configuración → SEO → «Código del pie de página»: pega la línea y publica.</p></div>
+
+  <h2 id="jimdo">Jimdo</h2>
+  <div class="paso"><p>Menú → Configuración → «Editar cabecera» (Jimdo Creator): pega la línea; se carga en todas las páginas. En Jimdo Dolphin no se puede añadir código: usa otra plataforma o pide ayuda.</p></div>
+
+  <h2 id="gtm">Google Tag Manager</h2>
+  <div class="paso"><p><strong>Etiqueta lista:</strong> importa <code>integraciones/gtm/winclus-gtm.json</code> (Administrar → Importar contenedor → «Combinar») y publica. Crea una etiqueta «HTML personalizado» con la línea de Winclus disparada en «All Pages».</p><p><strong>A mano:</strong> Etiquetas → Nueva → HTML personalizado → pega la línea → activador «All Pages» → publica. Winclus no usa cookies ni envía datos, así que no necesita el consentimiento de cookies para cargarse; si tu gestor de consentimiento bloquea todo GTM hasta aceptar, ponlo mejor en la plantilla del sitio para que esté también para quien no acepta.</p></div>
+
+  <h2 id="govco">GOV.CO y MiColombiaDigital</h2>
+  <div class="paso"><p>En la administración del sitio, «código en el pie» o el pie de la plantilla común: pega la línea con <code>data-idioma="es-CO"</code>. Recomendaciones para sujetos obligados por la Resolución 1519 en la <a href="integrar">guía técnica</a>, apartado 5, y en el <a href="manual">manual para entidades</a>.</p></div>
+
+  <h2 id="spa">React, Vue, Angular, Svelte, Next.js, Nuxt</h2>
+  <div class="paso"><p>Carga <code>winclus-elemento.js</code> y usa el web component <code>&lt;winclus-widget&gt;</code>, o inserta el script una vez en el documento raíz (<code>index.html</code>, <code>_document</code>, <code>app.html</code>). El widget sobrevive a los cambios de ruta y arregla el contenido que llega después. Detalle en la <a href="integrar">guía técnica</a>, apartado 3.</p></div>
+
+  <h2 id="estatico">HTML estático, Hugo, Jekyll, Astro, Eleventy</h2>
+  <div class="paso"><p>En la plantilla base (<code>baseof.html</code>, <code>default.html</code>, <code>Layout.astro</code>, <code>base.njk</code>), antes de <code>&lt;/body&gt;</code>.</p></div>
+
+  <h2 id="sharepoint">SharePoint Online y Power Pages</h2>
+  <div class="paso"><p><strong>Power Pages:</strong> Diseño → Configuración del sitio → «Código personalizado» o en la plantilla web «Encabezado/Pie», antes de <code>&lt;/body&gt;</code>. <strong>SharePoint Online (sitios modernos):</strong> hace falta un extensor de aplicación (SPFx Application Customizer) que inserte el script; te lo pasamos con el acuerdo de soporte. En sitios clásicos, en la página maestra.</p></div>
+
+  <h2>Comprobar que quedó bien</h2>
+  <p>Abre tu sitio y pulsa <kbd>Alt</kbd>+<kbd>Mayús</kbd>+<kbd>W</kbd>: debe abrirse el panel. Si no, revisa que la línea esté en todas las páginas y que tu política de seguridad (CSP) permita <code>https://winclus.com</code> en <code>script-src</code>. Para saber cómo está tu sitio, y que nada empeore después, usa <a href="integrar#audit">Winclus Audit y Winclus Monitor</a>.</p>
+</main>
+
+<footer>
+  <div class="pie">
+    <div>© 2026 Winclus</div>
+    <ul>
+      <li><a href="/">Portada</a></li>
+      <li><a href="accesibilidad">Accesibilidad</a></li>
+      <li><a href="privacidad">Privacidad y datos</a></li>
+      <li><a href="mapa-del-sitio">Mapa del sitio</a></li>
+      <li><a href="glosario">Glosario</a></li>
+      <li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="widget.js" async></script>
+</body>
+</html>

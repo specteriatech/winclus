@@ -1,5 +1,17 @@
 # Pruebas del widget web sin cámara
 
+**Desde la 0.7.0 el widget tiene tres archivos en web/:** `winclus-widget.js` (el código legible, el que se edita), `winclus-widget.min.js`
+(lo que se sirve, generado) y `widget.js` (el cargador de 3 KB que pide el minificado cuando la página ya se pintó). **Después de
+editar `winclus-widget.js` hay que ejecutar `node construir.js`** (lo hace solo `npm test` al empezar); si no, las pruebas y la web
+usan un minificado viejo. `node construir.js --fija` genera además `widget-X.Y.Z.js` con su hash de integridad (solo para versiones nuevas:
+una publicada no se toca). La versión va en `var VERSION` de los dos archivos y construir.js exige que coincidan.
+
+- `node prueba_cargador.js`: el cargador pesa menos de 6 KB, trae el minificado tras «load» (o antes si hay ajustes guardados), pasa data-* y nonce, Alt+Mayús+W lo pide, dos cargadores no duplican nada.
+- `node prueba_arreglos.js`: `pagina-arreglos.html` (sin lang, sin main, sin saltar al contenido, outline:none, viewport sin zoom, imágenes sin alt, iconos sin nombre, enlaces «aquí», campos sin etiqueta, iframe sin título, tabla sin th, vídeo autoplay, ids repetidos…): cada arreglo al vuelo, lo pendiente para una persona, el contenido que llega después, la lista en la pestaña Más, `?sin` (data-arreglos="no") y axe con menos de la mitad de incumplimientos.
+- `node prueba_monitor.js`: Winclus Monitor con el servidor local: primera ejecución limpia, segunda con página nueva y sitemap (avisos, webhook recibido en un servidor local, panel, informes con ACR), tercera sin cambios, cuarta con página caída y página quitada. Lanza el monitor con spawn (no spawnSync) para poder contestar al webhook.
+- `node monitor.js monitor.json`: la vigilancia de verdad (copiar `monitor.ejemplo.json`); `monitor.ps1` la programa a diario en Windows; `integraciones/github/winclus-monitor.yml` en GitHub Actions.
+- `node auditar.js https://sitio --entidad "…"`: ahora genera también `acr.html` y `acr.md` (informe de conformidad, plantilla VPAT 2.5) y se puede usar como módulo.
+
 - `node prueba_parpadeo.js`: extrae el detector de parpadeo de web/widget.js y lo pasa por las series reales de cierres del usuario (series.json, sacadas del log de la app) y por cierres sintéticos. Antes hay que generar `parpadeo_extraido.js` con las líneas del objeto `parpadeo` (desde `var OJO_DER` hasta antes de `// --- mirada por iris`): `sed -n '/var OJO_DER/,/--- mirada por iris/p' ../../../web/widget.js | head -n -1 > parpadeo_extraido.js`.
 - `node servidor.js` y abrir http://127.0.0.1:8765/pruebas/camara-falsa.html: la página entrega un lienzo con una foto (web/img/quien_1.jpg) como si fuera la webcam. Desde la consola: `sim.dx`/`sim.dy` mueven la cabeza, `sim.parpadeo = true` tapa los ojos (hay que poner antes `sim.ojos` con las elipses sobre los ojos, ver el historial de la sesión del 15-sep-2026), `sim.zoom = 0.05` hace desaparecer la cara. El primer «Activar cámara» necesita un clic real (política de autoplay); después vale `Winclus.activarCamara()`.
 - `node prueba_posicion.js`: abre `pagina-prueba.html` (sitio con cabecera fija y el widget) en Chromium

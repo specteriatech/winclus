@@ -1,0 +1,21 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-09-22 12:00:00",
+  "containerVersion": {
+    "name": "Winclus",
+    "description": "Etiqueta HTML personalizado que carga el widget de accesibilidad Winclus (https://winclus.com/widget.js) en todas las páginas. Importar con «Combinar». Winclus no usa cookies ni envía datos: no depende del consentimiento de cookies.",
+    "tag": [
+      {
+        "name": "Winclus - widget de accesibilidad",
+        "type": "html",
+        "parameter": [
+          { "type": "TEMPLATE", "key": "html", "value": "<script src=\"https://winclus.com/widget.js\" async data-idioma=\"es-CO\"></script>" },
+          { "type": "BOOLEAN", "key": "supportDocumentWrite", "value": "false" }
+        ],
+        "firingTriggerId": ["2147479553"],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "consentSettings": { "consentStatus": "NOT_NEEDED" }
+      }
+    ]
+  }
+}

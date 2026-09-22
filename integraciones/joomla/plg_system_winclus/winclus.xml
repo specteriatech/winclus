@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="system" method="upgrade">
+  <name>System - Winclus</name>
+  <author>Colaboradores de Winclus</author>
+  <creationDate>2026-09-22</creationDate>
+  <copyright>Winclus</copyright>
+  <license>Apache-2.0</license>
+  <authorUrl>https://winclus.com</authorUrl>
+  <version>0.7.0</version>
+  <description>Añade a todas las páginas el widget de accesibilidad Winclus: uso con la cara, la voz, un solo pulsador, teclado en pantalla, pictogramas, ajustes de lectura y color, y arreglos al vuelo para lectores de pantalla. Sin cuentas ni servidores propios. Tecnología de apoyo: no sustituye la accesibilidad del propio sitio.</description>
+  <files>
+    <filename plugin="winclus">winclus.php</filename>
+  </files>
+  <config>
+    <fields name="params">
+      <fieldset name="basic">
+        <field name="posicion" type="list" label="Posición del botón" default="derecha">
+          <option value="derecha">Derecha</option>
+          <option value="izquierda">Izquierda</option>
+        </field>
+        <field name="camara" type="radio" class="btn-group" label="Cámara (puntero con la cara)" default="si">
+          <option value="si">Permitir</option>
+          <option value="no">No ofrecer</option>
+        </field>
+        <field name="idioma" type="text" label="Idioma del reconocimiento de voz" default="es-CO" description="es-CO, es-MX, es-ES, en-US…" />
+        <field name="relevo" type="radio" class="btn-group" label="Botón al Centro de Relevo (Colombia)" default="si">
+          <option value="si">Mostrar</option>
+          <option value="no">Ocultar</option>
+        </field>
+        <field name="arreglos" type="radio" class="btn-group" label="Arreglos al vuelo (alt, nombres, etiquetas, saltar al contenido, foco)" default="si">
+          <option value="si">Activar</option>
+          <option value="no">No tocar la página</option>
+        </field>
+        <field name="explicar" type="url" label="Servicio de lectura fácil con IA (opcional)" default="" description="URL que reciba POST {texto, idioma} y devuelva {texto}. Sin ella, la lectura fácil funciona por reglas." />
+        <field name="version" type="list" label="Versión del widget" default="ultima">
+          <option value="ultima">Siempre la última de winclus.com (recomendado)</option>
+          <option value="fija">Fija 0.7.0 con integridad SRI (no cambia hasta actualizar el plugin)</option>
+        </field>
+      </fieldset>
+    </fields>
+  </config>
+</extension>

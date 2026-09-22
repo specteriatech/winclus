@@ -23,7 +23,7 @@
 <main id="contenido">
 <nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><span aria-current="page">Manual para entidades</span></nav>
   <h1>Manual de uso para entidades y equipos técnicos</h1>
-  <p class="meta">Winclus widget 0.6.19 · septiembre de 2026 · Complementa la <a href="guia">guía para personas usuarias</a>, la <a href="integrar">guía técnica de integración</a> y la <a href="accesibilidad">declaración de accesibilidad</a>.</p>
+  <p class="meta">Winclus widget 0.7.0 · septiembre de 2026 · Complementa la <a href="guia">guía para personas usuarias</a>, la <a href="integrar">guía técnica de integración</a> y la <a href="accesibilidad">declaración de accesibilidad</a>.</p>
   <div class="facil"><h2>En pocas palabras</h2><ul><li>Este manual es para quien manda en un sitio web del Estado.</li><li>Explica cómo instalar Winclus, qué hace con los datos y cómo contarlo en la declaración de accesibilidad.</li><li>Winclus no guarda ni envía la cara de nadie: todo pasa en el navegador de la persona.</li><li>Hay una herramienta, Winclus Audit, que revisa tu sitio y te dice qué corregir.</li></ul></div>
 
   <h2>1. Qué es y qué no es</h2>
@@ -35,14 +35,16 @@
   <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget.js" async data-idioma="es-CO"&gt;&lt;/script&gt;</code></pre>
   <p>Antes de <code>&lt;/body&gt;</code>, en la plantilla común de todas las páginas. <code>widget.js</code> es siempre la última versión: las mejoras llegan solas, en menos de 5 minutos, sin tocar el sitio. Es la forma recomendada.</p>
   <p>Si la política de seguridad de la entidad exige integridad de subrecursos (SRI), use la versión fija con su hash. Esa versión <strong>no se actualiza nunca</strong>: para recibir las mejoras hay que cambiar a mano el número y el hash por los publicados en winclus.com/integrar.</p>
-  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.6.19.js" async data-idioma="es-CO"
-        integrity="sha384-dXJr2XtOWf9B4C+D3S3Kq0Fx29YCJT+zGT6NsRxVwyFfDldPszPh5bJm+Uw+lkZs" crossorigin="anonymous"&gt;&lt;/script&gt;</code></pre>
+  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.7.0.js" async data-idioma="es-CO"
+        integrity="sha384-X6BhT2D8uzD69hh0/hrNpePgzss68qUW8xPUT5Fj67x2JEocCSpFSasD43BnZUdn" crossorigin="anonymous"&gt;&lt;/script&gt;</code></pre>
   <h3>2.2 Plantillas y gestores</h3>
   <ul class="lista">
     <li><strong>GOV.CO y MiColombiaDigital:</strong> administración del sitio → código en el pie (o pie de la plantilla). Pegue la línea de <code>widget.js</code>.</li>
     <li><strong>WordPress:</strong> plugin en <code>integraciones/wordpress/winclus</code> (se entrega con el acuerdo); Ajustes → Winclus.</li>
     <li><strong>Drupal 9 a 11:</strong> módulo en <code>integraciones/drupal/winclus</code>.</li>
+    <li><strong>Joomla y PrestaShop:</strong> plugin y módulo en <code>integraciones/joomla</code> e <code>integraciones/prestashop</code>.</li>
     <li><strong>React, Vue, Angular, Svelte:</strong> web component <code>&lt;winclus-widget&gt;</code> con <code>winclus-elemento.js</code>.</li>
+    <li><strong>Magento, Shopify, Wix, Squarespace, Webflow, Moodle, Google Tag Manager y más:</strong> dónde pegar la línea en cada una, en <a href="plataformas">winclus.com/plataformas</a>.</li>
   </ul>
   <h3>2.3 Atributos</h3>
   <ul class="lista">

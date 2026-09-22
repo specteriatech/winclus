@@ -1,5 +1,5 @@
 {
-  "fecha": "2026-09-21",
+  "fecha": "2026-09-22",
   "norma": "Resolución 1519 de 2020 (MinTIC, Colombia), Anexo 1, capítulo 2.2: lineamientos de accesibilidad web",
   "sitio": "winclus.com",
   "paginas": [
@@ -60,7 +60,7 @@
       "cc": "CC7",
       "nombre": "Identificación coherente",
       "estado": "cumple",
-      "detalle": "89 textos de enlace distintos, cada uno a un único destino"
+      "detalle": "94 textos de enlace distintos, cada uno a un único destino"
     },
     {
       "cc": "CC8",
@@ -72,7 +72,7 @@
       "cc": "CC9",
       "nombre": "Contenedores como tablas y listas usados correctamente",
       "estado": "cumple",
-      "detalle": "19 tablas y 107 listas, todas con contenido homogéneo y cabeceras"
+      "detalle": "19 tablas y 111 listas, todas con contenido homogéneo y cabeceras"
     },
     {
       "cc": "CC10",

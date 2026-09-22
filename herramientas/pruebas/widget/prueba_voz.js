@@ -29,7 +29,7 @@ function comprobar(bien, nombre, detalle) { fallos += bien ? 0 : 1; console.log(
   await page.waitForTimeout(100);
   const nums = await page.evaluate(() => Array.from(Winclus.caja.querySelectorAll(".wcl-num")).map((n) => n.textContent));
   comprobar(nums.length >= 4 && nums[0] === "1" && nums.join(",").indexOf("1,2,3,4") === 0, "«números» pone etiquetas 1, 2, 3… sobre lo que se puede pulsar", nums.join(","));
-  const orden = await page.evaluate(() => Array.from(document.querySelectorAll("a,button,input")).filter((e) => !e.closest(".wcl-root")).map((e) => e.id || e.tagName.toLowerCase()));
+  const orden = await page.evaluate(() => Array.from(document.querySelectorAll("a,button,input")).filter((e) => !e.closest(".wcl-root") && !e.classList.contains("winclus-salto")).map((e) => e.id || e.tagName.toLowerCase()));   // el «Saltar al contenido» que añade Winclus queda fuera de pantalla y no lleva número
   await page.evaluate(() => Winclus.orden("clic 2"));
   await page.waitForTimeout(100);
   const clics = await page.evaluate(() => window.__clics);

@@ -1,0 +1,20 @@
+{
+  "entidad": "Alcaldía de Ejemplo",
+  "producto": "Sede electrónica de la Alcaldía de Ejemplo",
+  "urls": [
+    "https://www.ejemplo.gov.co/",
+    "https://www.ejemplo.gov.co/tramites",
+    "https://www.ejemplo.gov.co/pqrsd"
+  ],
+  "sitemap": "auto",
+  "maximo": 30,
+  "salida": "monitor",
+  "guardarInformes": true,
+  "avisarSiempre": false,
+  "webhook": "",
+  "correo": {
+    "para": ["accesibilidad@ejemplo.gov.co"],
+    "de": "monitor@ejemplo.gov.co",
+    "smtp": { "host": "smtp.ejemplo.gov.co", "puerto": 587, "seguro": false, "usuario": "monitor@ejemplo.gov.co", "clave": "" }
+  }
+}

@@ -1,16 +1,13 @@
 // Winclus Audit: escáner de accesibilidad de un sitio (axe-core WCAG 2.1/2.2 AA + comprobaciones de la
-// Resolución 1519 de 2020) que genera un informe legible y un borrador de declaración de accesibilidad.
-// Uso: node auditar.js https://sitio.gov.co [otra-url …] [--salida carpeta] [--entidad "Nombre de la entidad"]
+// Resolución 1519 de 2020) que genera un informe legible, un borrador de declaración de accesibilidad y un
+// informe de conformidad (ACR, plantilla VPAT 2.5) criterio a criterio. También se usa como módulo (monitor.js).
+// Uso: node auditar.js https://sitio.gov.co [otra-url …] [--salida carpeta] [--entidad "Nombre de la entidad"] [--producto "Nombre del sitio"]
 // Necesita: npm i (playwright, axe-core) y npx playwright install chromium.
 const chromium = require("playwright")[process.env.NAVEGADOR || "chromium"];   // NAVEGADOR=firefox|webkit para otros motores
 const path = require("path");
 const fs = require("fs");
 
 const AXE = fs.readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
-const args = process.argv.slice(2);
-const urls = [], opts = { salida: path.join(process.cwd(), "informe-accesibilidad"), entidad: "" };
-for (let i = 0; i < args.length; i++) { if (args[i] === "--salida") opts.salida = path.resolve(args[++i]); else if (args[i] === "--entidad") opts.entidad = args[++i]; else urls.push(args[i]); }
-if (!urls.length) { console.log("Uso: node auditar.js https://sitio [más urls] [--salida carpeta] [--entidad \"Nombre\"]"); process.exit(1); }
 
 // Criterios de cumplimiento del Anexo 1 de la Res. 1519 de 2020, con SU numeración (CC1 a CC32),
 // y las reglas automáticas que dan señal de cada uno. Lo que ninguna regla puede juzgar se lista
@@ -78,12 +75,14 @@ async function auditarUrl(nav, url) {
     const page = await ctx.newPage();
     const r = { vista: nombre, ok: false, error: "", violaciones: [], revisados: 0, titulo: "", lang: "" };
     try {
-      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
+      const resp = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
+      if (resp && resp.status() >= 400) throw new Error("HTTP " + resp.status());   // una página caída no se analiza como si existiera
       await page.waitForTimeout(1500);
       await page.addScriptTag({ content: AXE });
       const a = await page.evaluate(async () => {
         const out = await axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"] } });
-        return { titulo: document.title, lang: document.documentElement.lang, revisados: out.passes.reduce((s, p) => s + p.nodes.length, 0), violaciones: out.violations.map((v) => ({ id: v.id, impact: v.impact, help: v.help, helpUrl: v.helpUrl, nodos: v.nodes.map((n) => ({ sel: n.target.join(" "), html: n.html.slice(0, 200), msg: (n.any.concat(n.all, n.none)[0] || {}).message || "" })) })) };
+        const etiquetasOk = Array.from(new Set(out.passes.flatMap((p) => p.tags.filter((t) => /^wcag\d{3,4}$/.test(t)))));
+        return { titulo: document.title, lang: document.documentElement.lang, revisados: out.passes.reduce((s, p) => s + p.nodes.length, 0), etiquetasOk, winclus: !!(window.Winclus || document.querySelector('script[src*="winclus"]')), violaciones: out.violations.map((v) => ({ id: v.id, impact: v.impact, help: v.help, helpUrl: v.helpUrl, tags: v.tags.filter((t) => /^wcag\d{3,4}$/.test(t)), nodos: v.nodes.map((n) => ({ sel: n.target.join(" "), html: n.html.slice(0, 200), msg: (n.any.concat(n.all, n.none)[0] || {}).message || "" })) })) };
       });
       Object.assign(r, a, { ok: true });
       if (nombre.startsWith("escritorio")) {
@@ -276,15 +275,142 @@ function declaracionHtml(resultados, entidad) {
 </body></html>`;
 }
 
-(async () => {
-  fs.mkdirSync(opts.salida, { recursive: true });
+
+// ------------------------------------------------------------------ ACR (VPAT) --
+// Informe de conformidad de accesibilidad con la plantilla del sector (ITI VPAT 2.5, edición internacional: WCAG,
+// EN 301 549 y Sección 508), en español, criterio a criterio. Lo que axe pasó sin fallos queda «Cumple (automático)»,
+// lo que falló «No cumple» con los elementos, y lo que ninguna regla automática puede juzgar «Pendiente de revisión
+// manual», con lo que hay que comprobar. Nunca se marca «Cumple» a secas: lo automático no basta y el informe lo dice.
+const WCAG = [
+  // [número, nombre, nivel, versión en que apareció, qué comprobar a mano si no hay señal automática]
+  ["1.1.1", "Contenido no textual", "A", "2.0", "cada alt describe la función o el contenido de la imagen; CAPTCHA con alternativa"],
+  ["1.2.1", "Solo audio y solo vídeo (grabado)", "A", "2.0", "transcripción de lo que es solo audio o solo vídeo"],
+  ["1.2.2", "Subtítulos (grabado)", "A", "2.0", "subtítulos fieles y sincronizados en todos los vídeos"],
+  ["1.2.3", "Audiodescripción o alternativa (grabado)", "A", "2.0", "audiodescripción o transcripción de lo que se ve en los vídeos"],
+  ["1.3.1", "Información y relaciones", "A", "2.0", "encabezados, listas, tablas y campos marcados en el código, no solo con aspecto"],
+  ["1.3.2", "Secuencia significativa", "A", "2.0", "el orden de lectura con lector de pantalla tiene sentido"],
+  ["1.3.3", "Características sensoriales", "A", "2.0", "las instrucciones no dependen solo de forma, tamaño, posición o sonido"],
+  ["1.4.1", "Uso del color", "A", "2.0", "nada se indica solo con color (errores, enlaces, estados)"],
+  ["1.4.2", "Control del audio", "A", "2.0", "todo audio que arranca solo se puede parar o bajar"],
+  ["2.1.1", "Teclado", "A", "2.0", "todo se puede hacer solo con teclado (menús, carruseles, mapas, calendarios)"],
+  ["2.1.2", "Sin trampas para el foco", "A", "2.0", "de todo componente se puede salir con teclado"],
+  ["2.1.4", "Atajos de teclado de un carácter", "A", "2.1", "los atajos de una tecla se pueden apagar o cambiar"],
+  ["2.2.1", "Tiempo ajustable", "A", "2.0", "los límites de tiempo se avisan y se pueden ampliar sin perder lo escrito"],
+  ["2.2.2", "Poner en pausa, detener, ocultar", "A", "2.0", "lo que se mueve o parpadea se puede parar"],
+  ["2.3.1", "Umbral de tres destellos o menos", "A", "2.0", "nada destella más de tres veces por segundo"],
+  ["2.4.1", "Evitar bloques", "A", "2.0", "enlace «Ir al contenido» y zonas marcadas"],
+  ["2.4.2", "Titulado de páginas", "A", "2.0", "cada página tiene un título propio y descriptivo"],
+  ["2.4.3", "Orden del foco", "A", "2.0", "el orden del Tab sigue el orden visual y lógico"],
+  ["2.4.4", "Propósito de los enlaces (en contexto)", "A", "2.0", "cada enlace se entiende con su contexto"],
+  ["2.5.1", "Gestos con el puntero", "A", "2.1", "lo que se hace con gestos de varios dedos o trazos se puede hacer con un toque"],
+  ["2.5.2", "Cancelación del puntero", "A", "2.1", "las acciones se completan al soltar, no al pulsar"],
+  ["2.5.3", "Etiqueta en el nombre", "A", "2.1", "el nombre accesible contiene el texto visible"],
+  ["2.5.4", "Actuación por movimiento", "A", "2.1", "nada depende de mover o agitar el dispositivo"],
+  ["3.1.1", "Idioma de la página", "A", "2.0", "el atributo lang es el idioma real de la página"],
+  ["3.2.1", "Al recibir el foco", "A", "2.0", "nada cambia de contexto al recibir el foco"],
+  ["3.2.2", "Al recibir entradas", "A", "2.0", "nada cambia de página al elegir una opción sin avisar"],
+  ["3.2.6", "Ayuda consistente", "A", "2.2", "la ayuda o el contacto está en el mismo sitio en todas las páginas"],
+  ["3.3.1", "Identificación de errores", "A", "2.0", "los errores se describen en texto y se anuncian"],
+  ["3.3.2", "Etiquetas o instrucciones", "A", "2.0", "cada campo tiene etiqueta y las instrucciones van antes"],
+  ["3.3.7", "Entrada redundante", "A", "2.2", "no se pide dos veces el mismo dato en un trámite"],
+  ["4.1.2", "Nombre, función, valor", "A", "2.0", "los componentes a medida anuncian nombre, rol y estado"],
+  ["1.2.4", "Subtítulos (en directo)", "AA", "2.0", "las transmisiones en directo llevan subtítulos"],
+  ["1.2.5", "Audiodescripción (grabado)", "AA", "2.0", "audiodescripción en los vídeos que la necesitan"],
+  ["1.3.4", "Orientación", "AA", "2.1", "funciona en vertical y en horizontal"],
+  ["1.3.5", "Identificar el propósito de la entrada", "AA", "2.1", "autocomplete en los campos de datos personales"],
+  ["1.4.3", "Contraste (mínimo)", "AA", "2.0", "texto 4,5:1 (3:1 el grande), también sobre imágenes y en estados"],
+  ["1.4.4", "Cambio de tamaño del texto", "AA", "2.0", "al 200 % nada se corta ni se solapa"],
+  ["1.4.5", "Imágenes de texto", "AA", "2.0", "el texto es texto, no imagen (salvo logotipos)"],
+  ["1.4.10", "Reajuste", "AA", "2.1", "a 320 px de ancho no hay desplazamiento horizontal"],
+  ["1.4.11", "Contraste no textual", "AA", "2.1", "bordes de campos, iconos y foco con 3:1"],
+  ["1.4.12", "Espaciado del texto", "AA", "2.1", "con más interlineado y espaciado nada se corta"],
+  ["1.4.13", "Contenido al pasar el puntero o al foco", "AA", "2.1", "lo que aparece al pasar el ratón se puede cerrar y no tapa"],
+  ["2.4.5", "Múltiples vías", "AA", "2.0", "buscador, mapa del sitio o menú para llegar a cada página"],
+  ["2.4.6", "Encabezados y etiquetas", "AA", "2.0", "títulos y etiquetas que describen el contenido"],
+  ["2.4.7", "Foco visible", "AA", "2.0", "el foco del teclado se ve en todo control"],
+  ["2.4.11", "Foco no oscurecido (mínimo)", "AA", "2.2", "ninguna barra fija tapa el control enfocado"],
+  ["2.5.7", "Movimientos de arrastre", "AA", "2.2", "lo que se arrastra se puede hacer con clics"],
+  ["2.5.8", "Tamaño del objetivo (mínimo)", "AA", "2.2", "botones y enlaces de al menos 24 × 24 px o con espacio alrededor"],
+  ["3.1.2", "Idioma de las partes", "AA", "2.0", "los fragmentos en otro idioma llevan su lang"],
+  ["3.2.3", "Navegación consistente", "AA", "2.0", "menús en el mismo orden en todas las páginas"],
+  ["3.2.4", "Identificación consistente", "AA", "2.0", "lo que hace lo mismo se llama igual en todo el sitio"],
+  ["3.3.3", "Sugerencias ante errores", "AA", "2.0", "el error dice cómo corregirlo"],
+  ["3.3.4", "Prevención de errores (legales, financieros, datos)", "AA", "2.0", "se puede revisar, corregir o deshacer antes de enviar"],
+  ["3.3.8", "Autenticación accesible (mínimo)", "AA", "2.2", "iniciar sesión no exige memorizar ni resolver acertijos; se puede pegar"],
+  ["4.1.3", "Mensajes de estado", "AA", "2.1", "los avisos que cambian solos se anuncian al lector sin mover el foco"]
+];
+// Las comprobaciones propias de la Res. 1519 también dicen a qué criterio WCAG dan señal
+const EXTRA_A_WCAG = { "zoom-200": ["1.4.4", "1.4.10"], "skip-link": ["2.4.1"], "video-caption": ["1.2.2"], captcha: ["1.1.1"], "captcha-imagen": ["1.1.1", "1.4.5"], "tiempo-sesion": ["2.2.1"], "enlace-vago": ["2.4.4"],
+  "cambio-al-foco": ["3.2.1", "3.2.2"], transcripcion: ["1.2.1"], "multiples-vias": ["2.4.5"], "lista-de-uno": ["1.3.1"], "charset-utf8": [], "identificacion-coherente": ["3.2.4"], "navegacion-coherente": ["3.2.3"], declaracion: [] };
+const etiquetaDe = (num) => "wcag" + num.replace(/\./g, "");
+function estadoCriterios(resultados) {
+  const fallan = {}, pasan = new Set();
+  resultados.forEach((r) => {
+    r.paginas.forEach((p) => {
+      (p.etiquetasOk || []).forEach((t) => pasan.add(t));
+      p.violaciones.forEach((v) => (v.tags || []).forEach((t) => { if (/^wcag\d{3,4}$/.test(t)) (fallan[t] = fallan[t] || []).push({ url: r.url, vista: p.vista, help: v.help, n: v.nodos.length }); }));
+    });
+    r.extra.forEach((x) => (EXTRA_A_WCAG[x.id] || []).forEach((num) => (fallan[etiquetaDe(num)] = fallan[etiquetaDe(num)] || []).push({ url: r.url, vista: "", help: x.help, n: 1 })));
+  });
+  return WCAG.map(([num, nombre, nivel, version, manual]) => {
+    const t = etiquetaDe(num), f = fallan[t];
+    if (f) { const n = f.reduce((s, x) => s + x.n, 0); return { num, nombre, nivel, version, estado: "No cumple", clase: "mal", nota: n + " elemento(s): " + [...new Set(f.map((x) => x.help))].slice(0, 3).join("; ") + ". Comprobar también a mano: " + manual + "." }; }
+    if (pasan.has(t)) return { num, nombre, nivel, version, estado: "Cumple (evaluación automática)", clase: "ok", nota: "Las reglas automáticas no encontraron fallos. Falta confirmar a mano: " + manual + "." };
+    return { num, nombre, nivel, version, estado: "Pendiente de revisión manual", clase: "manual", nota: "Ninguna regla automática lo juzga. Comprobar: " + manual + "." };
+  });
+}
+function acrHtml(resultados, entidad, opciones) {
+  const fecha = new Date().toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" });
+  const filas = estadoCriterios(resultados), producto = (opciones && opciones.producto) || ("Sitio web " + resultados[0].url);
+  const tabla = (nivel) => `<table><thead><tr><th>Criterio</th><th>Nivel de conformidad</th><th>Observaciones y explicaciones</th></tr></thead><tbody>` +
+    filas.filter((f) => f.nivel === nivel).map((f) => `<tr><td><strong>${f.num}</strong> ${esc(f.nombre)}<br><span class="nota">WCAG ${f.version} · EN 301 549 9.${f.num} · Sección 508</span></td><td class="${f.clase}">${esc(f.estado)}</td><td>${esc(f.nota)}</td></tr>`).join("") + "</tbody></table>";
+  const cuenta = (c) => filas.filter((f) => f.clase === c).length;
+  return `<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Informe de conformidad de accesibilidad (ACR)</title>
+<style>body{font:16px/1.55 "Segoe UI",system-ui,sans-serif;color:#101F3D;margin:0;padding:24px;max-width:1100px;margin-inline:auto}h1{font-size:1.8rem}h2{margin-top:2em;border-top:1px solid #DCE3EC;padding-top:.5em}table{border-collapse:collapse;width:100%;font-size:.93rem;margin:12px 0}th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid #DCE3EC}th{background:#F3F6FA}.ok{color:#0F7A70;font-weight:700}.mal{color:#A6402F;font-weight:700}.manual{color:#9A6A12;font-weight:700}.nota{color:#4A5670;font-size:.86rem}.resumen{background:#F3F6FA;border-left:4px solid #0F7A70;padding:12px 16px;border-radius:0 10px 10px 0}.aviso{background:#FFF6DB;border:1px solid #C99A1E;border-radius:10px;padding:10px 14px}</style></head><body>
+<h1>Informe de conformidad de accesibilidad (ACR)</h1>
+<p class="nota">Plantilla ITI VPAT® 2.5, edición internacional (WCAG 2.1 y 2.2, EN 301 549, Sección 508), en español. Generado por Winclus Audit el ${fecha}.</p>
+<table><tbody><tr><th>Nombre del producto</th><td>${esc(producto)}</td></tr><tr><th>Entidad o empresa</th><td>${esc(entidad || "[Nombre de la entidad]")}</td></tr><tr><th>Fecha del informe</th><td>${fecha}</td></tr><tr><th>Descripción del producto</th><td>[Qué es y para qué sirve el sitio o la aplicación.]</td></tr><tr><th>Contacto</th><td>[correo y teléfono para preguntas sobre este informe]</td></tr>
+<tr><th>Métodos de evaluación</th><td>Evaluación automática con axe-core (WCAG 2.1 y 2.2, niveles A y AA) en escritorio (1280 px) y móvil (390 px) sobre ${resultados.length} página(s), y comprobaciones propias de la Resolución 1519 de 2020 (Colombia). [Añadir: revisión manual con teclado, lector de pantalla (NVDA/JAWS/VoiceOver), zoom 200 % y pruebas con personas con discapacidad, con fecha y responsable.]</td></tr>
+<tr><th>Normas aplicables</th><td>WCAG 2.1 y 2.2 (niveles A y AA) · EN 301 549 v3.2.1 (cláusulas 9 y 10) · Sección 508 revisada (EE. UU.) · Resolución 1519 de 2020, Anexo 1 (Colombia)</td></tr></tbody></table>
+<div class="aviso"><p><strong>Lo que este informe puede afirmar y lo que no.</strong> «Cumple (evaluación automática)» significa que ninguna regla automática encontró fallos, no que el criterio esté verificado: entre el 30 y el 50 % de las barreras solo se ven a mano. Los criterios marcados «Pendiente de revisión manual» no tienen ninguna regla automática. Antes de publicarlo como ACR definitivo, una persona con formación en accesibilidad debe completar cada fila y cambiar los estados a «Cumple», «Cumple parcialmente», «No cumple» o «No aplica» con su justificación.</p></div>
+<div class="resumen"><p><strong>Resumen automático:</strong> ${cuenta("mal")} criterio(s) con fallos detectados · ${cuenta("ok")} sin fallos automáticos · ${cuenta("manual")} pendientes de revisión manual, de ${filas.length} criterios de nivel A y AA.</p></div>
+<h2>Términos</h2><table><tbody><tr><td><strong>Cumple</strong></td><td>La funcionalidad del producto cumple el criterio sin defectos conocidos.</td></tr><tr><td><strong>Cumple parcialmente</strong></td><td>Parte de la funcionalidad no cumple el criterio.</td></tr><tr><td><strong>No cumple</strong></td><td>La mayor parte de la funcionalidad no cumple el criterio.</td></tr><tr><td><strong>No aplica</strong></td><td>El criterio no es pertinente para el producto.</td></tr><tr><td><strong>Pendiente de revisión manual</strong></td><td>No se ha evaluado todavía con métodos manuales.</td></tr></tbody></table>
+<h2>Tabla 1: criterios de nivel A</h2>${tabla("A")}
+<h2>Tabla 2: criterios de nivel AA</h2>${tabla("AA")}
+<h2>Tabla 3: EN 301 549 y Sección 508</h2><p>Para páginas web, las cláusulas 9.x de la EN 301 549 y la Sección 508 revisada remiten a los mismos criterios de las WCAG 2.x de las tablas 1 y 2 (la EN 301 549 v3.2.1 cita las WCAG 2.1). Los requisitos de la EN 301 549 que no son WCAG (capítulos 5 a 8 y 11 a 13: documentación, soporte, software no web, autoría) se evalúan aparte cuando aplican.</p>
+<h2>Resolución 1519 de 2020 (Colombia)</h2><p>El informe de accesibilidad (<code>informe.html</code>) generado en la misma ejecución agrupa los hallazgos por los 32 criterios de conformidad del Anexo 1 y por la declaración de accesibilidad exigida; úsalo como anexo de este ACR ante el sujeto obligado o el ente de control.</p>
+<p class="nota">Winclus Audit no certifica: este documento es una autoevaluación asistida que la entidad completa y firma. VPAT® es una marca registrada de ITI.</p>
+</body></html>`;
+}
+function acrMd(resultados, entidad, opciones) {
+  const fecha = new Date().toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" });
+  const filas = estadoCriterios(resultados), producto = (opciones && opciones.producto) || ("Sitio web " + resultados[0].url);
+  const tabla = (nivel) => "| Criterio | Nivel de conformidad | Observaciones |\n|---|---|---|\n" + filas.filter((f) => f.nivel === nivel).map((f) => `| **${f.num}** ${f.nombre} (WCAG ${f.version}) | ${f.estado} | ${f.nota.replace(/\|/g, "/")} |`).join("\n");
+  return `# Informe de conformidad de accesibilidad (ACR)\n\nPlantilla ITI VPAT 2.5, edición internacional, en español. Generado por Winclus Audit el ${fecha}.\n\n- **Producto:** ${producto}\n- **Entidad:** ${entidad || "[Nombre de la entidad]"}\n- **Fecha:** ${fecha}\n- **Métodos:** evaluación automática (axe-core, WCAG 2.1 y 2.2 A/AA, escritorio y móvil, ${resultados.length} página(s)) y comprobaciones de la Resolución 1519 de 2020. [Añadir la revisión manual y las pruebas con personas.]\n- **Normas:** WCAG 2.1 y 2.2 (A y AA), EN 301 549 v3.2.1, Sección 508, Resolución 1519 de 2020.\n\n> «Cumple (evaluación automática)» solo dice que ninguna regla automática encontró fallos. Una persona debe completar cada fila antes de publicar el ACR.\n\n## Tabla 1: nivel A\n\n${tabla("A")}\n\n## Tabla 2: nivel AA\n\n${tabla("AA")}\n\n## EN 301 549 y Sección 508\n\nPara web, remiten a los mismos criterios WCAG de las tablas 1 y 2.\n`;
+}
+
+function contar(r) { return r.paginas.reduce((s, p) => s + p.violaciones.reduce((t, v) => t + v.nodos.length, 0), 0) + r.extra.length; }
+function escribirInformes(resultados, salida, entidad, opciones) {
+  fs.mkdirSync(salida, { recursive: true });
+  fs.writeFileSync(path.join(salida, "informe.html"), informeHtml(resultados));
+  fs.writeFileSync(path.join(salida, "declaracion.html"), declaracionHtml(resultados, entidad));
+  fs.writeFileSync(path.join(salida, "acr.html"), acrHtml(resultados, entidad, opciones));
+  fs.writeFileSync(path.join(salida, "acr.md"), acrMd(resultados, entidad, opciones));
+  fs.writeFileSync(path.join(salida, "resultados.json"), JSON.stringify(resultados, null, 2));
+}
+module.exports = { auditarUrl, informeHtml, declaracionHtml, acrHtml, acrMd, estadoCriterios, escribirInformes, contar, criterioDe, CRITERIOS_1519, WCAG, chromium };
+
+if (require.main === module) (async () => {
+  const args = process.argv.slice(2);
+  const urls = [], opts = { salida: path.join(process.cwd(), "informe-accesibilidad"), entidad: "", producto: "" };
+  for (let i = 0; i < args.length; i++) { if (args[i] === "--salida") opts.salida = path.resolve(args[++i]); else if (args[i] === "--entidad") opts.entidad = args[++i]; else if (args[i] === "--producto") opts.producto = args[++i]; else urls.push(args[i]); }
+  if (!urls.length) { console.log("Uso: node auditar.js https://sitio [más urls] [--salida carpeta] [--entidad \"Nombre\"] [--producto \"Nombre del sitio\"]"); process.exit(1); }
   const nav = await chromium.launch();
   const resultados = [];
-  for (const u of urls) { process.stdout.write("Analizando " + u + " … "); const r = await auditarUrl(nav, u); resultados.push(r); const n = r.paginas.reduce((s, p) => s + p.violaciones.reduce((t, v) => t + v.nodos.length, 0), 0) + r.extra.length; console.log(n + " problema(s)"); }
+  for (const u of urls) { process.stdout.write("Analizando " + u + " … "); const r = await auditarUrl(nav, u); resultados.push(r); console.log(contar(r) + " problema(s)"); }
   await nav.close();
-  fs.writeFileSync(path.join(opts.salida, "informe.html"), informeHtml(resultados));
-  fs.writeFileSync(path.join(opts.salida, "declaracion.html"), declaracionHtml(resultados, opts.entidad));
-  fs.writeFileSync(path.join(opts.salida, "resultados.json"), JSON.stringify(resultados, null, 2));
+  escribirInformes(resultados, opts.salida, opts.entidad, { producto: opts.producto });
   console.log("Informe: " + path.join(opts.salida, "informe.html"));
   console.log("Borrador de declaración: " + path.join(opts.salida, "declaracion.html"));
+  console.log("Informe de conformidad (ACR/VPAT): " + path.join(opts.salida, "acr.html") + " y acr.md");
 })();
