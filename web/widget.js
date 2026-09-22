@@ -7,13 +7,14 @@
  * trae cuando la página ya se pintó, o antes si esta persona ya usa Winclus (tiene ajustes guardados, dejó la
  * cámara encendida o llega con su perfil en el enlace). Los atributos data-* del <script> pasan tal cual al widget.
  * Si la página está en un idioma distinto de español o inglés, trae antes el diccionario del panel (idiomas/xx.json:
- * portugués, francés, italiano y alemán de fábrica; un sitio puede poner el suyo junto a este archivo).
+ * portugués, francés, italiano, alemán, catalán, neerlandés, polaco, rumano, turco, ruso, chino, japonés, coreano,
+ * árabe, hindi e indonesio de fábrica; un sitio puede poner el suyo junto a este archivo).
  * Para leer el código completo: https://winclus.com/winclus-widget.js
  */
 (function () {
   "use strict";
   if (window.Winclus || window.WinclusCargador) return;
-  var VERSION = "0.8.0";
+  var VERSION = "0.8.1";
   var script = document.currentScript || (function () { var s = document.querySelectorAll('script[src*="widget.js"]'); return s[s.length - 1] || null; })();
   var ORIGEN = (script && script.src) ? script.src.replace(/\/[^\/]*$/, "") : "https://winclus.com";
   var ARCHIVO = (script && script.dataset && script.dataset.completo) || "winclus-widget.min.js";   // data-completo="winclus-widget.js" para depurar con el código legible

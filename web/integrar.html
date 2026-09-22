@@ -24,7 +24,7 @@
 <main id="contenido">
 <nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><span aria-current="page">Integrar Winclus</span></nav>
   <h1>Integrar Winclus en tu sitio</h1>
-  <p class="meta">Guía técnica para el widget 0.8.0. Winclus es tecnología de apoyo que se añade a un sitio: no lo hace conforme con la norma por sí solo. Para saber cómo está tu sitio, usa <a href="#audit">Winclus Audit</a>.</p>
+  <p class="meta">Guía técnica para el widget 0.8.1. Winclus es tecnología de apoyo que se añade a un sitio: no lo hace conforme con la norma por sí solo. Para saber cómo está tu sitio, usa <a href="#audit">Winclus Audit</a>.</p>
   <div class="facil"><h2>En pocas palabras</h2><ul><li>Winclus se pone en tu sitio con una sola línea de código, al final de cada página.</li><li>Usa <code>widget.js</code>: cada mejora que publicamos llega sola a tu sitio, sin tocar nada. Pesa 3 KB y trae el resto cuando la página ya se pintó.</li><li>Winclus arregla al vuelo lo que le falta a la página para los lectores de pantalla (alt, nombres, etiquetas, «Saltar al contenido», foco) y te da la lista para que lo pases al código.</li><li>Puedes decirle el idioma y en qué lado sale el botón.</li><li>Si tu sitio tiene reglas de seguridad estrictas, Winclus las respeta.</li><li>Winclus ayuda a las personas a usar tu sitio; no arregla tu sitio por ti.</li></ul></div>
 
   <h2>1. Una línea</h2>
@@ -34,10 +34,10 @@
   <p><strong>No frena la página.</strong> <code>widget.js</code> es un cargador de unos 3 KB: el widget completo (<code>winclus-widget.min.js</code>, minificado) se pide cuando la página ya se pintó, o enseguida si la persona ya usa Winclus (tiene ajustes guardados, dejó la cámara encendida o llega con su perfil en el enlace). Alt+Mayús+W lo trae al momento. El código legible está en <a href="winclus-widget.js"><code>winclus-widget.js</code></a>, para auditarlo.</p>
   <h3>Versión fija con integridad (solo si tu política de seguridad la exige)</h3>
   <p>Si tu entidad exige integridad de subrecursos (SRI) para los scripts de terceros, usa la copia fija de una versión con su hash:</p>
-  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.8.0.js" async
-        integrity="sha384-agbdf84tq/QjFTn0MV2UAKTXh8ISlaWIoMuTUctnPnFTR20Akt1tsvSGAXUcoxSH"
+  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.8.1.js" async
+        integrity="sha384-kWdeL4IswYVjeg1K7ttvXuq1zkPXoIJvMsimmXpIYgi0x/j5fncj8Giw9qFkmjbh"
         crossorigin="anonymous"&gt;&lt;/script&gt;</code></pre>
-  <p>El atributo <code>integrity</code> es el hash SHA-384 del archivo: el navegador comprueba que lo que llega es exactamente la versión 0.8.0 y, si no coincide, no lo ejecuta. A cambio, <strong>esta versión no se actualiza nunca</strong>: para recibir las mejoras tienes que cambiar tú el número y el hash por los de la última versión publicada aquí. <code>widget.js</code> no lleva hash porque cambia.</p>
+  <p>El atributo <code>integrity</code> es el hash SHA-384 del archivo: el navegador comprueba que lo que llega es exactamente la versión 0.8.1 y, si no coincide, no lo ejecuta. A cambio, <strong>esta versión no se actualiza nunca</strong>: para recibir las mejoras tienes que cambiar tú el número y el hash por los de la última versión publicada aquí. <code>widget.js</code> no lleva hash porque cambia.</p>
   <p>Atributos opcionales en el mismo <code>&lt;script&gt;</code>:</p>
   <div class="tabla" tabindex="0" role="region" aria-label="Atributos del script"><table>
     <thead><tr><th>Atributo</th><th>Valores</th><th>Qué hace</th></tr></thead>
@@ -118,7 +118,7 @@ media-src  blob:;                                  /* la cámara, si se permite 
   <p>Un escáner detecta entre el 30 y el 50 % de las barreras; el resto sale de la revisión manual y de probar con personas con discapacidad. El informe lo dice.</p>
 
   <h2>8. Idiomas del panel</h2>
-  <p>El panel habla el idioma de la página (atributo <code>lang</code>, o <code>data-ui</code>). De fábrica: <strong>español, inglés, portugués, francés, italiano y alemán</strong>. Español e inglés van dentro del widget; los demás son archivos <code>idiomas/pt.json</code>, <code>fr.json</code>, <code>it.json</code> y <code>de.json</code> que el cargador trae solo cuando hacen falta (con la versión fija hay que servirlos junto al script o cargarlos como abajo). Para otro idioma, copia uno de esos archivos, tradúcelo y sírvelo como <code>idiomas/xx.json</code> junto a tu copia del widget, o define antes de cargar el widget un objeto con las cadenas en español como clave:</p>
+  <p>El panel habla el idioma de la página (atributo <code>lang</code>, o <code>data-ui</code>). De fábrica, <strong>18 idiomas</strong>: español, inglés, portugués, francés, italiano, alemán, catalán, neerlandés, polaco, rumano, turco, ruso, chino, japonés, coreano, árabe, hindi e indonesio. Español e inglés van dentro del widget; los demás son archivos <code>idiomas/pt.json</code>, <code>fr.json</code>, <code>ar.json</code>… (el código de dos letras del idioma) que el cargador trae solo cuando hacen falta. En árabe el panel entero se voltea de derecha a izquierda (con la versión fija hay que servirlos junto al script o cargarlos como abajo). Para otro idioma, copia uno de esos archivos, tradúcelo y sírvelo como <code>idiomas/xx.json</code> junto a tu copia del widget, o define antes de cargar el widget un objeto con las cadenas en español como clave:</p>
   <pre tabindex="0"><code>&lt;script nonce="XYZ"&gt;
   window.WinclusIdiomas = { pt: { "Ver mejor": "Ver melhor", "Tamaño del texto": "Tamanho do texto", /* … */ } };
 &lt;/script&gt;

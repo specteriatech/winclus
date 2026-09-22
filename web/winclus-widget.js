@@ -63,7 +63,7 @@
     { base: ORIGEN + "/mediapipe", modelo: ORIGEN + "/mediapipe/face_landmarker.task" },
     { base: "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35", modelo: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task" }
   ];
-  var VERSION = "0.8.0";
+  var VERSION = "0.8.1";
   var CAM_W = 640, CAM_H = 480;
   var raiz = document.documentElement;
   var LADO = opciones.posicion === "izquierda" ? "left" : "right";
@@ -479,7 +479,7 @@
     // Ajustes finos plegados: un solo botón que dice cuándo abrirlos
     + '.wcl-fino{margin:6px 0 2px;border:1px solid #D5DBE7;border-radius:12px;padding:0 12px}.wcl-fino summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:700;font-size:14px;color:#2743B4;list-style:none}.wcl-fino summary::-webkit-details-marker{display:none}.wcl-fino summary::before{content:"▸";margin-right:8px;font-size:16px}.wcl-fino[open] summary::before{content:"▾"}.wcl-fino summary:focus-visible{outline:3px solid #2743B4;outline-offset:-3px}.wcl-fino>.wcl-ayuda{margin:-4px 0 6px}.wcl-fino[open]{padding-bottom:6px}'
     // Inicio: botones por situación («Veo poco», «No oigo bien»…) y lista de lo que está activado
-    + '.wcl-situ{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 10px}.wcl-situ button{min-height:64px;padding:8px 10px;border-radius:12px;border:2px solid #D5DBE7;background:#fff;color:#101F3D;font:700 14px/1.2 "Segoe UI",system-ui,sans-serif;cursor:pointer;text-align:left;display:flex;flex-direction:column;justify-content:center;gap:3px}.wcl-situ button:hover{border-color:#2743B4;background:#F3F5F9}.wcl-situ button small{display:block;font-weight:400;font-size:12px;color:#3F4B66}.wcl-situ button .ico{font-size:20px;line-height:1}'
+    + '.wcl-situ{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 10px}.wcl-situ button{min-height:64px;padding:8px 10px;border-radius:12px;border:2px solid #D5DBE7;background:#fff;color:#101F3D;font:700 14px/1.2 "Segoe UI",system-ui,sans-serif;cursor:pointer;text-align:start;display:flex;flex-direction:column;justify-content:center;gap:3px}.wcl-situ button:hover{border-color:#2743B4;background:#F3F5F9}.wcl-situ button small{display:block;font-weight:400;font-size:12px;color:#3F4B66}.wcl-situ button .ico{font-size:20px;line-height:1}'
     + '.wcl-situ button .ico img{width:40px;height:40px;display:block;border-radius:8px}'
     // Puesta: borde y fondo verdes y ✓ arriba a la derecha (la forma, no solo el color: el ✓ lo ve quien no distingue el verde)
     + '.wcl-situ button{position:relative}.wcl-situ button[aria-pressed="true"]{border-color:#1B6B3E;background:#E5F4EA}.wcl-situ button[aria-pressed="true"]::after{content:"✓";position:absolute;top:4px;right:8px;font-size:20px;font-weight:700;color:#1B6B3E}'
@@ -547,7 +547,7 @@
     + '.wcl-elegir .wcl-est-tabs{display:flex;gap:6px;margin:0 0 10px}.wcl-elegir .wcl-est-tabs button{flex:1;margin:0}.wcl-elegir .wcl-est-tabs button[aria-pressed=true]{background:#2743B4;color:#fff}.wcl-elegir button.n2{padding-left:28px}.wcl-elegir button.n3{padding-left:44px}.wcl-elegir button.n4,.wcl-elegir button.n5,.wcl-elegir button.n6{padding-left:60px}'
     + '.wcl-elegir{position:fixed;z-index:2147483018;inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);display:none;width:min(94vw,560px);max-height:86vh;overflow:auto;box-sizing:border-box;background:#fff;color:#101F3D;border:4px solid #2743B4;border-radius:16px;padding:14px;box-shadow:0 12px 40px rgba(0,0,0,.35);font:16px/1.4 "Segoe UI",system-ui,sans-serif}'
     + '.wcl-elegir h2{margin:2px 0 10px;font:700 20px/1.3 "Segoe UI",system-ui,sans-serif;color:#101F3D}'
-    + '.wcl-elegir button{display:block;width:100%;min-height:64px;margin:0 0 10px;padding:10px 14px;border-radius:12px;border:2px solid #C9D2E3;background:#F4F7FC;color:#101F3D;font:600 19px/1.25 "Segoe UI",system-ui,sans-serif;text-align:left;cursor:pointer}'
+    + '.wcl-elegir button{display:block;width:100%;min-height:64px;margin:0 0 10px;padding:10px 14px;border-radius:12px;border:2px solid #C9D2E3;background:#F4F7FC;color:#101F3D;font:600 19px/1.25 "Segoe UI",system-ui,sans-serif;text-align:start;cursor:pointer}'
     + '.wcl-elegir button:hover,.wcl-elegir button:focus{background:#2743B4;color:#fff;border-color:#2743B4;outline:none}'
     + '.wcl-elegir button .q{display:block;font-size:14px;font-weight:400;opacity:.75;margin-top:2px}'
     + '.wcl-elegir button.marcada{border-color:#0A5C54;background:#DFF3EE}'
@@ -558,7 +558,7 @@
     + '.wcl-consent{margin:8px 0;padding:12px;border-radius:12px;background:#FFF6DB;border:1px solid #C99A1E;font-size:14px;line-height:1.45}.wcl-consent p{margin:0 0 8px}'
     // Aviso visual de sonido (arriba, centrado) y subtítulos en vivo (abajo): grandes y con fondo, legibles de lejos
     + '.wcl-sonido{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:2147483020;display:none;max-width:min(92vw,640px);padding:12px 20px;border-radius:14px;background:#101F3D;color:#fff;border:4px solid #F2B705;font:700 18px "Segoe UI",system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.35)}'
-    + '.wcl-sonido.error{border-color:#E57373;font-weight:600;font-size:17px;text-align:left}'
+    + '.wcl-sonido.error{border-color:#E57373;font-weight:600;font-size:17px;text-align:start}'
     // Tablero de pictogramas: a pantalla completa, botones grandes, tira de frase arriba
     + '.wcl-pictos{position:fixed;inset:0;z-index:2147483013;display:none;flex-direction:column;background:#FBF8F1;color:#101F3D;font:16px "Segoe UI",system-ui,sans-serif}'
     + '.wcl-pictos .tira{display:flex;gap:10px;align-items:center;padding:10px 14px;background:#101F3D;color:#fff;min-height:88px;flex-wrap:wrap}.wcl-pictos .frase{flex:1;display:flex;gap:8px;align-items:center;overflow-x:auto;min-height:56px}.wcl-pictos .frase .vacia{color:#C8D0DC}.wcl-pictos .elegido{display:inline-flex;flex-direction:column;align-items:center;background:#fff;color:#101F3D;border-radius:10px;padding:4px 8px;font-size:13px}'
@@ -603,7 +603,8 @@
   function q(sel, base) { return (base || panel).querySelector(sel); }
   // Todo lo del widget cuelga de un contenedor fuera de <body>: así la lupa
   // puede agrandar el <body> sin que el panel, el puntero y el teclado se muevan.
-  var cont = el("div", { "class": "wcl-root", "lang": IDIOMA_UI });
+  var RTL = { ar: 1, he: 1, fa: 1, ur: 1 };   // idiomas que se escriben de derecha a izquierda: el panel entero se voltea
+  var cont = el("div", RTL[IDIOMA_UI] ? { "class": "wcl-root", "lang": IDIOMA_UI, "dir": "rtl" } : { "class": "wcl-root", "lang": IDIOMA_UI });
   // Las piezas viven en un shadow root: los estilos del sitio no entran y los del widget no salen.
   // Lo que se aplica a la página (html.wcl-oscuro, .wcl-lector, el <svg> de filtros) sigue en el documento.
   var sombra = cont.attachShadow ? cont.attachShadow({ mode: "open" }) : null, caja = sombra || cont;
@@ -4198,7 +4199,7 @@
     + 'html.wcl-titulos body h1,html.wcl-titulos body h2,html.wcl-titulos body h3,html.wcl-titulos body h4{background:#FFF3C4!important;color:#101F3D!important;border:3px solid #2743B4!important;border-left-width:12px!important;padding:.2em .5em!important;border-radius:6px!important}'
     + 'html.wcl-foco body :focus,html.wcl-foco body :focus-visible{outline:5px solid #2743B4!important;outline-offset:3px!important;box-shadow:0 0 0 9px #FFE45C!important}'
     + 'html.wcl-dicc body p,html.wcl-dicc body li,html.wcl-dicc body h1,html.wcl-dicc body h2,html.wcl-dicc body h3,html.wcl-dicc body td,html.wcl-dicc body dd,html.wcl-dicc body blockquote{cursor:help}'
-    + '.wcl-defin{position:fixed;z-index:2147483016;width:340px;max-width:calc(100vw - 24px);box-sizing:border-box;background:#fff;color:#1d1d1d;border:3px solid #2743B4;border-radius:12px;padding:12px 14px;box-shadow:0 8px 30px rgba(0,0,0,.25);font:16px/1.5 "Segoe UI",system-ui,sans-serif;text-align:left}'
+    + '.wcl-defin{position:fixed;z-index:2147483016;width:340px;max-width:calc(100vw - 24px);box-sizing:border-box;background:#fff;color:#1d1d1d;border:3px solid #2743B4;border-radius:12px;padding:12px 14px;box-shadow:0 8px 30px rgba(0,0,0,.25);font:16px/1.5 "Segoe UI",system-ui,sans-serif;text-align:start}'
     + '.wcl-defin b{display:block;font-size:20px;color:#101F3D}.wcl-defin img{float:right;width:96px;height:96px;margin:0 0 6px 10px;border-radius:8px;background:#fff}.wcl-defin p{margin:6px 0}.wcl-defin small{color:#3F4B66;display:block;clear:both;font-size:13px}'
     + '.wcl-defin .botones{display:flex;gap:6px;margin-top:8px;clear:both}.wcl-defin button{min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:0;background:#E8F7F3;color:#101F3D;font:700 15px "Segoe UI",system-ui,sans-serif;cursor:pointer}'
     // Familia 6: sílabas en la lectura limpia, dos colores AAA que se alternan (y un fondo tenue por si no se distinguen)
