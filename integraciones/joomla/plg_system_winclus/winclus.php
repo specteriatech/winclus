@@ -11,7 +11,7 @@ use Joomla\CMS\Plugin\CMSPlugin;
 class PlgSystemWinclus extends CMSPlugin
 {
     const VERSION_WIDGET = '0.7.0';
-    const SRI_WIDGET = 'sha384-X6BhT2D8uzD69hh0/hrNpePgzss68qUW8xPUT5Fj67x2JEocCSpFSasD43BnZUdn';
+    const SRI_WIDGET = 'sha384-9r1CnHZGydkr7EZQfpuH/E5mfqVrDbqTH58GdjRs09fM+mLhy75MdcbKh7rb8w2a';
 
     /** Solo en el sitio (no en la administración) y solo en páginas HTML. */
     public function onBeforeCompileHead()

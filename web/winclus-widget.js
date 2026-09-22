@@ -5434,7 +5434,7 @@
       var reglas; try { reglas = hojas[i].cssRules; } catch (x) { continue; }
       if (!reglas) continue;
       for (var j = 0; j < reglas.length && j < 6000; j++) {
-        var r = reglas[j]; if (!r.selectorText || !r.style || !/:focus/.test(r.selectorText)) continue;
+        var r = reglas[j]; if (!r.selectorText || !r.style || !/:focus/.test(r.selectorText) || /\.wcl-/.test(r.selectorText)) continue;   // las reglas del propio widget no cuentan
         var o = (r.style.outline || "").trim(), os = (r.style.outlineStyle || "").trim(), ow = (r.style.outlineWidth || "").trim();
         if (/^(none|0|0px|0 none|none 0)$/.test(o) || os === "none" || /^0(px)?$/.test(ow)) return r.selectorText.slice(0, 80);
       }

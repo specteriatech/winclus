@@ -10,7 +10,7 @@ if (!defined('_PS_VERSION_')) {
 class Winclus extends Module
 {
     const VERSION_WIDGET = '0.7.0';
-    const SRI_WIDGET = 'sha384-X6BhT2D8uzD69hh0/hrNpePgzss68qUW8xPUT5Fj67x2JEocCSpFSasD43BnZUdn';
+    const SRI_WIDGET = 'sha384-9r1CnHZGydkr7EZQfpuH/E5mfqVrDbqTH58GdjRs09fM+mLhy75MdcbKh7rb8w2a';
 
     public function __construct()
     {

@@ -35,7 +35,7 @@
   <h3>Versión fija con integridad (solo si tu política de seguridad la exige)</h3>
   <p>Si tu entidad exige integridad de subrecursos (SRI) para los scripts de terceros, usa la copia fija de una versión con su hash:</p>
   <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.7.0.js" async
-        integrity="sha384-X6BhT2D8uzD69hh0/hrNpePgzss68qUW8xPUT5Fj67x2JEocCSpFSasD43BnZUdn"
+        integrity="sha384-9r1CnHZGydkr7EZQfpuH/E5mfqVrDbqTH58GdjRs09fM+mLhy75MdcbKh7rb8w2a"
         crossorigin="anonymous"&gt;&lt;/script&gt;</code></pre>
   <p>El atributo <code>integrity</code> es el hash SHA-384 del archivo: el navegador comprueba que lo que llega es exactamente la versión 0.7.0 y, si no coincide, no lo ejecuta. A cambio, <strong>esta versión no se actualiza nunca</strong>: para recibir las mejoras tienes que cambiar tú el número y el hash por los de la última versión publicada aquí. <code>widget.js</code> no lleva hash porque cambia.</p>
   <p>Atributos opcionales en el mismo <code>&lt;script&gt;</code>:</p>
