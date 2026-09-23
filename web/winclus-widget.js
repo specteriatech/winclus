@@ -37,13 +37,32 @@
     metricas: (script && script.dataset.metricas) || "",    // URL opcional a la que el sitio recibe cifras de uso anónimas (solo si la persona lo activa)
     glosario: (script && script.dataset.glosario) || "",    // URL opcional de un JSON {palabra: definición} para el diccionario al toque (o window.WinclusGlosario)
     contacto: (script && script.dataset.contacto) || "",    // a dónde van los avisos de barrera: mailto:… o URL (POST {url, texto, navegador, version, fecha})
+    uso: (script && script.dataset.uso) || "",              // URL a la que van, al salir de la página, las cifras de esta visita (solo números: panel abierto, opciones tocadas; sin identificadores). La pone el cargador con data-clave
+    logo: (script && script.dataset.logo) || "",            // URL del logo de la entidad, en la cabecera del panel (plan Entidad)
+    nombre: (script && script.dataset.nombre) || "",        // nombre de la entidad en la cabecera: «Accesibilidad de <nombre>, con Winclus»
+    ocultar: ((script && script.dataset.ocultar) || "").toLowerCase().split(/[ ,]+/).filter(function (x) { return /^(ver|oir|cara|clics|escribir)$/.test(x); }),   // pestañas que este sitio no quiere mostrar (Inicio y Más siempre salen)
     arreglos: !(script && script.dataset.arreglos === "no")  // arreglos al vuelo para todas las ayudas técnicas (ver «arreglos del sitio»); se anotan para quien mantiene el sitio
   };
   // Cifras de uso: cuántas veces se hizo clic con la cara, se dijo una frase, se explicó un error… Solo números,
   // en este navegador. Sirven a la persona para ver lo que consigue y a una entidad para reportar tareas
   // completadas (ITA) si la persona decide compartirlas. Nunca se envían solas.
   var uso = null;
+  // Cifras de esta visita para la entidad (plan Entidad, data-clave): cuántas veces se abrió el panel y qué se tocó.
+  // Solo números por nombre de opción; sin cookies, sin identificador de persona, sin dirección. Se mandan al salir.
+  var usoVisita = {};
+  function contarVisita(clave) { if (!opciones.uso) return; clave = String(clave).slice(0, 60); usoVisita[clave] = (usoVisita[clave] || 0) + 1; }
+  function enviarUsoVisita() {
+    if (!opciones.uso || !Object.keys(usoVisita).length) return;
+    var cuerpo = JSON.stringify({ version: VERSION, pagina: location.pathname.slice(0, 120), eventos: usoVisita }); usoVisita = {};
+    try { if (navigator.sendBeacon && navigator.sendBeacon(opciones.uso, new Blob([cuerpo], { type: "application/json" }))) return; } catch (e) {}
+    try { fetch(opciones.uso, { method: "POST", headers: { "Content-Type": "application/json" }, body: cuerpo, keepalive: true }); } catch (e) {}
+  }
+  if (opciones.uso) {
+    window.addEventListener("pagehide", enviarUsoVisita);
+    document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") enviarUsoVisita(); });
+  }
   function contar(clave) {
+    contarVisita(clave);
     try {
       if (!uso) { uso = JSON.parse(localStorage.getItem("winclus.uso") || "null") || { desde: new Date().toISOString().slice(0, 10), n: {} }; }
       uso.n = uso.n || {}; uso.n[clave] = (uso.n[clave] || 0) + 1; localStorage.setItem("winclus.uso", JSON.stringify(uso));
@@ -63,7 +82,7 @@
     { base: ORIGEN + "/mediapipe", modelo: ORIGEN + "/mediapipe/face_landmarker.task" },
     { base: "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35", modelo: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task" }
   ];
-  var VERSION = "0.8.1";
+  var VERSION = "0.8.2";
   var CAM_W = 640, CAM_H = 480;
   var raiz = document.documentElement;
   var LADO = opciones.posicion === "izquierda" ? "left" : "right";
@@ -137,7 +156,7 @@
   var DICC = {
     en: {
       "Ver": "See", "Oír": "Hear", "Puntero": "Pointer", "Clics": "Clicks", "Escribir": "Type", "Más": "More", "Cerrar": "Close", "Pausar": "Pause",
-      "Abrir accesibilidad Winclus": "Open Winclus accessibility", "Pausar el puntero": "Pause the pointer", "Accesibilidad Winclus": "Winclus accessibility", "Lectura limpia": "Clean reading",
+      "Abrir accesibilidad Winclus": "Open Winclus accessibility", "con Winclus": "with Winclus", "Este sitio recibe cifras de uso anónimas (cuántas veces se abre el panel y qué opciones se tocan), sin identificar a nadie.": "This site receives anonymous usage figures (how many times the panel is opened and which options are used), without identifying anyone.", "Pausar el puntero": "Pause the pointer", "Accesibilidad Winclus": "Winclus accessibility", "Lectura limpia": "Clean reading",
       "Ver mejor": "See better", "Tamaño del texto": "Text size", "Alto contraste": "High contrast", "Modo oscuro": "Dark mode", "Resaltar enlaces": "Highlight links", "Guía de lectura": "Reading guide", "Cursor del ratón grande": "Large mouse cursor",
       "Colores y calma": "Colors and calm", "Ninguna": "None",
       "Modo calma: sin destellos, animaciones ni vídeos que arranquen solos": "Calm mode: no flashes, animations or self-starting videos",
@@ -469,7 +488,7 @@
     + '.wcl-panel{position:fixed;bottom:92px;' + LADO + ':22px;z-index:2147483011;width:360px;max-width:calc(100vw - 32px);max-height:calc(100vh - 120px);overflow:auto;background:#fff;color:#101F3D;border-radius:18px;box-shadow:0 18px 60px rgba(16,31,61,.28);display:none}'
     + '.wcl-panel.abierto{display:block}'
     + '.wcl-cab{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#101F3D;color:#fff;border-radius:18px 18px 0 0;position:sticky;top:0;z-index:2}'
-    + '.wcl-cab svg{width:26px;height:26px}.wcl-cab b{flex:1;font-size:16px}.wcl-cab button{background:transparent;border:0;color:#fff;font-size:22px;cursor:pointer;width:44px;height:44px;border-radius:8px}.wcl-cab button:hover{background:rgba(255,255,255,.15)}'
+    + '.wcl-cab svg{width:26px;height:26px}.wcl-cab .wcl-logo-sitio{width:auto;max-width:96px;height:28px;object-fit:contain;background:#fff;border-radius:6px;padding:2px 4px}.wcl-cab b small{display:block;font-size:11px;font-weight:400;opacity:.85}.wcl-cab b{flex:1;font-size:16px}.wcl-cab button{background:transparent;border:0;color:#fff;font-size:22px;cursor:pointer;width:44px;height:44px;border-radius:8px}.wcl-cab button:hover{background:rgba(255,255,255,.15)}'
     + '.wcl-tabs{display:flex;background:#E8ECF3;position:sticky;top:64px;z-index:2}.wcl-tabs button{flex:1;min-height:44px;border:0;background:transparent;font:600 13px "Segoe UI",system-ui,sans-serif;color:#3F4B66;cursor:pointer;border-bottom:3px solid transparent}.wcl-tabs button[aria-selected="true"]{color:#2743B4;border-bottom-color:#2743B4;background:#fff}'
     + '.wcl-tab{display:none}.wcl-tab.activa{display:block}'
     + '.wcl-sec{padding:12px 16px;border-bottom:1px solid #E3E8F0}.wcl-sec h2{margin:0 0 6px;padding:0;border:0;background:none;font-family:inherit;font-weight:700;line-height:1.3;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#3F4B66}'
@@ -762,6 +781,7 @@
   // Qué se toca del panel (solo cifras, en local): para saber qué opciones se usan y cuáles nunca,
   // y así quitar o explicar mejor lo que no se entiende. Las claves son los nombres en español.
   function contarPanel(clave) {
+    contarVisita("panel:" + clave);
     try {
       if (!uso) { uso = JSON.parse(localStorage.getItem("winclus.uso") || "null") || { desde: new Date().toISOString().slice(0, 10), n: {} }; }
       uso.panel = uso.panel || {}; clave = String(clave).slice(0, 60); uso.panel[clave] = (uso.panel[clave] || 0) + 1; localStorage.setItem("winclus.uso", JSON.stringify(uso));
@@ -3349,25 +3369,31 @@
   // de ayuda debajo que dice qué hace y para quién sirve; los números que casi nadie
   // toca van plegados en «Ajustes finos»; y «Lo que tienes activado» dice en todo momento
   // qué está haciendo Winclus, con un botón para apagarlo todo.
-  panel.innerHTML = '<div class="wcl-cab">' + LOGO + '<b>Winclus</b><button type="button" aria-label="Cerrar">×</button></div>';
+  // Cabecera: con data-logo y data-nombre el panel lleva la marca de la entidad («con Winclus» queda en pequeño)
+  var cabLogo = opciones.logo ? '<img class="wcl-logo-sitio" src="' + String(opciones.logo).replace(/"/g, "&quot;") + '" alt="">' : LOGO;
+  var cabNombre = opciones.nombre ? '<b>' + String(opciones.nombre).replace(/[<>&]/g, "") + '<small>' + T("con Winclus") + '</small></b>' : '<b>Winclus</b>';
+  panel.innerHTML = '<div class="wcl-cab">' + cabLogo + cabNombre + '<button type="button" aria-label="Cerrar">×</button></div>';
   var TABS = [["inicio", "Inicio"], ["ver", "Ver"], ["oir", "Oír"], ["cara", "Cara"], ["clics", "Clics"], ["escribir", "Escribir"], ["mas", "Más"]];
+  var VISIBLES = TABS.filter(function (t) { return opciones.ocultar.indexOf(t[0]) < 0; });   // las que este sitio no ocultó (data-ocultar)
   var tabsEl = el("div", { "class": "wcl-tabs", "role": "tablist" }), tabs = {};
   TABS.forEach(function (t) {
     var b = el("button", { "type": "button", "role": "tab", "aria-selected": "false", "tabindex": "-1", "id": "wcl-tab-" + t[0], "aria-controls": "wcl-panel-" + t[0] }, t[1]);
     b.addEventListener("click", function () { elegirTab(t[0]); });
+    if (opciones.ocultar.indexOf(t[0]) >= 0) b.hidden = true;
     tabsEl.appendChild(b);
     tabs[t[0]] = el("div", { "class": "wcl-tab", "role": "tabpanel", "id": "wcl-panel-" + t[0], "aria-labelledby": "wcl-tab-" + t[0] });
   });
   panel.appendChild(tabsEl);
   // Patrón Tabs de la APG del W3C: una sola pestaña tabulable, flechas para cambiar, Inicio y Fin a los extremos
   tabsEl.addEventListener("keydown", function (e) {
-    var i = TABS.findIndex(function (t) { return t[0] === (e.target.id || "").replace("wcl-tab-", ""); });
+    var i = VISIBLES.findIndex(function (t) { return t[0] === (e.target.id || "").replace("wcl-tab-", ""); });
     if (i < 0) return;
-    var j = e.key === "ArrowRight" ? (i + 1) % TABS.length : e.key === "ArrowLeft" ? (i + TABS.length - 1) % TABS.length : e.key === "Home" ? 0 : e.key === "End" ? TABS.length - 1 : -1;
+    var j = e.key === "ArrowRight" ? (i + 1) % VISIBLES.length : e.key === "ArrowLeft" ? (i + VISIBLES.length - 1) % VISIBLES.length : e.key === "Home" ? 0 : e.key === "End" ? VISIBLES.length - 1 : -1;
     if (j < 0) return;
-    e.preventDefault(); elegirTab(TABS[j][0]); q("#wcl-tab-" + TABS[j][0]).focus();
+    e.preventDefault(); elegirTab(VISIBLES[j][0]); q("#wcl-tab-" + VISIBLES[j][0]).focus();
   });
   function elegirTab(nombre) {
+    if (!tabs[nombre] || opciones.ocultar.indexOf(nombre) >= 0) return;   // pestaña que este sitio ocultó (data-ocultar)
     // Ir a cualquier pestaña que no sea Inicio (desde el panel, la voz, «Confundo los colores»…) enseña las pestañas
     if (nombre !== "inicio" && btnVerMas && panel.classList.contains("sencillo")) vistaCompleta(true);
     TABS.forEach(function (t) {
@@ -4148,7 +4174,7 @@
   }));
   tabs.mas.appendChild(s);
   s = seccion("Acerca de");
-  s.appendChild(el("div", { "class": "wcl-pie", "style": "padding:0" }, 'Winclus widget ' + VERSION + '. Sin cuentas, sin rastreo y sin servidores propios: la cámara, la calibración y tus ajustes se quedan en este navegador. Solo el dictado y las órdenes por voz usan el reconocedor del navegador (Google o Microsoft). <a href="https://winclus.com/privacidad" target="_blank" rel="noopener">Política de tratamiento de datos</a>.<br><br>¿Quieres controlar todo el ordenador con la cara? <a href="https://winclus.com/#contacto" target="_blank" rel="noopener">Comunícate con nosotros</a>.'));
+  s.appendChild(el("div", { "class": "wcl-pie", "style": "padding:0" }, 'Winclus widget ' + VERSION + '. Sin cuentas, sin rastreo y sin servidores propios: la cámara, la calibración y tus ajustes se quedan en este navegador.' + (opciones.uso ? ' ' + T("Este sitio recibe cifras de uso anónimas (cuántas veces se abre el panel y qué opciones se tocan), sin identificar a nadie.") : '') + ' Solo el dictado y las órdenes por voz usan el reconocedor del navegador (Google o Microsoft). <a href="https://winclus.com/privacidad" target="_blank" rel="noopener">Política de tratamiento de datos</a>.<br><br>¿Quieres controlar todo el ordenador con la cara? <a href="https://winclus.com/#contacto" target="_blank" rel="noopener">Comunícate con nosotros</a>.'));
   tabs.mas.appendChild(s);
 
   TABS.forEach(function (t) { panel.appendChild(tabs[t[0]]); });
@@ -5247,7 +5273,7 @@
   function abrir(si) {
     panel.classList.toggle("abierto", si);
     boton.setAttribute("aria-expanded", si ? "true" : "false");
-    if (si) { refrescos.forEach(function (f) { f(); }); if (!camaraActiva) q(".wcl-cab button").focus(); bienvenida(); }
+    if (si) { refrescos.forEach(function (f) { f(); }); if (!camaraActiva) q(".wcl-cab button").focus(); bienvenida(); contarVisita("abierto"); }
     if (ajustes.barrido) { barridoLista = []; barridoI = -1; barridoMarcar(null, null); }   // lo barrible cambia al abrir o cerrar el panel
   }
   // Primera vez que se abre el panel en este navegador: la voz dice qué hacer y los botones de situación laten.

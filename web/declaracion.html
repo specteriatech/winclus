@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generador de declaración de accesibilidad</title>
+<meta name="description" content="Rellena un formulario y obtén la declaración de accesibilidad de tu sitio lista para publicar: qué cumple, cómo se evaluó, qué falta, cómo avisar de una barrera, con la Ley 1618, la Resolución 1519 y la 2893 citadas. Todo ocurre en tu navegador.">
+<link rel="icon" href="img/icono.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="paginas.css">
+<style>
+  main{width:min(1120px,100% - 40px)}
+  .dos{display:grid;grid-template-columns:minmax(300px,440px) 1fr;gap:28px;align-items:start}
+  @media (max-width:860px){ .dos{grid-template-columns:1fr} }
+  form{display:grid;gap:14px}
+  fieldset{border:1px solid var(--linea);border-radius:12px;padding:12px 16px 16px;margin:0}
+  legend{font-weight:600;padding:0 6px}
+  label{display:block;font-weight:600;margin:8px 0 4px}
+  label small{display:block;font-weight:400;color:var(--texto2);font-size:.9rem}
+  input[type=text],input[type=url],input[type=email],input[type=tel],input[type=date],select,textarea{width:100%;font:inherit;padding:9px 10px;border:1px solid #8892A6;border-radius:8px;box-sizing:border-box;min-height:44px}
+  textarea{min-height:90px}
+  .opc{display:flex;align-items:flex-start;gap:8px;font-weight:400;margin:6px 0}
+  .opc input{width:22px;height:22px;margin-top:2px;flex:none}
+  .botones{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:10px 18px;border-radius:999px;font:inherit;font-weight:600;border:2px solid var(--navy);background:#fff;color:var(--navy);cursor:pointer;text-decoration:none}
+  .btn.lleno{background:var(--azul);border-color:var(--azul);color:#fff}
+  .btn:hover{background:var(--fondo2)}.btn.lleno:hover{background:var(--navy)}
+  .vista{border:2px solid var(--linea);border-radius:16px;padding:6px 22px 22px;background:#fff;position:sticky;top:90px;max-height:calc(100vh - 110px);overflow:auto}
+  .vista h2{border:0}
+  .vista .doc h1{font-size:1.6rem}
+  .vista .doc h2{font-size:1.15rem;margin-top:1.4em;border-top:1px solid var(--linea);padding-top:.4em}
+  .vista .doc{font-size:.97rem}
+  .estado{color:var(--teal);font-weight:600;min-height:1.4em}
+  .falta{color:#8A2E2E}
+  code{font-family:Consolas,ui-monospace,monospace;font-size:.92em;background:#F3F6FA;padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+<a class="salto" href="#contenido">Ir al contenido</a>
+<header>
+  <div class="barra">
+    <a class="marca" href="/"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a>
+    <a class="volver" href="integrar">Volver a la guía técnica</a>
+  </div>
+</header>
+
+<main id="contenido">
+<nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><a href="integrar">Integrar Winclus</a><span aria-hidden="true">›</span><span aria-current="page">Declaración de accesibilidad</span></nav>
+  <h1>Generador de declaración de accesibilidad</h1>
+  <p class="meta">Rellena los datos, mira la declaración a la derecha y descárgala lista para publicarla en tu sitio. Nada sale de tu navegador: lo que escribes se guarda solo aquí, para que puedas volver.</p>
+  <div class="facil"><h2>En pocas palabras</h2><ul><li>Toda sede electrónica debe decir qué tan accesible es, cómo lo comprobó y a quién avisar si algo falla.</li><li>Este formulario escribe esa página por ti, con las normas colombianas citadas.</li><li>Descárgala, súbela a tu sitio y enlázala en el pie como «Accesibilidad».</li></ul></div>
+
+  <div class="dos">
+    <form id="f" autocomplete="off">
+      <fieldset><legend>La entidad</legend>
+        <label for="entidad">Nombre de la entidad o empresa <small>Como aparece en el sitio.</small></label>
+        <input id="entidad" name="entidad" type="text" required placeholder="Alcaldía de …">
+        <label for="tipo">Tipo</label>
+        <select id="tipo" name="tipo"><option value="publica">Entidad pública (sujeta a la Resolución 1519 de 2020)</option><option value="privada">Empresa u organización privada</option><option value="educativa">Institución educativa</option></select>
+        <label for="sitio">Dirección del sitio</label>
+        <input id="sitio" name="sitio" type="url" required placeholder="https://www.entidad.gov.co">
+        <label for="alcance">Qué cubre la declaración <small>Por ejemplo: la sede electrónica y el portal de trámites.</small></label>
+        <input id="alcance" name="alcance" type="text" placeholder="El sitio web principal y sus subdominios">
+      </fieldset>
+
+      <fieldset><legend>Cómo se comprobó</legend>
+        <div class="opc"><input type="checkbox" id="ev_auto" name="ev_auto" checked><label for="ev_auto" style="margin:0">Evaluación automática con Winclus Audit (WCAG 2.1 AA, axe-core)</label></div>
+        <div class="opc"><input type="checkbox" id="ev_manual" name="ev_manual"><label for="ev_manual" style="margin:0">Revisión manual con teclado y lector de pantalla</label></div>
+        <div class="opc"><input type="checkbox" id="ev_personas" name="ev_personas"><label for="ev_personas" style="margin:0">Pruebas con personas con discapacidad</label></div>
+        <div class="opc"><input type="checkbox" id="ev_externa" name="ev_externa"><label for="ev_externa" style="margin:0">Evaluación externa por un tercero</label></div>
+        <label for="fecha_eval">Fecha de la última evaluación</label>
+        <input id="fecha_eval" name="fecha_eval" type="date">
+        <label for="nivel">Estado de conformidad declarado</label>
+        <select id="nivel" name="nivel">
+          <option value="parcial">Parcialmente conforme con WCAG 2.1 nivel AA (hay excepciones conocidas)</option>
+          <option value="total">Totalmente conforme con WCAG 2.1 nivel AA</option>
+          <option value="no">No conforme todavía (en proceso de adecuación)</option>
+        </select>
+      </fieldset>
+
+      <fieldset><legend>Lo que aún no cumple</legend>
+        <label for="excepciones">Excepciones conocidas <small>Una por línea. Di qué es, a quién afecta y para cuándo se arregla. Si no hay, déjalo vacío.</small></label>
+        <textarea id="excepciones" name="excepciones" placeholder="Los PDF anteriores a 2024 no están etiquetados; se convierten a HTML a medida que se piden.&#10;Los vídeos del canal no tienen lengua de señas; se añadirá en 2027."></textarea>
+        <label for="proxima">Próxima revisión</label>
+        <input id="proxima" name="proxima" type="date">
+      </fieldset>
+
+      <fieldset><legend>Cómo avisar de una barrera</legend>
+        <label for="correo">Correo de contacto</label>
+        <input id="correo" name="correo" type="email" placeholder="accesibilidad@entidad.gov.co">
+        <label for="telefono">Teléfono <small>Opcional. Si atiende por Centro de Relevo, dilo.</small></label>
+        <input id="telefono" name="telefono" type="tel" placeholder="(601) 000 0000">
+        <label for="plazo">Plazo de respuesta</label>
+        <select id="plazo" name="plazo"><option value="15">15 días hábiles (derecho de petición)</option><option value="10">10 días hábiles</option><option value="5">5 días hábiles</option></select>
+        <div class="opc"><input type="checkbox" id="winclus" name="winclus" checked><label for="winclus" style="margin:0">El sitio tiene Winclus: explicar cómo usarlo con la cara, la voz, un pulsador o pictogramas</label></div>
+      </fieldset>
+
+      <div class="botones">
+        <button type="button" class="btn lleno" id="descargar">Descargar declaracion.html</button>
+        <button type="button" class="btn" id="copiarHtml">Copiar el HTML</button>
+        <button type="button" class="btn" id="copiarTexto">Copiar el texto</button>
+        <button type="button" class="btn" id="limpiar">Empezar de nuevo</button>
+      </div>
+      <p class="estado" id="estado" aria-live="polite"></p>
+      <p class="nota meta">Después: sube el archivo a tu sitio (por ejemplo en <code>/accesibilidad</code>) y enlázalo en el pie de todas las páginas con el texto «Accesibilidad». La Resolución 1519 pide que la declaración esté en la sección de accesibilidad de la sede electrónica.</p>
+    </form>
+
+    <section class="vista" aria-label="Vista previa de la declaración" tabindex="0">
+      <h2>Así queda</h2>
+      <div class="doc" id="doc"></div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="pie">
+    <div>© 2026 Winclus</div>
+    <ul>
+      <li><a href="/">Portada</a></li>
+      <li><a href="accesibilidad">Accesibilidad</a></li>
+      <li><a href="privacidad">Privacidad y datos</a></li>
+      <li><a href="mapa-del-sitio">Mapa del sitio</a></li>
+      <li><a href="glosario">Glosario</a></li>
+      <li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li>
+    </ul>
+  </div>
+</footer>
+<script>
+(function () {
+  var f = document.getElementById("f"), doc = document.getElementById("doc"), estado = document.getElementById("estado");
+  var CLAVE = "winclus.declaracion";
+  var esc = function (s) { return String(s || "").replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+  var fecha = function (v) { if (!v) return ""; var p = v.split("-"); var M = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]; return parseInt(p[2], 10) + " de " + M[parseInt(p[1], 10) - 1] + " de " + p[0]; };
+  var hoy = new Date().toISOString().slice(0, 10);
+  function datos() {
+    var d = {};
+    [].forEach.call(f.elements, function (e) { if (!e.name) return; d[e.name] = e.type === "checkbox" ? e.checked : e.value.trim(); });
+    return d;
+  }
+  // La declaración: el cuerpo (sin <html>), que sirve para la vista previa y para el archivo
+  function cuerpo(d) {
+    var nombre = d.entidad || "[Nombre de la entidad]", sitio = d.sitio || "[dirección del sitio]", alcance = d.alcance || "el sitio web " + sitio;
+    var publica = d.tipo === "publica";
+    var h = [];
+    h.push("<h1>Declaración de accesibilidad de " + esc(nombre) + "</h1>");
+    h.push("<p>" + esc(nombre) + " se compromete a que " + esc(alcance) + " pueda ser usado por todas las personas, con o sin discapacidad, y con cualquier ayuda técnica. Esta declaración dice qué tan accesible es el sitio hoy, cómo lo comprobamos, qué falta y cómo avisarnos si algo no funciona.</p>");
+    h.push("<p>Fecha de esta declaración: " + fecha(hoy) + ".</p>");
+    h.push("<h2>Normas que aplicamos</h2><ul>");
+    h.push("<li>Ley Estatutaria 1618 de 2013, que garantiza el pleno ejercicio de los derechos de las personas con discapacidad, incluido el acceso a la información y las comunicaciones.</li>");
+    if (publica) {
+      h.push("<li>Resolución 1519 de 2020 del Ministerio de Tecnologías de la Información y las Comunicaciones (MinTIC), Anexo 1, que fija las condiciones de accesibilidad de las sedes electrónicas con base en las Pautas de Accesibilidad para el Contenido Web (WCAG) 2.1, nivel AA.</li>");
+      h.push("<li>Resolución 2893 de 2020 de MinTIC, Anexo 1, numeral 4.3.2, sobre la barra de accesibilidad y las opciones de contraste, tamaño de letra e idioma.</li>");
+    } else {
+      h.push("<li>Pautas de Accesibilidad para el Contenido Web (WCAG) 2.1, nivel AA, del W3C, que son la base de la Norma Técnica Colombiana de accesibilidad web.</li>");
+    }
+    h.push("<li>Norma Técnica Colombiana NTC 5854 de accesibilidad a páginas web.</li>");
+    h.push("<li>Ley 1581 de 2012 sobre protección de datos personales: usar las ayudas de este sitio no exige entregar ningún dato personal.</li>");
+    h.push("</ul>");
+    h.push("<h2>Estado de conformidad</h2>");
+    var estados = { total: "<p>" + esc(alcance).replace(/^./, function (c) { return c.toUpperCase(); }) + " es <strong>totalmente conforme</strong> con las WCAG 2.1 nivel AA.</p>", parcial: "<p>" + esc(alcance).replace(/^./, function (c) { return c.toUpperCase(); }) + " es <strong>parcialmente conforme</strong> con las WCAG 2.1 nivel AA: cumple la mayor parte de los criterios y tiene las excepciones que se listan abajo.</p>", no: "<p>" + esc(alcance).replace(/^./, function (c) { return c.toUpperCase(); }) + " <strong>todavía no es conforme</strong> con las WCAG 2.1 nivel AA. Estamos en proceso de adecuación, con las prioridades y fechas que se listan abajo.</p>" };
+    h.push(estados[d.nivel] || estados.parcial);
+    h.push("<h2>Cómo lo comprobamos</h2><ul>");
+    var alguna = false;
+    if (d.ev_auto) { alguna = true; h.push("<li>Evaluación automática de todas las páginas con Winclus Audit (motor axe-core), que revisa los criterios de las WCAG 2.1 AA que una máquina puede comprobar.</li>"); }
+    if (d.ev_manual) { alguna = true; h.push("<li>Revisión manual de las páginas y trámites principales usando solo el teclado y un lector de pantalla.</li>"); }
+    if (d.ev_personas) { alguna = true; h.push("<li>Pruebas con personas con discapacidad visual, motriz, auditiva y cognitiva usando el sitio.</li>"); }
+    if (d.ev_externa) { alguna = true; h.push("<li>Evaluación externa realizada por un tercero independiente.</li>"); }
+    if (!alguna) h.push("<li>[Indique cómo se evaluó el sitio]</li>");
+    h.push("</ul>");
+    if (d.fecha_eval) h.push("<p>Última evaluación: " + fecha(d.fecha_eval) + ".</p>");
+    h.push("<h2>Lo que aún no cumple</h2>");
+    var ex = (d.excepciones || "").split(/\n+/).map(function (x) { return x.trim(); }).filter(Boolean);
+    if (ex.length) h.push("<ul>" + ex.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>");
+    else h.push(d.nivel === "no" ? "<p>[Liste aquí lo que falta y para cuándo se arregla]</p>" : "<p>No conocemos contenido que incumpla las WCAG 2.1 AA. Si encuentra alguno, avísenos con el canal de abajo.</p>");
+    if (d.proxima) h.push("<p>Próxima revisión prevista: " + fecha(d.proxima) + ".</p>");
+    if (d.winclus) {
+      h.push("<h2>Ayudas disponibles en este sitio</h2>");
+      h.push("<p>Este sitio tiene Winclus, un panel de accesibilidad que se abre con el botón redondo de la esquina o con las teclas Alt + Mayús + W. Con él se puede:</p><ul>");
+      h.push("<li>Ver mejor: agrandar la letra o toda la página, alto contraste, contraste inteligente, modo oscuro, colores para daltonismo, guía de lectura y cursor grande.</li>");
+      h.push("<li>Oír: leer la página en voz alta con un lector de pantalla propio, subtítulos y avisos visuales de los sonidos.</li>");
+      h.push("<li>Manejar el sitio sin manos: con los movimientos de la cabeza, la mirada, guiños, la voz o un solo pulsador.</li>");
+      h.push("<li>Entender: lectura fácil, diccionario al toque, sílabas con color y comunicación con pictogramas.</li>");
+      h.push("<li>Cambiar el idioma del panel y del sitio (opción «Otro idioma»).</li>");
+      h.push("</ul><p>Winclus no envía datos de nadie a ningún servidor: los ajustes se guardan en el navegador de cada persona.</p>");
+    }
+    h.push("<h2>Cómo avisar de una barrera</h2>");
+    h.push("<p>Si algo de este sitio no se puede usar, o si necesita la información en otro formato, escríbanos" + (d.correo ? " a <a href=\"mailto:" + esc(d.correo) + "\">" + esc(d.correo) + "</a>" : " a [correo de contacto]") + (d.telefono ? " o llame al " + esc(d.telefono) + " (también por el Centro de Relevo de MinTIC, con intérprete de lengua de señas)" : "") + ". Respondemos en un plazo máximo de " + esc(d.plazo || "15") + " días hábiles. Cuéntenos qué página es, qué intentaba hacer y con qué ayuda técnica.</p>");
+    if (publica) h.push("<p>Si la respuesta no le satisface, puede presentar un derecho de petición ante " + esc(nombre) + " o acudir a la Procuraduría General de la Nación, a la Defensoría del Pueblo o a la personería de su municipio.</p>");
+    h.push("<h2>Responsable</h2>");
+    h.push("<p>" + esc(nombre) + ". Esta declaración se revisa al menos una vez al año y cada vez que el sitio cambia de forma importante.</p>");
+    return h.join("\n");
+  }
+  function archivo(d) {
+    var nombre = d.entidad || "Entidad";
+    return "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>Declaración de accesibilidad · " + esc(nombre) + "</title>\n<style>body{font-family:system-ui,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.6;color:#1a1a1a}h1{font-size:1.8rem;line-height:1.2}h2{font-size:1.2rem;margin-top:1.6em}a{color:#1f3fa8}:focus-visible{outline:3px solid #1f3fa8;outline-offset:3px}</style>\n</head>\n<body>\n<main>\n" + cuerpo(d) + "\n</main>\n</body>\n</html>\n";
+  }
+  function texto(d) { var t = document.createElement("div"); t.innerHTML = cuerpo(d); return t.innerText.replace(/\n{3,}/g, "\n\n"); }
+  function pintar() {
+    var d = datos();
+    doc.innerHTML = cuerpo(d);
+    try { localStorage.setItem(CLAVE, JSON.stringify(d)); } catch (e) {}
+  }
+  function faltan() {
+    var d = datos(), l = [];
+    if (!d.entidad) l.push("el nombre de la entidad");
+    if (!d.sitio) l.push("la dirección del sitio");
+    if (!d.correo) l.push("el correo de contacto");
+    return l;
+  }
+  function decir(t, mal) { estado.textContent = t; estado.className = "estado" + (mal ? " falta" : ""); }
+  function copiar(t, que) {
+    var listo = function () { decir("Copiado " + que + "."); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(listo, function () { decir("No pude copiar. Selecciona el texto de la vista previa y cópialo.", true); });
+    else { var ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); listo(); } catch (e) { decir("No pude copiar.", true); } ta.remove(); }
+  }
+  document.getElementById("descargar").addEventListener("click", function () {
+    var l = faltan(); if (l.length) { decir("Falta " + l.join(", ") + ".", true); return; }
+    var b = new Blob([archivo(datos())], { type: "text/html;charset=utf-8" }), a = document.createElement("a");
+    a.href = URL.createObjectURL(b); a.download = "declaracion.html"; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    decir("Descargado declaracion.html. Súbelo a tu sitio y enlázalo en el pie como «Accesibilidad».");
+  });
+  document.getElementById("copiarHtml").addEventListener("click", function () { copiar(archivo(datos()), "el HTML completo"); });
+  document.getElementById("copiarTexto").addEventListener("click", function () { copiar(texto(datos()), "el texto"); });
+  document.getElementById("limpiar").addEventListener("click", function () { f.reset(); try { localStorage.removeItem(CLAVE); } catch (e) {} pintar(); decir("Formulario vacío."); });
+  f.addEventListener("input", pintar);
+  f.addEventListener("change", pintar);
+  try { var g = JSON.parse(localStorage.getItem(CLAVE)); if (g) [].forEach.call(f.elements, function (e) { if (e.name in g) { if (e.type === "checkbox") e.checked = !!g[e.name]; else e.value = g[e.name]; } }); } catch (e) {}
+  pintar();
+  window.WinclusDeclaracion = { cuerpo: cuerpo, archivo: archivo, texto: texto, datos: datos };   // para las pruebas
+})();
+</script>
+<script src="widget.js" async></script>
+</body>
+</html>

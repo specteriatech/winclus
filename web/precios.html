@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Precios de Winclus</title>
+<meta name="description" content="Winclus es gratis para siempre para la persona que lo usa: el panel completo, sin límite de visitas. Las entidades pagan solo por lo que les sirve a ellas: panel de cliente, estadísticas, declaración de accesibilidad, monitor, informe de conformidad y acompañamiento jurídico.">
+<link rel="icon" href="img/icono.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="paginas.css">
+<style>
+  main{width:min(1120px,100% - 40px)}
+  .lema{font-size:1.2rem;max-width:760px}
+  .planes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:24px 0 12px;list-style:none;padding:0}
+  .plan{border:2px solid var(--linea);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px;background:#fff;position:relative}
+  .plan.destacado{border-color:var(--azul);box-shadow:0 12px 36px rgba(39,67,180,.12)}
+  .plan .etiqueta{position:absolute;top:-14px;left:20px;background:var(--azul);color:#fff;font-weight:600;font-size:.85rem;padding:4px 12px;border-radius:999px}
+  .plan h2{border:0;margin:0;padding:0;font-size:1.3rem}
+  .plan .para{color:var(--texto2);font-size:.95rem;min-height:2.6em;margin:0}
+  .plan .precio{font-size:2rem;font-weight:700;line-height:1.1;margin:6px 0 0}
+  .plan .precio small{font-size:.95rem;font-weight:400;color:var(--texto2);display:block;margin-top:4px}
+  .plan ul{margin:6px 0 0;padding-left:1.2em;font-size:.97rem}
+  .plan li{margin:5px 0}
+  .plan li b{font-weight:600}
+  .plan .btn{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:10px 18px;border-radius:999px;font-weight:600;text-decoration:none;border:2px solid var(--navy);color:var(--navy)}
+  .plan .btn.lleno{background:var(--azul);border-color:var(--azul);color:#fff}
+  .plan .btn:hover{background:var(--fondo2)}.plan .btn.lleno:hover{background:var(--navy)}
+  .nota{color:var(--texto2);font-size:.92rem}
+  .tabla table{min-width:760px}
+  td.si{color:var(--teal);font-weight:600}td.no{color:#8A2E2E}td.medio{color:#7A5A00}
+  .servicios{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;list-style:none;padding:0;margin:14px 0}
+  .servicios li{background:var(--fondo2);border-radius:12px;padding:14px 16px}
+  .servicios b{display:block;margin-bottom:4px}
+  .servicios small{color:var(--texto2)}
+  details{border:1px solid var(--linea);border-radius:10px;padding:8px 14px;margin:8px 0}
+  summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center}
+  .cta{background:var(--navy);color:#fff;border-radius:16px;padding:24px;margin:32px 0 8px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+  .cta p{color:#fff;margin:0;font-size:1.1rem}
+  .cta a{display:inline-flex;align-items:center;min-height:48px;padding:10px 22px;border-radius:999px;background:var(--verde);color:var(--navy);font-weight:700;text-decoration:none}
+  .cta a:hover{background:#fff}
+  @media (max-width:600px){ .plan .precio{font-size:1.7rem} }
+</style>
+</head>
+<body>
+<a class="salto" href="#contenido">Ir al contenido</a>
+<header>
+  <div class="barra">
+    <a class="marca" href="/"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a>
+    <a class="volver" href="/">Volver a la portada</a>
+  </div>
+</header>
+
+<main id="contenido">
+<nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><span aria-current="page">Precios</span></nav>
+  <h1>Precios claros</h1>
+  <p class="lema">La persona que usa Winclus no paga nunca y recibe el panel completo. La entidad paga solo por lo que le sirve a ella: saber que su sitio cumple, demostrarlo y mantenerlo así.</p>
+  <div class="facil"><h2>En pocas palabras</h2><ul><li>Winclus es gratis para siempre, con todo lo que la persona necesita, en cualquier sitio y sin límite de visitas.</li><li>Los planes de pago son para la entidad: panel de cliente, cifras, declaración de accesibilidad, vigilancia del sitio, informe de conformidad y horas con un abogado.</li><li>Precios en pesos colombianos por año, sin IVA. Las entidades públicas pueden contratar por SECOP.</li></ul></div>
+
+  <h2 id="planes">Planes</h2>
+  <!-- Los precios están aquí, en el HTML, para cambiarlos sin tocar nada más. Son la propuesta del 23-sep-2026. -->
+  <ul class="planes">
+    <li class="plan">
+      <h2>Gratis</h2>
+      <p class="para">Para que ninguna persona se quede fuera de ningún sitio.</p>
+      <p class="precio">$0 <small>para siempre, sin límite de visitas</small></p>
+      <ul>
+        <li><b>El panel completo</b>: ver, oír, cara, ojos, voz, un pulsador, pictogramas, lectura fácil, lector de pantalla propio, contraste inteligente.</li>
+        <li><b>Arreglos al vuelo</b> para todas las ayudas técnicas, con la lista para quien mantiene el sitio.</li>
+        <li>Panel en <b>18 idiomas</b>.</li>
+        <li>Mejoras que llegan solas, sin tocar nada.</li>
+        <li>Botón «Avisar de una barrera».</li>
+        <li>Una línea de código, 3 KB.</li>
+      </ul>
+      <a class="btn" href="integrar">Ponerlo en mi sitio</a>
+    </li>
+    <li class="plan destacado">
+      <span class="etiqueta">Para entidades</span>
+      <h2>Entidad</h2>
+      <p class="para">Para cumplir la Resolución 1519 y poder demostrarlo.</p>
+      <p class="precio">$2.400.000 <small>al año, un sitio · equivale a $200.000 al mes</small></p>
+      <ul>
+        <li>Todo lo del plan Gratis.</li>
+        <li><b>Panel de cliente</b> con 3 personas del equipo y 2 sitios de prueba.</li>
+        <li><b>Estadísticas de uso</b> anónimas: cuánta gente abre el panel y qué le ayuda.</li>
+        <li><b>Declaración de accesibilidad</b> generada y mantenida al día.</li>
+        <li><b>Winclus Monitor</b> alojado: hasta 50 páginas vigiladas, con alertas y capturas.</li>
+        <li><b>Informe de conformidad</b> (ACR/VPAT) cada trimestre.</li>
+        <li><b>Panel con su marca</b>: logo, nombre y colores de la entidad.</li>
+        <li>Soporte por correo en 2 días hábiles.</li>
+        <li><b>1 hora al año con un abogado</b> sobre accesibilidad.</li>
+      </ul>
+      <a class="btn lleno" href="#contacto">Pedir el plan Entidad</a>
+    </li>
+    <li class="plan">
+      <h2>Entidad Plus</h2>
+      <p class="para">Para sedes electrónicas grandes o con varios portales.</p>
+      <p class="precio">$5.900.000 <small>al año, hasta 3 sitios · equivale a $492.000 al mes</small></p>
+      <ul>
+        <li>Todo lo del plan Entidad.</li>
+        <li><b>10 personas</b> del equipo y 5 sitios de prueba.</li>
+        <li>Monitor de hasta <b>300 páginas</b>.</li>
+        <li><b>Revisión manual anual</b> con lector de pantalla de las 10 páginas principales.</li>
+        <li><b>Formación</b> de 2 horas al equipo, en vivo.</li>
+        <li>Acuerdo de nivel de servicio (ANS) del 99,9 %; soporte en 1 día hábil.</li>
+        <li><b>3 horas al año con un abogado</b>.</li>
+      </ul>
+      <a class="btn" href="#contacto">Pedir el plan Entidad Plus</a>
+    </li>
+    <li class="plan">
+      <h2>A medida</h2>
+      <p class="para">Para gobernaciones, ministerios, universidades y grupos con muchos sitios.</p>
+      <p class="precio">Cotización <small>en 2 días hábiles</small></p>
+      <ul>
+        <li>Sitios y páginas sin límite.</li>
+        <li>Inicio de sesión único (SSO) y gestor de cuenta.</li>
+        <li><b>Auditoría manual integral</b> y VPAT firmado.</li>
+        <li>Pruebas con personas con discapacidad.</li>
+        <li>Instalación acompañada en GOV.CO, MiColombiaDigital o su plataforma.</li>
+        <li>Contrato por SECOP, con la documentación que pide la entidad.</li>
+      </ul>
+      <a class="btn" href="#contacto">Hablar con nosotros</a>
+    </li>
+  </ul>
+  <p class="nota">Precios en pesos colombianos, sin IVA, por año. El plan Entidad cubre un dominio y sus subdominios. No hay cobro por visitas: la accesibilidad no se raciona.</p>
+
+  <h2 id="servicios">Servicios sueltos</h2>
+  <p>Para quien ya tiene Winclus o necesita algo puntual. Se cotizan en 2 días hábiles.</p>
+  <ul class="servicios">
+    <li><b>Auditoría manual</b>Revisión humana de las páginas y flujos principales, con lector de pantalla, teclado y las pruebas que un escáner no hace. Informe con lo que falla, dónde y cómo arreglarlo.<br><small>Entrega en 10 a 20 días hábiles según el tamaño.</small></li>
+    <li><b>Informe de conformidad firmado (ACR/VPAT)</b>Los 55 criterios A y AA, con lo que se comprobó a máquina y lo que se comprobó a mano, firmado por quien lo hizo.<br><small>Para licitaciones y para el capítulo de accesibilidad de la Res. 1519.</small></li>
+    <li><b>Acompañamiento jurídico</b>Horas con abogado sobre la Ley 1618, la Res. 1519, la 2893, tutelas y derechos de petición por accesibilidad. Respuesta a requerimientos.<br><small>Somos un despacho: es lo nuestro.</small></li>
+    <li><b>Formación</b>Sesiones en vivo para el equipo de comunicaciones y de tecnología: publicar accesible, usar el panel de cliente, leer el monitor.<br><small>2 horas por sesión, con grabación.</small></li>
+    <li><b>Pruebas con personas</b>Sesiones con personas con discapacidad visual, motriz, auditiva, cognitiva y del habla usando su sitio, con guion y hoja de resultados.<br><small>Lo que ninguna herramienta sustituye.</small></li>
+    <li><b>Arreglos en el código</b>Cuando la lista de «arreglos al vuelo» es larga, los pasamos al código fuente del sitio con su equipo o con el proveedor.<br><small>Por horas o por proyecto.</small></li>
+  </ul>
+
+  <h2 id="comparar">Frente a UserWay</h2>
+  <p>Lo que UserWay cobra, mirado en su página de precios el 23 de septiembre de 2026, y lo que hace Winclus.</p>
+  <div class="tabla"><table>
+    <caption class="meta">Comparación de precios y condiciones</caption>
+    <thead><tr><th scope="col">Condición</th><th scope="col">UserWay</th><th scope="col">Winclus</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Precio por tráfico</th><td>Hasta 100.000 visitas al mes: 490 € al año. Hasta 1 millón: 1.490 €. Más: a medida.</td><td class="si">Sin cobro por visitas en ningún plan.</td></tr>
+      <tr><th scope="row">Versión gratuita</th><td class="no">Sin lector de pantalla, sin contraste inteligente, sin descripciones de imágenes.</td><td class="si">El panel completo, incluido el lector y el contraste inteligente.</td></tr>
+      <tr><th scope="row">Control con la cara, los ojos, la voz y un pulsador</th><td class="no">No lo ofrece.</td><td class="si">Incluido, gratis.</td></tr>
+      <tr><th scope="row">Pictogramas y lectura fácil</th><td class="no">No lo ofrece.</td><td class="si">Incluido, gratis.</td></tr>
+      <tr><th scope="row">Idiomas del panel</th><td>Más de 50.</td><td class="medio">18, y se pueden añadir más.</td></tr>
+      <tr><th scope="row">Estadísticas de uso</th><td>Complemento de pago; incluido desde Pro Plus (1.190 €).</td><td class="si">Incluido en Entidad.</td></tr>
+      <tr><th scope="row">Panel con la marca del sitio</th><td>Complemento «modificación de menú» de pago.</td><td class="si">Incluido en Entidad.</td></tr>
+      <tr><th scope="row">Traducción automática del contenido</th><td>Complemento de pago.</td><td class="medio">En preparación.</td></tr>
+      <tr><th scope="row">Monitor</th><td>10, 50 o 100 páginas según plan; aparte, 100 páginas por 990 € al año.</td><td class="si">50 páginas en Entidad, 300 en Entidad Plus. El motor es abierto y se puede correr en el servidor de la entidad sin costo.</td></tr>
+      <tr><th scope="row">Informe de conformidad (VPAT)</th><td>Servicio aparte.</td><td class="si">Automático en Entidad; firmado como servicio.</td></tr>
+      <tr><th scope="row">Asistencia jurídica</th><td>1, 3 o 5 horas según plan, derecho de EE. UU.</td><td class="si">1 o 3 horas según plan, derecho colombiano (Ley 1618, Res. 1519, 2893, tutelas).</td></tr>
+      <tr><th scope="row">Pruebas públicas de que funciona</th><td class="no">No publica pruebas.</td><td class="si"><span data-cifra="pruebas">53</span> pruebas automáticas públicas en <a href="evidencia">winclus.com/evidencia</a>.</td></tr>
+      <tr><th scope="row">Código abierto</th><td class="no">No.</td><td class="si">Sí, licencia Apache 2.0: se puede leer y auditar.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="preguntas">Preguntas</h2>
+  <details><summary>¿Por qué el plan gratis tiene todo lo del panel?</summary><p>Porque lo que hace el panel es para la persona, y a la persona no se le cobra la accesibilidad. Lo que cobramos es lo que le sirve a la entidad: cifras, declaración, vigilancia, informes y acompañamiento.</p></details>
+  <details><summary>¿Hay prueba gratuita de los planes de pago?</summary><p>Sí: el plan Entidad se prueba 30 días sin costo. Si no sirve, no se cobra.</p></details>
+  <details><summary>¿Se puede pagar por mes?</summary><p>Sí, con un 17 % más que el precio anual. Las entidades públicas suelen contratar por año, por SECOP.</p></details>
+  <details><summary>¿Qué pasa con los datos de las personas?</summary><p>El panel no manda datos de nadie a Winclus. Las estadísticas del plan Entidad son cifras agregadas y anónimas, sin cookies ni identificadores. Está escrito en la <a href="privacidad">política de tratamiento de datos</a>.</p></details>
+  <details><summary>¿Winclus hace que el sitio cumpla la Resolución 1519?</summary><p>Winclus ayuda a las personas a usar el sitio y arregla al vuelo lo que puede. Cumplir la norma es cosa del sitio; por eso el plan Entidad trae el monitor, la lista de arreglos para el código y el informe de conformidad, que dicen qué falta. Lo explicamos sin adornos en <a href="cumplimiento">cumplimiento normativo</a>.</p></details>
+
+  <div class="cta" id="contacto">
+    <p>Cuéntanos qué sitio es y te decimos en dos días hábiles qué plan le conviene.</p>
+    <a href="mailto:hola@winclus.com?subject=Plan%20de%20Winclus">Escribir a hola@winclus.com</a>
+  </div>
+</main>
+
+<footer>
+  <div class="pie">
+    <div>© 2026 Winclus</div>
+    <ul>
+      <li><a href="/">Portada</a></li>
+      <li><a href="accesibilidad">Accesibilidad</a></li>
+      <li><a href="privacidad">Privacidad y datos</a></li>
+      <li><a href="mapa-del-sitio">Mapa del sitio</a></li>
+      <li><a href="glosario">Glosario</a></li>
+      <li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="widget.js" async></script>
+</body>
+</html>

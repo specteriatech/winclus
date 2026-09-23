@@ -10,8 +10,8 @@ use Joomla\CMS\Plugin\CMSPlugin;
 
 class PlgSystemWinclus extends CMSPlugin
 {
-    const VERSION_WIDGET = '0.8.1';
-    const SRI_WIDGET = 'sha384-kWdeL4IswYVjeg1K7ttvXuq1zkPXoIJvMsimmXpIYgi0x/j5fncj8Giw9qFkmjbh';
+    const VERSION_WIDGET = '0.8.2';
+    const SRI_WIDGET = 'sha384-xK+HZpPyZtcDAVHNFV1O8XyzqhhL6HFbZkS3V56uXNRy6yUkRinEfuPcWrKGR5Jt';
 
     /** Solo en el sitio (no en la administración) y solo en páginas HTML. */
     public function onBeforeCompileHead()

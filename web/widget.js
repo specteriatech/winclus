@@ -9,12 +9,13 @@
  * Si la página está en un idioma distinto de español o inglés, trae antes el diccionario del panel (idiomas/xx.json:
  * portugués, francés, italiano, alemán, catalán, neerlandés, polaco, rumano, turco, ruso, chino, japonés, coreano,
  * árabe, hindi e indonesio de fábrica; un sitio puede poner el suyo junto a este archivo).
+ * Con data-clave="…" (plan Entidad) la configuración del panel se toma de winclus.com y el sitio recibe cifras de uso anónimas.
  * Para leer el código completo: https://winclus.com/winclus-widget.js
  */
 (function () {
   "use strict";
   if (window.Winclus || window.WinclusCargador) return;
-  var VERSION = "0.8.1";
+  var VERSION = "0.8.2";
   var script = document.currentScript || (function () { var s = document.querySelectorAll('script[src*="widget.js"]'); return s[s.length - 1] || null; })();
   var ORIGEN = (script && script.src) ? script.src.replace(/\/[^\/]*$/, "") : "https://winclus.com";
   var ARCHIVO = (script && script.dataset && script.dataset.completo) || "winclus-widget.min.js";   // data-completo="winclus-widget.js" para depurar con el código legible
@@ -46,8 +47,21 @@
       seguir();
     }, seguir);
   };
+  // Clave de sitio (plan Entidad): la configuración del panel (logo, nombre, color, posición, pestañas ocultas) se pide a
+  // winclus.com y pasa al widget como si fueran data-*; y las cifras de uso anónimas de la visita van a /api/uso.
+  var CLAVE = (script && script.dataset && script.dataset.clave) || "";
+  var conConfig = function (f) {
+    if (!CLAVE || !window.fetch || !/^[A-Za-z0-9_-]{6,64}$/.test(CLAVE)) { f(); return; }
+    if (script && script.dataset && !script.dataset.uso) script.dataset.uso = ORIGEN + "/api/uso?clave=" + CLAVE;
+    var listo = false, seguir = function () { if (!listo) { listo = true; f(); } };
+    setTimeout(seguir, 2000);   // sin respuesta a tiempo, el panel sale con lo que diga el HTML
+    fetch(ORIGEN + "/api/config?clave=" + CLAVE).then(function (r) { return r.ok ? r.json() : null; }).then(function (c) {
+      if (c && typeof c === "object" && script && script.dataset) ["logo", "nombre", "color", "posicion", "ocultar", "camara", "idioma", "contacto", "arreglos"].forEach(function (k) { if (c[k] != null && c[k] !== "" && !script.dataset[k]) script.dataset[k] = String(c[k]); });
+      seguir();
+    }, seguir);
+  };
   var cargarSinIdioma = cargar;
-  cargar = function () { if (pedido || window.Winclus) return; conIdioma(cargarSinIdioma); };
+  cargar = function () { if (pedido || window.Winclus) return; conConfig(function () { conIdioma(cargarSinIdioma); }); };
   function cuandoQuieto() {
     if (window.requestIdleCallback) window.requestIdleCallback(cargar, { timeout: 1500 }); else setTimeout(cargar, 300);
   }

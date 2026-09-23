@@ -24,7 +24,7 @@
 <main id="contenido">
 <nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><span aria-current="page">Integrar Winclus</span></nav>
   <h1>Integrar Winclus en tu sitio</h1>
-  <p class="meta">Guía técnica para el widget 0.8.1. Winclus es tecnología de apoyo que se añade a un sitio: no lo hace conforme con la norma por sí solo. Para saber cómo está tu sitio, usa <a href="#audit">Winclus Audit</a>.</p>
+  <p class="meta">Guía técnica para el widget 0.8.2. Winclus es tecnología de apoyo que se añade a un sitio: no lo hace conforme con la norma por sí solo. Para saber cómo está tu sitio, usa <a href="#audit">Winclus Audit</a>.</p>
   <div class="facil"><h2>En pocas palabras</h2><ul><li>Winclus se pone en tu sitio con una sola línea de código, al final de cada página.</li><li>Usa <code>widget.js</code>: cada mejora que publicamos llega sola a tu sitio, sin tocar nada. Pesa 3 KB y trae el resto cuando la página ya se pintó.</li><li>Winclus arregla al vuelo lo que le falta a la página para los lectores de pantalla (alt, nombres, etiquetas, «Saltar al contenido», foco) y te da la lista para que lo pases al código.</li><li>Puedes decirle el idioma y en qué lado sale el botón.</li><li>Si tu sitio tiene reglas de seguridad estrictas, Winclus las respeta.</li><li>Winclus ayuda a las personas a usar tu sitio; no arregla tu sitio por ti.</li></ul></div>
 
   <h2>1. Una línea</h2>
@@ -34,8 +34,8 @@
   <p><strong>No frena la página.</strong> <code>widget.js</code> es un cargador de unos 3 KB: el widget completo (<code>winclus-widget.min.js</code>, minificado) se pide cuando la página ya se pintó, o enseguida si la persona ya usa Winclus (tiene ajustes guardados, dejó la cámara encendida o llega con su perfil en el enlace). Alt+Mayús+W lo trae al momento. El código legible está en <a href="winclus-widget.js"><code>winclus-widget.js</code></a>, para auditarlo.</p>
   <h3>Versión fija con integridad (solo si tu política de seguridad la exige)</h3>
   <p>Si tu entidad exige integridad de subrecursos (SRI) para los scripts de terceros, usa la copia fija de una versión con su hash:</p>
-  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.8.1.js" async
-        integrity="sha384-kWdeL4IswYVjeg1K7ttvXuq1zkPXoIJvMsimmXpIYgi0x/j5fncj8Giw9qFkmjbh"
+  <pre tabindex="0"><code>&lt;script src="https://winclus.com/widget-0.8.2.js" async
+        integrity="sha384-xK+HZpPyZtcDAVHNFV1O8XyzqhhL6HFbZkS3V56uXNRy6yUkRinEfuPcWrKGR5Jt"
         crossorigin="anonymous"&gt;&lt;/script&gt;</code></pre>
   <p>El atributo <code>integrity</code> es el hash SHA-384 del archivo: el navegador comprueba que lo que llega es exactamente la versión 0.8.1 y, si no coincide, no lo ejecuta. A cambio, <strong>esta versión no se actualiza nunca</strong>: para recibir las mejoras tienes que cambiar tú el número y el hash por los de la última versión publicada aquí. <code>widget.js</code> no lleva hash porque cambia.</p>
   <p>Atributos opcionales en el mismo <code>&lt;script&gt;</code>:</p>
@@ -52,6 +52,9 @@
       <tr><td><code>data-idiomas</code></td><td>Lista</td><td>Versiones del sitio en otros idiomas, para el botón «Otro idioma» que pide la barra de accesibilidad de la Resolución 2893 de 2020 (Anexo 1, 4.3.2 b): <code>data-idiomas="en=/en/, pt=https://…/pt/"</code>. Solo hace falta si el sitio no las declara ya con <code>&lt;link rel="alternate" hreflang&gt;</code>, con enlaces <code>hreflang</code> o con un selector de idioma con <code>lang</code>: Winclus las encuentra solo. Sin ninguna, el botón explica cómo traducir con el navegador.</td></tr>
       <tr><td><code>data-describir</code></td><td>URL</td><td>Servicio propio que describe las imágenes que el sitio publicó sin texto alternativo: recibe <code>POST {imagen, contexto, idioma}</code> y devuelve <code>{texto}</code>. La imagen va a tu servidor, no a Winclus. Sin él, el lector de Winclus da la mejor pista de la página (pie de foto, título, nombre del archivo) y dice que el sitio no la describió; nunca inventa una descripción.</td></tr>
       <tr><td><code>data-contacto</code></td><td><code>mailto:…</code> o URL</td><td>A dónde llega «Avisar de una barrera» (pestaña Más): un correo, o una URL que reciba <code>POST {url, texto, navegador, version, fecha, ayudas}</code>. Sin él, Winclus busca en la página un enlace de correo de accesibilidad o de contacto; si no hay, copia el aviso para pegarlo en el buzón de quejas.</td></tr>
+      <tr><td><code>data-logo</code></td><td>URL</td><td>Logo de la entidad en la cabecera del panel (plan Entidad). Se ve sobre fondo blanco, 28 px de alto.</td></tr>
+      <tr><td><code>data-nombre</code></td><td>Texto</td><td>Nombre de la entidad en la cabecera: «Alcaldía de … <small>con Winclus</small>».</td></tr>
+      <tr><td><code>data-ocultar</code></td><td><code>cara, clics, escribir, oir, ver</code></td><td>Pestañas que este sitio no quiere mostrar, separadas por comas (por ejemplo un intranet sin cámara: <code>data-ocultar="cara"</code>). Inicio y Más salen siempre. Las opciones de «¿Qué te cuesta?» que lleven a una pestaña oculta no hacen nada.</td></tr>
       <tr><td><code>data-arreglos</code></td><td><code>no</code></td><td>Apaga los <a href="#arreglos">arreglos al vuelo</a>. Por defecto Winclus pone en la página lo que le falta para los lectores de pantalla, el teclado y el zoom, y lo anota para quien mantiene el sitio.</td></tr>
       <tr><td><code>data-completo</code></td><td><code>winclus-widget.js</code></td><td>Cargar el código legible en vez del minificado (para depurar).</td></tr>
       <tr><td><code>data-glosario</code></td><td>URL</td><td>JSON <code>{"palabra": "definición"}</code> con el glosario del sitio para «Diccionario al tocar una palabra» (o <code>window.WinclusGlosario</code> con ese objeto). Manda sobre ARASAAC y Wikcionario. Sin él, el diccionario usa el glosario de trámites del widget, ARASAAC y Wikcionario.</td></tr>
