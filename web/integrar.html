@@ -117,13 +117,13 @@ media-src  blob:;                                  /* la cámara, si se permite 
   <p><strong>Winclus Monitor: que nada empeore sin que nadie se entere.</strong> <code>node monitor.js monitor.json</code> pasa el escáner cada día por las páginas de la lista y por las del <code>sitemap.xml</code>, compara con la vez anterior, guarda el historial, actualiza un panel (<code>panel.html</code>: total, evolución, cada página con su cambio, si tiene el widget y el enlace a la declaración) y avisa por correo, por webhook (Slack, Teams, n8n, Make) o abriendo un issue si aparece una barrera nueva, una página deja de responder, el widget desaparece o se pierde la declaración. Se programa con <code>monitor.ps1</code> (Programador de tareas de Windows), con cron o con la plantilla de GitHub Actions <code>integraciones/github/winclus-monitor.yml</code>. Sin límite de páginas ni de sitios.</p>
   <p>Un escáner detecta entre el 30 y el 50 % de las barreras; el resto sale de la revisión manual y de probar con personas con discapacidad. El informe lo dice.</p>
 
-  <h2>8. Idiomas del panel</h2>
+  <h2 id="idiomas">8. Idiomas del panel</h2>
   <p>El panel habla el idioma de la página (atributo <code>lang</code>, o <code>data-ui</code>). De fábrica, <strong>18 idiomas</strong>: español, inglés, portugués, francés, italiano, alemán, catalán, neerlandés, polaco, rumano, turco, ruso, chino, japonés, coreano, árabe, hindi e indonesio. Español e inglés van dentro del widget; los demás son archivos <code>idiomas/pt.json</code>, <code>fr.json</code>, <code>ar.json</code>… (el código de dos letras del idioma) que el cargador trae solo cuando hacen falta. En árabe el panel entero se voltea de derecha a izquierda (con la versión fija hay que servirlos junto al script o cargarlos como abajo). Para otro idioma, copia uno de esos archivos, tradúcelo y sírvelo como <code>idiomas/xx.json</code> junto a tu copia del widget, o define antes de cargar el widget un objeto con las cadenas en español como clave:</p>
   <pre tabindex="0"><code>&lt;script nonce="XYZ"&gt;
   window.WinclusIdiomas = { pt: { "Ver mejor": "Ver melhor", "Tamaño del texto": "Tamanho do texto", /* … */ } };
 &lt;/script&gt;
 &lt;script nonce="XYZ" src="https://winclus.com/widget.js" data-ui="pt" async&gt;&lt;/script&gt;</code></pre>
-  <p>Lo que no esté traducido sale en español. Las voces, el reconocimiento y la lectura de la página siguen el idioma de la página (<code>lang</code>) y <code>data-idioma</code>.</p>
+  <p>Lo que no esté traducido sale en español. Las voces, el reconocimiento y la lectura de la página siguen el idioma de la página (<code>lang</code>) y <code>data-idioma</code>. Para verlos sin instalar nada: <a href="idiomas">el panel en 18 idiomas</a>, con un selector.</p>
 
   <h2>Componentes de terceros</h2>
   <p>Pictogramas de ARASAAC (CC BY-NC-SA). Detector de caras MediaPipe y componentes de Project Gameface (Google), que no patrocinan ni respaldan este producto.</p>

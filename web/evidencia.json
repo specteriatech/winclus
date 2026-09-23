@@ -1,9 +1,9 @@
 {
-  "fecha": "2026-09-22T23:49:37.225Z",
-  "commit": "fb7990c",
+  "fecha": "2026-09-23T14:47:58.130Z",
+  "commit": "207309b",
   "version": "0.8.1",
-  "pruebas": 52,
-  "comprobaciones": 989,
+  "pruebas": 53,
+  "comprobaciones": 1015,
   "fallan": 0,
   "resultados": [
     {
@@ -16,7 +16,7 @@
       "ok": 18,
       "mal": 0,
       "bien": true,
-      "segundos": 15,
+      "segundos": 10,
       "lineas": [
         "OK  sin ajustes",
         "OK  oscuro",
@@ -49,7 +49,7 @@
       "ok": 14,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 3,
       "lineas": [
         "OK  ninguna tecla con tabindex=-1",
         "OK  con Tab se llega al teclado en pantalla",
@@ -78,7 +78,7 @@
       "ok": 11,
       "mal": 0,
       "bien": true,
-      "segundos": 6,
+      "segundos": 1,
       "lineas": [
         "OK  una sola pestaña tabulable y todas con aria-controls válido",
         "OK  la tabulable es la seleccionada",
@@ -163,7 +163,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 6,
+      "segundos": 1,
       "lineas": [
         "OK  el widget carga con CSP estricta",
         "OK  sin errores JS",
@@ -188,7 +188,7 @@
       "ok": 6,
       "mal": 0,
       "bien": true,
-      "segundos": 8,
+      "segundos": 3,
       "lineas": [
         "OK  los cuatro filtros son SVGFilterElement",
         "OK  el filtro protan se aplica y cambia el rojo de la página",
@@ -205,10 +205,10 @@
         "Res. 1519 Anexo 1",
         "WCAG 2.1 AA"
       ],
-      "ok": 140,
+      "ok": 150,
       "mal": 0,
       "bien": true,
-      "segundos": 18,
+      "segundos": 17,
       "lineas": [
         "OK  / a 1280 px: axe sin incumplimientos",
         "OK  / a 1280 px: carga el widget",
@@ -280,6 +280,11 @@
         "OK  /mapa-del-sitio.html a 1280 px: enlaza las otras páginas legales",
         "OK  /mapa-del-sitio.html a 1280 px: sin scroll horizontal",
         "OK  /mapa-del-sitio.html a 1280 px: sin errores JS",
+        "OK  /idiomas.html a 1280 px: axe sin incumplimientos",
+        "OK  /idiomas.html a 1280 px: carga el widget",
+        "OK  /idiomas.html a 1280 px: enlaza las otras páginas legales",
+        "OK  /idiomas.html a 1280 px: sin scroll horizontal",
+        "OK  /idiomas.html a 1280 px: sin errores JS",
         "OK  / a 390 px: axe sin incumplimientos",
         "OK  / a 390 px: carga el widget",
         "OK  / a 390 px: enlaza las otras páginas legales",
@@ -349,7 +354,12 @@
         "OK  /mapa-del-sitio.html a 390 px: carga el widget",
         "OK  /mapa-del-sitio.html a 390 px: enlaza las otras páginas legales",
         "OK  /mapa-del-sitio.html a 390 px: sin scroll horizontal",
-        "OK  /mapa-del-sitio.html a 390 px: sin errores JS"
+        "OK  /mapa-del-sitio.html a 390 px: sin errores JS",
+        "OK  /idiomas.html a 390 px: axe sin incumplimientos",
+        "OK  /idiomas.html a 390 px: carga el widget",
+        "OK  /idiomas.html a 390 px: enlaza las otras páginas legales",
+        "OK  /idiomas.html a 390 px: sin scroll horizontal",
+        "OK  /idiomas.html a 390 px: sin errores JS"
       ]
     },
     {
@@ -414,7 +424,7 @@
       "ok": 25,
       "mal": 0,
       "bien": true,
-      "segundos": 113,
+      "segundos": 114,
       "lineas": [
         "OK  con dos pulsadores el marco no se mueve solo",
         "OK  Espacio",
@@ -455,7 +465,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 8,
+      "segundos": 12,
       "lineas": [
         "OK  un audio de la página muestra el aviso con su nombre",
         "OK  un audio creado por código",
@@ -479,7 +489,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 7,
+      "segundos": 2,
       "lineas": [
         "OK  «números» pone etiquetas 1, 2, 3… sobre lo que se puede pulsar",
         "OK  «clic 2» pulsa el botón que lleva el 2",
@@ -662,7 +672,7 @@
       "ok": 11,
       "mal": 0,
       "bien": true,
-      "segundos": 6,
+      "segundos": 1,
       "lineas": [
         "OK  el guiño es un ojo cerrado con el otro abierto; un parpadeo de los dos ojos no cuenta",
         "OK  la inclinación de la cabeza sale del ángulo entre los ojos, a cada lado, y sin cara vale 0",
@@ -845,7 +855,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 7,
+      "segundos": 2,
       "lineas": [
         "OK  «¿Dónde estoy?» dice título, ruta, encabezados y avance",
         "OK  hay resumen: de qué va y lo más importante",
@@ -948,7 +958,7 @@
       "ok": 21,
       "mal": 0,
       "bien": true,
-      "segundos": 0,
+      "segundos": 1,
       "lineas": [
         "OK  winclus.com publica 2 PDF: guia-winclus.pdf, manual-winclus.pdf",
         "OK  guia-winclus.pdf: etiquetado",
@@ -1029,7 +1039,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 2,
+      "segundos": 1,
       "lineas": [
         "OK  ningún medio pasa del volumen máximo",
         "OK  sin voz elegida, usa la neuronal de es-CO",
@@ -1079,7 +1089,7 @@
       "ok": 21,
       "mal": 0,
       "bien": true,
-      "segundos": 15,
+      "segundos": 17,
       "lineas": [
         "OK  chromium: recorrido básico",
         "OK  chromium: sin speechSynthesis ni SpeechRecognition",
@@ -1215,7 +1225,7 @@
       "ok": 15,
       "mal": 0,
       "bien": true,
-      "segundos": 36,
+      "segundos": 35,
       "lineas": [
         "OK  la primera ejecución termina bien",
         "OK  la portada sale limpia, con widget y con enlace a la declaración",
@@ -1292,7 +1302,7 @@
       "ok": 98,
       "mal": 0,
       "bien": true,
-      "segundos": 4,
+      "segundos": 3,
       "lineas": [
         "OK  idiomas/pt.json cubre las 880 claves del panel, sin huecos ni claves sin traducir",
         "OK  idiomas/fr.json cubre las 880 claves del panel, sin huecos ni claves sin traducir",
@@ -1492,7 +1502,7 @@
         "OK  «Amarillo sobre negro» cambia texto y fondo de toda la página",
         "OK  «Los que yo elija» muestra los selectores y aplica y guarda el color",
         "OK  modo dislexia: interlineado 1,5, párrafos a 1,5 veces el interlineado, sin justificar, renglón ≤ 80 caracteres",
-        "OK  reglas AAA de axe sobre las 16 páginas del sitio (contraste 7:1 incluido): sin violaciones",
+        "OK  reglas AAA de axe sobre las 17 páginas del sitio (contraste 7:1 incluido): sin violaciones",
         "OK  2.5.5: enlaces y botones del sitio que no van en línea miden al menos 44 px",
         "OK  3.1.4: el glosario está enlazado desde el pie de todas las páginas",
         "OK  2.4.8: las páginas interiores llevan migas de pan con aria-current",
@@ -1558,7 +1568,7 @@
       "ok": 24,
       "mal": 0,
       "bien": true,
-      "segundos": 10,
+      "segundos": 5,
       "lineas": [
         "OK  el panel se abre en la vista sencilla: sin pestañas, con «Ver más opciones» y «Volver a como estaba» fijos abajo",
         "OK  hay 10 opciones, con «No veo» y «Confundo los colores» nuevas",
@@ -1597,7 +1607,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 19,
+      "segundos": 14,
       "lineas": [
         "OK  el audio pasa por la cadena de Winclus y suena",
         "OK  al 300 % sale unas tres veces más fuerte",
@@ -1729,7 +1739,7 @@
       "ok": 5,
       "mal": 0,
       "bien": true,
-      "segundos": 38,
+      "segundos": 37,
       "lineas": [
         "OK  sin mascarilla: cara detectada, puntero al centro y a los dos lados, parpadeo con señal",
         "OK  con la mascarilla puesta desde el inicio: se detecta la cara, el puntero reposa al centro y sigue a la cabeza a los dos lados",
@@ -1757,6 +1767,38 @@
         "OK  con movimiento mínimo, pone el máximo y propone los ojos o un pulsador",
         "OK  elegir «Con un pulsador» enciende el barrido",
         "OK  sin errores de JavaScript"
+      ]
+    },
+    {
+      "archivo": "prueba_idiomas_demo.js",
+      "que": "Página «El panel en 18 idiomas» (winclus.com/idiomas): un selector con cada idioma en su propia lengua; al elegir uno el panel se abre solo en ese idioma (japonés, árabe volteado, inglés, portugués), el elegido queda marcado y la línea de instalación lo lleva; un código inexistente cae a español.",
+      "criterios": [
+        "WCAG 3.1.1",
+        "WCAG 3.1.2",
+        "EN 301 549 11.7",
+        "Res. 2893 Anexo 1 4.3.2 b"
+      ],
+      "ok": 16,
+      "mal": 0,
+      "bien": true,
+      "segundos": 10,
+      "lineas": [
+        "OK  la página lista los 18 idiomas: es, en y los 16 con archivo",
+        "OK  index.html enlaza a la página de idiomas",
+        "OK  integrar.html enlaza a la página de idiomas",
+        "OK  mapa-del-sitio.html enlaza a la página de idiomas",
+        "OK  sitemap.xml enlaza a la página de idiomas",
+        "OK  idiomas.html carga sin errores de JavaScript",
+        "OK  sin elegir nada el panel se abre solo y sale en español",
+        "OK  el español queda marcado y la línea de instalación no lleva data-ui",
+        "OK  18 botones, cada uno con su nombre en su lengua y su lang",
+        "OK  la página sigue declarando lang=es",
+        "OK  ?ui=ja: el panel se abre en japonés",
+        "OK  el japonés queda marcado, el aviso y el título lo dicen y la línea lleva data-ui=\"ja\"",
+        "OK  ?ui=ar: el panel sale en árabe y volteado",
+        "OK  ?ui=en: el panel sale en inglés",
+        "OK  ?ui=xx",
+        "OK  pulsar «Português» recarga con ?ui=pt y el panel sale en portugués"
       ]
     },
     {

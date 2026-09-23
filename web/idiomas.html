@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El panel de Winclus en 18 idiomas</title>
+<meta name="description" content="Elige un idioma y mira el panel de accesibilidad de Winclus en español, inglés, portugués, francés, italiano, alemán, catalán, neerlandés, polaco, rumano, turco, ruso, chino, japonés, coreano, árabe, hindi o indonesio.">
+<link rel="icon" href="img/icono.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="paginas.css">
+<style>
+  .idiomas{list-style:none;margin:18px 0 26px;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .idiomas a{display:flex;flex-direction:column;justify-content:center;min-height:64px;padding:10px 14px;background:#F3F6FA;border:2px solid #DCE3EC;border-radius:12px;text-decoration:none;color:#101F3D;font-weight:600;line-height:1.3}
+  .idiomas a:hover,.idiomas a:focus{border-color:#2743B4}
+  .idiomas a[aria-current]{background:#101F3D;border-color:#101F3D;color:#fff}
+  .idiomas small{font-weight:400;color:#3F4B66;font-size:.85rem}
+  .idiomas a[aria-current] small{color:#C9D3E8}
+  .ahora{background:#E8F7F3;border-left:6px solid #0A5C54;border-radius:0 12px 12px 0;padding:12px 18px;margin:0 0 20px}
+  .ahora p{margin:0 0 6px}.ahora p:last-child{margin:0}
+  .ahora .nombre{font-size:1.4rem;font-weight:700}
+  pre{background:#101F3D;color:#EEF1EA;padding:14px 16px;border-radius:10px;overflow-x:auto;font:14px/1.5 Consolas,ui-monospace,monospace;white-space:pre}
+  code{font-family:Consolas,ui-monospace,monospace;font-size:.92em;background:#F3F6FA;padding:1px 5px;border-radius:4px}pre code{background:none;padding:0}
+  .abrir{display:inline-flex;align-items:center;min-height:44px;padding:8px 20px;border-radius:999px;background:#2743B4;color:#fff;font-weight:600;text-decoration:none;border:0;font:inherit;cursor:pointer}
+  .abrir:hover,.abrir:focus{background:#101F3D}
+  kbd{font:inherit;background:#F3F6FA;border:1px solid #DCE3EC;border-bottom-width:2px;border-radius:6px;padding:0 6px}
+</style>
+</head>
+<body>
+<a class="salto" href="#contenido">Ir al contenido</a>
+<header>
+  <div class="barra">
+    <a class="marca" href="/"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a>
+    <a class="volver" href="integrar">Volver a la guía técnica</a>
+  </div>
+</header>
+
+<main id="contenido">
+<nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><a href="integrar">Integrar Winclus</a><span aria-hidden="true">›</span><span aria-current="page">Idiomas del panel</span></nav>
+  <h1>El panel de Winclus en 18 idiomas</h1>
+  <p class="meta">Widget 0.8.1. Esta página está en español; lo que cambia con cada idioma es el panel de Winclus (el botón redondo de abajo a la derecha). Elige uno y el panel se abre solo.</p>
+  <div class="facil"><h2>En pocas palabras</h2><ul><li>Pulsa un idioma de la lista.</li><li>La página se recarga y el panel de Winclus sale en ese idioma.</li><li>En tu sitio no hace falta elegir nada: el panel habla el idioma de la página.</li></ul></div>
+
+  <div class="ahora" id="ahora" aria-live="polite">
+    <p>Ahora el panel está en <span class="nombre" id="nombreAhora">español</span>.</p>
+    <p><button class="abrir" type="button" id="btnAbrir">Abrir el panel</button> <span class="meta">o pulsa <kbd>Alt</kbd>+<kbd>Mayús</kbd>+<kbd>W</kbd>.</span></p>
+  </div>
+
+  <h2 id="elegir">Elige el idioma del panel</h2>
+  <ul class="idiomas" id="idiomas"></ul>
+
+  <h2>Cómo sale en tu sitio</h2>
+  <p>El panel toma el idioma del atributo <code>lang</code> de la página. Una página en francés (<code>&lt;html lang="fr"&gt;</code>) recibe el panel en francés sin tocar nada. Si la página está en un idioma y el panel debe ir en otro, se dice con <code>data-ui</code>:</p>
+  <pre tabindex="0"><code id="linea">&lt;script src="https://winclus.com/widget.js" async&gt;&lt;/script&gt;</code></pre>
+  <p>Español e inglés van dentro del widget; los otros 16 son archivos <code>idiomas/xx.json</code> con las 880 frases del panel, que el cargador trae solo cuando hacen falta. En árabe el panel entero se voltea de derecha a izquierda. Lo que no esté traducido sale en español. Para añadir un idioma, o para las voces y el dictado, mira la <a href="integrar#idiomas">guía técnica</a>.</p>
+</main>
+
+<footer>
+  <div class="pie">
+    <div>© 2026 Winclus</div>
+    <ul>
+      <li><a href="/">Portada</a></li>
+      <li><a href="accesibilidad">Accesibilidad</a></li>
+      <li><a href="privacidad">Privacidad y datos</a></li>
+      <li><a href="mapa-del-sitio">Mapa del sitio</a></li>
+      <li><a href="glosario">Glosario</a></li>
+      <li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li>
+    </ul>
+  </div>
+</footer>
+<script>
+(function () {
+  // Los 18 idiomas del panel: código, nombre en su propia lengua y nombre en español
+  var IDIOMAS = [
+    ["es", "Español", "español"], ["en", "English", "inglés"], ["pt", "Português", "portugués"], ["fr", "Français", "francés"],
+    ["it", "Italiano", "italiano"], ["de", "Deutsch", "alemán"], ["ca", "Català", "catalán"], ["nl", "Nederlands", "neerlandés"],
+    ["pl", "Polski", "polaco"], ["ro", "Română", "rumano"], ["tr", "Türkçe", "turco"], ["ru", "Русский", "ruso"],
+    ["zh", "中文", "chino"], ["ja", "日本語", "japonés"], ["ko", "한국어", "coreano"], ["ar", "العربية", "árabe"],
+    ["hi", "हिन्दी", "hindi"], ["id", "Bahasa Indonesia", "indonesio"]
+  ];
+  var pedido = (new URLSearchParams(location.search).get("ui") || "es").toLowerCase();
+  var actual = IDIOMAS.filter(function (i) { return i[0] === pedido; })[0] || IDIOMAS[0];
+  var ul = document.getElementById("idiomas");
+  IDIOMAS.forEach(function (i) {
+    var li = document.createElement("li"), a = document.createElement("a");
+    a.href = location.pathname + (i[0] === "es" ? "" : "?ui=" + i[0]);   // la ruta actual: vale con /idiomas y con idiomas.html
+    a.lang = i[0];
+    a.innerHTML = i[1] + '<small lang="es">' + i[2] + "</small>";
+    if (i[0] === actual[0]) a.setAttribute("aria-current", "true");
+    li.appendChild(a); ul.appendChild(li);
+  });
+  document.getElementById("nombreAhora").textContent = actual[2] + " (" + actual[1] + ")";
+  document.getElementById("nombreAhora").setAttribute("lang", "es");
+  document.title = "El panel de Winclus en " + actual[2] + " · 18 idiomas";
+  document.getElementById("linea").textContent = actual[0] === "es"
+    ? '<script src="https://winclus.com/widget.js" async><\/script>'
+    : '<script src="https://winclus.com/widget.js" async data-ui="' + actual[0] + '"><\/script>';
+  // El widget, con el idioma elegido (data-ui manda sobre el lang de la página)
+  var s = document.createElement("script");
+  s.src = "widget.js"; s.async = true;
+  if (actual[0] !== "es") s.dataset.ui = actual[0];
+  document.body.appendChild(s);
+  // Abrir el panel en cuanto llegue, para que se vea el idioma sin buscar el botón
+  var abrir = function () { if (window.Winclus) { window.Winclus.abrir(); return true; } return false; };
+  document.getElementById("btnAbrir").addEventListener("click", function () { if (!abrir()) setTimeout(abrir, 800); });
+  var intentos = 0, t = setInterval(function () { if (abrir() || ++intentos > 100) clearInterval(t); }, 200);
+})();
+</script>
+</body>
+</html>
