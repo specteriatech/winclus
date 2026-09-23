@@ -1,10 +1,10 @@
 {
-  "fecha": "2026-09-23T15:33:11.083Z",
-  "commit": "f68c2f9",
+  "fecha": "2026-09-23T16:08:07.430Z",
+  "commit": "4531829",
   "version": "0.8.2",
-  "pruebas": 56,
-  "comprobaciones": 1080,
-  "fallan": 1,
+  "pruebas": 60,
+  "comprobaciones": 1140,
+  "fallan": 0,
   "resultados": [
     {
       "archivo": "prueba_posicion.js",
@@ -188,7 +188,7 @@
       "ok": 6,
       "mal": 0,
       "bien": true,
-      "segundos": 3,
+      "segundos": 8,
       "lineas": [
         "OK  los cuatro filtros son SVGFilterElement",
         "OK  el filtro protan se aplica y cambia el rojo de la página",
@@ -205,10 +205,10 @@
         "Res. 1519 Anexo 1",
         "WCAG 2.1 AA"
       ],
-      "ok": 170,
+      "ok": 190,
       "mal": 0,
       "bien": true,
-      "segundos": 17,
+      "segundos": 21,
       "lineas": [
         "OK  / a 1280 px: axe sin incumplimientos",
         "OK  / a 1280 px: carga el widget",
@@ -295,6 +295,16 @@
         "OK  /declaracion.html a 1280 px: enlaza las otras páginas legales",
         "OK  /declaracion.html a 1280 px: sin scroll horizontal",
         "OK  /declaracion.html a 1280 px: sin errores JS",
+        "OK  /escanear.html a 1280 px: axe sin incumplimientos",
+        "OK  /escanear.html a 1280 px: carga el widget",
+        "OK  /escanear.html a 1280 px: enlaza las otras páginas legales",
+        "OK  /escanear.html a 1280 px: sin scroll horizontal",
+        "OK  /escanear.html a 1280 px: sin errores JS",
+        "OK  /panel.html a 1280 px: axe sin incumplimientos",
+        "OK  /panel.html a 1280 px: carga el widget",
+        "OK  /panel.html a 1280 px: enlaza las otras páginas legales",
+        "OK  /panel.html a 1280 px: sin scroll horizontal",
+        "OK  /panel.html a 1280 px: sin errores JS",
         "OK  / a 390 px: axe sin incumplimientos",
         "OK  / a 390 px: carga el widget",
         "OK  / a 390 px: enlaza las otras páginas legales",
@@ -379,7 +389,17 @@
         "OK  /declaracion.html a 390 px: carga el widget",
         "OK  /declaracion.html a 390 px: enlaza las otras páginas legales",
         "OK  /declaracion.html a 390 px: sin scroll horizontal",
-        "OK  /declaracion.html a 390 px: sin errores JS"
+        "OK  /declaracion.html a 390 px: sin errores JS",
+        "OK  /escanear.html a 390 px: axe sin incumplimientos",
+        "OK  /escanear.html a 390 px: carga el widget",
+        "OK  /escanear.html a 390 px: enlaza las otras páginas legales",
+        "OK  /escanear.html a 390 px: sin scroll horizontal",
+        "OK  /escanear.html a 390 px: sin errores JS",
+        "OK  /panel.html a 390 px: axe sin incumplimientos",
+        "OK  /panel.html a 390 px: carga el widget",
+        "OK  /panel.html a 390 px: enlaza las otras páginas legales",
+        "OK  /panel.html a 390 px: sin scroll horizontal",
+        "OK  /panel.html a 390 px: sin errores JS"
       ]
     },
     {
@@ -444,7 +464,7 @@
       "ok": 25,
       "mal": 0,
       "bien": true,
-      "segundos": 113,
+      "segundos": 114,
       "lineas": [
         "OK  con dos pulsadores el marco no se mueve solo",
         "OK  Espacio",
@@ -509,7 +529,7 @@
       "ok": 12,
       "mal": 0,
       "bien": true,
-      "segundos": 7,
+      "segundos": 2,
       "lineas": [
         "OK  «números» pone etiquetas 1, 2, 3… sobre lo que se puede pulsar",
         "OK  «clic 2» pulsa el botón que lleva el 2",
@@ -1059,7 +1079,7 @@
       "ok": 13,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 2,
       "lineas": [
         "OK  ningún medio pasa del volumen máximo",
         "OK  sin voz elegida, usa la neuronal de es-CO",
@@ -1086,7 +1106,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 11,
+      "segundos": 16,
       "lineas": [
         "OK  demo.html pasa axe",
         "OK  la demo tiene los siete pasos",
@@ -1109,7 +1129,7 @@
       "ok": 21,
       "mal": 0,
       "bien": true,
-      "segundos": 15,
+      "segundos": 20,
       "lineas": [
         "OK  chromium: recorrido básico",
         "OK  chromium: sin speechSynthesis ni SpeechRecognition",
@@ -1172,7 +1192,7 @@
       "ok": 4,
       "mal": 0,
       "bien": true,
-      "segundos": 14,
+      "segundos": 9,
       "lineas": [
         "OK  el navegador avisa de cada cuadro nuevo",
         "OK  no se infiere más veces que cuadros entrega la cámara",
@@ -1245,7 +1265,7 @@
       "ok": 15,
       "mal": 0,
       "bien": true,
-      "segundos": 35,
+      "segundos": 36,
       "lineas": [
         "OK  la primera ejecución termina bien",
         "OK  la portada sale limpia, con widget y con enlace a la declaración",
@@ -1279,7 +1299,7 @@
       "ok": 28,
       "mal": 0,
       "bien": true,
-      "segundos": 8,
+      "segundos": 3,
       "lineas": [
         "OK  «Ocultar imágenes» esconde las imágenes del todo y lo dice en «Lo que tienes activado»",
         "OK  la saturación baja por grados y se aplica como filtro a toda la página",
@@ -1324,22 +1344,22 @@
       "bien": true,
       "segundos": 3,
       "lineas": [
-        "OK  idiomas/pt.json cubre las 881 claves del panel, sin huecos ni claves sin traducir",
-        "OK  idiomas/fr.json cubre las 881 claves del panel, sin huecos ni claves sin traducir",
-        "OK  idiomas/it.json cubre las 881 claves del panel, sin huecos ni claves sin traducir",
-        "OK  idiomas/de.json cubre las 881 claves del panel, sin huecos ni claves sin traducir",
-        "OK  idiomas/ca.json cubre las 881 claves del panel, sin huecos ni claves sin traducir",
-        "OK  idiomas/nl.json cubre las 881 claves del panel, sin huecos ni claves sin traducir",
-        "OK  idiomas/pl.json cubre las 881 claves del panel, sin huecos ni claves sin traducir",
-        "OK  idiomas/ro.json cubre las 881 claves del panel, sin huecos ni claves sin traducir",
-        "OK  idiomas/tr.json cubre las 881 claves del panel, sin huecos ni claves sin traducir",
-        "OK  idiomas/ru.json cubre las 881 claves del panel, sin huecos ni claves sin traducir",
-        "OK  idiomas/zh.json cubre las 881 claves del panel, sin huecos ni claves sin traducir",
-        "OK  idiomas/ja.json cubre las 881 claves del panel, sin huecos ni claves sin traducir",
-        "OK  idiomas/ko.json cubre las 881 claves del panel, sin huecos ni claves sin traducir",
-        "OK  idiomas/ar.json cubre las 881 claves del panel, sin huecos ni claves sin traducir",
-        "OK  idiomas/hi.json cubre las 881 claves del panel, sin huecos ni claves sin traducir",
-        "OK  idiomas/id.json cubre las 881 claves del panel, sin huecos ni claves sin traducir",
+        "OK  idiomas/pt.json cubre las 889 claves del panel, sin huecos ni claves sin traducir",
+        "OK  idiomas/fr.json cubre las 889 claves del panel, sin huecos ni claves sin traducir",
+        "OK  idiomas/it.json cubre las 889 claves del panel, sin huecos ni claves sin traducir",
+        "OK  idiomas/de.json cubre las 889 claves del panel, sin huecos ni claves sin traducir",
+        "OK  idiomas/ca.json cubre las 889 claves del panel, sin huecos ni claves sin traducir",
+        "OK  idiomas/nl.json cubre las 889 claves del panel, sin huecos ni claves sin traducir",
+        "OK  idiomas/pl.json cubre las 889 claves del panel, sin huecos ni claves sin traducir",
+        "OK  idiomas/ro.json cubre las 889 claves del panel, sin huecos ni claves sin traducir",
+        "OK  idiomas/tr.json cubre las 889 claves del panel, sin huecos ni claves sin traducir",
+        "OK  idiomas/ru.json cubre las 889 claves del panel, sin huecos ni claves sin traducir",
+        "OK  idiomas/zh.json cubre las 889 claves del panel, sin huecos ni claves sin traducir",
+        "OK  idiomas/ja.json cubre las 889 claves del panel, sin huecos ni claves sin traducir",
+        "OK  idiomas/ko.json cubre las 889 claves del panel, sin huecos ni claves sin traducir",
+        "OK  idiomas/ar.json cubre las 889 claves del panel, sin huecos ni claves sin traducir",
+        "OK  idiomas/hi.json cubre las 889 claves del panel, sin huecos ni claves sin traducir",
+        "OK  idiomas/id.json cubre las 889 claves del panel, sin huecos ni claves sin traducir",
         "OK  pt: el cargador trae idiomas/pt.json y el panel se marca con ese idioma",
         "OK  pt: los títulos del panel salen traducidos",
         "OK  pt: no se cuela español en nombres, ayudas, intros ni situaciones",
@@ -1464,7 +1484,7 @@
       "ok": 26,
       "mal": 0,
       "bien": true,
-      "segundos": 1,
+      "segundos": 6,
       "lineas": [
         "OK  «Legible» pone Verdana en la página, no en el panel, y se guarda",
         "OK  «Para dislexia» pide OpenDyslexic desde winclus.com/fuentes",
@@ -1507,9 +1527,9 @@
         "WCAG 2.4.8",
         "WCAG 1.2.8"
       ],
-      "ok": 17,
-      "mal": 1,
-      "bien": false,
+      "ok": 18,
+      "mal": 0,
+      "bien": true,
       "segundos": 6,
       "lineas": [
         "OK  reglas AAA de axe sobre el panel: sin violaciones",
@@ -1522,7 +1542,7 @@
         "OK  «Amarillo sobre negro» cambia texto y fondo de toda la página",
         "OK  «Los que yo elija» muestra los selectores y aplica y guarda el color",
         "OK  modo dislexia: interlineado 1,5, párrafos a 1,5 veces el interlineado, sin justificar, renglón ≤ 80 caracteres",
-        "MAL reglas AAA de axe sobre las 19 páginas del sitio",
+        "OK  reglas AAA de axe sobre las 21 páginas del sitio (contraste 7:1 incluido): sin violaciones",
         "OK  2.5.5: enlaces y botones del sitio que no van en línea miden al menos 44 px",
         "OK  3.1.4: el glosario está enlazado desde el pie de todas las páginas",
         "OK  2.4.8: las páginas interiores llevan migas de pan con aria-current",
@@ -1588,7 +1608,7 @@
       "ok": 24,
       "mal": 0,
       "bien": true,
-      "segundos": 5,
+      "segundos": 10,
       "lineas": [
         "OK  el panel se abre en la vista sencilla: sin pestañas, con «Ver más opciones» y «Volver a como estaba» fijos abajo",
         "OK  hay 10 opciones, con «No veo» y «Confundo los colores» nuevas",
@@ -1627,7 +1647,7 @@
       "ok": 10,
       "mal": 0,
       "bien": true,
-      "segundos": 19,
+      "segundos": 20,
       "lineas": [
         "OK  el audio pasa por la cadena de Winclus y suena",
         "OK  al 300 % sale unas tres veces más fuerte",
@@ -1737,7 +1757,7 @@
       "ok": 8,
       "mal": 0,
       "bien": true,
-      "segundos": 5,
+      "segundos": 10,
       "lineas": [
         "OK  con el interruptor apagado, el enlace al PDF hace lo de siempre",
         "OK  con el interruptor, el enlace a un PDF del sitio no navega",
@@ -1779,7 +1799,7 @@
       "ok": 6,
       "mal": 0,
       "bien": true,
-      "segundos": 34,
+      "segundos": 39,
       "lineas": [
         "OK  sin cámara, dice que primero hay que activarla",
         "OK  con poco movimiento, la medición sube la velocidad",
@@ -1787,6 +1807,103 @@
         "OK  con movimiento mínimo, pone el máximo y propone los ojos o un pulsador",
         "OK  elegir «Con un pulsador» enciende el barrido",
         "OK  sin errores de JavaScript"
+      ]
+    },
+    {
+      "archivo": "prueba_traducir.js",
+      "que": "Traducción automática del contenido (0.8.2, data-traducir): «Otro idioma» ofrece «Traducir esta página» a 17 idiomas con el servicio de traducción del sitio (texto, alt, placeholder, title y aria-label, en lotes), cambia el lang de la página, no toca el panel de Winclus ni el código, «Volver al idioma original» restaura todo, y si el servicio falla la página queda como estaba; sin data-traducir no sale la opción ni se manda nada.",
+      "criterios": [
+        "Res. 2893 de 2020 Anexo 1 4.3.2 b",
+        "WCAG 3.1.1",
+        "WCAG 3.1.2"
+      ],
+      "ok": 11,
+      "mal": 0,
+      "bien": true,
+      "segundos": 2,
+      "lineas": [
+        "OK  con data-traducir, «Otro idioma» ofrece «Traducir esta página» con un desplegable de idiomas",
+        "OK  17 idiomas de destino, sin el propio de la página",
+        "OK  traduce los textos de la página y cambia el lang a «en»",
+        "OK  traduce alt y placeholder",
+        "OK  respeta translate=\"no\", el código y el panel de Winclus",
+        "OK  manda lotes de hasta 60 textos con de/a",
+        "OK  tras traducir ofrece «Volver al idioma original»",
+        "OK  «Volver al idioma original» restaura textos, atributos y lang",
+        "OK  sin errores JS",
+        "OK  si el servicio falla, la página queda como estaba y no hay errores",
+        "OK  sin data-traducir no sale la opción, se explica el navegador y no se manda nada"
+      ]
+    },
+    {
+      "archivo": "prueba_clave.js",
+      "que": "Clave de sitio (0.8.2, data-clave): el cargador pide la configuración del panel a winclus.com/api/config y la pasa al widget (logo, nombre, pestañas ocultas), lo escrito en la línea manda, sin respuesta el panel sale igual, y al salir de la página el widget manda a /api/uso solo números (panel abierto y opciones tocadas) sin identificadores; sin clave no manda nada.",
+      "criterios": [
+        "Ley 1581 de 2012",
+        "WCAG 4.1.2"
+      ],
+      "ok": 11,
+      "mal": 0,
+      "bien": true,
+      "segundos": 2,
+      "lineas": [
+        "OK  el cargador pide /api/config con la clave",
+        "OK  la configuración llega al widget: nombre, logo y pestañas ocultas",
+        "OK  el color del botón viene de la configuración",
+        "OK  «Acerca de» dice que el sitio recibe cifras de uso anónimas",
+        "OK  al ocultarse la página manda un POST a /api/uso con la clave",
+        "OK  el cuerpo lleva solo números por opción, la página y la versión: nada de identificadores",
+        "OK  ningún dato personal en lo enviado",
+        "OK  data-nombre escrito en la línea manda sobre el del servidor",
+        "OK  sin respuesta de /api/config el panel sale como siempre y sin esperar mucho",
+        "OK  sin data-clave no se pide configuración ni se manda uso, y «Acerca de» no lo menciona",
+        "OK  una clave con caracteres no permitidos no se usa"
+      ]
+    },
+    {
+      "archivo": "prueba_escanear.js",
+      "que": "Escáner en línea (winclus.com/escanear y /api/escanear): rechaza direcciones privadas o sin https, analiza una página con barreras en el Chromium del servidor (axe-core y comprobaciones de la Res. 1519), devuelve gravedad, criterio del Anexo 1 y puntaje, y la página pinta el resultado, lo descarga como informe y explica los errores.",
+      "criterios": [
+        "Res. 1519 de 2020 Anexo 1",
+        "WCAG 2.1 AA"
+      ],
+      "ok": 11,
+      "mal": 0,
+      "bien": true,
+      "segundos": 10,
+      "lineas": [
+        "OK  urlValida: solo http(s) públicas, nada privado ni local",
+        "OK  escanea pagina-arreglos.html: muchas barreras, puntaje entre 0 y 100",
+        "OK  cada problema lleva criterio del Anexo 1, gravedad, texto y cuántos",
+        "OK  comprobaciones de la 1519: sin declaración, sin «Ir al contenido», sin Winclus",
+        "OK  la portada de winclus.com: con Winclus, declaración y salto, puntaje alto",
+        "OK  una página caída se informa como error, no como página sin barreras",
+        "OK  sin https:// la página lo añade antes de pedir",
+        "OK  pinta puntaje, barreras, comprobaciones y cifras",
+        "OK  las barreras salen de más a menos graves",
+        "OK  descarga el informe en HTML con las barreras",
+        "OK  el error de la API se muestra y no hay errores JS"
+      ]
+    },
+    {
+      "archivo": "prueba_panel.js",
+      "que": "Panel de cliente (winclus.com/panel): sin servidor configurado lo dice; con servidor pide el correo para el enlace de acceso; las pestañas del sitio siguen el patrón Tabs; los límites por plan coinciden con el esquema SQL; axe sin incumplimientos.",
+      "criterios": [
+        "WCAG 2.4.3",
+        "WCAG 4.1.2"
+      ],
+      "ok": 7,
+      "mal": 0,
+      "bien": true,
+      "segundos": 2,
+      "lineas": [
+        "OK  los límites por plan del panel coinciden con los del esquema SQL",
+        "OK  el esquema activa la seguridad por filas en todas las tablas",
+        "OK  sin servidor configurado lo dice y no muestra el acceso",
+        "OK  pide el enlace de acceso al correo",
+        "OK  sin errores JS al entrar",
+        "OK  cinco pestañas con aria-controls y una sola seleccionada",
+        "OK  axe sin incumplimientos en el panel"
       ]
     },
     {
@@ -1800,7 +1917,7 @@
       "ok": 11,
       "mal": 0,
       "bien": true,
-      "segundos": 7,
+      "segundos": 2,
       "lineas": [
         "OK  sin atributos: cabecera «Winclus», logo de Winclus y siete pestañas",
         "OK  data-logo y data-nombre: el logo de la entidad y «Alcaldía de Prueba · con Winclus» en la cabecera",
@@ -1890,7 +2007,7 @@
       "ok": 16,
       "mal": 0,
       "bien": true,
-      "segundos": 11,
+      "segundos": 6,
       "lineas": [
         "OK  la página lista los 18 idiomas: es, en y los 16 con archivo",
         "OK  index.html enlaza a la página de idiomas",

@@ -119,5 +119,12 @@
 "Todavía no hay cifras de uso en este navegador.": "Bu tarayıcıda henüz kullanım rakamı yok.", "Uso de Winclus en este navegador desde el ": "Bu tarayıcıda Winclus kullanımı, başlangıç: ", " (sitio: ": " (site: ", "clics hechos con la cara": "yüzle yapılan tıklama", "acciones con el barrido": "taramayla eylem", "frases dichas con voz": "sesle söylenen cümle", "frases dichas con pictogramas": "piktogramla söylenen cümle", "veces que se abrió el teclado": "kez klavye açıldı", "dictados escritos": "yazılan dikte", "errores de formulario explicados": "açıklanan form hatası",
 "Si algo se ha descolocado y quieres volver a como estaba al principio.": "Bir şeyler bozulduysa ve başlangıçtaki haline dönmek istiyorsanız.",
 "con Winclus": "Winclus ile",
-"Este sitio recibe cifras de uso anónimas (cuántas veces se abre el panel y qué opciones se tocan), sin identificar a nadie.": "Bu site, kimseyi tanımlamadan anonim kullanım sayıları alır (panelin kaç kez açıldığı ve hangi seçeneklerin kullanıldığı)."
+"Este sitio recibe cifras de uso anónimas (cuántas veces se abre el panel y qué opciones se tocan), sin identificar a nadie.": "Bu site, kimseyi tanımlamadan anonim kullanım sayıları alır (panelin kaç kez açıldığı ve hangi seçeneklerin kullanıldığı).",
+"Traducir esta página": "Bu sayfayı çevir",
+"Volver al idioma original": "Özgün dile dön",
+"Traduciendo…": "Çevriliyor…",
+"Página traducida.": "Sayfa çevrildi.",
+"No se pudo traducir. Inténtalo más tarde.": "Çevrilemedi. Daha sonra tekrar deneyin.",
+"Traduce el texto de esta página con el servicio de traducción de este sitio. Es una traducción automática: puede tener errores.": "Bu sayfanın metnini bu sitenin çeviri hizmetiyle çevirir. Makine çevirisidir: hatalar içerebilir.",
+"Traducir a": "Şu dile çevir"
 }

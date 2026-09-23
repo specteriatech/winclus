@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Escanear un sitio</title>
+<meta name="description" content="Escribe la dirección de un sitio y en medio minuto sabes qué barreras de accesibilidad tiene, con el criterio de la Resolución 1519 de cada una y cómo arreglarla. Gratis, sin cuenta.">
+<link rel="icon" href="img/icono.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="paginas.css">
+<style>
+  main{width:min(960px,100% - 40px)}
+  form.esc{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 8px}
+  form.esc input{flex:1 1 320px;font:inherit;padding:10px 14px;border:2px solid #8892A6;border-radius:999px;min-height:52px}
+  form.esc button{font:inherit;font-weight:700;min-height:52px;padding:10px 26px;border-radius:999px;border:0;background:var(--azul);color:#fff;cursor:pointer}
+  form.esc button:hover{background:var(--navy)}form.esc button[disabled]{opacity:.6;cursor:wait}
+  .estado{min-height:1.5em;color:var(--texto2)}
+  .res{display:none;margin-top:20px}.res.visible{display:block}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:14px 0 20px}
+  .kpi{background:var(--fondo2);border-radius:12px;padding:12px 14px}.kpi b{display:block;font-size:1.8rem;line-height:1.1}.kpi small{color:var(--texto2)}
+  .kpi.mal b{color:#8A2E2E}.kpi.bien b{color:var(--teal)}
+  .puntaje{display:flex;align-items:center;gap:16px;margin:10px 0}
+  .puntaje .n{font-size:3rem;font-weight:700;line-height:1;min-width:2.2em}
+  .barra{flex:1;height:14px;background:#E5E9F0;border-radius:999px;overflow:hidden}.barra span{display:block;height:100%;background:linear-gradient(90deg,#8A2E2E,#C99A1E,#0A5C54);width:0}
+  .checks{list-style:none;padding:0;margin:0 0 20px;display:flex;flex-wrap:wrap;gap:8px}.checks li{border-radius:999px;padding:6px 14px;background:#E8F7F3;color:var(--teal);font-weight:600}.checks li.no{background:#FBE9E9;color:#8A2E2E}
+  table td .sel{display:block;font:12px Consolas,ui-monospace,monospace;color:var(--texto2);word-break:break-all;margin-top:4px}
+  .imp{font-weight:600;white-space:nowrap}.imp-critical{color:#8A2E2E}.imp-serious{color:#B4471F}.imp-moderate{color:#7A5A00}.imp-minor{color:var(--texto2)}
+  .acciones{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+  .btn{display:inline-flex;align-items:center;min-height:48px;padding:10px 18px;border-radius:999px;font:inherit;font-weight:600;border:2px solid var(--navy);background:#fff;color:var(--navy);cursor:pointer;text-decoration:none}.btn.lleno{background:var(--azul);border-color:var(--azul);color:#fff}
+  .error{background:#FBE9E9;border:1px solid #C25A5A;border-radius:12px;padding:12px 16px;margin:14px 0}
+</style>
+</head>
+<body>
+<a class="salto" href="#contenido">Ir al contenido</a>
+<header>
+  <div class="barra">
+    <a class="marca" href="/"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a>
+    <a class="volver" href="/">Volver a la portada</a>
+  </div>
+</header>
+
+<main id="contenido">
+<nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><span aria-current="page">Escanear un sitio</span></nav>
+  <h1>Escanea tu sitio en medio minuto</h1>
+  <p class="meta">Escribe la dirección de una página y Winclus Audit la revisa con las mismas reglas que usan las auditorías (axe-core, WCAG 2.1 y 2.2 AA) más las comprobaciones de la Resolución 1519 de 2020 que se pueden hacer a máquina. Gratis y sin cuenta.</p>
+  <div class="facil"><h2>En pocas palabras</h2><ul><li>Pega la dirección de tu página y pulsa «Escanear».</li><li>En unos 30 segundos ves qué barreras tiene, con el criterio de la norma y cómo arreglarlas.</li><li>Un escáner encuentra entre el 30 y el 50 % de las barreras: el resto se ve con personas y a mano.</li></ul></div>
+
+  <form class="esc" id="f">
+    <label for="url" class="salto">Dirección del sitio</label>
+    <input id="url" name="url" type="text" inputmode="url" required placeholder="https://www.tuentidad.gov.co" autocomplete="url" spellcheck="false">
+    <button type="submit" id="btn">Escanear</button>
+  </form>
+  <p class="estado" id="estado" aria-live="polite"></p>
+
+  <section class="res" id="res" aria-live="polite">
+    <h2 id="titulo">Resultado</h2>
+    <p class="meta" id="sub"></p>
+    <div class="puntaje"><span class="n" id="puntaje">0</span><div class="barra"><span id="barra"></span></div></div>
+    <p class="meta">Puntaje orientativo de 0 a 100: pesa más lo crítico. No es una certificación.</p>
+    <div class="kpis" id="kpis"></div>
+    <ul class="checks" id="checks"></ul>
+    <div class="tabla"><table id="tabla"><caption class="meta">Barreras encontradas, de más a menos graves</caption><thead><tr><th scope="col">Qué falla</th><th scope="col">Gravedad</th><th scope="col">Criterio (Res. 1519, Anexo 1)</th><th scope="col">Cuántas</th></tr></thead><tbody></tbody></table></div>
+    <div class="acciones">
+      <button type="button" class="btn" id="descargar">Descargar este informe</button>
+      <a class="btn lleno" href="panel">Vigilarlo a diario con una cuenta</a>
+      <a class="btn" href="integrar">Poner Winclus en el sitio</a>
+    </div>
+    <p class="meta">El informe completo del monitor mira cada página en dos vistas (escritorio y móvil), guarda capturas, compara con el día anterior y produce el informe de conformidad (ACR/VPAT).</p>
+  </section>
+</main>
+
+<footer>
+  <div class="pie">
+    <div>© 2026 Winclus</div>
+    <ul>
+      <li><a href="/">Portada</a></li>
+      <li><a href="accesibilidad">Accesibilidad</a></li>
+      <li><a href="privacidad">Privacidad y datos</a></li>
+      <li><a href="mapa-del-sitio">Mapa del sitio</a></li>
+      <li><a href="glosario">Glosario</a></li>
+      <li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li>
+    </ul>
+  </div>
+</footer>
+<script>
+(function () {
+  var f = document.getElementById("f"), btn = document.getElementById("btn"), estado = document.getElementById("estado"), res = document.getElementById("res");
+  var IMP = { critical: "Crítica", serious: "Seria", moderate: "Moderada", minor: "Leve" }, ORDEN = { critical: 0, serious: 1, moderate: 2, minor: 3 };
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+  var ultimo = null, temporizador = null;
+  function pintar(r) {
+    ultimo = r;
+    res.classList.add("visible");
+    document.getElementById("titulo").textContent = "Resultado de " + (r.titulo || r.url);
+    document.getElementById("sub").textContent = r.url + " · " + r.revisados + " elementos revisados · " + Math.round(r.ms / 100) / 10 + " s · " + new Date().toLocaleDateString("es-CO");
+    document.getElementById("puntaje").textContent = r.puntaje;
+    document.getElementById("barra").style.width = r.puntaje + "%";
+    var k = document.getElementById("kpis");
+    k.innerHTML = '<div class="kpi ' + (r.total ? "mal" : "bien") + '"><b>' + r.total + "</b><small>problemas</small></div>"
+      + '<div class="kpi"><b>' + r.sev.critical + "</b><small>críticos</small></div><div class=\"kpi\"><b>" + r.sev.serious + "</b><small>serios</small></div><div class=\"kpi\"><b>" + r.sev.moderate + "</b><small>moderados</small></div><div class=\"kpi\"><b>" + r.sev.minor + "</b><small>leves</small></div>";
+    var c = document.getElementById("checks");
+    c.innerHTML = '<li class="' + (r.winclus ? "" : "no") + '">' + (r.winclus ? "Tiene Winclus" : "Sin Winclus") + "</li><li class=\"" + (r.declaracion ? "" : "no") + "\">" + (r.declaracion ? "Enlace a la declaración de accesibilidad" : "Sin declaración de accesibilidad") + "</li><li class=\"" + (r.salto ? "" : "no") + "\">" + (r.salto ? "Enlace «Ir al contenido»" : "Sin «Ir al contenido»") + "</li><li class=\"" + (r.lang ? "" : "no") + "\">" + (r.lang ? "Idioma declarado: " + esc(r.lang) : "Sin idioma declarado") + "</li>";
+    var filas = r.problemas.concat(r.extra).sort(function (a, b) { return ORDEN[a.impact] - ORDEN[b.impact]; });
+    document.querySelector("#tabla tbody").innerHTML = filas.length ? filas.map(function (p) {
+      return "<tr><td><b>" + esc(p.help) + "</b>" + (p.detalle ? "<br>" + esc(p.detalle) : p.descripcion ? "<br>" + esc(p.descripcion) : "") + (p.ejemplo && p.ejemplo.selector ? '<span class="sel">' + esc(p.ejemplo.selector) + "</span>" : "") + "</td><td class=\"imp imp-" + p.impact + "\">" + (IMP[p.impact] || p.impact) + "</td><td>" + esc(p.criterio) + "</td><td>" + p.n + "</td></tr>";
+    }).join("") : '<tr><td colspan="4">No se encontró nada que una máquina pueda detectar. Queda la revisión manual y las pruebas con personas.</td></tr>';
+    res.focus && res.setAttribute("tabindex", "-1"); res.focus();
+  }
+  f.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var url = document.getElementById("url").value.trim();
+    if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+    btn.disabled = true; res.classList.remove("visible");
+    var seg = 0; estado.textContent = "Abriendo la página en el servidor…";
+    temporizador = setInterval(function () { seg += 5; estado.textContent = seg < 15 ? "Revisando " + url + "…" : seg < 40 ? "Sigue en ello (" + seg + " s). Las páginas pesadas tardan más." : "Casi (" + seg + " s)…"; }, 5000);
+    fetch("/api/escanear", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: url }) })
+      .then(function (r) { return r.json().then(function (j) { return { estado: r.status, j: j }; }); })
+      .then(function (x) {
+        clearInterval(temporizador); btn.disabled = false;
+        if (x.estado !== 200 || !x.j.ok) { estado.innerHTML = '<span class="error">' + esc((x.j && x.j.error) || "No se pudo escanear.") + "</span>"; return; }
+        estado.textContent = ""; pintar(x.j);
+      })
+      .catch(function () { clearInterval(temporizador); btn.disabled = false; estado.innerHTML = '<span class="error">No hubo respuesta del servidor. Prueba otra vez en un momento.</span>'; });
+  });
+  document.getElementById("descargar").addEventListener("click", function () {
+    if (!ultimo) return;
+    var r = ultimo, filas = r.problemas.concat(r.extra).sort(function (a, b) { return ORDEN[a.impact] - ORDEN[b.impact]; });
+    var html = "<!DOCTYPE html><html lang=\"es\"><head><meta charset=\"utf-8\"><title>Escaneo de accesibilidad · " + esc(r.url) + "</title><style>body{font-family:system-ui,sans-serif;max-width:900px;margin:32px auto;padding:0 20px;line-height:1.5}table{border-collapse:collapse;width:100%}th,td{border-bottom:1px solid #ccc;padding:8px;text-align:left;vertical-align:top}</style></head><body><h1>Escaneo de accesibilidad</h1><p>" + esc(r.url) + " · " + new Date().toLocaleString("es-CO") + " · Winclus Audit (axe-core WCAG 2.1/2.2 AA y Resolución 1519 de 2020). Puntaje orientativo: " + r.puntaje + "/100. " + r.total + " problema(s): " + r.sev.critical + " críticos, " + r.sev.serious + " serios, " + r.sev.moderate + " moderados, " + r.sev.minor + " leves.</p><table><thead><tr><th>Qué falla</th><th>Gravedad</th><th>Criterio</th><th>Cuántas</th></tr></thead><tbody>"
+      + filas.map(function (p) { return "<tr><td><b>" + esc(p.help) + "</b><br>" + esc(p.detalle || p.descripcion || "") + (p.ejemplo && p.ejemplo.selector ? "<br><code>" + esc(p.ejemplo.selector) + "</code>" : "") + "</td><td>" + (IMP[p.impact] || p.impact) + "</td><td>" + esc(p.criterio) + "</td><td>" + p.n + "</td></tr>"; }).join("")
+      + "</tbody></table><p>Un escáner detecta entre el 30 y el 50 % de las barreras; el resto sale de la revisión manual y de probar con personas con discapacidad. Informe generado en winclus.com/escanear.</p></body></html>";
+    var b = new Blob([html], { type: "text/html;charset=utf-8" }), a = document.createElement("a");
+    a.href = URL.createObjectURL(b); a.download = "escaneo-" + r.url.replace(/^https?:\/\//, "").replace(/[^a-z0-9.-]+/gi, "_").slice(0, 60) + ".html"; document.body.appendChild(a); a.click(); a.remove();
+  });
+  var q = new URLSearchParams(location.search).get("url");
+  if (q) { document.getElementById("url").value = q; f.dispatchEvent(new Event("submit")); }
+  window.WinclusEscanear = { pintar: pintar };   // para las pruebas
+})();
+</script>
+<script src="widget.js" async></script>
+</body>
+</html>

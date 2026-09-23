@@ -1,27 +1,208 @@
 {
   "cleanUrls": true,
   "headers": [
-    { "source": "/(.*)", "headers": [
-      { "key": "X-Content-Type-Options", "value": "nosniff" },
-      { "key": "Access-Control-Allow-Origin", "value": "*" },
-      { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
-      { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-      { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-      { "key": "Permissions-Policy", "value": "camera=(self), microphone=(self), geolocation=(), payment=()" },
-      { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://static.arasaac.org; media-src 'self' blob: data:; connect-src 'self' https://static.arasaac.org https://api.arasaac.org https://es.wiktionary.org https://en.wiktionary.org; worker-src 'self' blob:; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests" }
-    ] },
-    { "source": "/instalar.ps1", "headers": [ { "key": "Content-Type", "value": "text/plain; charset=utf-8" }, { "key": "Cache-Control", "value": "public, max-age=300" } ] },
-    { "source": "/widget.js", "headers": [ { "key": "Cache-Control", "value": "public, max-age=300" } ] },
-    { "source": "/winclus-widget.js", "headers": [ { "key": "Cache-Control", "value": "public, max-age=300" } ] },
-    { "source": "/winclus-widget.min.js", "headers": [ { "key": "Cache-Control", "value": "public, max-age=300" } ] },
-    { "source": "/idiomas/(.*).json", "headers": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" }, { "key": "Cache-Control", "value": "public, max-age=300" } ] },
-    { "source": "/widget-(.*).js", "headers": [ { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" } ] },
-    { "source": "/palabras-es.txt", "headers": [ { "key": "Content-Type", "value": "text/plain; charset=utf-8" }, { "key": "Cache-Control", "value": "public, max-age=86400" } ] },
-    { "source": "/mediapipe/(.*)", "headers": [ { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" } ] },
-    { "source": "/fuentes/(.*).woff2", "headers": [ { "key": "Content-Type", "value": "font/woff2" }, { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" } ] },
-    { "source": "/mediapipe/(.*).mjs", "headers": [ { "key": "Content-Type", "value": "text/javascript; charset=utf-8" } ] },
-    { "source": "/pdfjs/(.*).mjs", "headers": [ { "key": "Content-Type", "value": "text/javascript; charset=utf-8" }, { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" } ] },
-    { "source": "/mediapipe/(.*).wasm", "headers": [ { "key": "Content-Type", "value": "application/wasm" } ] },
-    { "source": "/mediapipe/(.*).task", "headers": [ { "key": "Content-Type", "value": "application/octet-stream" } ] }
-  ]
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(self), microphone=(self), geolocation=(), payment=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https: https://static.arasaac.org; media-src 'self' blob: data:; connect-src 'self' https://*.supabase.co https://static.arasaac.org https://api.arasaac.org https://es.wiktionary.org https://en.wiktionary.org; worker-src 'self' blob:; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+        }
+      ]
+    },
+    {
+      "source": "/instalar.ps1",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300"
+        }
+      ]
+    },
+    {
+      "source": "/widget.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300"
+        }
+      ]
+    },
+    {
+      "source": "/winclus-widget.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300"
+        }
+      ]
+    },
+    {
+      "source": "/winclus-widget.min.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300"
+        }
+      ]
+    },
+    {
+      "source": "/idiomas/(.*).json",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300"
+        }
+      ]
+    },
+    {
+      "source": "/widget-(.*).js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/palabras-es.txt",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    },
+    {
+      "source": "/mediapipe/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/fuentes/(.*).woff2",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "font/woff2"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/mediapipe/(.*).mjs",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/javascript; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/pdfjs/(.*).mjs",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/javascript; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/mediapipe/(.*).wasm",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/wasm"
+        }
+      ]
+    },
+    {
+      "source": "/mediapipe/(.*).task",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/octet-stream"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/vendor/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "api/escanear.js": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "api/uso.js": {
+      "maxDuration": 10
+    },
+    "api/config.js": {
+      "maxDuration": 10
+    },
+    "api/entorno.js": {
+      "maxDuration": 5
+    }
+  }
 }

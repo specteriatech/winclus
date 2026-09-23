@@ -56,7 +56,7 @@
     var listo = false, seguir = function () { if (!listo) { listo = true; f(); } };
     setTimeout(seguir, 2000);   // sin respuesta a tiempo, el panel sale con lo que diga el HTML
     fetch(ORIGEN + "/api/config?clave=" + CLAVE).then(function (r) { return r.ok ? r.json() : null; }).then(function (c) {
-      if (c && typeof c === "object" && script && script.dataset) ["logo", "nombre", "color", "posicion", "ocultar", "camara", "idioma", "contacto", "arreglos"].forEach(function (k) { if (c[k] != null && c[k] !== "" && !script.dataset[k]) script.dataset[k] = String(c[k]); });
+      if (c && typeof c === "object" && script && script.dataset) ["logo", "nombre", "color", "posicion", "ocultar", "camara", "idioma", "contacto", "arreglos", "traducir", "describir", "explicar"].forEach(function (k) { if (c[k] != null && c[k] !== "" && !script.dataset[k]) script.dataset[k] = String(c[k]); });
       seguir();
     }, seguir);
   };

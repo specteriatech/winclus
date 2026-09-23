@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel de cliente</title>
+<meta name="description" content="El panel de Winclus para entidades: tus sitios con su clave, el panel con tu marca, cifras de uso anónimas, el monitor de accesibilidad con capturas, la declaración y tu equipo. Se entra con un enlace al correo, sin contraseña.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="img/icono.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="paginas.css">
+<style>
+  main{width:min(1120px,100% - 40px)}
+  [hidden]{display:none!important}
+  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 18px;border-radius:999px;font:inherit;font-weight:600;border:2px solid var(--navy);background:#fff;color:var(--navy);cursor:pointer;text-decoration:none}
+  .btn.lleno{background:var(--azul);border-color:var(--azul);color:#fff}.btn.peligro{border-color:#8A2E2E;color:#8A2E2E}.btn.chico{min-height:36px;padding:4px 12px;font-size:.9rem}
+  .btn:hover{background:var(--fondo2)}.btn.lleno:hover{background:var(--navy)}
+  input[type=text],input[type=url],input[type=email],select{font:inherit;padding:9px 10px;border:1px solid #8892A6;border-radius:8px;min-height:44px;width:100%;box-sizing:border-box}
+  label{display:block;font-weight:600;margin:10px 0 4px}label small{display:block;font-weight:400;color:var(--texto2);font-size:.9rem}
+  .fila{display:flex;flex-wrap:wrap;gap:10px;align-items:end}.fila>*{flex:1 1 200px}.fila>.btn{flex:0 0 auto}
+  .caja{border:1px solid var(--linea);border-radius:14px;padding:16px 18px;margin:14px 0;background:#fff}
+  .aviso-p{background:#FFF6DB;border:1px solid #C99A1E;border-radius:12px;padding:12px 16px;margin:12px 0}
+  .error{background:#FBE9E9;border:1px solid #C25A5A;border-radius:12px;padding:12px 16px;margin:12px 0}
+  .ok{background:#E8F7F3;border:1px solid #0A5C54;border-radius:12px;padding:12px 16px;margin:12px 0}
+  .cab{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:0 0 10px}
+  .plan{display:inline-block;background:var(--navy);color:#fff;border-radius:999px;padding:3px 12px;font-weight:600;font-size:.9rem}
+  .sitios{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+  .sitios button{width:100%;text-align:left;font:inherit;background:var(--fondo2);border:2px solid var(--linea);border-radius:12px;padding:12px 14px;cursor:pointer;min-height:64px}
+  .sitios button:hover,.sitios button:focus{border-color:var(--azul)}.sitios button b{display:block}.sitios small{color:var(--texto2)}
+  .tabs{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0;border-bottom:1px solid var(--linea)}
+  .tabs button{font:inherit;font-weight:600;background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;min-height:44px;cursor:pointer;color:var(--texto2)}
+  .tabs button[aria-selected=true]{color:var(--azul);border-bottom-color:var(--azul)}
+  pre{background:#101F3D;color:#EEF1EA;padding:12px 14px;border-radius:10px;overflow-x:auto;font:13px/1.5 Consolas,ui-monospace,monospace;white-space:pre-wrap;word-break:break-all}
+  code{font-family:Consolas,ui-monospace,monospace;font-size:.92em;background:#F3F6FA;padding:1px 5px;border-radius:4px}
+  .grafica{width:100%;height:160px;display:block}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:10px 0}.kpi{background:var(--fondo2);border-radius:12px;padding:10px 12px}.kpi b{display:block;font-size:1.6rem;line-height:1.1}.kpi small{color:var(--texto2)}
+  .capturas{display:flex;gap:10px;flex-wrap:wrap}.capturas a img{height:120px;border:1px solid var(--linea);border-radius:8px;display:block}
+  details{border:1px solid var(--linea);border-radius:10px;padding:6px 12px;margin:6px 0}summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600}
+  .opc{display:flex;align-items:center;gap:8px;font-weight:400;margin:4px 0}.opc input{width:22px;height:22px}
+  .estado{color:var(--teal);font-weight:600;min-height:1.4em}
+  table td,table th{font-size:.93rem}
+</style>
+</head>
+<body>
+<a class="salto" href="#contenido">Ir al contenido</a>
+<header>
+  <div class="barra">
+    <a class="marca" href="/"><img src="img/logo.png" alt="" width="40" height="40">winclus<span>.com</span></a>
+    <a class="volver" href="/">Volver a la portada</a>
+  </div>
+</header>
+
+<main id="contenido">
+<nav class="migas" aria-label="Estás en"><a href="/">Portada</a><span aria-hidden="true">›</span><span aria-current="page">Panel de cliente</span></nav>
+  <h1>Panel de cliente</h1>
+  <p class="meta" id="intro">Tus sitios, el panel con tu marca, las cifras de uso, el monitor con capturas, la declaración y tu equipo. Se entra con un enlace al correo, sin contraseña.</p>
+
+  <section id="sinServidor" hidden>
+    <div class="aviso-p">El panel de cliente todavía no está conectado a su base de datos en este servidor. Escribe a <a href="mailto:hola@winclus.com">hola@winclus.com</a> y te avisamos cuando esté.</div>
+  </section>
+
+  <section id="login" hidden aria-labelledby="hLogin">
+    <div class="caja">
+      <h2 id="hLogin" style="border:0;margin-top:0">Entrar</h2>
+      <form id="fLogin">
+        <label for="correo">Tu correo <small>Te mandamos un enlace; al abrirlo ya estás dentro. Si no tienes cuenta, se crea con el plan Gratis.</small></label>
+        <div class="fila"><input id="correo" name="correo" type="email" required autocomplete="email" placeholder="tu@entidad.gov.co"><button class="btn lleno" type="submit">Mandarme el enlace</button></div>
+      </form>
+      <p class="estado" id="estadoLogin" aria-live="polite"></p>
+    </div>
+    <p class="meta">Qué se guarda y para qué: <a href="privacidad">política de tratamiento de datos</a>. Los planes: <a href="precios">precios</a>.</p>
+  </section>
+
+  <section id="app" hidden>
+    <div class="cab"><div>Conectado como <b id="quien"></b> · <span class="plan" id="planEtiqueta">Gratis</span></div><button class="btn chico" type="button" id="salir">Salir</button></div>
+    <p class="estado" id="estadoApp" aria-live="polite"></p>
+
+    <div id="listaSitios">
+      <h2>Tus sitios</h2>
+      <ul class="sitios" id="sitios"></ul>
+      <div class="caja">
+        <h3 style="margin-top:0">Añadir un sitio</h3>
+        <form id="fSitio">
+          <div class="fila">
+            <div><label for="dominio">Dominio <small>Sin https://. Por ejemplo: www.alcaldia.gov.co</small></label><input id="dominio" name="dominio" type="text" required placeholder="www.entidad.gov.co"></div>
+            <div><label for="nombreSitio">Nombre de la entidad</label><input id="nombreSitio" name="nombre" type="text" placeholder="Alcaldía de …"></div>
+            <button class="btn lleno" type="submit">Añadir</button>
+          </div>
+          <div class="opc"><input type="checkbox" id="esPrueba" name="prueba"><label for="esPrueba" style="margin:0">Es un sitio de prueba o preparación (no cuenta como sitio principal)</label></div>
+        </form>
+        <p class="meta" id="limiteSitios"></p>
+      </div>
+    </div>
+
+    <div id="sitio" hidden>
+      <div class="cab"><h2 id="tituloSitio" style="border:0;margin:0;padding:0"></h2><button class="btn chico" type="button" id="volverSitios">← Todos los sitios</button></div>
+      <div class="tabs" role="tablist" id="tabs">
+        <button role="tab" aria-selected="true" data-t="resumen" id="tab-resumen" aria-controls="t-resumen">Resumen y clave</button>
+        <button role="tab" aria-selected="false" data-t="marca" id="tab-marca" aria-controls="t-marca">Panel con tu marca</button>
+        <button role="tab" aria-selected="false" data-t="monitor" id="tab-monitor" aria-controls="t-monitor">Monitor</button>
+        <button role="tab" aria-selected="false" data-t="declaracion" id="tab-declaracion" aria-controls="t-declaracion">Declaración</button>
+        <button role="tab" aria-selected="false" data-t="equipo" id="tab-equipo" aria-controls="t-equipo">Equipo</button>
+      </div>
+
+      <div id="t-resumen" role="tabpanel" aria-labelledby="tab-resumen">
+        <div class="caja">
+          <h3 style="margin-top:0">La línea para tu sitio</h3>
+          <p>Ponla antes de <code>&lt;/body&gt;</code> en todas las páginas. Con la clave, el panel toma de aquí tu marca y tus opciones, y recibes las cifras de uso.</p>
+          <pre id="linea" tabindex="0"></pre>
+          <button class="btn chico" type="button" id="copiarLinea">Copiar la línea</button>
+          <p class="meta">¿Ya tienes Winclus sin clave? Solo añade <code>data-clave</code> a la línea que ya tienes. <a href="plataformas">Dónde se pega en cada plataforma</a>.</p>
+        </div>
+        <div class="caja">
+          <h3 style="margin-top:0">Uso en los últimos 30 días</h3>
+          <p class="meta">Cifras agregadas y anónimas: cuántas veces se abrió el panel y qué opciones se tocaron. Nada por persona.</p>
+          <div class="kpis" id="kpisUso"></div>
+          <svg class="grafica" id="grafica" viewBox="0 0 600 160" role="img" aria-labelledby="graficaTitulo"><title id="graficaTitulo">Veces que se abrió el panel cada día</title></svg>
+          <div id="topUso"></div>
+        </div>
+      </div>
+
+      <div id="t-marca" role="tabpanel" aria-labelledby="tab-marca" hidden>
+        <div class="caja">
+          <h3 style="margin-top:0">Cómo se ve el panel en tu sitio</h3>
+          <p class="meta">Se aplica en unos 5 minutos en todas las páginas, sin tocar código. <span id="marcaPlan"></span></p>
+          <form id="fMarca">
+            <div class="fila">
+              <div><label for="cNombre">Nombre en la cabecera del panel <small>Sale «Nombre · con Winclus».</small></label><input id="cNombre" name="nombre" type="text"></div>
+              <div><label for="cLogo">Logo (URL de la imagen) <small>Sobre fondo blanco, 28 px de alto.</small></label><input id="cLogo" name="logo" type="url" placeholder="https://www.entidad.gov.co/logo.png"></div>
+            </div>
+            <div class="fila">
+              <div><label for="cColor">Color del botón</label><input id="cColor" name="color" type="text" placeholder="#101F3D"></div>
+              <div><label for="cPosicion">Lado del botón</label><select id="cPosicion" name="posicion"><option value="">Derecha</option><option value="izquierda">Izquierda</option></select></div>
+              <div><label for="cIdioma">Idioma del reconocimiento de voz</label><select id="cIdioma" name="idioma"><option value="">Español de Colombia</option><option value="es-MX">Español de México</option><option value="es-ES">Español de España</option><option value="en-US">Inglés</option><option value="pt-BR">Portugués</option></select></div>
+            </div>
+            <label>Pestañas que no quieres mostrar <small>Inicio y Más salen siempre.</small></label>
+            <div class="fila" style="align-items:center">
+              <div class="opc"><input type="checkbox" id="oVer" name="ocultar" value="ver"><label for="oVer" style="margin:0">Ver</label></div>
+              <div class="opc"><input type="checkbox" id="oOir" name="ocultar" value="oir"><label for="oOir" style="margin:0">Oír</label></div>
+              <div class="opc"><input type="checkbox" id="oCara" name="ocultar" value="cara"><label for="oCara" style="margin:0">Cara</label></div>
+              <div class="opc"><input type="checkbox" id="oClics" name="ocultar" value="clics"><label for="oClics" style="margin:0">Clics</label></div>
+              <div class="opc"><input type="checkbox" id="oEscribir" name="ocultar" value="escribir"><label for="oEscribir" style="margin:0">Escribir</label></div>
+            </div>
+            <div class="fila">
+              <div><label for="cCamara">Cámara</label><select id="cCamara" name="camara"><option value="">Disponible</option><option value="no">No ofrecerla en este sitio</option></select></div>
+              <div><label for="cArreglos">Arreglos al vuelo</label><select id="cArreglos" name="arreglos"><option value="">Activados</option><option value="no">Apagados</option></select></div>
+            </div>
+            <div class="fila">
+              <div><label for="cContacto">A dónde llegan los avisos de barrera <small>mailto:… o una URL que reciba POST.</small></label><input id="cContacto" name="contacto" type="text" placeholder="mailto:accesibilidad@entidad.gov.co"></div>
+              <div><label for="cTraducir">Servicio de traducción del sitio <small>URL que recibe POST {textos, de, a} y devuelve {textos}. Con él, «Otro idioma» traduce la página.</small></label><input id="cTraducir" name="traducir" type="url"></div>
+              <div><label for="cWebhook">Webhook para las alertas del monitor <small>Slack, Teams, n8n, Make… Recibe POST con los avisos.</small></label><input id="cWebhook" name="webhook" type="url"></div>
+            </div>
+            <p><button class="btn lleno" type="submit">Guardar</button></p>
+          </form>
+          <p class="estado" id="estadoMarca" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <div id="t-monitor" role="tabpanel" aria-labelledby="tab-monitor" hidden>
+        <div class="caja">
+          <h3 style="margin-top:0">Páginas vigiladas</h3>
+          <p class="meta">Cada día, a las 6 de la mañana, se revisan en escritorio y en móvil, se guardan capturas y se compara con el día anterior. <span id="limitePaginas"></span></p>
+          <ul id="paginas"></ul>
+          <form id="fPagina" class="fila"><div><label for="urlPagina">Añadir una página del sitio</label><input id="urlPagina" type="url" required placeholder="https://www.entidad.gov.co/tramites"></div><button class="btn" type="submit">Vigilar</button></form>
+          <p class="estado" id="estadoMonitor" aria-live="polite"></p>
+        </div>
+        <div class="caja" id="ejecuciones"></div>
+        <div class="caja" id="resultados"></div>
+      </div>
+
+      <div id="t-declaracion" role="tabpanel" aria-labelledby="tab-declaracion" hidden>
+        <div class="caja">
+          <h3 style="margin-top:0">Declaración de accesibilidad</h3>
+          <p>El generador escribe la página que pide la Resolución 1519 con los datos de este sitio. Lo que escribas se guarda en tu navegador para volver a generarla cuando cambie algo.</p>
+          <p><a class="btn lleno" id="irDeclaracion" href="declaracion">Abrir el generador con los datos de este sitio</a></p>
+          <p class="meta">Cuando la publiques, el monitor comprueba cada día que el enlace «Accesibilidad» sigue en el sitio.</p>
+        </div>
+      </div>
+
+      <div id="t-equipo" role="tabpanel" aria-labelledby="tab-equipo" hidden>
+        <div class="caja">
+          <h3 style="margin-top:0">Personas con acceso</h3>
+          <p class="meta">Entran con su propio correo y ven todos los sitios de esta cuenta. <span id="limiteMiembros"></span></p>
+          <ul id="miembros"></ul>
+          <form id="fMiembro" class="fila"><div><label for="correoMiembro">Invitar por correo</label><input id="correoMiembro" type="email" required placeholder="colega@entidad.gov.co"></div><button class="btn" type="submit">Invitar</button></form>
+          <p class="estado" id="estadoEquipo" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="pie">
+    <div>© 2026 Winclus</div>
+    <ul>
+      <li><a href="/">Portada</a></li>
+      <li><a href="accesibilidad">Accesibilidad</a></li>
+      <li><a href="privacidad">Privacidad y datos</a></li>
+      <li><a href="mapa-del-sitio">Mapa del sitio</a></li>
+      <li><a href="glosario">Glosario</a></li>
+      <li><a href="mailto:hola@winclus.com">hola@winclus.com</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="vendor/supabase.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+  var LIMITES = { gratis: { sitios: 1, prueba: 1, paginas: 3, miembros: 1 }, entidad: { sitios: 1, prueba: 2, paginas: 50, miembros: 3 }, entidad_plus: { sitios: 3, prueba: 5, paginas: 300, miembros: 10 }, medida: { sitios: 1000, prueba: 1000, paginas: 100000, miembros: 1000 } };
+  var NOMBRE_PLAN = { gratis: "Gratis", entidad: "Entidad", entidad_plus: "Entidad Plus", medida: "A medida" };
+  var sb = null, usuario = null, cuenta = null, sitios = [], actual = null, entorno = null;
+  function decir(id, t, mal) { var e = $(id); e.textContent = t || ""; e.style.color = mal ? "#8A2E2E" : ""; }
+  function limites(plan) { return LIMITES[plan] || LIMITES.gratis; }
+  function planDe(s) { return (s && s.cuentas && s.cuentas.plan) || (cuenta && cuenta.plan) || "gratis"; }
+
+  // ---------------------------------------------------------- arranque --
+  fetch("/api/entorno").then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }).then(function (e) {
+    entorno = e;
+    if (!e || !e.url || !window.supabase) { $("sinServidor").hidden = false; return; }
+    sb = window.supabase.createClient(e.url, e.clave, { auth: { persistSession: true, detectSessionInUrl: true, flowType: "pkce" } });
+    sb.auth.onAuthStateChange(function (ev, sesion) { if (sesion && sesion.user) entrar(sesion.user); else mostrarLogin(); });
+    sb.auth.getSession().then(function (r) { if (r.data.session) entrar(r.data.session.user); else mostrarLogin(); });
+  });
+  function mostrarLogin() { $("login").hidden = false; $("app").hidden = true; }
+  $("fLogin").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var correo = $("correo").value.trim();
+    decir("estadoLogin", "Mandando el enlace…");
+    sb.auth.signInWithOtp({ email: correo, options: { emailRedirectTo: location.origin + "/panel" } }).then(function (r) {
+      if (r.error) decir("estadoLogin", "No se pudo mandar: " + r.error.message, true);
+      else decir("estadoLogin", "Listo. Abre el correo que te llegó a " + correo + " y pulsa el enlace. Si no llega en unos minutos, mira la carpeta de correo no deseado.");
+    });
+  });
+  $("salir").addEventListener("click", function () { sb.auth.signOut().then(function () { location.reload(); }); });
+
+  function entrar(u) {
+    usuario = u;
+    $("login").hidden = true; $("app").hidden = false;
+    $("quien").textContent = u.email;
+    cargarCuenta().then(cargarSitios);
+  }
+  function cargarCuenta() {
+    return sb.from("cuentas").select("*").eq("id", usuario.id).maybeSingle().then(function (r) {
+      cuenta = r.data || { id: usuario.id, plan: "gratis" };
+      $("planEtiqueta").textContent = NOMBRE_PLAN[cuenta.plan] || cuenta.plan;
+    });
+  }
+  function cargarSitios() {
+    return sb.from("sitios").select("*, cuentas(plan, correo)").order("creado").then(function (r) {
+      if (r.error) { decir("estadoApp", "No se pudieron leer los sitios: " + r.error.message, true); return; }
+      sitios = r.data || [];
+      var ul = $("sitios"); ul.innerHTML = "";
+      if (!sitios.length) ul.innerHTML = '<li class="meta">Todavía no hay sitios. Añade el primero abajo.</li>';
+      sitios.forEach(function (s) {
+        var li = document.createElement("li"), b = document.createElement("button"); b.type = "button";
+        b.innerHTML = "<b>" + esc(s.nombre || s.dominio) + "</b><small>" + esc(s.dominio) + (s.prueba ? " · sitio de prueba" : "") + (s.cuenta_id !== usuario.id ? " · compartido contigo" : "") + "</small>";
+        b.addEventListener("click", function () { abrirSitio(s); });
+        li.appendChild(b); ul.appendChild(li);
+      });
+      var l = limites(cuenta.plan), mios = sitios.filter(function (s) { return s.cuenta_id === usuario.id; });
+      $("limiteSitios").textContent = "Tu plan " + NOMBRE_PLAN[cuenta.plan] + " permite " + l.sitios + " sitio(s) principal(es) y " + l.prueba + " de prueba. Tienes " + mios.filter(function (s) { return !s.prueba; }).length + " y " + mios.filter(function (s) { return s.prueba; }).length + ". Para más, mira los planes en precios.";
+    });
+  }
+  $("fSitio").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var dominio = $("dominio").value.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+    if (!/^[a-z0-9.-]+\.[a-z]{2,}$/.test(dominio)) { decir("estadoApp", "Escribe un dominio válido, como www.entidad.gov.co", true); return; }
+    sb.from("sitios").insert({ cuenta_id: usuario.id, dominio: dominio, nombre: $("nombreSitio").value.trim() || null, prueba: $("esPrueba").checked }).select("*, cuentas(plan, correo)").single().then(function (r) {
+      if (r.error) { decir("estadoApp", r.error.message, true); return; }
+      decir("estadoApp", "Sitio añadido."); $("fSitio").reset();
+      cargarSitios().then(function () { abrirSitio(r.data); });
+    });
+  });
+
+  // ------------------------------------------------------------- sitio --
+  function abrirSitio(s) {
+    actual = s;
+    $("listaSitios").hidden = true; $("sitio").hidden = false;
+    $("tituloSitio").textContent = (s.nombre || s.dominio) + (s.prueba ? " (sitio de prueba)" : "");
+    elegirTab("resumen");
+    $("linea").textContent = '<script src="https://winclus.com/widget.js" async data-clave="' + s.clave + '"><\/script>';
+    pintarMarca(); cargarUso(); cargarMonitor(); cargarEquipo();
+    $("irDeclaracion").href = "declaracion?entidad=" + encodeURIComponent(s.nombre || "") + "&sitio=" + encodeURIComponent("https://" + s.dominio) + "&correo=" + encodeURIComponent((s.config && s.config.contacto || "").replace(/^mailto:/, "") || usuario.email);
+    $("tituloSitio").focus && $("tituloSitio").setAttribute("tabindex", "-1"); $("tituloSitio").focus();
+  }
+  $("volverSitios").addEventListener("click", function () { $("sitio").hidden = true; $("listaSitios").hidden = false; actual = null; });
+  $("copiarLinea").addEventListener("click", function () { var t = $("linea").textContent; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { decir("estadoApp", "Línea copiada."); }, function () { decir("estadoApp", "Selecciona la línea y cópiala.", true); }); });
+  function elegirTab(n) {
+    [].forEach.call($("tabs").querySelectorAll("[role=tab]"), function (b) { var si = b.dataset.t === n; b.setAttribute("aria-selected", si ? "true" : "false"); $("t-" + b.dataset.t).hidden = !si; });
+  }
+  $("tabs").addEventListener("click", function (e) { var b = e.target.closest("[role=tab]"); if (b) elegirTab(b.dataset.t); });
+
+  // marca
+  function pintarMarca() {
+    var c = actual.config || {}, f = $("fMarca");
+    f.nombre.value = c.nombre || ""; f.logo.value = c.logo || ""; f.color.value = c.color || ""; f.posicion.value = c.posicion || ""; f.idioma.value = c.idioma || ""; f.camara.value = c.camara || ""; f.arreglos.value = c.arreglos || ""; f.contacto.value = c.contacto || ""; f.webhook.value = c.webhook || ""; f.traducir.value = c.traducir || "";
+    var oc = String(c.ocultar || "").split(/[ ,]+/);
+    [].forEach.call(f.querySelectorAll('input[name=ocultar]'), function (i) { i.checked = oc.indexOf(i.value) >= 0; });
+    var plan = planDe(actual);
+    $("marcaPlan").textContent = plan === "gratis" ? "En el plan Gratis puedes probarlo; el logo y el nombre propios son del plan Entidad." : "";
+  }
+  $("fMarca").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var f = $("fMarca"), c = {};
+    ["nombre", "logo", "color", "posicion", "idioma", "camara", "arreglos", "contacto", "webhook", "traducir"].forEach(function (k) { var v = f[k].value.trim(); if (v) c[k] = v.slice(0, 300); });
+    if (c.color && !/^#[0-9a-f]{3,8}$/i.test(c.color)) { decir("estadoMarca", "El color va como #2743B4.", true); return; }
+    if (c.logo && !/^https:\/\//.test(c.logo)) { decir("estadoMarca", "El logo tiene que estar en una dirección https://.", true); return; }
+    var oc = [].map.call(f.querySelectorAll("input[name=ocultar]:checked"), function (i) { return i.value; }); if (oc.length) c.ocultar = oc.join(",");
+    if (planDe(actual) === "gratis") { delete c.logo; if (c.nombre) { c.nombre = ""; delete c.nombre; } }
+    sb.from("sitios").update({ config: c }).eq("id", actual.id).then(function (r) {
+      if (r.error) { decir("estadoMarca", r.error.message, true); return; }
+      actual.config = c; decir("estadoMarca", "Guardado. En unos 5 minutos se ve en el sitio (el navegador guarda la configuración ese tiempo).");
+    });
+  });
+
+  // uso
+  function cargarUso() {
+    var desde = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
+    sb.from("uso_diario").select("fecha, evento, n").eq("sitio_id", actual.id).gte("fecha", desde).then(function (r) {
+      var filas = r.data || [], porDia = {}, porEvento = {}, abiertos = 0, total = 0;
+      filas.forEach(function (x) { total += x.n; if (x.evento === "abierto") { abiertos += x.n; porDia[x.fecha] = (porDia[x.fecha] || 0) + x.n; } else porEvento[x.evento] = (porEvento[x.evento] || 0) + x.n; });
+      $("kpisUso").innerHTML = '<div class="kpi"><b>' + abiertos + "</b><small>veces abierto el panel</small></div><div class=\"kpi\"><b>" + (total - abiertos) + "</b><small>opciones y acciones</small></div><div class=\"kpi\"><b>" + Object.keys(porDia).length + "</b><small>días con uso</small></div>";
+      var dias = []; for (var i = 29; i >= 0; i--) { var d = new Date(Date.now() - i * 864e5).toISOString().slice(0, 10); dias.push([d, porDia[d] || 0]); }
+      var max = Math.max(1, Math.max.apply(null, dias.map(function (x) { return x[1]; }))), w = 600 / 30;
+      $("grafica").innerHTML = "<title>Veces que se abrió el panel cada día: " + dias.map(function (x) { return x[0].slice(5) + " " + x[1]; }).join(", ") + "</title>" + dias.map(function (x, i) { var h = Math.round(x[1] / max * 130); return '<rect x="' + (i * w + 2) + '" y="' + (140 - h) + '" width="' + (w - 4) + '" height="' + h + '" fill="#2743B4" rx="2"><title>' + x[0] + ": " + x[1] + "</title></rect>"; }).join("") + '<line x1="0" y1="140" x2="600" y2="140" stroke="#DCE3EC"/>';
+      var top = Object.keys(porEvento).sort(function (a, b) { return porEvento[b] - porEvento[a]; }).slice(0, 12);
+      $("topUso").innerHTML = top.length ? "<h4>Lo que más se usa</h4><ul>" + top.map(function (k) { return "<li>" + esc(k.replace(/^panel:/, "")) + ": " + porEvento[k] + "</li>"; }).join("") + "</ul>" : '<p class="meta">Todavía no hay cifras: llegan cuando el sitio tiene la línea con la clave y alguien usa el panel.</p>';
+    });
+  }
+
+  // monitor
+  function cargarMonitor() {
+    var plan = planDe(actual), l = limites(plan);
+    sb.from("monitor_paginas").select("*").eq("sitio_id", actual.id).order("creado").then(function (r) {
+      var ps = r.data || [], ul = $("paginas"); ul.innerHTML = "";
+      if (!ps.length) ul.innerHTML = '<li class="meta">Ninguna todavía. Empieza por la portada y los trámites más usados.</li>';
+      ps.forEach(function (p) {
+        var li = document.createElement("li"); li.innerHTML = esc(p.url) + " "; var b = document.createElement("button"); b.type = "button"; b.className = "btn chico peligro"; b.textContent = "Quitar";
+        b.addEventListener("click", function () { sb.from("monitor_paginas").delete().eq("id", p.id).then(function () { cargarMonitor(); }); });
+        li.appendChild(b); ul.appendChild(li);
+      });
+      $("limitePaginas").textContent = "Tu plan " + NOMBRE_PLAN[plan] + " permite vigilar " + l.paginas + " página(s) en total.";
+    });
+    sb.from("monitor_ejecuciones").select("*").eq("sitio_id", actual.id).order("fecha", { ascending: false }).limit(12).then(function (r) {
+      var ej = r.data || [], c = $("ejecuciones");
+      if (!ej.length) { c.innerHTML = '<h3 style="margin-top:0">Ejecuciones</h3><p class="meta">Ninguna todavía. La primera corre la próxima madrugada después de añadir páginas.</p>'; $("resultados").innerHTML = ""; return; }
+      c.innerHTML = '<h3 style="margin-top:0">Ejecuciones</h3><div class="tabla"><table><thead><tr><th>Fecha</th><th>Páginas</th><th>Problemas</th><th>Nuevos</th><th>Resueltos</th><th>Avisos</th></tr></thead><tbody>' + ej.map(function (e) { return "<tr><td>" + new Date(e.fecha).toLocaleString("es-CO") + "</td><td>" + e.paginas_ok + "/" + e.paginas + "</td><td>" + e.total + "</td><td>" + e.nuevos + "</td><td>" + e.resueltos + "</td><td>" + (e.avisos && e.avisos.length ? "<ul>" + e.avisos.map(function (a) { return "<li>" + esc(a) + "</li>"; }).join("") + "</ul>" : "—") + "</td></tr>"; }).join("") + "</tbody></table></div>";
+      sb.from("monitor_resultados").select("*").eq("ejecucion_id", ej[0].id).then(function (rr) {
+        var rs = rr.data || [], base = entorno.url + "/storage/v1/object/public/capturas/";
+        var IMP = { critical: "crítica", serious: "seria", moderate: "moderada", minor: "leve" };
+        $("resultados").innerHTML = '<h3 style="margin-top:0">Última ejecución, página por página</h3>' + rs.map(function (x) {
+          return "<details><summary>" + esc(x.titulo || x.url) + " · " + (x.ok ? x.total + " problema(s)" : "no responde") + "</summary><p class=\"meta\">" + esc(x.url) + (x.winclus ? " · con Winclus" : " · sin Winclus") + (x.declaracion ? " · con declaración" : " · sin declaración") + "</p>"
+            + (x.captura_escritorio || x.captura_movil ? '<div class="capturas">' + (x.captura_escritorio ? '<a href="' + base + esc(x.captura_escritorio) + '"><img src="' + base + esc(x.captura_escritorio) + '" alt="Captura en escritorio de ' + esc(x.url) + '"></a>' : "") + (x.captura_movil ? '<a href="' + base + esc(x.captura_movil) + '"><img src="' + base + esc(x.captura_movil) + '" alt="Captura en móvil de ' + esc(x.url) + '"></a>' : "") + "</div>" : "")
+            + ((x.problemas || []).length ? "<ul>" + x.problemas.map(function (p) { return "<li><b>" + esc(p.help) + "</b> · " + (IMP[p.impact] || p.impact) + " · " + esc(p.criterio) + " · " + p.n + "</li>"; }).join("") + "</ul>" : (x.ok ? "<p>Sin problemas detectables a máquina.</p>" : "<p>" + esc(x.error || "") + "</p>")) + "</details>";
+        }).join("");
+      });
+    });
+  }
+  $("fPagina").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var u = $("urlPagina").value.trim(); var h; try { h = new URL(u).hostname.toLowerCase(); } catch (x) { decir("estadoMonitor", "Dirección no válida.", true); return; }
+    var dom = actual.dominio.replace(/^www\./, "");
+    if (h !== actual.dominio && h.replace(/^www\./, "") !== dom && !h.endsWith("." + dom)) { decir("estadoMonitor", "La página tiene que ser de " + actual.dominio + ".", true); return; }
+    sb.from("monitor_paginas").insert({ sitio_id: actual.id, url: u }).then(function (r) { if (r.error) decir("estadoMonitor", r.error.message, true); else { decir("estadoMonitor", "Página añadida."); $("urlPagina").value = ""; cargarMonitor(); } });
+  });
+
+  // equipo
+  function cargarEquipo() {
+    var due = actual.cuenta_id === usuario.id, plan = planDe(actual);
+    sb.from("miembros").select("*").eq("cuenta_id", actual.cuenta_id).order("creado").then(function (r) {
+      var ms = r.data || [], ul = $("miembros"); ul.innerHTML = "<li>" + esc((actual.cuentas && actual.cuentas.correo) || usuario.email) + " (dueño de la cuenta)</li>";
+      ms.forEach(function (m) {
+        var li = document.createElement("li"); li.textContent = m.correo + " ";
+        if (due) { var b = document.createElement("button"); b.type = "button"; b.className = "btn chico peligro"; b.textContent = "Quitar"; b.addEventListener("click", function () { sb.from("miembros").delete().eq("id", m.id).then(cargarEquipo); }); li.appendChild(b); }
+        ul.appendChild(li);
+      });
+      $("fMiembro").hidden = !due;
+      $("limiteMiembros").textContent = "Tu plan " + NOMBRE_PLAN[plan] + " permite " + limites(plan).miembros + " persona(s), contando a quien creó la cuenta.";
+    });
+  }
+  $("fMiembro").addEventListener("submit", function (e) {
+    e.preventDefault();
+    sb.from("miembros").insert({ cuenta_id: actual.cuenta_id, correo: $("correoMiembro").value.trim().toLowerCase() }).then(function (r) { if (r.error) decir("estadoEquipo", r.error.message, true); else { decir("estadoEquipo", "Invitada. Que entre en winclus.com/panel con ese correo."); $("correoMiembro").value = ""; cargarEquipo(); } });
+  });
+  window.WinclusPanel = { LIMITES: LIMITES, elegirTab: elegirTab };   // para las pruebas
+})();
+</script>
+<script src="widget.js" async></script>
+</body>
+</html>

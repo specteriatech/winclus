@@ -60,7 +60,7 @@
       "cc": "CC7",
       "nombre": "Identificación coherente",
       "estado": "cumple",
-      "detalle": "97 textos de enlace distintos, cada uno a un único destino"
+      "detalle": "103 textos de enlace distintos, cada uno a un único destino"
     },
     {
       "cc": "CC8",
@@ -72,7 +72,7 @@
       "cc": "CC9",
       "nombre": "Contenedores como tablas y listas usados correctamente",
       "estado": "cumple",
-      "detalle": "19 tablas y 114 listas, todas con contenido homogéneo y cabeceras"
+      "detalle": "19 tablas y 121 listas, todas con contenido homogéneo y cabeceras"
     },
     {
       "cc": "CC10",

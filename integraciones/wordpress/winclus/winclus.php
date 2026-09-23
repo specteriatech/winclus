@@ -12,7 +12,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 define( 'WINCLUS_VERSION_WIDGET', '0.8.1' );
-define( 'WINCLUS_SRI_WIDGET', 'sha384-xK+HZpPyZtcDAVHNFV1O8XyzqhhL6HFbZkS3V56uXNRy6yUkRinEfuPcWrKGR5Jt' );   // hash de integridad de la versión fija (winclus.com/integrar)
+define( 'WINCLUS_SRI_WIDGET', 'sha384-CAT0l+VYNpDXdUOdqA+pfqbQGwI1/VTY6rFNv6iZTpqfHT/oUgab/nPLG5FtPL8l' );   // hash de integridad de la versión fija (winclus.com/integrar)
 
 function winclus_opciones() {
 	return wp_parse_args( get_option( 'winclus_opciones', array() ), array(

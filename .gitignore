@@ -31,3 +31,6 @@ herramientas/pruebas/out_*.txt
 # Enlace local con Vercel
 .vercel/
 web/.vercel/
+
+# Dependencias de las funciones de winclus.com/api
+web/node_modules/

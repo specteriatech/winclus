@@ -37,6 +37,7 @@
     metricas: (script && script.dataset.metricas) || "",    // URL opcional a la que el sitio recibe cifras de uso anónimas (solo si la persona lo activa)
     glosario: (script && script.dataset.glosario) || "",    // URL opcional de un JSON {palabra: definición} para el diccionario al toque (o window.WinclusGlosario)
     contacto: (script && script.dataset.contacto) || "",    // a dónde van los avisos de barrera: mailto:… o URL (POST {url, texto, navegador, version, fecha})
+    traducir: (script && script.dataset.traducir) || "",    // URL del servicio de traducción del sitio (POST {textos, de, a} → {textos}); sin él, «Otro idioma» explica cómo traducir con el navegador
     uso: (script && script.dataset.uso) || "",              // URL a la que van, al salir de la página, las cifras de esta visita (solo números: panel abierto, opciones tocadas; sin identificadores). La pone el cargador con data-clave
     logo: (script && script.dataset.logo) || "",            // URL del logo de la entidad, en la cabecera del panel (plan Entidad)
     nombre: (script && script.dataset.nombre) || "",        // nombre de la entidad en la cabecera: «Accesibilidad de <nombre>, con Winclus»
@@ -156,7 +157,7 @@
   var DICC = {
     en: {
       "Ver": "See", "Oír": "Hear", "Puntero": "Pointer", "Clics": "Clicks", "Escribir": "Type", "Más": "More", "Cerrar": "Close", "Pausar": "Pause",
-      "Abrir accesibilidad Winclus": "Open Winclus accessibility", "con Winclus": "with Winclus", "Este sitio recibe cifras de uso anónimas (cuántas veces se abre el panel y qué opciones se tocan), sin identificar a nadie.": "This site receives anonymous usage figures (how many times the panel is opened and which options are used), without identifying anyone.", "Pausar el puntero": "Pause the pointer", "Accesibilidad Winclus": "Winclus accessibility", "Lectura limpia": "Clean reading",
+      "Abrir accesibilidad Winclus": "Open Winclus accessibility", "con Winclus": "with Winclus", "Traducir esta página": "Translate this page", "Volver al idioma original": "Back to the original language", "Traduciendo…": "Translating…", "Página traducida.": "Page translated.", "No se pudo traducir. Inténtalo más tarde.": "Could not translate. Try again later.", "Traduce el texto de esta página con el servicio de traducción de este sitio. Es una traducción automática: puede tener errores.": "Translates the text of this page with this site's translation service. It is machine translation: it may contain mistakes.", "Traducir a": "Translate into", "Este sitio recibe cifras de uso anónimas (cuántas veces se abre el panel y qué opciones se tocan), sin identificar a nadie.": "This site receives anonymous usage figures (how many times the panel is opened and which options are used), without identifying anyone.", "Pausar el puntero": "Pause the pointer", "Accesibilidad Winclus": "Winclus accessibility", "Lectura limpia": "Clean reading",
       "Ver mejor": "See better", "Tamaño del texto": "Text size", "Alto contraste": "High contrast", "Modo oscuro": "Dark mode", "Resaltar enlaces": "Highlight links", "Guía de lectura": "Reading guide", "Cursor del ratón grande": "Large mouse cursor",
       "Colores y calma": "Colors and calm", "Ninguna": "None",
       "Modo calma: sin destellos, animaciones ni vídeos que arranquen solos": "Calm mode: no flashes, animations or self-starting videos",
@@ -3664,8 +3665,74 @@
     });
     return lista;
   }
+  // Traducción automática con el servicio del sitio (data-traducir). Winclus no manda la página a nadie por su cuenta:
+  // solo si el sitio configuró su servicio y la persona lo pide. Se guardan los textos originales para volver.
+  var traduccion = null;   // { a: "en", nodos: [{ n: nodo|elemento, atributo: null|"alt"…, original: "…" }] }
+  function textosTraducibles() {
+    var lista = [], host = cont.parentNode === document.body ? cont : null;
+    var SALTAR = /^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA|CODE|PRE|KBD|SAMP|SVG|MATH)$/;
+    var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, { acceptNode: function (n) {
+      if (n.nodeType === 1) { if (SALTAR.test(n.tagName) || n === host || n.classList.contains("wcl-root") || n.getAttribute("translate") === "no" || n.hasAttribute("data-winclus")) return NodeFilter.FILTER_REJECT; return NodeFilter.FILTER_ACCEPT; }
+      return /\S/.test(n.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+    } });
+    var n;
+    while ((n = w.nextNode())) {
+      if (n.nodeType === 3) { if (n.nodeValue.trim().length > 1 && !/^[\d\s.,:;%$€()\-–—/]+$/.test(n.nodeValue)) lista.push({ n: n, atributo: null, original: n.nodeValue }); }
+      else ["alt", "title", "placeholder", "aria-label"].forEach(function (a) { var v = n.getAttribute(a); if (v && v.trim().length > 1) lista.push({ n: n, atributo: a, original: v }); });
+    }
+    return lista;
+  }
+  function ponerTexto(x, t) { if (x.atributo) x.n.setAttribute(x.atributo, t); else x.n.nodeValue = t; }
+  function traducirPagina(a) {
+    if (!opciones.traducir || !a) return;
+    if (traduccion) deshacerTraduccion();
+    var nodos = textosTraducibles(), lotes = [], de = IDIOMA_PAGINA.split("-")[0];
+    for (var i = 0; i < nodos.length; i += 60) lotes.push(nodos.slice(i, i + 60));
+    avisar(T("Traduciendo…")); contar("traducir");
+    var hechos = 0;
+    return lotes.reduce(function (p, lote) {
+      return p.then(function () {
+        return fetch(opciones.traducir, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ textos: lote.map(function (x) { return x.original; }), de: de, a: a }) })
+          .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+          .then(function (j) { var t = j && j.textos; if (!t || t.length !== lote.length) throw new Error("respuesta incompleta"); lote.forEach(function (x, k) { if (typeof t[k] === "string" && t[k]) ponerTexto(x, t[k]); }); hechos += lote.length; });
+      });
+    }, Promise.resolve()).then(function () {
+      traduccion = { a: a, nodos: nodos, lang: document.documentElement.lang };
+      document.documentElement.lang = a;
+      avisar(T("Página traducida.")); decirVoz(T("Página traducida."), true, true);
+      pintarIdiomas(cajaIdiomaInicio);
+    }).catch(function (e) {
+      nodos.forEach(function (x) { ponerTexto(x, x.original); });
+      avisar(T("No se pudo traducir. Inténtalo más tarde.")); decirVoz(T("No se pudo traducir. Inténtalo más tarde."), true, true);
+    });
+  }
+  function deshacerTraduccion() {
+    if (!traduccion) return;
+    traduccion.nodos.forEach(function (x) { ponerTexto(x, x.original); });
+    document.documentElement.lang = traduccion.lang || IDIOMA_PAGINA;
+    traduccion = null;
+    pintarIdiomas(cajaIdiomaInicio);
+  }
+  var nTraducirSel = 0;
+  var IDIOMAS_TRADUCIR = ["en", "pt", "fr", "it", "de", "ca", "nl", "pl", "ro", "tr", "ru", "zh", "ja", "ko", "ar", "hi", "id", "es"];
   function pintarIdiomas(caja) {
     var l = idiomasDelSitio(); caja.innerHTML = "";
+    if (opciones.traducir) {
+      var propio = IDIOMA_PAGINA.split("-")[0];
+      if (traduccion) {
+        caja.appendChild(el("div", { "class": "wcl-ayuda" }, T("Página traducida.") + " " + T("Traducir a") + ": " + nombreIdioma(traduccion.a)));
+        caja.appendChild(botonGrande("Volver al idioma original", "suave", deshacerTraduccion));
+      } else {
+        var fila = el("div", { "class": "wcl-fila" });
+        var idSel = "wcl-traducir-a-" + (++nTraducirSel);
+        var sel = el("select", { "class": "wcl-select wcl-traducir-sel", "id": idSel, "aria-label": T("Traducir a") });
+        IDIOMAS_TRADUCIR.filter(function (c) { return c !== propio; }).forEach(function (c) { var o = el("option", { "value": c }, nombreIdioma(c)); sel.appendChild(o); });
+        var pref = (navigator.language || "").split("-")[0]; if (pref && pref !== propio && IDIOMAS_TRADUCIR.indexOf(pref) >= 0) sel.value = pref;
+        fila.appendChild(el("label", { "for": idSel }, "Traducir a")); fila.appendChild(sel); caja.appendChild(fila);
+        caja.appendChild(botonGrande("Traducir esta página", "azul", function () { traducirPagina(sel.value); }));
+        caja.appendChild(el("div", { "class": "wcl-ayuda" }, "Traduce el texto de esta página con el servicio de traducción de este sitio. Es una traducción automática: puede tener errores."));
+      }
+    }
     if (l.length) {
       caja.appendChild(el("div", { "class": "wcl-ayuda" }, "Este sitio tiene la página en otros idiomas. Pulsa el tuyo y tus ajustes te siguen:"));
       l.forEach(function (x) {
@@ -3673,7 +3740,7 @@
         b.addEventListener("click", function () { location.href = x.url; });
         caja.appendChild(b);
       });
-    } else {
+    } else if (!opciones.traducir) {
       caja.appendChild(el("div", { "class": "wcl-ayuda" }, "Este sitio no tiene la página en otros idiomas. Tu navegador puede traducirla: en Chrome y Edge, clic derecho en la página y «Traducir»; en Safari, el botón «aA» de la barra de direcciones; en Firefox, el icono de traducir de la barra de direcciones. Winclus no la traduce para no enviar la página a nadie."));
     }
     return l;
@@ -6110,7 +6177,8 @@
     describirImagen: describirImagen,   // qué dice el lector de una imagen (con o sin alt, con o sin data-describir)
     arreglos: function () { return arreglos.slice(); }, pendientes: function () { return pendientes.slice(); }, arreglar: arreglarSitio, informeArreglos: informeArreglos,
     estructura: abrirEstructura, contrastar: aplicarContrasteInteligente, avisarBarrera: avisarBarrera, textoTip: textoTip,   // 0.8.0   // arreglos al vuelo del sitio y la lista para quien lo mantiene
-    idiomasDelSitio: idiomasDelSitio,   // versiones del sitio en otros idiomas que ofrece «Otro idioma» (Res. 2893, 4.3.2 b)
+    idiomasDelSitio: idiomasDelSitio,
+    traducirPagina: traducirPagina, deshacerTraduccion: deshacerTraduccion,   // traducción con el servicio del sitio (data-traducir)   // versiones del sitio en otros idiomas que ofrece «Otro idioma» (Res. 2893, 4.3.2 b)
     abrirPdf: abrirPdfEnLectura,   // abrir un PDF del sitio en la lectura limpia
     ajustarAlcance: ajustarAlcance,   // «Ajustar el puntero a lo que puedo mover»
     hablarPersona: hablarPersona, grabaciones: function () { return Object.keys(grabaciones).map(function (k) { return grabaciones[k].texto; }); },   // frases con la voz de la persona   // las pestañas a la vista (true) o solo «¿Qué te cuesta?» (false)

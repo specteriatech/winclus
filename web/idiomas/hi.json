@@ -119,5 +119,12 @@
 "Todavía no hay cifras de uso en este navegador.": "इस ब्राउज़र में अभी उपयोग के आँकड़े नहीं हैं।", "Uso de Winclus en este navegador desde el ": "इस ब्राउज़र में Winclus का उपयोग, इस तारीख़ से: ", " (sitio: ": " (साइट: ", "clics hechos con la cara": "चेहरे से किए गए क्लिक", "acciones con el barrido": "स्कैनिंग से की गई क्रियाएँ", "frases dichas con voz": "आवाज़ में बोले गए वाक्य", "frases dichas con pictogramas": "चित्र-संकेतों से बोले गए वाक्य", "veces que se abrió el teclado": "बार कीबोर्ड खोला गया", "dictados escritos": "श्रुतलेख लिखे गए", "errores de formulario explicados": "फ़ॉर्म की त्रुटियाँ समझाई गईं",
 "Si algo se ha descolocado y quieres volver a como estaba al principio.": "अगर कुछ गड़बड़ हो गया है और आप शुरुआत जैसा वापस चाहते हैं।",
 "con Winclus": "Winclus के साथ",
-"Este sitio recibe cifras de uso anónimas (cuántas veces se abre el panel y qué opciones se tocan), sin identificar a nadie.": "यह साइट गुमनाम उपयोग आँकड़े प्राप्त करती है (पैनल कितनी बार खुला और कौन से विकल्प चुने गए), किसी की पहचान किए बिना।"
+"Este sitio recibe cifras de uso anónimas (cuántas veces se abre el panel y qué opciones se tocan), sin identificar a nadie.": "यह साइट गुमनाम उपयोग आँकड़े प्राप्त करती है (पैनल कितनी बार खुला और कौन से विकल्प चुने गए), किसी की पहचान किए बिना।",
+"Traducir esta página": "इस पेज का अनुवाद करें",
+"Volver al idioma original": "मूल भाषा पर वापस जाएँ",
+"Traduciendo…": "अनुवाद हो रहा है…",
+"Página traducida.": "पेज का अनुवाद हो गया।",
+"No se pudo traducir. Inténtalo más tarde.": "अनुवाद नहीं हो सका। बाद में फिर कोशिश करें।",
+"Traduce el texto de esta página con el servicio de traducción de este sitio. Es una traducción automática: puede tener errores.": "इस साइट की अनुवाद सेवा से इस पेज का पाठ अनुवादित करता है। यह मशीनी अनुवाद है: इसमें गलतियाँ हो सकती हैं।",
+"Traducir a": "अनुवाद करें"
 }

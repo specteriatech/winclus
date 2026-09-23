@@ -1,0 +1,32 @@
+# Winclus Monitor alojado: cada día vigila los sitios de las cuentas de winclus.com/panel (herramientas/pruebas/widget/monitor_alojado.js).
+# Necesita en Settings → Secrets: SUPABASE_URL y SUPABASE_SERVICE_KEY (la clave de servicio, nunca la publicable).
+name: Winclus Monitor alojado
+on:
+  schedule:
+    - cron: "0 11 * * *"   # 06:00 en Colombia (UTC−5), todos los días
+  workflow_dispatch:
+    inputs:
+      sitio:
+        description: "Id de un solo sitio (opcional)"
+        required: false
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Instalar Winclus Audit
+        working-directory: herramientas/pruebas/widget
+        run: |
+          npm i --no-audit --no-fund playwright axe-core @supabase/supabase-js
+          npx playwright install --with-deps chromium
+      - name: Vigilar los sitios
+        working-directory: herramientas/pruebas/widget
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          if [ -n "${{ github.event.inputs.sitio }}" ]; then node monitor_alojado.js --sitio "${{ github.event.inputs.sitio }}"; else node monitor_alojado.js; fi

@@ -430,5 +430,12 @@
 "veces que se abrió el teclado": "回キーボードを開いた", "dictados escritos": "件の音声入力", "errores de formulario explicados": "件のフォームエラーを説明",
 "Si algo se ha descolocado y quieres volver a como estaba al principio.": "何かがおかしくなり、最初の状態に戻したい場合に。",
 "con Winclus": "Winclus 提供",
-"Este sitio recibe cifras de uso anónimas (cuántas veces se abre el panel y qué opciones se tocan), sin identificar a nadie.": "このサイトは匿名の利用データ（パネルを開いた回数と使われた項目）を受け取ります。個人は特定されません。"
+"Este sitio recibe cifras de uso anónimas (cuántas veces se abre el panel y qué opciones se tocan), sin identificar a nadie.": "このサイトは匿名の利用データ（パネルを開いた回数と使われた項目）を受け取ります。個人は特定されません。",
+"Traducir esta página": "このページを翻訳",
+"Volver al idioma original": "元の言語に戻す",
+"Traduciendo…": "翻訳中…",
+"Página traducida.": "ページを翻訳しました。",
+"No se pudo traducir. Inténtalo más tarde.": "翻訳できませんでした。後でもう一度お試しください。",
+"Traduce el texto de esta página con el servicio de traducción de este sitio. Es una traducción automática: puede tener errores.": "このサイトの翻訳サービスでページの文章を翻訳します。機械翻訳のため誤りがある場合があります。",
+"Traducir a": "翻訳先"
 }

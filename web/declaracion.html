@@ -227,7 +227,8 @@
   document.getElementById("limpiar").addEventListener("click", function () { f.reset(); try { localStorage.removeItem(CLAVE); } catch (e) {} pintar(); decir("Formulario vacío."); });
   f.addEventListener("input", pintar);
   f.addEventListener("change", pintar);
-  try { var g = JSON.parse(localStorage.getItem(CLAVE)); if (g) [].forEach.call(f.elements, function (e) { if (e.name in g) { if (e.type === "checkbox") e.checked = !!g[e.name]; else e.value = g[e.name]; } }); } catch (e) {}
+  try { var qs = new URLSearchParams(location.search); ["entidad", "sitio", "correo"].forEach(function (k) { if (qs.get(k) && f.elements[k]) f.elements[k].value = qs.get(k); }); } catch (e) {}
+  try { var g = JSON.parse(localStorage.getItem(CLAVE)); if (g && !new URLSearchParams(location.search).get("entidad")) [].forEach.call(f.elements, function (e) { if (e.name in g) { if (e.type === "checkbox") e.checked = !!g[e.name]; else e.value = g[e.name]; } }); } catch (e) {}
   pintar();
   window.WinclusDeclaracion = { cuerpo: cuerpo, archivo: archivo, texto: texto, datos: datos };   // para las pruebas
 })();

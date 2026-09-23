@@ -1,0 +1,12 @@
+{
+  "name": "winclus-web",
+  "private": true,
+  "description": "winclus.com: páginas estáticas y funciones de servidor (api/) para la clave de sitio, las cifras de uso, el escáner en línea y el panel de cliente",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@sparticuz/chromium": "^143.0.0",
+    "@supabase/supabase-js": "^2.58.0",
+    "axe-core": "^4.13.0",
+    "puppeteer-core": "^24.20.0"
+  }
+}
